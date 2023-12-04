@@ -1,0 +1,818 @@
+{
+  "title": {
+    "text": "RFC 6488 - Signed Object Template for the Resource Public Key Infrastructure (RPKI)",
+    "zh": "RFC 6488 - 资源公钥基础设施（RPKI）签名对象模板"
+  },
+  "number": 6488,
+  "created_at": "2023-12-04 17:09:09.733998+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                       M. Lepinski\nRequest for Comments: 6488                                        A. Chi\nCategory: Standards Track                                        S. Kent\nISSN: 2070-1721                                                      BBN\n                                                           February 2012",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 13,
+      "text": " Signed Object Template for the Resource Public Key Infrastructure (RPKI)",
+      "zh": "资源公钥基础设施（RPKI）签名对象模板"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines a generic profile for signed objects used in the Resource Public Key Infrastructure (RPKI). These RPKI signed objects make use of Cryptographic Message Syntax (CMS) as a standard encapsulation format.",
+      "zh": "本文件定义了资源公钥基础设施（RPKI）中使用的签名对象的通用配置文件。这些 RPKI 签名对象使用加密信息语法 (CMS) 作为标准封装格式。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 5741 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6488.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6488。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2012 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "版权所有 (c) 2012 IETF 信托基金会和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1. Introduction ....................................................2\n   1.1. Terminology ................................................3\n   1.2. Note on Algorithms .........................................3\n2. Signed Object Syntax ............................................3\n   2.1. Signed-Data Content Type ...................................4\n        2.1.1. version .............................................4\n        2.1.2. digestAlgorithms ....................................4\n        2.1.3. encapContentInfo ....................................4\n               2.1.3.1. eContentType ...............................5\n               2.1.3.2. eContent ...................................5\n        2.1.4. certificates ........................................5\n        2.1.5. crls ................................................5\n        2.1.6. signerInfos .........................................5\n               2.1.6.1. version ....................................6\n               2.1.6.2. sid ........................................6\n               2.1.6.3. digestAlgorithm ............................6\n               2.1.6.4. signedAttrs ................................6\n                        2.1.6.4.1. Content-Type Attribute ..........7\n                        2.1.6.4.2. Message-Digest Attribute ........7\n                        2.1.6.4.3. Signing-Time Attribute ..........7\n                        2.1.6.4.4. Binary-Signing-Time Attribute ...8\n               2.1.6.5. signatureAlgorithm .........................8\n               2.1.6.6. signatureValue .............................8\n               2.1.6.7. unsigneAttrs ...............................8\n3. Signed Object Validation ........................................8\n4. Definition of Specific Signed Objects ..........................10\n5. Security Considerations ........................................10\n6. IANA Considerations ............................................11\n7. Acknowledgements ...............................................11\n8. Normative References ...........................................11\n9. Informative References .........................................12",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "The purpose of the Resource Public Key Infrastructure (RPKI) is to support assertions by current resource holders of IP (v4 and v6) address space and AS numbers, based on the records of organizations that act as Certification Authorities (CAs). IP address and AS number resource information is carried in X.509 certificates via RFC 3779 extensions [RFC6487]. Other information assertions about resources are expressed via digitally signed, non-X.509 data structures that are referred to as \"signed objects\" in the RPKI context [RFC6480]. This document standardizes a template for specifying signed objects that can be validated using the RPKI.",
+      "zh": "资源公钥基础设施（RPKI）的目的是支持当前资源持有者根据作为认证机构（CA）的组织记录，对 IP（v4 和 v6）地址空间和 AS 号码进行断言。IP 地址和 AS 号码资源信息通过 RFC 3779 扩展 [RFC6487] 载于 X.509 证书中。有关资源的其他信息声明通过数字签名的非 X.509 数据结构来表达，在 RPKI 环境中这些数据结构被称为 \"签名对象\"[RFC6480]。本文档规范了一个模板，用于指定可使用 RPKI 验证的签名对象。"
+    },
+    {
+      "indent": 3,
+      "text": "RPKI signed objects make use of Cryptographic Message Syntax (CMS) [RFC5652] as a standard encapsulation format. CMS was chosen to take advantage of existing open source software available for processing messages in this format. RPKI signed objects adhere to a profile (specified in Section 2) of the CMS signed-data object.",
+      "zh": "RPKI 签名对象使用加密信息语法（CMS）[RFC5652] 作为标准封装格式。选择 CMS 是为了利用现有的开源软件来处理这种格式的信息。RPKI 签名对象遵循 CMS 签名数据对象的配置文件（在第 2 节中指定）。"
+    },
+    {
+      "indent": 3,
+      "text": "The template defined in this document for RPKI signed objects is not a complete specification for any particular type of signed object, and instead includes only the items that are common to all RPKI signed objects. That is, fully specifying a particular type of signed object requires an additional document that specifies the details specific to a particular type of signed object. Such details include Abstract Syntax Notation One (ASN.1) [X.208-88] for the object's payload and any additional steps required to validate the particular type of signed object. Section 4 describes in more detail the additional pieces that must be specified in order to define a new type of RPKI signed object that uses this template. Additionally, see [RFC6482] for an example of a document that uses this template to specify a particular type of signed object, the Route Origination Authorization (ROA).",
+      "zh": "本文档中定义的 RPKI 签名对象模板并非任何特定类型签名对象的完整规范，而仅包括所有 RPKI 签名对象共有的项目。也就是说，要完整地说明某类签名对象，还需要另外一份文件来说明该类签名对象的具体细节。这些细节包括对象有效载荷的抽象语法符号一（ASN.1）[X.208-88]，以及验证特定类型签名对象所需的任何附加步骤。第 4 节更详细地描述了为定义使用此模板的新型 RPKI 签名对象而必须指定的附加内容。此外，请参阅 [RFC6482]，了解使用此模板指定特定类型签名对象（路由起始授权 (ROA)）的文档示例。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Terminology",
+      "section_title": true,
+      "zh": "1.1. 用语"
+    },
+    {
+      "indent": 3,
+      "text": "It is assumed that the reader is familiar with the terms and concepts described in \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\" [RFC5280], \"X.509 Extensions for IP Addresses and AS Identifiers\" [RFC3779], and \"Cryptographic Message Syntax (CMS)\" [RFC5652].",
+      "zh": "假定读者已熟悉 \"互联网 X.509 公钥基础设施证书和证书吊销列表 (CRL) 配置文件\" [RFC5280]、\"IP 地址和 AS 标识符的 X.509 扩展\" [RFC3779] 和 \"加密消息语法 (CMS)\"[RFC5652]中描述的术语和概念。"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in [RFC2119].",
+      "zh": "本文档中的关键词 \"MUST\"、\"MUST NOT\"、\"REQUIRED\"、\"SHALL\"、\"SHALL NOT\"、\"SHOULD\"、\"SHOULD NOT\"、\"RECOMMENDED\"、\"MAY \"和 \"OPTIONAL \"应按照 [RFC2119] 中的描述进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "1.2. Note on Algorithms",
+      "section_title": true,
+      "zh": "1.2. 算法说明"
+    },
+    {
+      "indent": 3,
+      "text": "CMS is a general format capable of accommodating a wide variety of signature and digest algorithms. The algorithms used in the RPKI (and associated key sizes) are specified in [RFC6485].",
+      "zh": "CMS 是一种通用格式，能够适应各种签名和摘要算法。RPKI 中使用的算法（以及相关的密钥大小）在 [RFC6485] 中作了规定。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Signed Object Syntax",
+      "section_title": true,
+      "zh": "2. 签名对象语法"
+    },
+    {
+      "indent": 3,
+      "text": "The RPKI signed object is a profile of the CMS [RFC5652] signed-data object, with the restriction that RPKI signed objects MUST be encoded using the ASN.1 Distinguished Encoding Rules (DER) [X.509-88].",
+      "zh": "RPKI 签名对象是 CMS [RFC5652] 签名数据对象的简介，但 RPKI 签名对象必须使用 ASN.1 区分编码规则 (DER) [X.509-88] 进行编码。"
+    },
+    {
+      "indent": 3,
+      "text": "The general format of a CMS object is:",
+      "zh": "内容管理系统对象的一般格式为"
+    },
+    {
+      "indent": 6,
+      "text": "ContentInfo ::= SEQUENCE {\n  contentType ContentType,\n  content [0] EXPLICIT ANY DEFINED BY contentType }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "ContentType ::= OBJECT IDENTIFIER",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The content-type is the signed-data type of id-data, namely the id-signedData OID [RFC5652], 1.2.840.113549.1.7.2.",
+      "zh": "内容类型是 id-data 的签名数据类型，即 id-signedData OID [RFC5652]，1.2.840.113549.1.7.2。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1. Signed-Data Content Type",
+      "section_title": true,
+      "zh": "2.1. 签名数据内容类型"
+    },
+    {
+      "indent": 3,
+      "text": "According to the CMS standard, the signed-data content type is the ASN.1 type SignedData:",
+      "zh": "根据 CMS 标准，签名数据的内容类型是 ASN.1 类型 SignedData："
+    },
+    {
+      "indent": 6,
+      "text": "SignedData ::= SEQUENCE {\n  version CMSVersion,\n  digestAlgorithms DigestAlgorithmIdentifiers,\n  encapContentInfo EncapsulatedContentInfo,\n  certificates [0] IMPLICIT CertificateSet OPTIONAL,\n  crls [1] IMPLICIT RevocationInfoChoices OPTIONAL,\n  signerInfos SignerInfos }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "DigestAlgorithmIdentifiers ::= SET OF DigestAlgorithmIdentifier",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "SignerInfos ::= SET OF SignerInfo",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Additionally, the SignerInfos set MUST contain only a single SignerInfo object.",
+      "zh": "此外，SignerInfos 集必须只包含一个 SignerInfo 对象。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.1. version",
+      "section_title": true,
+      "zh": "2.1.1. 版本"
+    },
+    {
+      "indent": 3,
+      "text": "The version is the syntax version number. It MUST be 3, corresponding to the signerInfo structure having version number 3.",
+      "zh": "版本是语法的版本号。它必须是 3，与版本号为 3 的 signerInfo 结构相对应。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.2. digestAlgorithms",
+      "section_title": true,
+      "zh": "2.1.2. 摘要算法"
+    },
+    {
+      "indent": 3,
+      "text": "The digestAlgorithms set contains the OIDs of the digest algorithm(s) used in signing the encapsulated content. This set MUST contain exactly one digest algorithm OID, and the OID MUST be selected from those specified in [RFC6485].",
+      "zh": "digestAlgorithms 集包含用于签名封装内容的摘要算法的 OID。该集必须包含一个摘要算法 OID，且该 OID 必须从 [RFC6485] 中指定的算法中选择。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.3. encapContentInfo",
+      "section_title": true,
+      "zh": "2.1.3. encapContentInfo"
+    },
+    {
+      "indent": 3,
+      "text": "encapContentInfo is the signed content, consisting of a content type identifier and the content itself. The encapContentInfo represents the payload of the RPKI signed object.",
+      "zh": "encapContentInfo 是签名内容，由内容类型标识符和内容本身组成。encapContentInfo 代表 RPKI 签名对象的有效载荷。"
+    },
+    {
+      "indent": 8,
+      "text": "EncapsulatedContentInfo ::= SEQUENCE {\n  eContentType ContentType,\n  eContent [0] EXPLICIT OCTET STRING OPTIONAL }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 8,
+      "text": "ContentType ::= OBJECT IDENTIFIER",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "2.1.3.1. eContentType",
+      "section_title": true,
+      "zh": "2.1.3.1. 电子内容类型"
+    },
+    {
+      "indent": 3,
+      "text": "This field is left undefined by this profile. The eContentType is an OID specifying the type of payload in this signed object and MUST be specified by the Internet Standards Track document that defines the object.",
+      "zh": "本规范未定义此字段。电子内容类型（eContentType）是一个 OID，用于指定该签名对象中有效载荷的类型，必须由定义该对象的互联网标准跟踪文档指定。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.3.2. eContent",
+      "section_title": true,
+      "zh": "2.1.3.2. 电子内容"
+    },
+    {
+      "indent": 3,
+      "text": "This field is left undefined by this profile. The eContent is the payload of the signed object and MUST be specified by the Internet Standards Track document that defines the RPKI object.",
+      "zh": "本规范未定义该字段。电子内容是签名对象的有效载荷，必须由定义 RPKI 对象的互联网标准跟踪文件指定。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that the signed object profile does not provide version numbers for signed objects. Therefore, in order to facilitate transition to new versions of the signed objects over time, it is RECOMMENDED that each type of signed object defined using this profile include a version number within its eContent.",
+      "zh": "请注意，签名对象配置文件不提供签名对象的版本号。因此，为了便于随着时间的推移过渡到新版本的签名对象，建议使用本配置文件定义的每类签名对象在其电子内容中包含一个版本号。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.4. certificates",
+      "section_title": true,
+      "zh": "2.1.4. 证书"
+    },
+    {
+      "indent": 3,
+      "text": "The certificates field MUST be included, and MUST contain exactly one certificate, the RPKI end-entity (EE) certificate needed to validate this signed object.",
+      "zh": "证书字段必须包含一个证书，即验证此签名对象所需的 RPKI 最终实体（EE）证书。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.5. crls",
+      "section_title": true,
+      "zh": "2.1.5. crls"
+    },
+    {
+      "indent": 3,
+      "text": "The crls field MUST be omitted.",
+      "zh": "必须省略 crls 字段。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.6. signerInfos",
+      "section_title": true,
+      "zh": "2.1.6. 签名者信息"
+    },
+    {
+      "indent": 3,
+      "text": "SignerInfo is defined in CMS as:",
+      "zh": "在 CMS 中，SignerInfo 被定义为"
+    },
+    {
+      "indent": 9,
+      "text": "SignerInfo ::= SEQUENCE {\n  version CMSVersion,\n  sid SignerIdentifier,\n  digestAlgorithm DigestAlgorithmIdentifier,\n  signedAttrs [0] IMPLICIT SignedAttributes OPTIONAL,\n  signatureAlgorithm SignatureAlgorithmIdentifier,\n  signature SignatureValue,\n  unsignedAttrs [1] IMPLICIT UnsignedAttributes OPTIONAL }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "2.1.6.1. version",
+      "section_title": true,
+      "zh": "2.1.6.1. 版本"
+    },
+    {
+      "indent": 3,
+      "text": "The version number MUST be 3, corresponding with the choice of SubjectKeyIdentifier for the sid.",
+      "zh": "版本号必须是 3，与 sid 的 SubjectKeyIdentifier 选择相对应。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.6.2. sid",
+      "section_title": true,
+      "zh": "2.1.6.2. 侧"
+    },
+    {
+      "indent": 3,
+      "text": "The sid is defined as:",
+      "zh": "Sid 的定义是"
+    },
+    {
+      "indent": 9,
+      "text": "SignerIdentifier ::= CHOICE {\n  issuerAndSerialNumber IssuerAndSerialNumber,\n  subjectKeyIdentifier [0] SubjectKeyIdentifier }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "For RPKI signed objects, the sid MUST be the SubjectKeyIdentifier that appears in the EE certificate carried in the CMS certificates field.",
+      "zh": "对于 RPKI 签名对象，sid 必须是 CMS 证书字段中的 EE 证书中出现的 SubjectKeyIdentifier。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.6.3. digestAlgorithm",
+      "section_title": true,
+      "zh": "2.1.6.3. 摘要算法"
+    },
+    {
+      "indent": 3,
+      "text": "The digestAlgorithm MUST consist of the OID of a digest algorithm that conforms to the RPKI Algorithms and Key Size Profile specification [RFC6485].",
+      "zh": "digestAlgorithm 必须由符合 RPKI 算法和密钥大小配置文件规范 [RFC6485] 的摘要算法的 OID 组成。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.6.4. signedAttrs",
+      "section_title": true,
+      "zh": "2.1.6.4. signedAttrs"
+    },
+    {
+      "indent": 3,
+      "text": "The signedAttrs is defined as:",
+      "zh": "signedAttrs 的定义是"
+    },
+    {
+      "indent": 9,
+      "text": "SignedAttributes ::= SET SIZE (1..MAX) OF Attribute",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 9,
+      "text": "Attribute ::= SEQUENCE {\n  attrType OBJECT IDENTIFIER,\n  attrValues SET OF AttributeValue }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 9,
+      "text": "AttributeValue ::= ANY",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The signedAttrs element MUST be present and MUST include the content-type and message-digest attributes [RFC5652]. The signer MAY also include the signing-time attribute [RFC5652], the binary-signing-time attribute [RFC6019], or both attributes. Other signed attributes MUST NOT be included.",
+      "zh": "signedAttrs 元素必须存在，并且必须包括内容类型和消息-摘要属性 [RFC5652]。签名者还可以包括签名时间属性[RFC5652]、二进制签名时间属性[RFC6019]或两个属性。其他签名属性不得包括在内。"
+    },
+    {
+      "indent": 3,
+      "text": "The signedAttrs element MUST include only a single instance of any particular attribute. Additionally, even though the syntax allows for a SET OF AttributeValue, in an RPKI signed object, the attrValues MUST consist of only a single AttributeValue.",
+      "zh": "signedAttrs 元素必须只包含任何特定属性的一个实例。此外，尽管语法允许属性值的集合，但在 RPKI 签名对象中，attrValues 必须只包含一个属性值。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.6.4.1. Content-Type Attribute",
+      "section_title": true,
+      "zh": "2.1.6.4.1. 内容类型属性"
+    },
+    {
+      "indent": 3,
+      "text": "The content-type attribute MUST be present. The attrType OID for the content-type attribute is 1.2.840.113549.1.9.3.",
+      "zh": "content-type 属性必须存在。content-type 属性的 attrType OID 是 1.2.840.113549.1.9.3。"
+    },
+    {
+      "indent": 3,
+      "text": "The attrValues for the content-type attribute MUST match the eContentType in the EncapsulatedContentInfo. Thus, attrValues MUST contain the OID that specifies the payload type of the specific RPKI signed object carried in the CMS signed data structure.",
+      "zh": "content-type 属性的 attrValues 必须与 EncapsulatedContentInfo 中的 eContentType 匹配。因此，attrValues 必须包含指定 CMS 签名数据结构中特定 RPKI 签名对象有效载荷类型的 OID。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.6.4.2. Message-Digest Attribute",
+      "section_title": true,
+      "zh": "2.1.6.4.2. 消息加密属性"
+    },
+    {
+      "indent": 3,
+      "text": "The message-digest attribute MUST be present. The attrType OID for the message-digest attribute is 1.2.840.113549.1.9.4.",
+      "zh": "必须存在 message-digest 属性。message-digest 属性的 attrType OID 是 1.2.840.113549.1.9.4。"
+    },
+    {
+      "indent": 3,
+      "text": "The attrValues for the message-digest attribute contains the output of the digest algorithm applied to the content being signed, as specified in Section 5.4 of [RFC5652].",
+      "zh": "根据 [RFC5652] 第 5.4 节的规定，message-digest 属性的 attrValues 包含应用于被签名内容的摘要算法输出。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.6.4.3. Signing-Time Attribute",
+      "section_title": true,
+      "zh": "2.1.6.4.3. 签署时间属性"
+    },
+    {
+      "indent": 3,
+      "text": "The signing-time attribute MAY be present. Note that the presence or absence of the signing-time attribute MUST NOT affect the validity of the signed object (as specified in Section 3). The attrType OID for the signing-time attribute is 1.2.840.113549.1.9.5.",
+      "zh": "签名时间属性可以存在。请注意，签名时间属性的存在与否不得影响签名对象的有效性（如第 3 节所述）。签名时间属性的 attrType OID 是 1.2.840.113549.1.9.5。"
+    },
+    {
+      "indent": 9,
+      "text": "id-signingTime OBJECT IDENTIFIER ::= { iso(1) member-body(2)\n    us(840) rsadsi(113549) pkcs(1) pkcs9(9) 5 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The attrValues for the signing-time attribute is defined as:",
+      "zh": "签名时间属性的 attrValues 定义如下："
+    },
+    {
+      "indent": 9,
+      "text": "SigningTime ::= Time",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 9,
+      "text": "Time ::= CHOICE {\n  utcTime UTCTime,\n  generalizedTime GeneralizedTime }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The Time element specifies the time, based on the local system clock, at which the digital signature was applied to the content.",
+      "zh": "时间元素根据本地系统时钟指定数字签名应用于内容的时间。"
+    },
+    {
+      "indent": 3,
+      "text": "The definition of Time matches the one specified in the 1997 version of X.509. Additional information regarding the use of UTCTime and GeneralizedTime can be found in [RFC5652].",
+      "zh": "时间的定义与 1997 年版 X.509 中的定义一致。有关使用 UTCTime 和 GeneralizedTime 的其他信息，请参阅 [RFC5652]。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.6.4.4. Binary-Signing-Time Attribute",
+      "section_title": true,
+      "zh": "2.1.6.4.4. 二进制签署时间属性"
+    },
+    {
+      "indent": 3,
+      "text": "The binary-signing-time attribute MAY be present. Note that the presence or absence of the binary-signing-time attribute MUST NOT affect the validity of the signed object (as specified in Section 3). The attrType OID for the binary-signing-time attribute is 1.2.840.113549.1.9.16.2.46.",
+      "zh": "二进制签名时间属性可以存在。请注意，二进制签名时间属性的存在与否不得影响签名对象的有效性（如第 3 节所述）。二进制签名时间属性的 attrType OID 是 1.2.840.113549.1.9.16.2.46。"
+    },
+    {
+      "indent": 3,
+      "text": "      id-aa-binarySigningTime OBJECT IDENTIFIER ::= { iso(1)\n          member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs9(9)\n          smime(16) aa(2) 46 }\nThe attrValues for the signing-time attribute is defined as:",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 9,
+      "text": "BinarySigningTime ::= BinaryTime",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 9,
+      "text": "BinaryTime ::= INTEGER (0..MAX)",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The BinaryTime element specifies the time, based on the local system clock, at which the digital signature was applied to the content. The precise definition of the BinaryTime element can be found in [RFC6019].",
+      "zh": "二进制时间（BinaryTime）元素根据本地系统时钟指定数字签名应用于内容的时间。BinaryTime 元素的精确定义见 [RFC6019]。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.6.5. signatureAlgorithm",
+      "section_title": true,
+      "zh": "2.1.6.5. 签名算法"
+    },
+    {
+      "indent": 3,
+      "text": "The signatureAlgorithm MUST conform to the RPKI Algorithms and Key Size Profile specification [RFC6485].",
+      "zh": "签名算法必须符合 RPKI 算法和密钥大小简介规范 [RFC6485]。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.6.6. signature",
+      "section_title": true,
+      "zh": "2.1.6.6. 签字"
+    },
+    {
+      "indent": 3,
+      "text": "The signature value is defined as:",
+      "zh": "签名值定义如下"
+    },
+    {
+      "indent": 9,
+      "text": "SignatureValue ::= OCTET STRING",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The signature characteristics are defined by the digest and signature algorithms.",
+      "zh": "签名特征由摘要和签名算法定义。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.6.7. unsignedAttrs",
+      "section_title": true,
+      "zh": "2.1.6.7. 无符号参数"
+    },
+    {
+      "indent": 3,
+      "text": "unsignedAttrs MUST be omitted.",
+      "zh": "unsignedAttrs 必须省略。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Signed Object Validation",
+      "section_title": true,
+      "zh": "3. 签名对象验证"
+    },
+    {
+      "indent": 3,
+      "text": "Before a relying party can use a signed object, the relying party MUST validate the signed object by verifying that all of the following conditions hold. A relying party may perform these checks in any order. Note that these checks are necessary, but not sufficient. In general, further validation MUST be performed based on the specific type of signed object.",
+      "zh": "在依赖方使用签名对象之前，依赖方必须通过验证以下所有条件是否成立来验证签名对象。依赖方可以任何顺序执行这些检查。请注意，这些检查是必要的，但不是充分的。一般来说，必须根据签名对象的具体类型执行进一步验证。"
+    },
+    {
+      "indent": 3,
+      "text": "1. The signed object syntax complies with this specification. In particular, each of the following is true:",
+      "zh": "1. 签名对象语法符合本规范。特别是，以下各项均为真："
+    },
+    {
+      "indent": 6,
+      "text": "a. The content-type of the CMS object is SignedData (OID 1.2.840.113549.1.7.2)",
+      "zh": "a. CMS 对象的内容类型为 SignedData（OID 1.2.840.113549.1.7.2）"
+    },
+    {
+      "indent": 6,
+      "text": "b. The version of the SignedData object is 3.",
+      "zh": "b. SignedData 对象的版本为 3。"
+    },
+    {
+      "indent": 6,
+      "text": "c. The certificates field in the SignedData object is present and contains one EE certificate, the SubjectKeyIdentifier field of which matches the sid field of the SignerInfo object.",
+      "zh": "c. SignedData 对象中的证书字段包含一个 EE 证书，其 SubjectKeyIdentifier 字段与 SignerInfo 对象的 sid 字段相匹配。"
+    },
+    {
+      "indent": 6,
+      "text": "d. The crls field in the SignedData object is omitted.",
+      "zh": "d. SignedData 对象中的 crls 字段被省略。"
+    },
+    {
+      "indent": 6,
+      "text": "e. The version of the SignerInfo is 3.",
+      "zh": "e. SignerInfo 的版本为 3。"
+    },
+    {
+      "indent": 6,
+      "text": "f. The signedAttrs field in the SignerInfo object is present and contains both the content-type attribute (OID 1.2.840.113549.1.9.3) and the message-digest attribute (OID 1.2.840.113549.1.9.4).",
+      "zh": "f. SignerInfo 对象中的 signedAttrs 字段同时包含内容类型属性（OID 1.2.840.113549.1.9.3）和消息加密属性（OID 1.2.840.113549.1.9.4）。"
+    },
+    {
+      "indent": 6,
+      "text": "g. The signedAttrs field in the SignerInfo object does not contain any attributes other than the following four: the content-type attribute (OID 1.2.840.113549.1.9.3), the message-digest attribute (OID 1.2.840.113549.1.9.4), the signing-time attribute (OID 1.2.840.113549.1.9.5), and the binary-signing-time attribute (OID 1.2.840.113549.1.9.16.2.46). Note that the signing-time and binary-signing-time attributes MAY be present, but they are not required.",
+      "zh": "g. 3）、消息加密属性（OID 1.2.840.113549.1.9.4）、签名时间属性（OID 1.2.840.113549.1.9.5）和二进制签名时间属性（OID 1.2.840.113549.1.9.16.2.46）。请注意，signing-time 和 binary-signing-time 属性可以存在，但不是必需的。"
+    },
+    {
+      "indent": 6,
+      "text": "h. The eContentType in the EncapsulatedContentInfo is an OID that matches the attrValues in the content-type attribute.",
+      "zh": "h. EncapsulatedContentInfo 中的 eContentType 是与 content-type 属性中的 attrValues 匹配的 OID。"
+    },
+    {
+      "indent": 6,
+      "text": "i. The unsignedAttrs field in the SignerInfo object is omitted.",
+      "zh": "i. SignerInfo 对象中的 unsignedAttrs 字段被省略。"
+    },
+    {
+      "indent": 6,
+      "text": "j. The digestAlgorithm in the SignedData and SignerInfo objects conforms to the RPKI Algorithms and Key Size Profile specification [RFC6485].",
+      "zh": "j. SignedData 和 SignerInfo 对象中的 digestAlgorithm 算法符合 RPKI 算法和密钥大小配置文件规范 [RFC6485]。"
+    },
+    {
+      "indent": 6,
+      "text": "k. The signatureAlgorithm in the SignerInfo object conforms to the RPKI Algorithms and Key Size Profile specification [RFC6485].",
+      "zh": "k. SignerInfo 对象中的签名算法（signatureAlgorithm）符合 RPKI 算法和密钥大小规范[RFC6485]。"
+    },
+    {
+      "indent": 6,
+      "text": "l. The signed object is DER encoded.",
+      "zh": "l. 签名对象采用 DER 编码。"
+    },
+    {
+      "indent": 3,
+      "text": "2. The public key of the EE certificate (contained within the CMS signed-data object) can be used to successfully verify the signature on the signed object.",
+      "zh": "2. EE 证书的公钥（包含在 CMS 已签名数据对象中）可用于成功验证已签名对象上的签名。"
+    },
+    {
+      "indent": 3,
+      "text": "3. The EE certificate (contained within the CMS signed-data object) is a valid EE certificate in the RPKI as specified by [RFC6487]. In particular, a valid certification path from a trust anchor to this EE certificate exists.",
+      "zh": "3. EE 证书（包含在 CMS 签名数据对象中）是 [RFC6487] 所规定的 RPKI 中的有效 EE 证书。特别是，存在从信任锚到该 EE 证书的有效认证路径。"
+    },
+    {
+      "indent": 3,
+      "text": "If the above procedure indicates that the signed object is invalid, then the signed object MUST be discarded and treated as though no signed object were present. If all of the conditions above are true, then the signed object may be valid. The relying party MUST then perform any additional validation steps required for the particular type of signed object.",
+      "zh": "如果上述程序显示签名对象无效，则必须丢弃签名对象，并将其视为不存在签名对象。如果上述条件全部为真，则签名对象可能有效。然后，依赖方必须执行特定类型签名对象所需的任何其他验证步骤。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that a previously valid signed object will cease to be valid when the associated EE certificate ceases to be valid (for example, when the end of the certificate's validity period is reached, or when the certificate is revoked by the authority that issued it). See [RFC6487] for a complete specification of resource certificate validity.",
+      "zh": "请注意，当相关的 EE 证书不再有效时（例如，当证书有效期结束或证书颁发机构撤销证书时），先前有效的签名对象将不再有效。有关资源证书有效性的完整规范，请参阅 [RFC6487]。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Definition of Specific Signed Objects",
+      "section_title": true,
+      "zh": "4. 特定签名对象的定义"
+    },
+    {
+      "indent": 3,
+      "text": "Each RPKI signed object MUST be defined in an Internet Standards Track document based on this profile, by specifying the following data elements and validation procedure:",
+      "zh": "每个 RPKI 签名对象都必须在基于本配置文件的互联网标准跟踪文档中定义，具体说明以下数据元素和验证程序："
+    },
+    {
+      "indent": 3,
+      "text": "1. eContentType: A single OID to be used for both the eContentType field and the content-type attribute. This OID uniquely identifies the type of signed object.",
+      "zh": "1. eContentType（电子内容类型）：用于 eContentType 字段和 content-type 属性的单一 OID。该 OID 可唯一标识签名对象的类型。"
+    },
+    {
+      "indent": 3,
+      "text": "2. eContent: Define the syntax for the eContent field in encapContentInfo. This is the payload that contains the data specific to a given type of signed object.",
+      "zh": "2. eContent：定义 encapContentInfo 中 eContent 字段的语法。该有效载荷包含特定类型签名对象的特定数据。"
+    },
+    {
+      "indent": 3,
+      "text": "3. Additional Validation: Define a set of additional validation steps for the specific signed object. Before using this specific signed object, a relying party MUST perform both the generic validation steps in Section 3 above, as well as these additional steps.",
+      "zh": "3. 附加验证：为特定签名对象定义一系列附加验证步骤。在使用该特定签名对象之前，依赖方必须执行上述第 3 节中的通用验证步骤以及这些附加步骤。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Security Considerations",
+      "section_title": true,
+      "zh": "5. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "There is no assumption of confidentiality for the data in an RPKI signed object. The integrity and authenticity of each signed object is based on the verification of the object's digital signature, and the validation of the EE certificate used to perform that verification. It is anticipated that signed objects will be stored in repositories that will be publicly accessible.",
+      "zh": "RPKI 签名对象中的数据不存在保密性假设。每个签名对象的完整性和真实性都基于对对象数字签名的验证，以及对用于执行验证的 EE 证书的验证。预计签名对象将存储在可公开访问的存储库中。"
+    },
+    {
+      "indent": 3,
+      "text": "Since RPKI signed objects make use of CMS as an encapsulation format, the security considerations for CMS apply [RFC5652].",
+      "zh": "由于 RPKI 签名对象使用 CMS 作为封装格式，因此适用于 CMS 的安全注意事项 [RFC5652]。"
+    },
+    {
+      "indent": 0,
+      "text": "6. IANA Considerations",
+      "section_title": true,
+      "zh": "6. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has created a registry of \"RPKI Signed Objects\" types that utilize the template defined in this document. This registry contains three fields: an informal name for the signed object, the OID for the eContentType of the signed object, and a specification pointer that references the RFC in which the signed object is specified. The entries in this registry are managed by IETF Standards Action.",
+      "zh": "IANA 创建了一个 \"RPKI 签名对象 \"类型注册表，该注册表使用了本文档中定义的模板。该注册表包含三个字段：签名对象的非正式名称、签名对象电子内容类型的 OID 以及引用指定签名对象的 RFC 的规范指针。该注册表中的条目由 IETF 标准行动管理。"
+    },
+    {
+      "indent": 3,
+      "text": "The registry has been initially populated with the following two entries.",
+      "zh": "注册表中最初填入了以下两个条目。"
+    },
+    {
+      "indent": 3,
+      "text": "Name      |    OID                      | Specification\n----------------------------------------------------------------\nROA       | 1.2.840.113549.1.9.16.1.24  | RFC 6482\nManifest  | 1.2.840.113549.1.9.16.1.26  | RFC 6486",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "7. Acknowledgements",
+      "section_title": true,
+      "zh": "7. 致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors wish to thank Charles Gardiner, Russ Housley, and Derek Kong for their help and contributions. Additionally, the authors would like to thank Rob Austein, Roque Gagliano, Danny McPherson, Sean Turner, and Sam Weiler for their careful reviews and helpful comments.",
+      "zh": "作者感谢 Charles Gardiner、Russ Housley 和 Derek Kong 的帮助和贡献。此外，作者还要感谢罗布-奥斯汀（Rob Austein）、罗克-加利亚诺（Roque Gagliano）、丹尼-麦克弗森（Danny McPherson）、肖恩-特纳（Sean Turner）和山姆-韦勒（Sam Weiler）的仔细审阅和有益评论。"
+    },
+    {
+      "indent": 0,
+      "text": "8. Normative References",
+      "section_title": true,
+      "zh": "8. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, June 2004.",
+      "zh": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, June 2004."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, May 2008.",
+      "zh": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, May 2008."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5652] Housley, R., \"Cryptographic Message Syntax (CMS)\", STD 70, RFC 5652, September 2009.",
+      "zh": "[RFC5652] Housley, R.，\"加密信息语法（CMS）\"，STD 70，RFC 5652，2009 年 9 月。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6485] Huston, G., \"The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)\", RFC 6485, February 2012.",
+      "zh": "[RFC6485] Huston, G., \"The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)\", RFC 6485, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[X.208-88] CCITT. Recommendation X.208: Specification of Abstract Syntax Notation One (ASN.1), 1988.",
+      "zh": "[X.208-88] CCCIT。建议 X.208：抽象语法符号一（ASN.1）规范，1988。"
+    },
+    {
+      "indent": 3,
+      "text": "[X.509-88] CCITT. Recommendation X.509: The Directory Authentication Framework, 1988.",
+      "zh": "[x.509-88] ccitt.建议 X.509：目录验证框架，1988 年。"
+    },
+    {
+      "indent": 0,
+      "text": "9. Informative References",
+      "section_title": true,
+      "zh": "9. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6019] Housley, R., \"BinaryTime: An Alternate Format for Representing Date and Time in ASN.1\", RFC 6019, September 2010.",
+      "zh": "[RFC6019] Housley, R., \"BinaryTime: An Alternate Format for Representing Date and Time in ASN.1\", RFC 6019, September 2010."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, February 2012.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, February 2012.",
+      "zh": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, February 2012."
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Matt Lepinski BBN Technologies 10 Moulton Street Cambridge MA 02138",
+      "zh": "Matt Lepinski BBN Technologies 10 Moulton Street Cambridge MA 02138"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: mlepinski@bbn.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Andrew Chi BBN Technologies 10 Moulton Street Cambridge MA 02138",
+      "zh": "Andrew Chi BBN Technologies 10 Moulton Street Cambridge MA 02138"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: achi@bbn.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Stephen Kent BBN Technologies 10 Moulton Street Cambridge MA 02138",
+      "zh": "Stephen Kent BBN Technologies 10 Moulton Street Cambridge MA 02138"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: kent@bbn.com",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

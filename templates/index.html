@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  % if is_draft:
+  <title>RFC 中文翻译一览（Draft版）</title>
+  % else:
+  <title>RFC 中文翻译一览</title>
+  % endif
+
+  <%include file="head.html" />
+</head>
+<body>
+  <%include file="header.html" />
+
+  <div style="height: 1ex;"></div> <!-- spacing -->
+
+  <div class="jump-to-original-rfc-container">
+    % if is_draft:
+    <a href="https://datatracker.ietf.org/doc/recent">
+    % else:
+    <a href="https://www.ietf.org/download/rfc-index.txt">
+    % endif
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+
+  <div class="container">
+    % if is_draft:
+    <div class="alert alert-secondary" role="alert">
+    % else:
+    <div class="alert alert-info" role="alert">
+    % endif
+      % if is_draft:
+      <h4 class="alert-heading">翻译后的 RFC 文档列表（Draft版）</h4>
+      % else:
+      <h4 class="alert-heading">翻译后的 RFC 文档列表</h4>
+      % endif
+      <ul>
+        <li>不保证翻译的准确性。请务必对照英文原文阅读译文。</li>
+        <li>在极少数情况下，原文的部分内容会被遗漏，请通过右上角的原文链接 “Orig” 阅读原文。</li>
+        <li>当图形和表格横跨多页，或中间有空行时，可能无法准确地翻译。</li>
+        % if is_draft:
+        <li><b>RFC Draft 是规范标准化之前的草案。该规范将来可能会有变化。</b></li>
+        % else:
+        <li>在翻译方面，由于 RFC 的版权问题，只发布 RFC 2220 及以后的文档的译文。</li>
+        % endif
+        <li>在 <a href="https://github.com/tex2e/rfc-translater">github.com/tex2e/rfc-translater</a> 可以找到本站点用于翻译 RFC 的工具集。</li>
+      </ul>
+    </div>
+
+    <div style="height: 1ex;"></div> <!-- spacing -->
+
+    <div id="RFCs" class="list-group list-group-flush">
+      % for filenum, filename, title in ctx['files']:
+      <a href="${filename | h}" class="list-group-item list-group-item-action">
+        ${title}
+      </a>
+      % endfor
+    </div>
+  </div>
+</body>
+</html>

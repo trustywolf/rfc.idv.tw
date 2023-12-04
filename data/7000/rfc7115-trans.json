@@ -1,0 +1,577 @@
+{
+  "title": {
+    "text": "RFC 7115 - Origin Validation Operation Based on the Resource Public Key Infrastructure (RPKI)",
+    "zh": "RFC 7115 - 基于资源公钥基础设施（RPKI）的起源验证操作"
+  },
+  "number": 7115,
+  "created_at": "2023-12-04 16:36:45.087513+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                           R. Bush\nRequest for Comments: 7115                     Internet Initiative Japan\nBCP: 185                                                    January 2014\nCategory: Best Current Practice\nISSN: 2070-1721",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 9,
+      "text": " Origin Validation Operation Based on the Resource Public Key Infrastructure (RPKI)",
+      "zh": "基于资源公钥基础设施（RPKI）的起源验证操作"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "Deployment of BGP origin validation that is based on the Resource Public Key Infrastructure (RPKI) has many operational considerations. This document attempts to collect and present those that are most critical. It is expected to evolve as RPKI-based origin validation continues to be deployed and the dynamics are better understood.",
+      "zh": "部署基于资源公钥基础设施（RPKI）的 BGP 起源验证有许多操作上的注意事项。本文件试图收集并介绍那些最关键的因素。随着基于 RPKI 的起源验证的不断部署和对其动态的更好理解，预计本文档将不断发展。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This memo documents an Internet Best Current Practice.",
+      "zh": "本备忘录记录了互联网当前最佳做法。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on BCPs is available in Section 2 of RFC 5741.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的产品。它已获互联网工程指导小组 (IESG) 批准发布。有关 BCP 的更多信息，请参见 RFC 5741 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc7115.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc7115。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2014 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "Copyright (c) 2014 IETF Trust 和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2\n  1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   3\n2.  Suggested Reading . . . . . . . . . . . . . . . . . . . . . .   3\n3.  RPKI Distribution and Maintenance . . . . . . . . . . . . . .   3\n4.  Within a Network  . . . . . . . . . . . . . . . . . . . . . .   6\n5.  Routing Policy  . . . . . . . . . . . . . . . . . . . . . . .   6\n6.  Notes and Recommendations . . . . . . . . . . . . . . . . . .   8\n7.  Security Considerations . . . . . . . . . . . . . . . . . . .   9\n8.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  10\n9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  10\n  9.1.  Normative References  . . . . . . . . . . . . . . . . . .  10\n  9.2.  Informative References  . . . . . . . . . . . . . . . . .  10",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "RPKI-based origin validation relies on widespread deployment of the Resource Public Key Infrastructure (RPKI) [RFC6480]. How the RPKI is distributed and maintained globally is a serious concern from many aspects.",
+      "zh": "基于 RPKI 的来源验证依赖于资源公钥基础设施 (RPKI) [RFC6480] 的广泛部署。如何在全球范围内分发和维护 RPKI 是一个值得关注的问题。"
+    },
+    {
+      "indent": 3,
+      "text": "While the global RPKI is in the early stages of deployment, there is no single root trust anchor, initial testing is being done by the Regional Internet Registries (RIRs), and there are technical testbeds. It is thought that origin validation based on the RPKI will continue to be deployed incrementally over the next few years. It is assumed that eventually there must be a single root trust anchor for the public address space, see [IAB].",
+      "zh": "全球 RPKI 尚处于早期部署阶段，没有单一的根信任锚，区域互联网注册机构 (RIR) 正在进行初步测试，并有技术测试平台。据认为，基于 RPKI 的来源验证将在未来几年内继续逐步部署。假定公共地址空间最终必须有一个单一的根信任锚，见 [IAB]。"
+    },
+    {
+      "indent": 3,
+      "text": "Origin validation needs to be done only by an AS's border routers and is designed so that it can be used to protect announcements that are originated by any network participating in Internet BGP routing: large providers, upstream and downstream routers, and by edge networks (e.g., small stub or enterprise networks).",
+      "zh": "起源验证只需由 AS 的边界路由器完成，因此可用于保护参与互联网 BGP 路由的任何网络（大型提供商、上游和下游路由器以及边缘网络（如小型存根或企业网络））发出的公告。"
+    },
+    {
+      "indent": 3,
+      "text": "Origin validation has been designed to be deployed on current routers without significant hardware upgrades. It should be used in border routers by operators from large backbones to small stub/enterprise/ edge networks.",
+      "zh": "Origin validation 设计用于在当前路由器上部署，而无需对硬件进行重大升级。从大型骨干网到小型存根网/企业网/边缘网，运营商都可以在边界路由器上使用它。"
+    },
+    {
+      "indent": 3,
+      "text": "RPKI-based origin validation has been designed so that, with prudent local routing policies, there is little risk that what is seen as today's normal Internet routing is threatened by imprudent deployment of the global RPKI; see Section 5.",
+      "zh": "基于 RPKI 的原产地验证的设计初衷是，只要采取审慎的本地路由选择政策，就不会出现因不谨慎地部署全球 RPKI 而威胁当今正常互联网路由选择的情况；见第 5 节。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Requirements Language",
+      "section_title": true,
+      "zh": "1.1. 要求语言"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", and \"OPTIONAL\" are to be interpreted as described in RFC 2119 [RFC2119] only when they appear in all upper case. They may also appear in lower or mixed case as English words, without normative meaning.",
+      "zh": "关键词 \"MUST\"、\"MUST NOT\"、\"REQUIRED\"、\"SHALL\"、\"SHALL NOT\"、\"SHOULD\"、\"SHOULD NOT\"、\"RECOMMENDED\"、\"MAY \"和 \"OPTIONAL \"只有在以大写字母出现时，才能按照 RFC 2119 [RFC2119] 中的说明进行解释。它们也可以作为英文单词以小写或混合大小写出现，但没有规范意义。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Suggested Reading",
+      "section_title": true,
+      "zh": "2. 推荐阅读"
+    },
+    {
+      "indent": 3,
+      "text": "It is assumed that the reader understands BGP [RFC4271], the RPKI [RFC6480], the RPKI Repository Structure [RFC6481], Route Origin Authorizations (ROAs) [RFC6482], the RPKI to Router Protocol [RFC6810], RPKI-based Prefix Validation [RFC6811], and Ghostbusters Records [RFC6493].",
+      "zh": "假定读者了解 BGP [RFC4271]、RPKI [RFC6480]、RPKI 存储库结构 [RFC6481]、路由起源授权 (ROAs)[RFC6482]、RPKI 到路由器协议 [RFC6810]、基于 RPKI 的前缀验证 [RFC6811] 和幽灵记录 [RFC6493]。"
+    },
+    {
+      "indent": 0,
+      "text": "3. RPKI Distribution and Maintenance",
+      "section_title": true,
+      "zh": "3. RPKI 分配和维护"
+    },
+    {
+      "indent": 3,
+      "text": "The RPKI is a distributed database containing certificates, Certificate Revocation Lists (CRLs), manifests, ROAs, and Ghostbusters Records as described in [RFC6481]. Policies and considerations for RPKI object generation and maintenance are discussed elsewhere.",
+      "zh": "RPKI 是一个分布式数据库，包含证书、证书废止列表 (CRL)、清单、ROA 和幽灵记录，如 [RFC6481] 所述。有关 RPKI 对象生成和维护的政策和注意事项将在其他地方讨论。"
+    },
+    {
+      "indent": 3,
+      "text": "The RPKI repository design [RFC6481] anticipated a hierarchic organization of repositories, as this seriously improves the performance of relying parties that gather data over a non-hierarchic organization. Publishing parties MUST implement hierarchic directory structures.",
+      "zh": "RPKI 资源库设计 [RFC6481] 预计资源库将采用分级组织，因为这将大大提高收集数据的依赖方的性能。发布方必须实施分级目录结构。"
+    },
+    {
+      "indent": 3,
+      "text": "A local relying party's valid cache containing all RPKI data may be gathered from the global distributed database using the rsync protocol [RFC5781] and a validation tool such as rcynic [rcynic].",
+      "zh": "可使用 rsync 协议 [RFC5781] 和验证工具（如 rcynic [rcynic]）从全局分布式数据库中收集包含所有 RPKI 数据的本地依赖方有效缓存。"
+    },
+    {
+      "indent": 3,
+      "text": "A validated cache contains all RPKI objects that the RP has verified to be valid according to the rules for validation RPKI certificates and signed objects; see [RFC6487] and [RFC6488]. Entities that trust the cache can use these RPKI objects without further validation.",
+      "zh": "经过验证的缓存包含 RP 根据 RPKI 证书和签名对象验证规则验证为有效的所有 RPKI 对象；见 [RFC6487] 和 [RFC6488]。信任缓存的实体可以使用这些 RPKI 对象，而无需进一步验证。"
+    },
+    {
+      "indent": 3,
+      "text": "Validated caches may also be created and maintained from other validated caches. Network operators SHOULD take maximum advantage of this feature to minimize load on the global distributed RPKI database. Of course, the recipient relying parties should re-validate the data.",
+      "zh": "验证缓存也可从其他验证缓存中创建和维护。网络运营商应最大限度地利用这一功能，尽量减少全球分布式 RPKI 数据库的负荷。当然，接收方依赖方应重新验证数据。"
+    },
+    {
+      "indent": 3,
+      "text": "As Trust Anchor Locators (TALs) [RFC6490] are critical to the RPKI trust model, operators should be very careful in their initial selection and vigilant in their maintenance.",
+      "zh": "由于信任锚点定位器（TAL）[RFC6490] 对 RPKI 信任模型至关重要，因此操作员在初始选择时应非常谨慎，在维护时也应保持警惕。"
+    },
+    {
+      "indent": 3,
+      "text": "Timing of inter-cache synchronization, and synchronization between caches and the global RPKI, is outside the scope of this document, and depends on things such as how often routers feed from the caches, how often the operator feels the global RPKI changes significantly, etc.",
+      "zh": "缓存间同步以及缓存与全局 RPKI 同步的时间安排不在本文档的讨论范围之内，取决于路由器从缓存获取数据的频率、操作员认为全局 RPKI 发生重大变化的频率等因素。"
+    },
+    {
+      "indent": 3,
+      "text": "As inter-cache synchronization within an operator's network does not impact global RPKI resources, an operator may choose to synchronize quite frequently.",
+      "zh": "由于运营商网络内的缓存间同步不会影响全球 RPKI 资源，因此运营商可以选择频繁地进行同步。"
+    },
+    {
+      "indent": 3,
+      "text": "To relieve routers of the load of performing certificate validation, cryptographic operations, etc., the RPKI-Router protocol [RFC6810] does not provide object-based security to the router. That is, the router cannot validate the data cryptographically from a well-known trust anchor. The router trusts the cache to provide correct data and relies on transport-based security for the data received from the cache. Therefore, the authenticity and integrity of the data from the cache should be well protected; see Section 7 of [RFC6810].",
+      "zh": "为了减轻路由器执行证书验证和加密操作等工作的负担，RPKI-Router 协议 [RFC6810] 不向路由器提供基于对象的安全性。也就是说，路由器无法对来自知名信任锚的数据进行加密验证。路由器相信高速缓存会提供正确的数据，并依赖于从高速缓存接收的数据的基于传输的安全性。因此，缓存数据的真实性和完整性应得到很好的保护；参见 [RFC6810] 第 7 节。"
+    },
+    {
+      "indent": 3,
+      "text": "As RPKI-based origin validation relies on the availability of RPKI data, operators SHOULD locate RPKI caches close to routers that require these data and services in order to minimize the impact of likely failures in local routing, intermediate devices, long circuits, etc. One should also consider trust boundaries, routing bootstrap reachability, etc.",
+      "zh": "由于基于 RPKI 的来源验证依赖于 RPKI 数据的可用性，运营商应将 RPKI 缓存设在需要这些数据和服务的路由器附近，以尽量减少本地路由、中间设备、长线路等可能出现的故障所造成的影响。还应考虑信任边界、路由引导可达性等因素。"
+    },
+    {
+      "indent": 3,
+      "text": "For example, a router should bootstrap from a cache that is reachable with minimal reliance on other infrastructure such as DNS or routing protocols. If a router needs its BGP and/or IGP to converge for the router to reach a cache, once a cache is reachable, the router will then have to reevaluate prefixes already learned via BGP. Such configurations should be avoided if reasonably possible.",
+      "zh": "例如，路由器应从可到达的高速缓存启动，尽量减少对 DNS 或路由协议等其他基础设施的依赖。如果路由器需要收敛 BGP 和/或 IGP 才能到达高速缓存，那么一旦高速缓存可以到达，路由器就必须重新评估已通过 BGP 学习到的前缀。应尽可能避免此类配置。"
+    },
+    {
+      "indent": 3,
+      "text": "If insecure transports are used between an operator's cache and their router(s), the Transport Security recommendations in [RFC6810] SHOULD be followed. In particular, operators MUST NOT use insecure transports between their routers and RPKI caches located in other Autonomous Systems.",
+      "zh": "如果在运营商的高速缓存与其路由器之间使用不安全的传输，则应遵循 [RFC6810] 中的传输安全建议。特别是，运营商不得在其路由器和位于其他自治系统的 RPKI 缓存之间使用不安全的传输。"
+    },
+    {
+      "indent": 3,
+      "text": "For redundancy, a router should peer with more than one cache at the same time. Peering with two or more, at least one local and others remote, is recommended.",
+      "zh": "为实现冗余，路由器应同时与一个以上的高速缓存对等。建议与两个或更多缓存对等，至少一个是本地缓存，其他是远程缓存。"
+    },
+    {
+      "indent": 3,
+      "text": "If an operator trusts upstreams to carry their traffic, they may also trust the RPKI data those upstreams cache and SHOULD peer with caches made available to them by those upstreams. Note that this places an obligation on those upstreams to maintain fresh and reliable caches and to make them available to their customers. And, as usual, the recipient SHOULD re-validate the data.",
+      "zh": "如果运营商信任上游来传输他们的流量，他们也可能信任这些上游缓存的 RPKI 数据，并应与这些上游提供给他们的缓存对等。请注意，这就要求这些上行流有义务维护新鲜可靠的缓存，并将其提供给客户。与往常一样，接收方应重新验证数据。"
+    },
+    {
+      "indent": 3,
+      "text": "A transit provider or a network with peers SHOULD validate origins in announcements made by upstreams, downstreams, and peers. They still should trust the caches provided by their upstreams.",
+      "zh": "转接提供商或有对等网络的网络应验证上行、下行和对等网络所发公告的来源。它们仍应信任其上游提供的缓存。"
+    },
+    {
+      "indent": 3,
+      "text": "Before issuing a ROA for a super-block, an operator MUST ensure that all sub-allocations from that block that are announced by other ASes, e.g., customers, have correct ROAs in the RPKI. Otherwise, issuing a ROA for the super-block will cause the announcements of sub-allocations with no ROAs to be viewed as Invalid; see [RFC6811]. While waiting for all recipients of sub-allocations to register ROAs, the owner of the super-block may use live BGP data to populate ROAs as a proxy, and then safely issue a ROA for the super-block.",
+      "zh": "在为超级区块发布 ROA 之前，运营商必须确保该区块中由其他 AS（如客户）宣布的所有子分配在 RPKI 中都有正确的 ROA。否则，为超级区块发布 ROA 将导致没有 ROA 的子分配公告被视为无效；参见 [RFC6811]。在等待子分配的所有接收者注册 ROA 的同时，超级区块的所有者可使用实时 BGP 数据作为代理填充 ROA，然后安全地发布超级区块的 ROA。"
+    },
+    {
+      "indent": 3,
+      "text": "Use of RPKI-based origin validation removes any need to inject more specifics into BGP to protect against mis-origination of a less specific prefix. Having a ROA for the covering prefix will protect it.",
+      "zh": "使用基于 RPKI 的起源验证，就无需在 BGP 中注入更多具体内容，以防止不那么具体的前缀被误发。有了覆盖前缀的 ROA 就能保护它。"
+    },
+    {
+      "indent": 3,
+      "text": "To aid translation of ROAs into efficient search algorithms in routers, ROAs should be as precise as possible, i.e., match prefixes as announced in BGP. For example, software and operators SHOULD avoid use of excessive max length values in ROAs unless they are operationally necessary.",
+      "zh": "为帮助路由器将 ROA 转换为高效搜索算法，ROA 应尽可能精确，即与 BGP 中公布的前缀相匹配。例如，软件和运营商应避免在 ROA 中使用过多的最大长度值，除非在操作上有必要。"
+    },
+    {
+      "indent": 3,
+      "text": "One advantage of minimal ROA length is that the forged origin attack does not work for sub-prefixes that are not covered by overly long max length. For example, if, instead of 10.0.0.0/16-24, one issues 10.0.0.0/16 and 10.0.42.0/24, a forged origin attack cannot succeed against 10.0.666.0/24. They must attack the whole /16, which is more likely to be noticed because of its size.",
+      "zh": "最小 ROA 长度的一个优点是，对于最大长度过长无法覆盖的子前缀，伪造来源攻击不会奏效。例如，如果不使用 10.0.0.0/16-24，而是使用 10.0.0.0/16 和 10.0.42.0/24，伪造来源攻击就无法成功攻击 10.0.666.0/24。他们必须攻击整个 /16，因为 /16 的大小更容易引起注意。"
+    },
+    {
+      "indent": 3,
+      "text": "Therefore, ROA generation software MUST use the prefix length as the max length if the user does not specify a max length.",
+      "zh": "因此，如果用户没有指定最大长度，ROA 生成软件必须使用前缀长度作为最大长度。"
+    },
+    {
+      "indent": 3,
+      "text": "Operators should be conservative in use of max length in ROAs. For example, if a prefix will have only a few sub-prefixes announced, multiple ROAs for the specific announcements should be used as opposed to one ROA with a long max length.",
+      "zh": "运营商在使用 ROA 最大长度时应谨慎。例如，如果一个前缀只公布几个子前缀，则应针对具体公布使用多个 ROA，而不是使用一个最大长度较长的 ROA。"
+    },
+    {
+      "indent": 3,
+      "text": "Operators owning prefix P should issue ROAs for all ASes that may announce P. If a prefix is legitimately announced by more than one AS, ROAs for all of the ASes SHOULD be issued so that all are considered Valid.",
+      "zh": "如果一个前缀由多个 AS 合法宣布，则应为所有 AS 发布 ROA，以便所有 AS 都被视为有效。"
+    },
+    {
+      "indent": 3,
+      "text": "In an environment where private address space is announced in External BGP (eBGP), the operator may have private RPKI objects that cover these private spaces. This will require a trust anchor created and owned by that environment; see [LTA-USE].",
+      "zh": "在外部 BGP (eBGP) 中公布私有地址空间的环境中，运营商可能拥有覆盖这些私有空间的私有 RPKI 对象。这将需要一个由该环境创建和拥有的信任锚；请参阅 [LTA-USE]。"
+    },
+    {
+      "indent": 3,
+      "text": "Operators issuing ROAs may have customers that announce their own prefixes and ASes into global eBGP, but who do not wish to go though the work to manage the relevant certificates and ROAs. Operators SHOULD offer to provision the RPKI data for these customers just as they provision many other things for them.",
+      "zh": "签发 ROA 的运营商可能会有一些客户将自己的前缀和 AS 宣布到全局 eBGP 中，但他们不希望管理相关证书和 ROA。运营商应为这些客户提供 RPKI 数据，就像为他们提供许多其他服务一样。"
+    },
+    {
+      "indent": 3,
+      "text": "An operator using RPKI data MAY choose any polling frequency they wish for ensuring they have a fresh RPKI cache. However, if they use RPKI data as an input to operational routing decisions, they SHOULD ensure local caches inside their AS are synchronized with each other at least every four to six hours.",
+      "zh": "使用 RPKI 数据的运营商可以选择任何他们希望的轮询频率，以确保他们有一个新鲜的 RPKI 缓存。但是，如果运营商将 RPKI 数据作为运营路由决策的输入，则应确保其 AS 内的本地缓存至少每四到六小时同步一次。"
+    },
+    {
+      "indent": 3,
+      "text": "Operators should use tools that warn them of any impending ROA or certificate expiry that could affect the validity of their own data. Ghostbusters Records [RFC6493] can be used to facilitate contact with upstream Certification Authorities (CAs) to effect repair.",
+      "zh": "运营商应使用一些工具，在任何可能影响自身数据有效性的 ROA 或证书到期时发出警告。幽灵克星记录 [RFC6493] 可用于促进与上游认证机构 (CA) 的联系，以进行修复。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Within a Network",
+      "section_title": true,
+      "zh": "4. 网络内"
+    },
+    {
+      "indent": 3,
+      "text": "Origin validation need only be done by edge routers in a network, those which border other networks or ASes.",
+      "zh": "起源验证只需由网络中的边缘路由器完成，即那些与其他网络或 AS 交界的路由器。"
+    },
+    {
+      "indent": 3,
+      "text": "A validating router will use the result of origin validation to influence local policy within its network; see Section 5. In deployment, this policy should fit into the AS's existing policy, preferences, etc. This allows a network to incrementally deploy validation-capable border routers.",
+      "zh": "验证路由器将利用起源验证的结果来影响其网络内的本地策略；参见第 5 节。在部署过程中，该策略应符合 AS 的现有策略、偏好等。这样，网络就可以逐步部署具有验证能力的边界路由器。"
+    },
+    {
+      "indent": 3,
+      "text": "The operator should be aware that RPKI-based origin validation, as any other policy change, can cause traffic shifts in their network. And, as with normal policy shift practice, a prudent operator has tools and methods to predict, measure, modify, etc.",
+      "zh": "运营商应该意识到，基于 RPKI 的来源验证与其他任何政策变更一样，都可能导致其网络中的流量转移。与正常的策略变更做法一样，谨慎的运营商拥有预测、测量、修改等工具和方法。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Routing Policy",
+      "section_title": true,
+      "zh": "5. 路由政策"
+    },
+    {
+      "indent": 3,
+      "text": "Origin validation based on the RPKI marks a received announcement as having an origin that is Valid, NotFound, or Invalid; see [RFC6811]. How this is used in routing should be specified by the operator's local policy.",
+      "zh": "基于 RPKI 的来源验证将收到的公告标记为来源有效、未找到或无效；见 [RFC6811]。路由选择中如何使用该标记应由运营商的本地政策规定。"
+    },
+    {
+      "indent": 3,
+      "text": "Local policy using relative preference is suggested to manage the uncertainty associated with a system in early deployment; local policy can be applied to eliminate the threat of unreachability of prefixes due to ill-advised certification policies and/or incorrect certification data. For example, until the community feels comfortable relying on RPKI data, routing on Invalid origin validity, though at a low preference, MAY occur.",
+      "zh": "建议使用相对优先级的本地策略来管理与早期部署系统相关的不确定性；本地策略可用于消除因不明智的认证策略和/或不正确的认证数据而造成的前缀不可达的威胁。例如，在社区对 RPKI 数据的可靠性感到放心之前，可以根据无效来源有效性进行路由，尽管优先级较低。"
+    },
+    {
+      "indent": 3,
+      "text": "Operators should be aware that accepting Invalid announcements, no matter how de-preferenced, will often be the equivalent of treating them as fully Valid. Consider having a ROA for AS 42 for prefix 10.0.0.0/16-24. A BGP announcement for 10.0.666.0/24 from AS 666 would be Invalid. But if policy is not configured to discard it, then longest-match forwarding will send packets toward AS 666, no matter the value of local preference.",
+      "zh": "操作员应注意，接受无效公告（无论如何取消引用）通常等同于将其视为完全有效。例如，AS 42 有一个前缀 10.0.0.0/16-24 的 ROA。来自 AS 666 的 10.0.666.0/24 BGP 公告将是无效的。但如果没有配置策略来丢弃它，那么无论本地首选项的值是多少，最长匹配转发都会将数据包发送到 AS 666。"
+    },
+    {
+      "indent": 3,
+      "text": "As origin validation will be rolled out incrementally, coverage will be incomplete for a long time. Therefore, routing on NotFound validity state SHOULD be done for a long time. As the transition moves forward, the number of BGP announcements with validation state NotFound should decrease. Hence, an operator's policy should not be overly strict and should prefer Valid announcements; it should attach a lower preference to, but still use, NotFound announcements, and drop or give a very low preference to Invalid announcements. Merely de-preferencing Invalid announcements is ill-advised; see previous paragraph.",
+      "zh": "由于原点验证将逐步推广，覆盖范围在很长一段时间内都将是不完整的。因此，NotFound 验证状态下的路由选择应长期进行。随着过渡的推进，验证状态为 NotFound 的 BGP 公告数量应该会减少。因此，运营商的策略不应过于严格，应优先考虑有效公告；应降低对未找到公告的优先级，但仍应使用未找到公告，并放弃或极低地优先考虑无效公告。仅仅取消对无效公告的优先选择是不明智的；见上段。"
+    },
+    {
+      "indent": 3,
+      "text": "Some providers may choose to set Local-Preference based on the RPKI validation result. Other providers may not want the RPKI validation result to be more important than AS_PATH length -- these providers would need to map the RPKI validation result to some BGP attribute that is evaluated in BGP's path selection process after the AS_PATH is evaluated. Routers implementing RPKI-based origin validation MUST provide such options to operators.",
+      "zh": "有些提供商可能会选择根据 RPKI 验证结果设置本地首选项。其他提供商可能不希望 RPKI 验证结果比 AS_PATH 长度更重要--这些提供商需要将 RPKI 验证结果映射到某个 BGP 属性，在 AS_PATH 评估之后，在 BGP 的路径选择过程中对该属性进行评估。实施基于 RPKI 的起源验证的路由器必须向运营商提供此类选项。"
+    },
+    {
+      "indent": 3,
+      "text": "Local-Preference may be used to carry both the validity state of a prefix along with its traffic engineering (TE) characteristic(s). It is likely that an operator already using Local-Preference will have to change policy so they can encode these two separate characteristics in the same BGP attribute without negative impact or opening privilege escalation attacks. For example, do not encode validation state in higher bits than used for TE.",
+      "zh": "本地优先 \"可用于承载前缀的有效性状态及其流量工程（TE）特性。已经使用本地首选项的运营商可能需要更改策略，以便在同一 BGP 属性中编码这两个独立的特性，而不会产生负面影响或引发权限升级攻击。例如，不要用比 TE 更高的位来编码验证状态。"
+    },
+    {
+      "indent": 3,
+      "text": "When using a metric that is also influenced by other local policy, an operator should be careful not to create privilege-upgrade vulnerabilities. For example, if Local Pref is set depending on validity state, peer community signaling SHOULD NOT upgrade an Invalid announcement to Valid or better.",
+      "zh": "在使用同时受其他本地策略影响的指标时，操作员应注意不要造成权限升级漏洞。例如，如果根据有效性状态设置本地首选项，则对等社区信令不应将无效公告升级为有效或更好的公告。"
+    },
+    {
+      "indent": 3,
+      "text": "Announcements with Valid origins should be preferred over those with NotFound or Invalid origins, if Invalid origins are accepted at all.",
+      "zh": "如果接受无效来源，则应优先选择有效来源的公告，而不是 NotFound 或无效来源的公告。"
+    },
+    {
+      "indent": 3,
+      "text": "Announcements with NotFound origins should be preferred over those with Invalid origins.",
+      "zh": "NotFound 起源的公告应优先于 Invalid 起源的公告。"
+    },
+    {
+      "indent": 3,
+      "text": "Announcements with Invalid origins SHOULD NOT be used, but may be used to meet special operational needs. In such circumstances, the announcement should have a lower preference than that given to Valid or NotFound.",
+      "zh": "不应使用来源无效的公告，但可用于满足特殊运行需要。在这种情况下，公告的优先级应低于 Valid 或 NotFound。"
+    },
+    {
+      "indent": 3,
+      "text": "When first deploying origin validation, it may be prudent not to drop announcements with Invalid origins until inspection of logs, SNMP, or other data indicates that the correct result would be obtained.",
+      "zh": "在首次部署来源验证时，谨慎的做法可能是在日志、SNMP 或其他数据检查结果表明可以获得正确结果之前，不丢弃来源无效的公告。"
+    },
+    {
+      "indent": 3,
+      "text": "Validity state signaling SHOULD NOT be accepted from a neighbor AS. The validity state of a received announcement has only local scope due to issues such as scope of trust, RPKI synchrony, and management of local trust anchors [LTA-USE].",
+      "zh": "不应接受来自邻居 AS 的有效状态信令。由于信任范围、RPKI 同步和本地信任锚管理 [LTA-USE]等问题，接收到的公告的有效性状态只有本地范围。"
+    },
+    {
+      "indent": 0,
+      "text": "6. Notes and Recommendations",
+      "section_title": true,
+      "zh": "6. 说明和建议"
+    },
+    {
+      "indent": 3,
+      "text": "Like the DNS, the global RPKI presents only a loosely consistent view, depending on timing, updating, fetching, etc. Thus, one cache or router may have different data about a particular prefix than another cache or router. There is no 'fix' for this, it is the nature of distributed data with distributed caches.",
+      "zh": "与 DNS 一样，全局 RPKI 也只能提供一个松散一致的视图，具体取决于时间、更新、获取等因素。因此，一个高速缓存或路由器可能与另一个高速缓存或路由器拥有不同的特定前缀数据。对此没有 \"解决办法\"，这是分布式缓存的分布式数据的本质。"
+    },
+    {
+      "indent": 3,
+      "text": "Operators should beware that RPKI caches are loosely synchronized, even within a single AS. Thus, changes to the validity state of prefixes could be different within an operator's network. In addition, there is no guaranteed interval from when an RPKI cache is updated to when that new information may be pushed or pulled into a set of routers via this protocol. This may result in sudden shifts of traffic in the operator's network, until all of the routers in the AS have reached equilibrium with the validity state of prefixes reflected in all of the RPKI caches.",
+      "zh": "运营商应注意，即使在单个 AS 内，RPKI 缓存也是松散同步的。因此，在运营商的网络内，前缀有效性状态的变化可能不同。此外，从 RPKI 缓存更新到新信息通过该协议推送或拉入一组路由器的时间间隔也没有保证。这可能会导致运营商网络中流量的突然转移，直到 AS 中的所有路由器与所有 RPKI 缓存中反映的前缀有效性状态达到平衡。"
+    },
+    {
+      "indent": 3,
+      "text": "It is hoped that testing and deployment will produce advice on cache loading and timing for relying parties.",
+      "zh": "希望通过测试和部署，为依赖方提供有关缓存加载和时间安排的建议。"
+    },
+    {
+      "indent": 3,
+      "text": "There is some uncertainty about the origin AS of aggregates and what, if any, ROA can be used. The long-range solution to this is the deprecation of AS_SETs; see [RFC6472].",
+      "zh": "在聚合的源 AS 以及可以使用的 ROA（如果有的话）方面存在一些不确定性。对此的长期解决方案是废弃 AS_SET；参见 [RFC6472]。"
+    },
+    {
+      "indent": 3,
+      "text": "As reliable access to the global RPKI and an operator's caches (and possibly other hosts, e.g., DNS root servers) is important, an operator should take advantage of relying-party tools that report changes in BGP or RPKI data that would negatively affect validation of such prefixes.",
+      "zh": "由于可靠访问全球 RPKI 和运营商的缓存（可能还有其他主机，如 DNS 根服务器）非常重要，因此运营商应利用可信赖方工具，报告 BGP 或 RPKI 数据中会对此类前缀的验证产生负面影响的变化。"
+    },
+    {
+      "indent": 3,
+      "text": "Operators should be aware that there is a trade-off in placement of an RPKI repository in address space for which the repository's content is authoritative. On one hand, an operator will wish to maximize control over the repository. On the other hand, if there are reachability problems to the address space, changes in the repository to correct them may not be easily accessed by others.",
+      "zh": "操作员应该意识到，将 RPKI 资源库放置在资源库内容具有权威性的地址空间中需要权衡利弊。一方面，操作员希望最大限度地控制资源库。另一方面，如果地址空间存在可访问性问题，那么为纠正这些问题而对资源库进行的更改可能不容易被其他人访问。"
+    },
+    {
+      "indent": 3,
+      "text": "Operators who manage certificates should associate RPKI Ghostbusters Records (see [RFC6493]) with each publication point they control. These are publication points holding the CRL, ROAs, and other signed objects issued by the operator, and made available to other ASes in support of routing on the public Internet.",
+      "zh": "管理证书的运营商应将 RPKI Ghostbusters 记录（见 [RFC6493]）与他们控制的每个发布点关联起来。这些发布点持有运营商发布的 CRL、ROA 和其他签名对象，并提供给其他 AS，以支持公共互联网上的路由选择。"
+    },
+    {
+      "indent": 3,
+      "text": "Routers that perform RPKI-based origin validation must support Four-octet AS Numbers (see [RFC6793]), as, among other things, it is not reasonable to generate ROAs for AS 23456.",
+      "zh": "执行基于 RPKI 的来源验证的路由器必须支持四八位 AS 编号（见 [RFC6793]），因为除其他外，为 AS 23456 生成 ROAs 是不合理的。"
+    },
+    {
+      "indent": 3,
+      "text": "Software that produces filter lists or other control forms for routers where the target router does not support Four-octet AS Numbers (see [RFC6793]) must be prepared to accept four-octet AS Numbers and generate the appropriate two-octet output.",
+      "zh": "在目标路由器不支持四八位字节 AS 号（见 [RFC6793]）的情况下，为路由器生成过滤列表或其他控制表格的软件必须准备好接受四八位字节 AS 号并生成相应的双八位字节输出。"
+    },
+    {
+      "indent": 3,
+      "text": "As a router must evaluate certificates and ROAs that are time dependent, routers' clocks MUST be correct to a tolerance of approximately an hour.",
+      "zh": "由于路由器必须评估与时间相关的证书和 ROA，因此路由器的时钟必须精确到大约一小时。"
+    },
+    {
+      "indent": 3,
+      "text": "Servers should provide time service, such as NTPv4 [RFC5905], to client routers.",
+      "zh": "服务器应向客户路由器提供时间服务，如 NTPv4 [RFC5905]。"
+    },
+    {
+      "indent": 0,
+      "text": "7. Security Considerations",
+      "section_title": true,
+      "zh": "7. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "As the BGP origin AS of an update is not signed, origin validation is open to malicious spoofing. Therefore, RPKI-based origin validation is expected to deal only with inadvertent mis-advertisement.",
+      "zh": "由于更新的 BGP 起源 AS 没有签名，因此起源验证可能会被恶意欺骗。因此，基于 RPKI 的起源验证预计只能处理无意的误报。"
+    },
+    {
+      "indent": 3,
+      "text": "Origin validation does not address the problem of AS_PATH validation. Therefore, paths are open to manipulation, either malicious or accidental.",
+      "zh": "起源验证无法解决 AS_PATH 验证问题。因此，路径有可能被恶意或意外操纵。"
+    },
+    {
+      "indent": 3,
+      "text": "As BGP does not ensure that traffic will flow via the paths it advertises, the data plane may not follow the control plane.",
+      "zh": "由于 BGP 无法确保流量通过其广告路径流动，因此数据平面可能无法跟随控制平面。"
+    },
+    {
+      "indent": 3,
+      "text": "Be aware of the class of privilege escalation issues discussed in Section 5 above.",
+      "zh": "注意上文第 5 节讨论的权限升级问题。"
+    },
+    {
+      "indent": 0,
+      "text": "8. Acknowledgments",
+      "section_title": true,
+      "zh": "8. 致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The author wishes to thank Shane Amante, Rob Austein, Steve Bellovin, Jay Borkenhagen, Wes George, Seiichi Kawamura, Steve Kent, Pradosh Mohapatra, Chris Morrow, Sandy Murphy, Eric Osterweil, Keyur Patel, Heather and Jason Schiller, John Scudder, Kotikalapudi Sriram, Maureen Stillman, and Dave Ward.",
+      "zh": "作者感谢 Shane Amante、Rob Austein、Steve Bellovin、Jay Borkenhagen、Wes George、Seiichi Kawamura、Steve Kent、Pradosh Mohapatra、Chris Morrow、Sandy Murphy、Eric Osterweil、Keyur Patel、Heather 和 Jason Schiller、John Scudder、Kotikalapudi Sriram、Maureen Stillman 和 Dave Ward。"
+    },
+    {
+      "indent": 0,
+      "text": "9. References",
+      "section_title": true,
+      "zh": "9. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "9.1. Normative References",
+      "section_title": true,
+      "zh": "9.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6481] Huston, G., Loomans, R., and G. Michaelson, \"A Profile for Resource Certificate Repository Structure\", RFC 6481, February 2012.",
+      "zh": "[RFC6481] Huston, G., Loomans, R., and G. Michaelson, \"A Profile for Resource Certificate Repository Structure\", RFC 6481, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, February 2012.",
+      "zh": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6490] Huston, G., Weiler, S., Michaelson, G., and S. Kent, \"Resource Public Key Infrastructure (RPKI) Trust Anchor Locator\", RFC 6490, February 2012.",
+      "zh": "[RFC6490] Huston, G., Weiler, S., Michaelson, G., and S. Kent, \"Resource Public Key Infrastructure (RPKI) Trust Anchor Locator\", RFC 6490, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6493] Bush, R., \"The Resource Public Key Infrastructure (RPKI) Ghostbusters Record\", RFC 6493, February 2012.",
+      "zh": "[RFC6493] Bush, R., \"The Resource Public Key Infrastructure (RPKI) Ghostbusters Record\", RFC 6493, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6793] Vohra, Q. and E. Chen, \"BGP Support for Four-Octet Autonomous System (AS) Number Space\", RFC 6793, December 2012.",
+      "zh": "[RFC6793] Vohra, Q. and E. Chen, \"BGP Support for Four-Octet Autonomous System (AS) Number Space\", RFC 6793, December 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6810] Bush, R. and R. Austein, \"The Resource Public Key Infrastructure (RPKI) to Router Protocol\", RFC 6810, January 2013.",
+      "zh": "[RFC6810] Bush, R. and R. Austein, \"The Resource Public Key Infrastructure (RPKI) to Router Protocol\", RFC 6810, January 2013."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP Prefix Origin Validation\", RFC 6811, January 2013.",
+      "zh": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP 前缀起源验证\"，RFC 6811, 2013 年 1 月。"
+    },
+    {
+      "indent": 0,
+      "text": "9.2. Informative References",
+      "section_title": true,
+      "zh": "9.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[LTA-USE] Bush, R., \"RPKI Local Trust Anchor Use Cases\", Work in Progress, September 2013.",
+      "zh": "[LTA-USE] Bush, R.，\"RPKI 本地信任锚使用案例\"，进行中的工作，2013 年 9 月。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4271] Rekhter, Y., Li, T., and S. Hares, \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, January 2006.",
+      "zh": "[Rekhter, Y., Li, T., and S. Hares, \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, January 2006."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"The rsync URI Scheme\", RFC 5781, February 2010.",
+      "zh": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"rsync URI Scheme\", RFC 5781, February 2010."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5905] Mills, D., Martin, J., Burbank, J., and W. Kasch, \"Network Time Protocol Version 4: Protocol and Algorithms Specification\", RFC 5905, June 2010.",
+      "zh": "[RFC5905] Mills, D., Martin, J., Burbank, J., and W. Kasch, \"Network Time Protocol Version 4: Protocol and Alorithms Specification\", RFC 5905, June 2010."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6472] Kumari, W. and K. Sriram, \"Recommendation for Not Using AS_SET and AS_CONFED_SET in BGP\", BCP 172, RFC 6472, December 2011.",
+      "zh": "[RFC6472] Kumari, W. and K. Sriram, \"Recommendation for Not Using AS_SET and AS_CONFED_SET in BGP\", BCP 172, RFC 6472, December 2011."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, February 2012.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6488] Lepinski, M., Chi, A., and S. Kent, \"Signed Object Template for the Resource Public Key Infrastructure (RPKI)\", RFC 6488, February 2012.",
+      "zh": "[RFC6488] Lepinski, M., Chi, A., and S. Kent, \"Signed Object Template for the Resource Public Key Infrastructure (RPKI)\", RFC 6488, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[IAB] IAB, \"IAB statement on the RPKI\", January 2010, <http://www.iab.org/documents/ correspondence-reports-documents/docs2010/ iab-statement-on-the-rpki/>.",
+      "zh": "[IAB] IAB，\"IAB statement on the RPKI\"，2010 年 1 月，<http://www.iab.org/documents/ correspondence-reports-documents/docs2010/iab-statement-on-the-rpki/>。"
+    },
+    {
+      "indent": 3,
+      "text": "[rcynic] \"rcynic RPKI validator\", November 2013, <http://rpki.net/rcynic>.",
+      "zh": "[rcynic] \"rcynic RPKI validator\"，2013 年 11 月，<http://rpki.net/rcynic>。"
+    },
+    {
+      "indent": 0,
+      "text": "Author's Address",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Randy Bush Internet Initiative Japan 5147 Crystal Springs Bainbridge Island, Washington 98110 US",
+      "zh": "Randy Bush Internet Initiative Japan 5147 Crystal Springs Bainbridge Island, Washington 98110 US"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: randy@psg.com",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

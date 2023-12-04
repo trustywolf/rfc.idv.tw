@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 6490 - Resource Public Key Infrastructure (RPKI) Trust Anchor Locator 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">6490</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc6490">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 6490 - Resource Public Key Infrastructure (RPKI) Trust Anchor Locator 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc6490">
+            https://datatracker.ietf.org/doc/html/rfc6490
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 6490 - 资源公钥基础设施 (RPKI) 信任锚定位器</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                         G. Huston
+Request for Comments: 6490                                         APNIC
+Category: Standards Track                                      S. Weiler
+ISSN: 2070-1721                                             SPARTA, Inc.
+                                                           G. Michaelson
+                                                                   APNIC
+                                                                 S. Kent
+                                                                     BBN
+                                                           February 2012
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-5">
+Resource Public Key Infrastructure (RPKI) Trust Anchor Locator
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-5">
+资源公钥基础设施 (RPKI) 信任锚定位器
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines a Trust Anchor Locator (TAL) for the Resource Public Key Infrastructure (RPKI).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件定义了资源公钥基础设施 (RPKI) 的信任锚定位器 (TAL)。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This is an Internet Standards Track document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这是一份互联网标准跟踪文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 5741 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6490.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6490。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2012 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版权所有 (c) 2012 IETF 信托基金会和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1. Introduction ....................................................2
+      1.1. Terminology ................................................2
+   2. Trust Anchor Locator ............................................2
+      2.1. Trust Anchor Locator Format ................................2
+      2.2. TAL and Trust Anchor Certificate Considerations ............3
+      2.3. Example ....................................................4
+   3. Relying Party Use ...............................................5
+   4. Security Considerations .........................................5
+   5. Acknowledgments .................................................6
+   6. References ......................................................6
+      6.1. Normative References .......................................6
+      6.2. Informative References .....................................6
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines a Trust Anchor Locator (TAL) for the Resource Public Key Infrastructure (RPKI) [RFC6480]. This format may be used to distribute trust anchor material using a mix of out-of-band and online means. Procedures used by Relying Parties (RPs) to verify RPKI signed objects SHOULD support this format to facilitate interoperability between creators of trust anchor material and RPs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件定义了资源公钥基础设施 (RPKI) [RFC6480] 的信任锚定位器 (TAL)。该格式可用于混合使用带外和在线方式分发信任锚材料。依赖方 (RP) 用于验证 RPKI 签名对象的程序应支持此格式，以促进信任锚材料创建者与 RP 之间的互操作性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-1--Terminology">
+1.1. Terminology
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.1. 用语
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in [RFC2119].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;、&#34;MUST NOT&#34;、&#34;REQUIRED&#34;、&#34;SHALL&#34;、&#34;SHALL NOT&#34;、&#34;SHOULD&#34;、&#34;SHOULD NOT&#34;、&#34;RECOMMENDED&#34;、&#34;MAY &#34;和 &#34;OPTIONAL &#34;应按照 [RFC2119] 中的描述进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Trust-Anchor-Locator">
+2. Trust Anchor Locator
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 信任锚定位器
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-1--Trust-Anchor-Locator-Format">
+2.1. Trust Anchor Locator Format
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.1. 信任锚定位格式
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document does not propose a new format for trust anchor material. A trust anchor in the RPKI is represented by a self-signed X.509 Certification Authority (CA) certificate, a format commonly used in PKIs and widely supported by RP software. This document specifies a format for data used to retrieve and verify the authenticity of a trust anchor in a very simple fashion. That data is referred to as the TAL.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件并未提出新的信任锚材料格式。RPKI 中的信任锚由自签名的 X.509 认证机构 (CA) 证书表示，这是 PKI 中常用的格式，也是 RP 软件广泛支持的格式。本文档规定了一种数据格式，用于以非常简单的方式检索和验证信任锚的真实性。该数据被称为 TAL。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The motivation for defining the TAL is to enable selected data in the trust anchor to change, without needing to effect redistribution of the trust anchor per se. In the RPKI, certificates contain extensions that represent Internet Number Resources (INRs) [RFC3779]. The set of INRs associated with an entity likely will change over time. Thus, if one were to use the common PKI convention of distributing a trust anchor to RPs in a secure fashion, this procedure would need to be repeated whenever the INR set for the trust anchor changed. By distributing the TAL (in a secure fashion) instead of the trust anchor, this problem is avoided, i.e., the TAL is constant so long as the trust anchor&#39;s public key and its location do not change.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+定义 TAL 的目的是使信任锚中的选定数据能够更改，而无需重新分配信任锚本身。在 RPKI 中，证书包含表示互联网号码资源（INR）的扩展[RFC3779]。与实体相关的 INRs 集很可能会随着时间的推移而改变。因此，如果使用常见的 PKI 约定，以安全的方式向 RP 分发信任锚，那么每当信任锚的 INR 集发生变化时，就需要重复这一过程。通过（以安全方式）分发 TAL 而不是信任锚，可以避免这个问题，也就是说，只要信任锚的公开密钥及其位置不发生变化，TAL 就是不变的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The TAL is analogous to the TrustAnchorInfo data structure [RFC5914] adopted as a PKIX standard. That standard could be used to represent the TAL, if one defined an rsync URI extension for that data structure. However, the TAL format was adopted by RPKI implementors prior to the PKIX trust anchor work, and the RPKI implementer community has elected to utilize the TAL format, rather than define the requisite extension. The community also prefers the simplicity of the ASCII encoding of the TAL versus the binary (ASN.1) encoding for TrustAnchorInfo.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+TAL 类似于作为 PKIX 标准采用的 TrustAnchorInfo 数据结构 [RFC5914]。如果为该数据结构定义一个 rsync URI 扩展，那么该标准就可以用来表示 TAL。不过，TAL 格式在 PKIX 信任锚工作之前就已被 RPKI 实现者采用，RPKI 实现者社区选择使用 TAL 格式，而不是定义必要的扩展。此外，与 TrustAnchorInfo 的二进制（ASN.1）编码相比，RPKI 社区更喜欢 TAL 的 ASCII 编码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The TAL is an ordered sequence of:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+TAL 是一个有序序列：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1) An rsync URI [RFC5781], 2) A &lt;CRLF&gt; or &lt;LF&gt; line break, and 3) A subjectPublicKeyInfo [RFC5280] in DER format [X.509], encoded in Base64 (see Section 4 of [RFC4648]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1) rsync URI [RFC5781]，2) &lt;CRLF&gt; 或 &lt;LF&gt; 换行符，3) 以 Base64 编码的 DER 格式 [X.509] 的 subjectPublicKeyInfo [RFC5280]（参见 [RFC4648] 第 4 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-2--TAL-and-Trust-Anchor-Certificate-Considerations">
+2.2. TAL and Trust Anchor Certificate Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.2. TAL 和信任锚点证书注意事项
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The rsync URI in the TAL MUST reference a single object. It MUST NOT reference a directory or any other form of collection of objects.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+TAL 中的 rsync URI 必须引用单个对象。不得引用目录或任何其他形式的对象集合。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The referenced object MUST be a self-signed CA certificate that conforms to the RPKI certificate profile [RFC6487]. This certificate is the trust anchor in certification path discovery [RFC4158] and validation [RFC5280] [RFC3779].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+引用对象必须是符合 RPKI 证书配置文件 [RFC6487] 的自签名 CA 证书。该证书是认证路径发现 [RFC4158] 和验证 [RFC5280] [RFC3779] 中的信任锚。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The validity interval of this trust anchor SHOULD reflect the anticipated period of stability for the particular set of INRs that are associated with the putative trust anchor.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该信任锚的有效期应反映与推定信任锚相关的特定 INR 集的预期稳定期。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The INR extension(s) of this trust anchor MUST contain a non-empty set of number resources. It MUST NOT use the &#34;inherit&#34; form of the INR extension(s). The INR set described in this certificate is the set of number resources for which the issuing entity is offering itself as a putative trust anchor in the RPKI [RFC6480].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该信任锚的 INR 扩展名必须包含一组非空的数字资源。不得使用 INR 扩展名的 &#34;继承 &#34;形式。本证书中描述的 INR 集是数字资源集，签发实体在 RPKI [RFC6480] 中将自己作为推定信任锚提供。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The public key used to verify the trust anchor MUST be the same as the subjectPublicKeyInfo in the CA certificate and in the TAL.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+用于验证信任锚的公钥必须与 CA 证书和 TAL 中的 subjectPublicKeyInfo 相同。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The trust anchor MUST contain a stable key. This key MUST NOT change when the certificate is reissued due to changes in the INR extension(s), when the certificate is renewed prior to expiration or for any reason other than a key change.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+信任锚必须包含一个稳定的密钥。由于 INR 扩展名的更改而重新签发证书时、证书到期前续期时或由于密钥更改以外的任何原因而重新签发证书时，该密钥不得更改。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Because the public key in the TAL and the trust anchor MUST be stable, this motivates operation of that CA in an off-line mode. Thus the entity that issues the trust anchor SHOULD issue a subordinate CA certificate that contains the same INRs (via the use of the &#34;inherit&#34; option in the INR extensions of the subordinate certificate). This allows the entity that issues the trust anchor to keep the corresponding private key of this certificate off-line, while issuing all relevant child certificates under the immediate subordinate CA. This measure also allows the Certificate Revocation List (CRL) issued by that entity to be used to revoke the subordinate CA certificate in the event of suspected key compromise of this potentially more vulnerable online operational key pair.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于 TAL 和信任锚中的公开密钥必须是稳定的，这就促使该 CA 以离线模式运行。因此，签发信任锚的实体应签发包含相同 INR 的下级 CA 证书（通过在下级证书的 INR 扩展中使用 &#34;继承 &#34;选项）。这样，签发信任锚的实体就可以将该证书的相应私钥保持在离线状态，同时签发直属下级 CA 的所有相关子证书。这项措施还允许该实体发布的证书吊销列表（CRL）在怀疑这对可能更脆弱的在线操作密钥对的密钥泄露时，用于吊销下级 CA 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The trust anchor MUST be published at a stable URI. When the trust anchor is reissued for any reason, the replacement CA certificate MUST be accessible using the same URI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+信任锚必须在一个稳定的 URI 上发布。当信任锚因任何原因重新签发时，必须使用相同的 URI 访问替换的 CA 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Because the trust anchor is a self-signed certificate, there is no corresponding CRL that can be used to revoke it, nor is there a manifest [RFC6486] that lists this certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于信任锚是自签名证书，因此没有相应的 CRL 可用于撤销该证书，也没有清单 [RFC6486] 列出该证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If an entity wishes to withdraw a self-signed CA certificate as a putative trust anchor for any reason, including key rollover, the entity MUST remove the object from the location referenced in the TAL.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果实体出于任何原因（包括密钥展期）希望撤销作为推定信任锚的自签名 CA 证书，该实体必须从 TAL 中引用的位置删除该对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-3--Example">
+2.3. Example
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.3. 示例
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   rsync://rpki.example.org/rpki/hedgehog/root.cer
+   MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAovWQL2lh6knDx
+   GUG5hbtCXvvh4AOzjhDkSHlj22gn/1oiM9IeDATIwP44vhQ6L/xvuk7W6
+   Kfa5ygmqQ+xOZOwTWPcrUbqaQyPNxokuivzyvqVZVDecOEqs78q58mSp9
+   nbtxmLRW7B67SJCBSzfa5XpVyXYEgYAjkk3fpmefU+AcxtxvvHB5OVPIa
+   BfPcs80ICMgHQX+fphvute9XLxjfJKJWkhZqZ0v7pZm2uhkcPx1PMGcrG
+   ee0WSDC3fr3erLueagpiLsFjwwpX6F+Ms8vqz45H+DKmYKvPSstZjCCq9
+   aJ0qANT9OtnfSDOS+aLRPjZryCNyvvBHxZXqj5YCGKtwIDAQAB
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Relying-Party-Use">
+3. Relying Party Use
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 依赖方使用
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In order to use the TAL to retrieve and validate a (putative) trust anchor, an RP SHOULD:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为了使用 TAL 来检索和验证（推定）信任锚，RP 应当
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. Retrieve the object referenced by the URI contained in the TAL.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 读取 TAL 中包含的 URI 所引用的对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. Confirm that the retrieved object is a current, self-signed RPKI CA certificate that conforms to the profile as specified in [RFC6487].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 确认检索对象是符合 [RFC6487] 中规定的配置文件的当前自签名 RPKI CA 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. Confirm that the public key in the TAL matches the public key in the retrieved object.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 确认 TAL 中的公钥与检索对象中的公钥一致。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. Perform other checks, as deemed appropriate (locally), to ensure that the RP is willing to accept the entity publishing this self-signed CA certificate to be a trust anchor. These checks apply to the validity of attestations made in the context of the RPKI, relating to all resources described in the INR extension of this certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. 执行其他适当的检查（本地），以确保 RP 愿意接受发布此自签 CA 证书的实体为信任锚。这些检查适用于在 RPKI 范围内作出的与本证书 INR 扩展中描述的所有资源有关的证明的有效性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An RP SHOULD perform these functions for each instance of TAL that it is holding for this purpose every time the RP performs a re-synchronization across the local repository cache. In any case, an RP also SHOULD perform these functions prior to the expiration of the locally cached copy of the retrieved trust anchor referenced by the TAL.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+每次 RP 跨本地存储库缓存执行重新同步时，RP 都应为为此目的而持有的每个 TAL 实例执行这些功能。在任何情况下，RP 也应该在 TAL 所引用的检索信任锚的本地缓存副本过期之前执行这些功能。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Security-Considerations">
+4. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Compromise of a trust anchor private key permits unauthorized parties to masquerade as a trust anchor, with potentially severe consequences. Reliance on an inappropriate or incorrect trust anchor has similar potentially severe consequences.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+信任锚私人密钥被破坏后，未经授权的各方就可以伪装成信任锚，从而可能造成严重后果。依赖不适当或不正确的信任锚也可能造成类似的严重后果。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This TAL does not directly provide a list of resources covered by the referenced self-signed CA certificate. Instead, the RP is referred to the trust anchor itself and the INR extension(s) within this certificate. This provides necessary operational flexibility, but it also allows the certificate issuer to claim to be authoritative for any resource. Relying parties should either have great confidence in the issuers of such certificates that they are configuring as trust anchors, or they should issue their own self-signed certificate as a trust anchor and, in doing so, impose constraints on the subordinate certificates. For more information on this approach, see [TA-MGMT].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+此 TAL 并不直接提供所引用的自签名 CA 证书所涵盖的资源列表。相反，RP 会参考信任锚本身和该证书中的 INR 扩展名。这提供了必要的操作灵活性，但也允许证书签发者声称自己对任何资源都具有权威性。依赖方要么对被配置为信任锚的证书签发者非常信任，要么签发自己的自签证书作为信任锚，并以此对下级证书施加限制。有关这种方法的更多信息，请参阅 [TA-MGMT]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Acknowledgments">
+5. Acknowledgments
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 致谢
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This approach to trust anchor material was originally described by Robert Kisteleki.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这种信任锚材料的方法最初是由罗伯特-基斯特莱基（Robert Kisteleki）描述的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors acknowledge the contributions of Rob Austein and Randy Bush, who assisted with earlier draft versions of this document and with helpful review comments.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者对 Rob Austein 和 Randy Bush 所做的贡献表示感谢，他们协助完成了本文件的初稿，并提供了有益的审阅意见。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--References">
+6. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-1--Normative-References">
+6.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3779] Lynn, C., Kent, S., and K. Seo, &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34;, RFC 3779, June 2004.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3779] Lynn, C., Kent, S., and K. Seo, &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34;, RFC 3779, June 2004.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4648] Josefsson, S., &#34;The Base16, Base32, and Base64 Data Encodings&#34;, RFC 4648, October 2006.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4648] Josefsson, S., &#34;The Base16, Base32, and Base64 Data Encodings&#34;, RFC 4648, October 2006.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, May 2008.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, May 2008.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5781] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, May 2008.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5781] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, May 2008.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Huston, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Huston, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[X.509] ITU-T, &#34;Recommendation X.509: The Directory - Authentication Framework&#34;, 2000.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[X.509] ITU-T，&#34;X.509 建议：目录--身份验证框架&#34;，2000 年。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-2--Informative-References">
+6.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4158] Cooper, M., Dzambasow, Y., Hesse, P., Joseph, S., and R. Nicholas, &#34;Internet X.509 Public Key Infrastructure: Certification Path Building&#34;, RFC 4158, September 2005.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4158] Cooper, M., Dzambasow, Y., Hesse, P., Joseph, S., and R. Nicholas, &#34;Internet X.509 Public Key Infrastructure：认证路径构建&#34;，RFC 4158，2005 年 9 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5914] Housley, R., Ashmore, S., and C. Wallace, &#34;Trust Anchor Format&#34;, RFC 5914, June 2010.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5914] Housley, R., Ashmore, S., and C. Wallace, &#34;Trust Anchor Format&#34;, RFC 5914, June 2010.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, &#34;Manifests for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6486, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, &#34;Manifests for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6486, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[TA-MGMT] Reynolds, M. and S. Kent, &#34;Local Trust Anchor Management for the Resource Public Key Infrastructure&#34;, Work in Progress, December 2011.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[TA-MGMT] Reynolds, M. and S. Kent, &#34;Local Trust Anchor Management for the Resource Public Key Infrastructure&#34;, Work in Progress, December 2011.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Geoff Huston APNIC
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Geoff Huston APNIC
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: gih@apnic.net
+   URI:   http://www.apnic.net
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Samuel Weiler SPARTA, Inc. 7110 Samuel Morse Drive Columbia, Maryland 21046 USA
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+塞缪尔-韦勒 斯帕塔公司美国马里兰州哥伦比亚市塞缪尔-莫尔斯大道 7110 号 邮编 21046
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: weiler@tislabs.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+George Michaelson APNIC
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+乔治-迈克尔逊 APNIC
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: ggm@apnic.net
+   URI:   http://www.apnic.net
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Stephen Kent BBN Technologies 10 Moulton St. Cambridge, MA 02138 USA
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Stephen Kent BBN Technologies 10 Moulton St.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: kent@bbn.com
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

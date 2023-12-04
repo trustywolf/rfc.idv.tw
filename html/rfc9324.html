@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 9324 - Policy Based on the Resource Public Key Infrastructure (RPKI) without Route Refresh 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">9324</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc9324">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 9324 - Policy Based on the Resource Public Key Infrastructure (RPKI) without Route Refresh 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc9324">
+            https://datatracker.ietf.org/doc/html/rfc9324
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 9324 - 基于资源公钥基础架构 (RPKI) 的无路由刷新策略</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                           R. Bush
+Request for Comments: 9324               IIJ Research Lab &amp; Arrcus, Inc.
+Updates: 8481                                                   K. Patel
+Category: Standards Track                                   Arrcus, Inc.
+ISSN: 2070-1721                                                 P. Smith
+                                        PFS Internet Development Pty Ltd
+                                                                M. Tinka
+                                                                  SEACOM
+                                                           December 2022
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-1">
+Policy Based on the Resource Public Key Infrastructure (RPKI) without Route Refresh
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-1">
+基于资源公钥基础架构 (RPKI) 的无路由刷新策略
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A BGP speaker performing policy based on the Resource Public Key Infrastructure (RPKI) should not issue route refresh to its neighbors because it has received new RPKI data. This document updates RFC 8481 by describing how to avoid doing so by either keeping a full Adj-RIB-In or saving paths dropped due to ROV (Route Origin Validation) so they may be reevaluated with respect to new RPKI data.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+基于资源公钥基础设施（RPKI）执行策略的 BGP 发言者不应因收到新的 RPKI 数据而向其邻居发布路由刷新。本文档更新了 RFC 8481，描述了如何通过保持完整的 Adj-RIB-In 或保存因 ROV（路由起源验证）而丢弃的路径来避免这样做，以便根据新的 RPKI 数据重新评估这些路径。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This is an Internet Standards Track document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这是一份互联网标准跟踪文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc9324.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc9324。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2022 IETF Trust 和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (https://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节所述的修订版 BSD 许可文本，并且不提供修订版 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction
+     1.1.  Requirements Language
+   2.  Related Work
+   3.  ROV Experience
+   4.  Keeping Partial Adj-RIB-In Data
+   5.  Operational Recommendations
+   6.  Security Considerations
+   7.  IANA Considerations
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
+   Acknowledgements
+   Authors&#39; Addresses
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Memory constraints in early BGP speakers caused classic BGP implementations [RFC4271] to not keep a full Adj-RIB-In (Section 1.1 of [RFC4271]). When doing RPKI-based Route Origin Validation (ROV) [RFC6811] [RFC8481] and similar RPKI-based policy, if such a BGP speaker receives new RPKI data, it might not have kept paths previously marked as Invalid, etc. Such an implementation must then request a route refresh [RFC2918] [RFC7313] from its neighbors to recover the paths that might be covered by these new RPKI data. This will be perceived as rude by those neighbors as it passes a serious resource burden on to them. This document recommends implementations keep and mark paths affected by RPKI-based policy, so route refresh is no longer needed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+早期 BGP 发言者的内存限制导致经典 BGP 实现 [RFC4271] 无法保留完整的 Adj-RIB-In（[RFC4271] 第 1.1 节）。在执行基于 RPKI 的路由起源验证（ROV）[RFC6811] [RFC8481] 和类似的基于 RPKI 的策略时，如果此类 BGP 发言者收到新的 RPKI 数据，它可能不会保留之前标记为无效等的路径。这样，BGP 实现就必须向其邻居请求路由刷新 [RFC2918] [RFC7313]，以恢复这些新 RPKI 数据可能覆盖的路径。这将被这些邻居视为无礼之举，因为这会给他们带来严重的资源负担。本文档建议实现者保留并标记受基于 RPKI 的策略影响的路径，这样就不再需要路由刷新了。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-1--Requirements-Language">
+1.1. Requirements Language
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.1. 要求语言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;NOT RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, 以及 &#34;OPTIONAL&#34; 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Related-Work">
+2. Related Work
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 相关工作
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is assumed that the reader understands BGP [RFC4271], route refresh [RFC7313], the RPKI [RFC6480], Route Origin Authorizations (ROAs) [RFC6482], the Resource Public Key Infrastructure (RPKI) to Router Protocol [RPKI-ROUTER-PROT-v2], RPKI-Based Prefix Validation [RFC6811], and Origin Validation Clarifications [RFC8481].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+假定读者了解 BGP [RFC4271]、路由刷新 [RFC7313]、RPKI [RFC6480]、路由起源授权 (ROAs)[RFC6482]、资源公钥基础设施 (RPKI) 到路由器协议 [RPKI-ROUTER-PROT-v2]、基于 RPKI 的前缀验证 [RFC6811] 和起源验证澄清 [RFC8481]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that the term &#34;RPKI-based Route Origin Validation&#34; in this document means the same as the term &#34;Prefix Origin Validation&#34; used in [RFC6811].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，本文档中的术语 &#34;基于 RPKI 的路由起源验证 &#34;与 [RFC6811] 中使用的术语 &#34;前缀起源验证 &#34;含义相同。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--ROV-Experience">
+3. ROV Experience
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 遥控潜水器体验
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As Route Origin Validation dropping Invalids has deployed, some BGP speaker implementations have been found that, when receiving new RPKI data (Validated ROA Payloads (VRPs) [RPKI-ROUTER-PROT-v2]), issue a BGP route refresh [RFC7313] to all sending BGP peers so that they can reevaluate the received paths against the new data.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+随着路由起源验证（Route Origin Validation dropping Invalids）的部署，发现一些 BGP 说话者实现在接收到新的 RPKI 数据（经验证的 ROA 有效载荷（VRP）[RPKI-ROUTER-PROT-v2]）时，会向所有发送 BGP 对等方发出 BGP 路由刷新 [RFC7313]，以便它们根据新数据重新评估接收到的路径。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In actual deployment, this has been found to be very destructive, transferring a serious resource burden to the unsuspecting peers. In reaction, RPKI-based Route Origin Validation (ROV) has been turned off. There have been actual de-peerings.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在实际部署中，我们发现这种做法非常具有破坏性，会给毫无戒心的对等网络带来严重的资源负担。为此，基于 RPKI 的路由起源验证 (ROV) 已被关闭。已经出现了实际的取消对等网络的情况。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As RPKI registration and ROA creation have steadily increased, this problem has increased, not just proportionally, but on the order of the in-degree of ROV implementing BGP speakers. As Autonomous System Provider Authorization (ASPA) [AS_PATH-VER] becomes used, the problem will increase.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+随着 RPKI 注册和 ROA 创建的稳步增加，这个问题也随之增加，不仅是按比例增加，而且与实施 ROV 的 BGP 发言者的程度成正比。随着自治系统提供者授权（ASPA）[AS_PATH-VER] 的使用，这个问题也会越来越严重。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Other mechanisms, such as automated policy provisioning, which have flux rates similar to ROV (i.e., on the order of minutes), could very well cause similar problems.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+其他机制，如自动策略供应，其流量速率与 ROV 类似（即几分钟），很可能会造成类似的问题。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Therefore, this document updates [RFC8481] by describing how to avoid this problem.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+因此，本文件更新了 [RFC8481]，介绍了如何避免这一问题。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Keeping-Partial-Adj-RIB-In-Data">
+4. Keeping Partial Adj-RIB-In Data
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 保留部分 Adj-RIB-In 数据
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If new RPKI data arrive that cause operator policy to invalidate the best route and the BGP speaker did not keep the dropped routes, then the BGP speaker would issue a route refresh, which this feature aims to prevent.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果有新的 RPKI 数据到达，导致操作员策略使最佳路由失效，而 BGP 说话者又没有保留被放弃的路由，那么 BGP 说话者就会发出路由刷新，而这项功能就是为了防止这种情况发生。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A route that is dropped by operator policy due to ROV is, by nature, considered ineligible to compete for the best route and MUST be kept in the Adj-RIB-In for potential future evaluation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于 ROV 而被运营商政策放弃的路线，从本质上讲，被认为没有资格竞争最佳路线，必须保留在 Adj-RIB-In 中，以便将来进行潜在评估。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Ameliorating the route refresh problem by keeping a full Adj-RIB-In can be a problem for resource-constrained BGP speakers. In reality, only some data need be retained. If an implementation chooses not to retain the full Adj-RIB-In, it MUST retain at least routes dropped due to ROV for potential future evaluation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于资源有限的 BGP 发言者来说，通过保留完整的 Adj-RIB-In 来改善路由刷新问题可能是个难题。实际上，只需保留部分数据。如果实施方案选择不保留完整的 Adj-RIB-In，则必须至少保留因 ROV 而丢弃的路由，以便将来进行评估。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As storing these routes could cause problems in resource-constrained devices, there MUST be a global operation, CLI, YANG, or other mechanism that allows the operator to enable this feature and store the dropped routes. Such an operator control MUST NOT be per peer, as this could cause inconsistent behavior.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于存储这些路由可能会给资源有限的设备带来问题，因此必须有全局操作、CLI、YANG 或其他机制允许操作员启用此功能并存储放弃的路由。这种操作员控制不得针对每个对等设备，否则会导致行为不一致。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As a side note, policy that may drop routes due to RPKI-based checks such as ROV (and ASPA, BGPsec [RFC8205], etc., in the future) MUST be run and the dropped routes saved per this section, before non-RPKI policies are run, as the latter may change path attributes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+顺便提一句，由于基于 RPKI 的检查（如 ROV，以及将来的 ASPA、BGPsec [RFC8205] 等）而可能放弃路由的策略，必须在运行非 RPKI 策略之前运行，并根据本节保存放弃的路由，因为后者可能会改变路径属性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Operational-Recommendations">
+5. Operational Recommendations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 业务建议
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Operators deploying ROV and/or other RPKI-based policies should ensure that the BGP speaker implementation is not causing route refresh requests to neighbors.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+部署 ROV 和/或其他基于 RPKI 策略的运营商应确保 BGP 发言者实施不会向邻居发出路由刷新请求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+BGP speakers MUST either keep the full Adj-RIB-In or implement the specification in Section 4. Conformance to this behavior is an additional, mandatory capability for BGP speakers performing ROV.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+BGP 发言者必须保留完整的 Adj-RIB-In 或执行第 4 节中的规范。对于执行 ROV 的 BGP 发言者来说，遵守这一行为是一项额外的强制能力。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the BGP speaker does not implement these recommendations, the operator should enable the vendor&#39;s control to keep the full Adj-RIB-In, sometimes referred to as &#34;soft reconfiguration inbound&#34;. The operator should then measure to ensure that there are no unnecessary route refresh requests sent to neighbors.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果 BGP 发言者不执行这些建议，操作员应启用供应商的控制，以保持完整的 Adj-RIB-In，有时也称为 &#34;入站软重新配置&#34;。然后，操作员应采取措施，确保没有向邻居发送不必要的路由刷新请求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the BGP speaker&#39;s equipment has insufficient resources to support either of the two proposed options (keeping a full AdjRibIn or at least the dropped routes), the equipment SHOULD either be replaced with capable equipment or SHOULD NOT be used for ROV.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果 BGP 发言者的设备没有足够的资源来支持两个建议方案中的任何一个（保留完整的 AdjRibIn 或至少保留被放弃的路由），则应将该设备更换为有能力的设备，或不应将其用于 ROV。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The configuration setting in Section 4 should only be used in very well-known and controlled circumstances where the scaling issues are well understood and anticipated.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+第 4 节中的配置设置只应在众所周知和受控的情况下使用，其中的缩放问题应得到充分理解和预期。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Operators using the specification in Section 4 should be aware that a misconfigured neighbor might erroneously send a massive number of paths, thus consuming a lot of memory. Hence, pre-policy filtering such as described in [MAXPREFIX-INBOUND] could be used to reduce this exposure.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+使用第 4 节中规范的操作员应该意识到，配置错误的邻居可能会错误地发送大量路径，从而消耗大量内存。因此，可以使用 [MAXPREFIX-INBOUND] 中描述的预策略过滤来减少这种风险。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If route refresh has been issued toward more than one peer, the order of receipt of the refresh data can cause churn in both best route selection and outbound signaling.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果向不止一个对等设备发出路由刷新，收到刷新数据的先后顺序会导致最佳路由选择和出站信令发生变化。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Internet Exchange Points (IXPs) that provide route servers [RFC7947] should be aware that some members could be causing an undue route refresh load on the route servers and take appropriate administrative and/or technical measures. IXPs using BGP speakers as route servers should ensure that they are not generating excessive route refresh requests.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+提供路由服务器 [RFC7947] 的互联网交换点 (IXP) 应意识到某些成员可能会给路由服务器带来过多的路由刷新负载，并采取适当的管理和/或技术措施。使用 BGP 发言者作为路由服务器的 IXP 应确保它们不会产生过多的路由刷新请求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Security-Considerations">
+6. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document describes a denial of service that Route Origin Validation or other RPKI policy may place on a BGP neighbor and describes how it may be ameliorated.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档描述了路由起源验证或其他 RPKI 策略可能对 BGP 邻居造成的拒绝服务，并介绍了如何改善这种情况。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Otherwise, this document adds no additional security considerations to those already described by the referenced documents.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+除此以外，本文件不对参考文件中已描述的安全考虑因素作任何补充。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--IANA-Considerations">
+7. IANA Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. IANA考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document has no IANA actions.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件没有 IANA 操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8--References">
+8. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8-1--Normative-References">
+8.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2918] Chen, E., &#34;Route Refresh Capability for BGP-4&#34;, RFC 2918, DOI 10.17487/RFC2918, September 2000, &lt;https://www.rfc-editor.org/info/rfc2918&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2918] Chen, E., &#34;Route Refresh Capability for BGP-4&#34;, RFC 2918, DOI 10.17487/RFC2918, September 2000, &lt;https://www.rfc-editor.org/info/rfc2918&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, DOI 10.17487/RFC4271, January 2006, &lt;https://www.rfc-editor.org/info/rfc4271&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, DOI 10.17487/RFC4271, January 2006, &lt;https://www.rfc-editor.org/info/rfc4271&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, &#34;BGP Prefix Origin Validation&#34;, RFC 6811, DOI 10.17487/RFC6811, January 2013, &lt;https://www.rfc-editor.org/info/rfc6811&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, &#34;BGP Prefix Origin Validation&#34;, RFC 6811, DOI 10.17487/RFC6811, January 2013, &lt;https://www.rfc-editor.org/info/rfc6811&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7313] Patel, K., Chen, E., and B. Venkatachalapathy, &#34;Enhanced Route Refresh Capability for BGP-4&#34;, RFC 7313, DOI 10.17487/RFC7313, July 2014, &lt;https://www.rfc-editor.org/info/rfc7313&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7313] Patel, K., Chen, E., and B. Venkatachalapathy, &#34;Enhanced Route Refresh Capability for BGP-4&#34;, RFC 7313, DOI 10.17487/RFC7313, July 2014, &lt;https://www.rfc-editor.org/info/rfc7313&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8481] Bush, R., &#34;Clarifications to BGP Origin Validation Based on Resource Public Key Infrastructure (RPKI)&#34;, RFC 8481, DOI 10.17487/RFC8481, September 2018, &lt;https://www.rfc-editor.org/info/rfc8481&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8481] Bush, R., &#34;Clarifications to BGP Origin Validation Based on Resource Public Key Infrastructure (RPKI)&#34;, RFC 8481, DOI 10.17487/RFC8481, September 2018, &lt;https://www.rfc-editor.org/info/rfc8481&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8-2--Informative-References">
+8.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[AS_PATH-VER] Azimov, A., Bogomazov, E., Bush, R., Patel, K., Snijders, J., and K. Sriram, &#34;BGP AS_PATH Verification Based on Resource Public Key Infrastructure (RPKI) Autonomous System Provider Authorization (ASPA) Objects&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-aspa-verification-11, 24 October 2022, &lt;https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-11&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[AS_PATH-VER] Azimov, A., Bogomazov, E., Bush, R., Patel, K., Snijders, J., and K. Sriram, &#34;BGP AS_PATH Verification Based on Resource Public Key Infrastructure (RPKI) Autonomous System Provider Authorization (ASPA) Objects&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-aspa-verification-11, 24 October 2022, &lt;https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-11&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[MAXPREFIX-INBOUND] Aelmans, M., Stucchi, M., and J. Snijders, &#34;BGP Maximum Prefix Limits Inbound&#34;, Work in Progress, Internet-Draft, draft-sas-idr-maxprefix-inbound-04, 19 January 2022, &lt;https://datatracker.ietf.org/doc/html/draft-sas-idr-maxprefix-inbound-04&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[MAXPREFIX-INBOUND] Aelmans, M., Stucchi, M., and J. Snijders, &#34;BGP Maximum Prefix Limits Inbound&#34;, Work in Progress, Internet-Draft, draft-sas-idr-maxprefix-inbound-04, 19 January 2022, &lt;https://datatracker.ietf.org/doc/html/draft-sas-idr-maxprefix-inbound-04&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;https://www.rfc-editor.org/info/rfc6480&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;https://www.rfc-editor.org/info/rfc6480&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7947] Jasinska, E., Hilliard, N., Raszuk, R., and N. Bakker, &#34;Internet Exchange BGP Route Server&#34;, RFC 7947, DOI 10.17487/RFC7947, September 2016, &lt;https://www.rfc-editor.org/info/rfc7947&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7947] Jasinska, E., Hilliard, N., Raszuk, R., and N. Bakker, &#34;Internet Exchange BGP Route Server&#34;, RFC 7947, DOI 10.17487/RFC7947, September 2016, &lt;https://www.rfc-editor.org/info/rfc7947&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8205] Lepinski, M., Ed. and K. Sriram, Ed., &#34;BGPsec Protocol Specification&#34;, RFC 8205, DOI 10.17487/RFC8205, September 2017, &lt;https://www.rfc-editor.org/info/rfc8205&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8205] Lepinski, M., Ed. and K. Sriram, Ed., &#34;BGPsec Protocol Specification&#34;, RFC 8205, DOI 10.17487/RFC8205, September 2017, &lt;https://www.rfc-editor.org/info/rfc8205&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RPKI-ROUTER-PROT-v2] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 2&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-8210bis-10, 16 June 2022, &lt;https://datatracker.ietf.org/doc/html/ draft-ietf-sidrops-8210bis-10&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RPKI-ROUTER-PROT-v2] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 2&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-8210bis-10, 16 June 2022, &lt;https://datatracker.ietf.org/doc/html/ draft-ietf-sidrops-8210bis-10&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Acknowledgements
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+致谢
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors wish to thank Alvaro Retana, Ben Maddison, Derek Yeung, John Heasley, John Scudder, Matthias Waehlisch, Nick Hilliard, Saku Ytti, and Ties de Kock.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢 Alvaro Retana、Ben Maddison、Derek Yeung、John Heasley、John Scudder、Matthias Waehlisch、Nick Hilliard、Saku Ytti 和 Ties de Kock。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Randy Bush IIJ Research Lab &amp; Arrcus, Inc. 1856 SW Edgewood Dr Portland, OR 97210 United States of America Email: randy@psg.com
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Randy Bush IIJ Research Lab &amp; Arrcus, Inc.1856 SW Edgewood Dr Portland, OR 97210 United States of America Email: randy@psg.com
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Keyur Patel Arrcus, Inc. 2077 Gateway Place, Suite #400 San Jose, CA 95119 United States of America Email: keyur@arrcus.com
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Keyur Patel Arrcus, Inc. 2077 Gateway Place, Suite #400 San Jose, CA 95119 United States of America Email: keyur@arrcus.com
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Philip Smith PFS Internet Development Pty Ltd PO Box 1908 Milton QLD 4064 Australia Email: pfsinoz@gmail.com
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Philip Smith PFS Internet Development Pty Ltd PO Box 1908 Milton QLD 4064 Australia Email: pfsinoz@gmail.com
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Mark Tinka SEACOM Building 7, Design Quarter District Leslie Avenue, Magaliessig Fourways, Gauteng 2196 South Africa Email: mark@tinka.africa
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Mark Tinka SEACOM Building 7, Design Quarter District Leslie Avenue, Magaliessig Fourways, Gauteng 2196 South Africa Email: mark@tinka.africa
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

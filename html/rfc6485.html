@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 6485 - The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI) 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">6485</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc6485">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 6485 - The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI) 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc6485">
+            https://datatracker.ietf.org/doc/html/rfc6485
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 6485 - 资源公钥基础设施 (RPKI) 使用的算法和密钥大小规范</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                         G. Huston
+Request for Comments: 6485                                         APNIC
+Category: Standards Track                                  February 2012
+ISSN: 2070-1721
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-10">
+ The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-10">
+资源公钥基础设施 (RPKI) 中使用的算法和密钥大小规范
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document specifies the algorithms, algorithms&#39; parameters, asymmetric key formats, asymmetric key size, and signature format for the Resource Public Key Infrastructure (RPKI) subscribers that generate digital signatures on certificates, Certificate Revocation Lists, and signed objects as well as for the relying parties (RPs) that verify these digital signatures.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档规定了算法、算法参数、非对称密钥格式、非对称密钥大小和签名格式，供资源公钥基础设施（RPKI）用户生成证书、证书吊销列表和签名对象上的数字签名，以及供依赖方（RP）验证这些数字签名。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This is an Internet Standards Track document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这是一份互联网标准跟踪文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 5741 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6485.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6485。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2012 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版权所有 (c) 2012 IETF 信托基金会和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document specifies:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件规定
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* the digital signature algorithm and parameters;<br>* the hash algorithm and parameters;<br>* the public and private key formats; and,<br>* the signature format
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 数字签名算法和参数；<br>* 哈希算法和参数；<br>* 公钥和私钥格式；以及<br>* 签名格式
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+used by Resource Public Key Infrastructure (RPKI) subscribers when they apply digital signatures to certificates, Certificate Revocation Lists (CRLs), and signed objects (e.g., Route Origin Authorizations (ROAs) and manifests). Relying parties (RPs) also use the algorithms defined in this document to verify RPKI subscribers&#39; digital signatures [RFC6480].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源公钥基础设施（RPKI）用户在对证书、证书吊销列表（CRL）和签名对象（如路由起源授权（ROA）和清单）应用数字签名时使用的算法。依赖方 (RP) 也使用本文档中定义的算法来验证 RPKI 用户的数字签名 [RFC6480]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is referenced by other RPKI profiles and specifications, including the RPKI Certificate Policy (CP) [RFC6484], the RPKI Certificate Profile [RFC6487], the SIDR Architecture [RFC6480], and the Signed Object Template for the RPKI [RFC6488]. Familiarity with these documents is assumed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档参考了其他 RPKI 配置文件和规范，包括 RPKI 证书策略 (CP) [RFC6484]、RPKI 证书配置文件 [RFC6487]、SIDR 架构 [RFC6480] 和 RPKI 的签名对象模板 [RFC6488]。假定已熟悉这些文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-1--Terminology">
+1.1. Terminology
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.1. 用语
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in [RFC2119].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;、&#34;MUST NOT&#34;、&#34;REQUIRED&#34;、&#34;SHALL&#34;、&#34;SHALL NOT&#34;、&#34;SHOULD&#34;、&#34;SHOULD NOT&#34;、&#34;RECOMMENDED&#34;、&#34;MAY &#34;和 &#34;OPTIONAL &#34;应按照 [RFC2119] 中的描述进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Algorithms">
+2. Algorithms
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 算法
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Two cryptographic algorithms are used in the RPKI:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 使用两种加密算法：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+* The signature algorithm used in certificates, CRLs, and signed objects is RSA Public-Key Cryptography Standards (PKCS) #1 Version 1.5 (sometimes referred to as &#34;RSASSA-PKCS1-v1_5&#34;) from Section 5 of [RFC4055].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+* 证书、CRL 和签名对象中使用的签名算法是 [RFC4055] 第 5 节中的 RSA Public-Key Cryptography Standards (PKCS) #1 Version 1.5（有时称为 &#34;RSASSA-PKCS1-v1_5&#34;）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+* The hashing algorithm used in certificates, CRLs, and signed objects is SHA-256 [SHS]. The hashing algorithm is not identified by itself when used in certificates and CRLs, as they are combined with the digital signature algorithm (see below).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+* 证书、有效证件清除日志和签名对象中使用的散列算法是 SHA-256 [SHS]。在证书和 CRL 中使用时，散列算法本身并不标识，因为它们与数字签名算法结合在一起（见下文）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+When used in the Cryptographic Message Syntax (CMS) SignedData, the hash algorithm (in this case, the hash algorithm is sometimes called a message digest algorithm) is identified by itself. For CMS SignedData, the object identifier and parameters for SHA-256 (as defined in [RFC5754]) MUST be used when populating the digestAlgorithms and digestAlgorithm fields.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+在加密报文语法（CMS）SignedData 中使用时，哈希算法（在这种情况下，哈希算法有时称为报文摘要算法）由其自身标识。对于 CMS SignedData，在填充 digestAlgorithms 和 digestAlgorithm 字段时必须使用 SHA-256 的对象标识符和参数（定义见 [RFC5754]）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+NOTE: The exception to the above hashing algorithm is the use of SHA-1 [SHS] when Certification Authorities (CAs) generate authority and subject key identifiers [RFC6487].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+注：上述散列算法的例外情况是，当认证机构（CA）生成机构和主体密钥标识符 [RFC6487] 时使用 SHA-1 [SHS]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When used to generate and verify digital signatures the hash and digital signature algorithms are referred together, i.e., &#34;RSA PKCS#1 v1.5 with SHA-256&#34; or more simply &#34;RSA with SHA-256&#34;. The Object Identifier (OID) sha256withRSAEncryption from [RFC4055] MUST be used.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当用于生成和验证数字签名时，哈希算法和数字签名算法被放在一起，即 &#34;RSA PKCS#1 v1.5 with SHA-256 &#34;或更简单的 &#34;RSA with SHA-256&#34;。必须使用 [RFC4055] 中的对象标识符 (OID) sha256withRSAEncryption。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Locations for this OID are as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该 OID 的位置如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+In the certificate, the OID appears in the signature and signatureAlgorithm fields [RFC4055];
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+在证书中，OID 出现在签名和签名算法字段中 [RFC4055]；
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+In the CRL, the OID appears in the signatureAlgorithm field [RFC4055];
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+在 CRL 中，OID 出现在签名算法字段 [RFC4055]；
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+In CMS SignedData, the OID appears in each SignerInfo signatureAlgoithm field [RFC3370] using the OID from above; and,
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+在 CMS SignedData 中，OID 使用上述 OID 出现在每个 SignerInfo signatureAlgoithm 字段[RFC3370]中；以及
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+In a certification request, the OID appears in the PKCS #10 signatureAlgorithm field [RFC2986] or in the Certificate Request Message Format (CRMF) POPOSigningKey signature field [RFC4211].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+在认证请求中，OID 出现在 PKCS #10 签名算法字段 [RFC2986] 或证书请求信息格式 (CRMF) POPOSigningKey 签名字段 [RFC4211] 中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Asymmetric-Key-Pair-Formats">
+3. Asymmetric Key Pair Formats
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 非对称密钥对格式
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RSA key pairs used to compute the signatures MUST have a 2048-bit modulus and a public exponent (e) of 65,537.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+用于计算签名的 RSA 密钥对必须具有 2048 位模数和 65,537 的公共指数 (e)。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-1--Public-Key-Format">
+3.1. Public Key Format
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.1. 公钥格式
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The subject&#39;s public key is included in subjectPublicKeyInfo [RFC5280]. It has two sub-fields: algorithm and subjectPublicKey. The values for the structures and their sub-structures follow:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+主题的公钥包含在 subjectPublicKeyInfo [RFC5280] 中。它有两个子字段：算法和 subjectPublicKey。结构及其子结构的值如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+algorithm (which is an AlgorithmIdentifier type): The object identifier for RSA PKCS#1 v1.5 with SHA-256 MUST be used in the algorithm field, as specified in Section 5 of [RFC4055]. The value for the associated parameters from that clause MUST also be used for the parameters field.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+算法（AlgorithmIdentifier 类型）：根据 [RFC4055] 第 5 节的规定，RSA PKCS#1 v1.5 with SHA-256 的对象标识符必须用于算法字段。参数字段也必须使用该条款中的相关参数值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+subjectPublicKey: RSAPublicKey MUST be used to encode the certificate&#39;s subjectPublicKey field, as specified in [RFC4055].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+subjectPublicKey：根据 [RFC4055] 的规定，必须使用 RSAPublicKey 对证书的 subjectPublicKey 字段进行编码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-2--Private-Key-Format">
+3.2. Private Key Format
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.2. 私钥格式
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Local policy determines the private key format.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本地策略决定私钥格式。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Signature-Format">
+4. Signature Format
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 签名格式
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The structure for the certificate&#39;s signature field is as specified in Section 1.2 of [RFC4055]. The structure for the CMS SignedData&#39;s signature field is as specified in [RFC3370].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+证书签名字段的结构如 [RFC4055] 第 1.2 节所述。CMS SignedData 签名字段的结构如 [RFC3370] 所述。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Additional-Requirements">
+5. Additional Requirements
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 额外要求
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is anticipated that the RPKI will require the adoption of updated key sizes and a different set of signature and hash algorithms over time, in order to maintain an acceptable level of cryptographic security to protect the integrity of signed products in the RPKI. This profile should be replaced to specify such future requirements, as and when appropriate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+预计随着时间的推移，RPKI 将要求采用更新的密钥大小以及不同的签名和散列算法，以保持可接受的加密安全级别，保护 RPKI 中已签名产品的完整性。本简介应在适当的时候替换，以明确未来的此类要求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CAs and RPs SHOULD be capable of supporting a transition to allow for the phased introduction of additional encryption algorithms and key specifications, and also accommodate the orderly deprecation of previously specified algorithms and keys. Accordingly, CAs and RPs SHOULD be capable of supporting multiple RPKI algorithm and key profiles simultaneously within the scope of such anticipated transitions. The recommended procedures to implement such a transition of key sizes and algorithms is not specified in this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CA 和 RP 应能够支持过渡，以便分阶段引入额外的加密算法和密钥规范，并适应以前指定的算法和密钥的有序淘汰。因此，CA 和 RP 应能在这种预期过渡的范围内同时支持多种 RPKI 算法和密钥配置文件。本文档未说明实施这种密钥大小和算法过渡的建议程序。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Security-Considerations">
+6. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Security Considerations of [RFC4055], [RFC5280], and [RFC6487] apply to certificates and CRLs. The Security Considerations of [RFC5754] apply to signed objects. No new security threats are introduced as a result of this specification.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RFC4055]、[RFC5280] 和 [RFC6487] 的安全考虑因素适用于证书和 CRL。RFC5754] 的安全考虑因素适用于签名对象。本规范没有引入新的安全威胁。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--Acknowledgments">
+7. Acknowledgments
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 致谢
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The author acknowledges the reuse in this document of material originally contained in working drafts of the RPKI Certificate Policy [RFC6484] and the resource certificate profile [RFC6487] documents. The co-authors of these two documents, namely Stephen Kent, Derrick Kong, Karen Seo, Ronald Watro, George Michaelson, and Robert Loomans, are acknowledged, with thanks. The constraint on key size noted in this profile is the outcome of comments from Stephen Kent and review comments from David Cooper. Sean Turner has provided additional review input to this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者承认本文档重复使用了 RPKI 证书策略 [RFC6484] 和资源证书配置文件 [RFC6487] 文档工作草案中的原始资料。本文对这两份文档的共同作者 Stephen Kent、Derrick Kong、Karen Seo、Ronald Watro、George Michaelson 和 Robert Loomans 表示感谢。本简介中提到的对密钥大小的限制是斯蒂芬-肯特（Stephen Kent）的意见和戴维-库珀（David Cooper）的审查意见的结果。肖恩-特纳（Sean Turner）为本文档提供了额外的审核意见。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9--Normative-References">
+9. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2986] Nystrom, M. and B. Kaliski, &#34;PKCS #10: Certification Request Syntax Specification Version 1.7&#34;, RFC 2986, November 2000.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2986] Nystrom, M. 和 B. Kaliski，&#34;PKCS #10：认证请求语法规范 1.7 版&#34;，RFC 2986，2000 年 11 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3370] Housley, R., &#34;Cryptographic Message Syntax (CMS) Algorithms&#34;, RFC 3370, August 2002.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3370] Housley, R., &#34;Cryptographic Message Syntax (CMS) Algorithms&#34;, RFC 3370, August 2002.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4055] Schaad, J., Kaliski, B., and R. Housley, &#34;Additional Algorithms and Identifiers for RSA Cryptography for use in the Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 4055, June 2005.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4055] Schaad, J., Kaliski, B., and R. Housley, &#34;Additional Algorithms and Identifiers for RSA Cryptography for use in the Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 4055, June 2005.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4211] Schaad, J., &#34;Internet X.509 Public Key Infrastructure Certificate Request Message Format (CRMF)&#34;, RFC 4211, September 2005.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4211] Schaad, J., &#34;Internet X.509 Public Key Infrastructure Certificate Request Message Format (CRMF)&#34;，RFC 4211，2005 年 9 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, May 2008.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, May 2008.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5754] Turner, S., &#34;Using SHA2 Algorithms with Cryptographic Message Syntax&#34;, RFC 5754, January 2010.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5754] Turner, S., &#34;Using SHA2 Algorithms with Cryptographic Message Syntax&#34;, RFC 5754, January 2010.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6484] Kent, S., Kong, D., Seo, K., and R. Watro, &#34;Certificate Policy (CP) for the Resource Public Key Infrastructure (RPKI)&#34;, BCP 173, RFC 6484, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6484] Kent, S., Kong, D., Seo, K., and R. Watro, &#34;Certificate Policy (CP) for the Resource Public Key Infrastructure (RPKI)&#34;, BCP 173, RFC 6484, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Husotn, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Husotn, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6488] Lepinski, M., Chi, A., and S. Kent, &#34;Signed Object Template for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6488, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6488] Lepinski, M., Chi, A., and S. Kent, &#34;Signed Object Template for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6488, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[SHS] National Institute of Standards and Technology (NIST), &#34;FIPS Publication 180-3: Secure Hash Standard (SHS)&#34;, FIPS Publication 180-3, October 2008.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[SHS]美国国家标准与技术研究院（NIST），&#34;FIPS Publication 180-3：Secure Hash Standard (SHS)&#34;，FIPS Publication 180-3，2008 年 10 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Author&#39;s Address
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Geoff Huston APNIC
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Geoff Huston APNIC
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: gih@apnic.net
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

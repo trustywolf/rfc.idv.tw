@@ -1,0 +1,1606 @@
+{
+  "title": {
+    "text": "RFC 8205 - BGPsec Protocol Specification",
+    "zh": "RFC 8205 - BGPsec 协议规范"
+  },
+  "number": 8205,
+  "created_at": "2023-12-04 16:05:13.187868+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                  M. Lepinski, Ed.\nRequest for Comments: 8205                                           NCF\nCategory: Standards Track                                 K. Sriram, Ed.\nISSN: 2070-1721                                                     NIST\n                                                          September 2017",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 21,
+      "text": "BGPsec Protocol Specification",
+      "zh": "BGPsec 协议规范"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document describes BGPsec, an extension to the Border Gateway Protocol (BGP) that provides security for the path of Autonomous Systems (ASes) through which a BGP UPDATE message passes. BGPsec is implemented via an optional non-transitive BGP path attribute that carries digital signatures produced by each AS that propagates the UPDATE message. The digital signatures provide confidence that every AS on the path of ASes listed in the UPDATE message has explicitly authorized the advertisement of the route.",
+      "zh": "本文档介绍了 BGPsec，它是对边界网关协议（BGP）的扩展，可为 BGP UPDATE 信息所经过的自治系统（AS）路径提供安全性。BGPsec 是通过一个可选的非传递性 BGP 路径属性实现的，该属性带有由传播 UPDATE 消息的每个 AS 制作的数字签名。数字签名可确保 UPDATE 信息中所列 AS 路径上的每个 AS 都已明确授权路由广告。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc8205.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc8205。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2017 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "版权所有 (c) 2017 IETF 信托基金会和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受BCP 78以及本文档发布之日有效的IETF信托基金关于IETF文档的法律规定（https://trustee.ietf.org/license-info）的约束。 请仔细阅读这些文档，因为它们描述了您对本文档的权利和限制。 从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中描述的简化 BSD 许可证文本，并且不提供简化 BSD 许可证中描述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3\n  1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   3\n2.  BGPsec Negotiation  . . . . . . . . . . . . . . . . . . . . .   3\n  2.1.  The BGPsec Capability . . . . . . . . . . . . . . . . . .   4\n  2.2.  Negotiating BGPsec Support  . . . . . . . . . . . . . . .   5\n3.  The BGPsec_PATH Attribute . . . . . . . . . . . . . . . . . .   6\n  3.1.  Secure_Path . . . . . . . . . . . . . . . . . . . . . . .   8\n  3.2.  Signature_Block . . . . . . . . . . . . . . . . . . . . .  10\n4.  BGPsec UPDATE Messages  . . . . . . . . . . . . . . . . . . .  11\n  4.1.  General Guidance  . . . . . . . . . . . . . . . . . . . .  11\n  4.2.  Constructing the BGPsec_PATH Attribute  . . . . . . . . .  14\n  4.3.  Processing Instructions for Confederation Members . . . .  18\n  4.4.  Reconstructing the AS_PATH Attribute  . . . . . . . . . .  19\n5.  Processing a Received BGPsec UPDATE Message . . . . . . . . .  21\n  5.1.  Overview of BGPsec Validation . . . . . . . . . . . . . .  22\n  5.2.  Validation Algorithm  . . . . . . . . . . . . . . . . . .  23\n6.  Algorithms and Extensibility  . . . . . . . . . . . . . . . .  27\n  6.1.  Algorithm Suite Considerations  . . . . . . . . . . . . .  27\n  6.2.  Considerations for the SKI Size . . . . . . . . . . . . .  28\n  6.3.  Extensibility Considerations  . . . . . . . . . . . . . .  28\n7.  Operations and Management Considerations  . . . . . . . . . .  29\n  7.1.  Capability Negotiation Failure  . . . . . . . . . . . . .  29\n  7.2.  Preventing Misuse of pCount=0 . . . . . . . . . . . . . .  29\n  7.3.  Early Termination of Signature Verification . . . . . . .  30\n  7.4.  Non-deterministic Signature Algorithms  . . . . . . . . .  30\n  7.5.  Private AS Numbers  . . . . . . . . . . . . . . . . . . .  30\n  7.6.  Robustness Considerations for Accessing RPKI Data . . . .  32\n  7.7.  Graceful Restart  . . . . . . . . . . . . . . . . . . . .  32\n  7.8.  Robustness of Secret Random Number in ECDSA . . . . . . .  32\n  7.9.  Incremental/Partial Deployment Considerations . . . . . .  33\n8.  Security Considerations . . . . . . . . . . . . . . . . . . .  33\n  8.1.  Security Guarantees . . . . . . . . . . . . . . . . . . .  33\n  8.2.  On the Removal of BGPsec Signatures . . . . . . . . . . .  34\n  8.3.  Mitigation of Denial-of-Service Attacks . . . . . . . . .  36\n  8.4.  Additional Security Considerations  . . . . . . . . . . .  36\n9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  38\n10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  39\n  10.1.  Normative References . . . . . . . . . . . . . . . . . .  39\n  10.2.  Informative References . . . . . . . . . . . . . . . . .  41\nAcknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  43\nContributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  44\nAuthors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  45",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document describes BGPsec, a mechanism for providing path security for Border Gateway Protocol (BGP) [RFC4271] route advertisements. That is, a BGP speaker who receives a valid BGPsec UPDATE message has cryptographic assurance that the advertised route has the following property: every Autonomous System (AS) on the path of ASes listed in the UPDATE message has explicitly authorized the advertisement of the route to the subsequent AS in the path.",
+      "zh": "本文档介绍了 BGPsec，这是一种为边界网关协议（BGP）[RFC4271] 路由广告提供路径安全的机制。也就是说，收到有效的 BGPsec UPDATE 消息的 BGP 说话者可加密保证所公布的路由具有以下属性：UPDATE 消息中所列 AS 路径上的每个自治系统（AS）都已明确授权向路径中的后续 AS 公布该路由。"
+    },
+    {
+      "indent": 3,
+      "text": "This document specifies an optional (non-transitive) BGP path attribute, BGPsec_PATH. It also describes how a BGPsec-compliant BGP speaker (referred to hereafter as a BGPsec speaker) can generate, propagate, and validate BGP UPDATE messages containing this attribute to obtain the above assurances.",
+      "zh": "本文档指定了一个可选（非传递）BGP 路径属性 BGPsec_PATH。它还描述了符合 BGPsec 的 BGP 说话者（以下简称 BGPsec 说话者）如何生成、传播和验证包含该属性的 BGP UPDATE 消息，以获得上述保证。"
+    },
+    {
+      "indent": 3,
+      "text": "BGPsec is intended to be used to supplement BGP origin validation [RFC6483] [RFC6811], and when used in conjunction with origin validation, it is possible to prevent a wide variety of route hijacking attacks against BGP.",
+      "zh": "BGPsec 用于补充 BGP 起源验证 [RFC6483] [RFC6811]，与起源验证结合使用时，可以防止针对 BGP 的各种路由劫持攻击。"
+    },
+    {
+      "indent": 3,
+      "text": "BGPsec relies on the Resource Public Key Infrastructure (RPKI) certificates that attest to the allocation of AS number and IP address resources. (For more information on the RPKI, see RFC 6480 [RFC6480] and the documents referenced therein.) Any BGPsec speaker who wishes to send, to external (eBGP) peers, BGP UPDATE messages containing the BGPsec_PATH needs to possess a private key associated with an RPKI router certificate [RFC8209] that corresponds to the BGPsec speaker's AS number. Note, however, that a BGPsec speaker does not need such a certificate in order to validate received UPDATE messages containing the BGPsec_PATH attribute (see Section 5.2).",
+      "zh": "BGPsec 依靠资源公钥基础设施（RPKI）证书证明 AS 号和 IP 地址资源的分配。(有关 RPKI 的更多信息，请参阅 RFC 6480 [RFC6480] 及其参考文件）。任何希望向外部（eBGP）对等方发送包含 BGPsec_PATH 的 BGP UPDATE 消息的 BGPsec 发言者都需要拥有与 RPKI 路由器证书 [RFC8209] 相关联的私钥，该证书应与 BGPsec 发言者的 AS 编号相对应。但请注意，BGPsec 说话者不需要这样的证书来验证收到的包含 BGPsec_PATH 属性的 UPDATE 消息（见第 5.2 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Requirements Language",
+      "section_title": true,
+      "zh": "1.1. 要求语言"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. BGPsec Negotiation",
+      "section_title": true,
+      "zh": "2. BGPsec 协商"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines a BGP capability [RFC5492] that allows a BGP speaker to advertise to a neighbor the ability to send or to receive BGPsec UPDATE messages (i.e., UPDATE messages containing the BGPsec_PATH attribute).",
+      "zh": "本文档定义了一种 BGP 能力 [RFC5492]，允许 BGP 说话者向邻居宣传发送或接收 BGPsec UPDATE 消息（即包含 BGPsec_PATH 属性的 UPDATE 消息）的能力。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1. The BGPsec Capability",
+      "section_title": true,
+      "zh": "2.1. BGPsec 功能"
+    },
+    {
+      "indent": 3,
+      "text": "This capability has capability code 7.",
+      "zh": "该功能的功能代码为 7。"
+    },
+    {
+      "indent": 3,
+      "text": "The capability length for this capability MUST be set to 3.",
+      "zh": "此功能的功能长度必须设置为 3。"
+    },
+    {
+      "indent": 3,
+      "text": "The 3 octets of the capability format are specified in Figure 1.",
+      "zh": "能力格式的 3 个八位字节如图 1 所示。"
+    },
+    {
+      "indent": 17,
+      "text": "  0   1   2   3      4      5   6   7\n+---------------------------------------+\n| Version          | Dir |  Unassigned  |\n+---------------------------------------+\n|                                       |\n+------           AFI              -----+\n|                                       |\n+---------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 20,
+      "text": "Figure 1: BGPsec Capability Format",
+      "zh": "图 1：BGPsec 能力格式"
+    },
+    {
+      "indent": 3,
+      "text": "The first 4 bits of the first octet indicate the version of BGPsec for which the BGP speaker is advertising support. This document defines only BGPsec version 0 (all 4 bits set to 0). Other versions of BGPsec may be defined in future documents. A BGPsec speaker MAY advertise support for multiple versions of BGPsec by including multiple versions of the BGPsec capability in its BGP OPEN message.",
+      "zh": "第一个八位位组的前 4 位表示 BGP 说话者广告支持的 BGPsec 版本。本文件只定义了 BGPsec 版本 0（所有 4 位均设为 0）。其他版本的 BGPsec 可能会在未来的文档中定义。BGPsec 说话者可通过在其 BGP OPEN 消息中包含多个版本的 BGPsec 功能来宣传对多个版本 BGPsec 的支持。"
+    },
+    {
+      "indent": 3,
+      "text": "The fifth bit of the first octet is a Direction bit, which indicates whether the BGP speaker is advertising the capability to send BGPsec UPDATE messages or receive BGPsec UPDATE messages. The BGP speaker sets this bit to 0 to indicate the capability to receive BGPsec UPDATE messages. The BGP speaker sets this bit to 1 to indicate the capability to send BGPsec UPDATE messages.",
+      "zh": "第一个八位位组的第五位是 \"方向 \"位，表示 BGP 说话者是在宣传发送 BGPsec UPDATE 消息的能力还是在宣传接收 BGPsec UPDATE 消息的能力。BGP 说话者将该位设置为 0 表示有能力接收 BGPsec UPDATE 消息。BGP 说话者将该位设置为 1 表示具有发送 BGPsec UPDATE 消息的能力。"
+    },
+    {
+      "indent": 3,
+      "text": "The remaining 3 bits of the first octet are unassigned and for future use. These bits are set to 0 by the sender of the capability and ignored by the receiver of the capability.",
+      "zh": "第一个八位位组的其余 3 位未分配，供将来使用。能力的发送方将这些位设置为 0，能力的接收方将忽略这些位。"
+    },
+    {
+      "indent": 3,
+      "text": "The second and third octets contain the 16-bit Address Family Identifier (AFI), which indicates the address family for which the BGPsec speaker is advertising support for BGPsec. This document only specifies BGPsec for use with two address families, IPv4 and IPv6, with AFI values 1 and 2, respectively [IANA-AF]. BGPsec for use with other address families may be specified in future documents.",
+      "zh": "第二个和第三个八位位组包含 16 位地址族标识符 (AFI)，表示 BGPsec 发言者广告支持 BGPsec 的地址族。本文档仅规定了 BGPsec 与两个地址族（IPv4 和 IPv6）的使用，AFI 值分别为 1 和 2 [IANA-AF]。用于其他地址族的 BGPsec 可能会在未来的文档中规定。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2. Negotiating BGPsec Support",
+      "section_title": true,
+      "zh": "2.2. 协商 BGPsec 支持"
+    },
+    {
+      "indent": 3,
+      "text": "In order to indicate that a BGP speaker is willing to send BGPsec UPDATE messages (for a particular address family), a BGP speaker sends the BGPsec capability (see Section 2.1) with the Direction bit (the fifth bit of the first octet) set to 1. In order to indicate that the speaker is willing to receive BGP UPDATE messages containing the BGPsec_PATH attribute (for a particular address family), a BGP speaker sends the BGPsec capability with the Direction bit set to 0. In order to advertise the capability to both send and receive BGPsec UPDATE messages, the BGP speaker sends two copies of the BGPsec capability (one with the Direction bit set to 0 and one with the Direction bit set to 1).",
+      "zh": "为了表示 BGP 说话者愿意（为特定地址族）发送 BGPsec UPDATE 消息，BGP 说话者发送 BGPsec 能力（见第 2.1 节）时会将方向位（第一个八位位组的第五位）设置为 1。为了表明发言者愿意接收包含 BGPsec_PATH 属性（针对特定地址族）的 BGP UPDATE 消息，BGP 发言者发送方向位设置为 0 的 BGPsec 能力。 为了宣传发送和接收 BGPsec UPDATE 消息的能力，BGP 发言者发送两份 BGPsec 能力（一份方向位设置为 0，另一份方向位设置为 1）。"
+    },
+    {
+      "indent": 3,
+      "text": "Similarly, if a BGP speaker wishes to use BGPsec with two different address families (i.e., IPv4 and IPv6) over the same BGP session, then the speaker includes two instances of this capability (one for each address family) in the BGP OPEN message. A BGP speaker MUST NOT announce BGPsec capability if it does not support the BGP multiprotocol extension [RFC4760]. Additionally, a BGP speaker MUST NOT advertise the capability of BGPsec support for a particular AFI unless it has also advertised the multiprotocol extension capability for the same AFI [RFC4760].",
+      "zh": "同样，如果 BGP 发言者希望在同一 BGP 会话上对两个不同的地址族（即 IPv4 和 IPv6）使用 BGPsec，则该发言者应在 BGP OPEN 消息中包含该功能的两个实例（每个地址族一个）。如果 BGP 说话者不支持 BGP 多协议扩展 [RFC4760]，则不得宣布 BGPsec 功能。此外，除非 BGP 说话者也为特定 AFI 公布了多协议扩展功能 [RFC4760]，否则不得为该 AFI 公布 BGPsec 支持功能。"
+    },
+    {
+      "indent": 3,
+      "text": "In a BGPsec peering session, a peer is permitted to send UPDATE messages containing the BGPsec_PATH attribute if and only if:",
+      "zh": "在 BGPsec 对等会话中，允许对等方发送包含 BGPsec_PATH 属性的 UPDATE 消息，前提是且仅在以下情况下："
+    },
+    {
+      "indent": 3,
+      "text": "o The given peer sent the BGPsec capability for a particular version of BGPsec and a particular address family with the Direction bit set to 1, and",
+      "zh": "o 给定对等体发送了特定版本 BGPsec 和特定地址族的 BGPsec 功能，且方向位设置为 1，以及"
+    },
+    {
+      "indent": 3,
+      "text": "o The other (receiving) peer sent the BGPsec capability for the same version of BGPsec and the same address family with the Direction bit set to 0.",
+      "zh": "o 另一个（接收）对等方发送的 BGPsec 能力为相同版本的 BGPsec 和相同地址族，且方向位设置为 0。"
+    },
+    {
+      "indent": 3,
+      "text": "In such a session, it can be said that the use of the particular version of BGPsec has been negotiated for a particular address family. Traditional BGP UPDATE messages (i.e., unsigned, containing the AS_PATH attribute) MAY be sent within a session regardless of whether or not the use of BGPsec is successfully negotiated. However, if BGPsec is not successfully negotiated, then BGP UPDATE messages containing the BGPsec_PATH attribute MUST NOT be sent.",
+      "zh": "在这种会话中，可以说特定版本的 BGPsec 的使用已针对特定地址族进行了协商。无论 BGPsec 的使用是否协商成功，都可以在会话中发送传统的 BGP UPDATE 消息（即未签名、包含 AS_PATH 属性的消息）。但是，如果未成功协商 BGPsec，则不得发送包含 BGPsec_PATH 属性的 BGP UPDATE 消息。"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines the behavior of implementations in the case where BGPsec version 0 is the only version that has been successfully negotiated. Any future document that specifies additional versions of BGPsec will need to specify behavior in the case that support for multiple versions is negotiated.",
+      "zh": "本文档定义了在 BGPsec 版本 0 是唯一协商成功的版本的情况下实施的行为。今后任何指定 BGPsec 附加版本的文件都需要指定在协商支持多个版本的情况下的行为。"
+    },
+    {
+      "indent": 3,
+      "text": "BGPsec cannot provide meaningful security guarantees without support for 4-byte AS numbers. Therefore, any BGP speaker that announces the BGPsec capability, MUST also announce the capability for 4-byte AS support [RFC6793]. If a BGP speaker sends the BGPsec capability but not the 4-byte AS support capability, then BGPsec has not been successfully negotiated, and UPDATE messages containing the BGPsec_PATH attribute MUST NOT be sent within such a session.",
+      "zh": "如果不支持 4 字节 AS 号，BGPsec 就无法提供有意义的安全保证。因此，任何宣布 BGPsec 功能的 BGP 发言者必须同时宣布 4 字节 AS 支持功能 [RFC6793]。如果 BGP 说话者发送了 BGPsec 功能，但没有发送 4 字节 AS 支持功能，那么 BGPsec 就没有协商成功，包含 BGPsec_PATH 属性的 UPDATE 消息不得在此类会话中发送。"
+    },
+    {
+      "indent": 0,
+      "text": "3. The BGPsec_PATH Attribute",
+      "section_title": true,
+      "zh": "3. BGPsec_PATH 属性"
+    },
+    {
+      "indent": 3,
+      "text": "The BGPsec_PATH attribute is an optional non-transitive BGP path attribute.",
+      "zh": "BGPsec_PATH 属性是一个可选的非传递性 BGP 路径属性。"
+    },
+    {
+      "indent": 3,
+      "text": "This document registers an attribute type code for this attribute: BGPsec_PATH (see Section 9).",
+      "zh": "本文件为该属性注册了一个属性类型代码：BGPsec_PATH（见第 9 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "The BGPsec_PATH attribute carries the secured information regarding the path of ASes through which an UPDATE message passes. This includes the digital signatures used to protect the path information. The UPDATE messages that contain the BGPsec_PATH attribute are referred to as \"BGPsec UPDATE messages\". The BGPsec_PATH attribute replaces the AS_PATH attribute in a BGPsec UPDATE message. That is, UPDATE messages that contain the BGPsec_PATH attribute MUST NOT contain the AS_PATH attribute, and vice versa.",
+      "zh": "BGPsec_PATH 属性携带与 UPDATE 报文经过的 AS 的路径有关的安全信息。其中包括用于保护路径信息的数字签名。包含 BGPsec_PATH 属性的 UPDATE 报文被称为 \"BGPsec UPDATE 报文\"。BGPsec_PATH 属性取代了 BGPsec UPDATE 报文中的 AS_PATH 属性。也就是说，包含 BGPsec_PATH 属性的 UPDATE 报文不得包含 AS_PATH，反之亦然。"
+    },
+    {
+      "indent": 3,
+      "text": "The BGPsec_PATH attribute is made up of several parts. The high-level diagram in Figure 2 provides an overview of the structure of the BGPsec_PATH attribute. (\"SKI\" as used in Figure 2 means \"Subject Key Identifier\".)",
+      "zh": "BGPsec_PATH 属性由几个部分组成。图 2 中的高级图概述了 BGPsec_PATH 属性的结构。(图 2 中的 \"SKI \"指 \"主题密钥标识符\"）。"
+    },
+    {
+      "indent": 8,
+      "text": "+---------------------------------------------------------+\n|     +-----------------+                                 |\n|     |   Secure_Path   |                                 |\n|     +-----------------+                                 |\n|     |    pCount X     |                                 |\n|     |    Flags X      |                                 |\n|     |    AS X         |                                 |\n|     |    pCount Y     |                                 |\n|     |    Flags Y      |                                 |\n|     |    AS Y         |                                 |\n|     |      ...        |                                 |\n|     +-----------------+                                 |\n|                                                         |\n|   +---------------------+     +---------------------+   |\n|   |  Signature_Block 1  |     |  Signature_Block 2  |   |\n|   +---------------------+     +---------------------+   |\n|   |  Algorithm Suite 1  |     |  Algorithm Suite 2  |   |\n|   |  SKI X1             |     |  SKI X2             |   |\n|   |  Signature X1       |     |  Signature X2       |   |\n|   |  SKI Y1             |     |  SKI Y2             |   |\n|   |  Signature Y1       |     |  Signature Y2       |   |\n|   |       ...           |     |       ....          |   |\n|   +---------------------+     +---------------------+   |\n|                                                         |\n+---------------------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 9,
+      "text": "Figure 2: High-Level Diagram of the BGPsec_PATH Attribute",
+      "zh": "图 2：BGPsec_PATH 属性的高层示意图"
+    },
+    {
+      "indent": 3,
+      "text": "Figure 3 provides the specification of the format for the BGPsec_PATH attribute.",
+      "zh": "图 3 提供了 BGPsec_PATH 属性的格式规范。"
+    },
+    {
+      "indent": 9,
+      "text": "+-------------------------------------------------------+\n| Secure_Path                             (variable)    |\n+-------------------------------------------------------+\n| Sequence of one or two Signature_Blocks (variable)    |\n+-------------------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 18,
+      "text": "Figure 3: BGPsec_PATH Attribute Format",
+      "zh": "图 3：BGPsec_PATH 属性格式"
+    },
+    {
+      "indent": 3,
+      "text": "The Secure_Path contains AS path information for the BGPsec UPDATE message. This is logically equivalent to the information that is contained in a non-BGPsec AS_PATH attribute. The information in the Secure_Path is used by BGPsec speakers in the same way that information from the AS_PATH is used by non-BGPsec speakers. The format of the Secure_Path is described below in Section 3.1.",
+      "zh": "Secure_Path 包含 BGPsec UPDATE 消息的 AS 路径信息。这在逻辑上等同于非 BGPsec AS_PATH 属性中包含的信息。BGPsec 发言者使用 Secure_Path 中信息的方式与非 BGPsec 发言者使用 AS_PATH 中信息的方式相同。Secure_Path 的格式在下文第 3.1 节中描述。"
+    },
+    {
+      "indent": 3,
+      "text": "The BGPsec_PATH attribute will contain one or two Signature_Blocks, each of which corresponds to a different algorithm suite. Each of the Signature_Blocks will contain a Signature Segment for each AS number (i.e., Secure_Path Segment) in the Secure_Path. In the most common case, the BGPsec_PATH attribute will contain only a single Signature_Block. However, in order to enable a transition from an old algorithm suite to a new algorithm suite (without a flag day), it will be necessary to include two Signature_Blocks (one for the old algorithm suite and one for the new algorithm suite) during the transition period. (See Section 6.1 for more discussion of algorithm transitions.) The format of the Signature_Blocks is described below in Section 3.2.",
+      "zh": "BGPsec_PATH 属性将包含一个或两个签名块，每个签名块对应不同的算法套件。每个Signature_Blocks都将包含Secure_Path中每个AS号（即Secure_Path段）的一个签名段。在最常见的情况下，BGPsec_PATH 属性只包含一个 Signature_Block。不过，为了实现从旧算法套件到新算法套件的过渡（不设标志日），有必要在过渡期间包含两个 Signature_Block（一个用于旧算法套件，另一个用于新算法套件）。(关于算法过渡的更多讨论见第 6.1 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1. Secure_Path",
+      "section_title": true,
+      "zh": "3.1. 安全路径"
+    },
+    {
+      "indent": 3,
+      "text": "A detailed description of the Secure_Path information in the BGPsec_PATH attribute is provided here. The specification for the Secure_Path field is provided in Figures 4 and 5.",
+      "zh": "此处将详细介绍 BGPsec_PATH 属性中的 Secure_Path 信息。Secure_Path 字段的规范见图 4 和图 5。"
+    },
+    {
+      "indent": 13,
+      "text": "+-----------------------------------------------+\n| Secure_Path Length                 (2 octets) |\n+-----------------------------------------------+\n| One or more Secure_Path Segments   (variable) |\n+-----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 23,
+      "text": "Figure 4: Secure_Path Format",
+      "zh": "图 4：安全路径格式"
+    },
+    {
+      "indent": 3,
+      "text": "The Secure_Path Length contains the length (in octets) of the entire Secure_Path (including the 2 octets used to express this length field). As explained below, each Secure_Path Segment is 6 octets long. Note that this means the Secure_Path Length is two greater than six times the number of Secure_Path Segments (i.e., the number of AS numbers in the path).",
+      "zh": "Secure_Path Length（安全路径长度）包含整个安全路径的长度（以八位字节为单位）（包括用于表示该长度字段的 2 个八位字节）。如下所述，每个 Secure_Path 段的长度为 6 个八位字节。请注意，这意味着 Secure_Path 长度是 Secure_Path 段数（即路径中的 AS 号码数）的 6 倍。"
+    },
+    {
+      "indent": 3,
+      "text": "The Secure_Path contains one Secure_Path Segment (see Figure 5) for each AS in the path to the originating AS of the prefix specified in the UPDATE message. (Note: Repeated ASes are \"compressed out\" using the pCount field, as discussed below.)",
+      "zh": "Secure_Path 包含一个 Secure_Path 段（见图 5），每个 AS 在通往 UPDATE 消息中指定的前缀的发端 AS 的路径上都有一个 Secure_Path 段。(注：如下所述，重复的 AS 将通过 pCount 字段 \"压缩 \"掉。）"
+    },
+    {
+      "indent": 5,
+      "text": "+------------------------------------------------------+\n| pCount         (1 octet)                             |\n+------------------------------------------------------+\n| Confed_Segment flag (1 bit) |  Unassigned (7 bits)   | (Flags)\n+------------------------------------------------------+\n| AS Number      (4 octets)                            |\n+------------------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 19,
+      "text": "Figure 5: Secure_Path Segment Format",
+      "zh": "图 5：安全路径段格式"
+    },
+    {
+      "indent": 3,
+      "text": "The AS Number (in Figure 5) is the AS number of the BGP speaker that added this Secure_Path Segment to the BGPsec_PATH attribute. (See Section 4 for more information on populating this field.)",
+      "zh": "AS 号码（如图 5 所示）是将此 Secure_Path 段添加到 BGPsec_PATH 属性的 BGP 发言者的 AS 号码。(有关填充此字段的更多信息，请参阅第 4 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "The pCount field contains the number of repetitions of the associated AS number that the signature covers. This field enables a BGPsec speaker to mimic the semantics of prepending multiple copies of their AS to the AS_PATH without requiring the speaker to generate multiple signatures. Note that Section 9.1.2.2 (\"Breaking Ties (Phase 2)\") in [RFC4271] mentions the \"number of AS numbers\" in the AS_PATH attribute that is used in the route selection process. This metric (number of AS numbers) is the same as the AS path length obtained in BGPsec by summing the pCount values in the BGPsec_PATH attribute. The pCount field is also useful in managing route servers (see Section 4.2), AS confederations (see Section 4.3), and AS Number migrations (see [RFC8206] for details).",
+      "zh": "pCount 字段包含签名所覆盖的相关 AS 编号的重复次数。该字段使 BGPsec 发言者能够模仿将其 AS 的多个副本预置到 AS_PATH 的语义，而不要求发言者生成多个签名。请注意，[RFC4271] 第 9.1.2.2 节（\"打破纽带（第 2 阶段）\"）提到了路由选择过程中使用的 AS_PATH 属性中的 \"AS 号码数\"。这一度量（AS 号码数）与 BGPsec 中通过对 BGPsec_PATH 属性中的 pCount 值求和得到的 AS 路径长度相同。pCount 字段在管理路由服务器（见第 4.2 节）、AS 联盟（见第 4.3 节）和 AS 号码迁移（详见 [RFC8206]）时也很有用。"
+    },
+    {
+      "indent": 3,
+      "text": "The leftmost (i.e., the most significant) bit of the Flags field in Figure 5 is the Confed_Segment flag. The Confed_Segment flag is set to 1 to indicate that the BGPsec speaker that constructed this Secure_Path Segment is sending the UPDATE message to a peer AS within the same AS confederation [RFC5065]. (That is, a sequence of consecutive Confed_Segment flags are set in a BGPsec UPDATE message whenever, in a non-BGPsec UPDATE message, an AS_PATH segment of type AS_CONFED_SEQUENCE occurs.) In all other cases, the Confed_Segment flag is set to 0.",
+      "zh": "图 5 中 Flags 字段最左边（即最显著）的位是 Confed_Segment 标志。Confed_Segment 标志设为 1 表示构建此 Secure_Path Segment 的 BGPsec 发言者正在向同一 AS 联盟内的对等 AS 发送 UPDATE 消息[RFC5065]。(也就是说，只要在非 BGPsec UPDATE 消息中出现 AS_CONFED_SEQUENCE 类型的 AS_PATH 段，就会在 BGPsec UPDATE 消息中设置连续的 Confed_Segment 标志序列）。在所有其他情况下，Confed_Segment 标志被设置为 0。"
+    },
+    {
+      "indent": 3,
+      "text": "The remaining 7 bits of the Flags field are unassigned. They MUST be set to 0 by the sender and ignored by the receiver. Note, however, that the signature is computed over all 8 bits of the Flags field.",
+      "zh": "Flags 字段的其余 7 位未分配。发送方必须将其设置为 0，接收方可忽略。但请注意，签名是根据 Flags 字段的所有 8 位计算的。"
+    },
+    {
+      "indent": 3,
+      "text": "As stated earlier in Section 2.2, BGPsec peering requires that the peering ASes MUST each support 4-byte AS numbers. Currently assigned 2-byte AS numbers are converted into 4-byte AS numbers by setting the two high-order octets of the 4-octet field to 0 [RFC6793].",
+      "zh": "如第 2.2 节所述，BGPsec 对等互联要求对等互联 AS 必须支持 4 字节 AS 号码。目前分配的 2 字节 AS 号码通过将 4 字节字段的两个高阶八位字节设置为 0 转换为 4 字节 AS 号码[RFC6793]。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2. Signature_Block",
+      "section_title": true,
+      "zh": "3.2. 签名块"
+    },
+    {
+      "indent": 3,
+      "text": "A detailed description of the Signature_Blocks in the BGPsec_PATH attribute is provided here using Figures 6 and 7.",
+      "zh": "图 6 和图 7 详细描述了 BGPsec_PATH 属性中的 Signature_Blocks。"
+    },
+    {
+      "indent": 14,
+      "text": "+---------------------------------------------+\n| Signature_Block Length         (2 octets)   |\n+---------------------------------------------+\n| Algorithm Suite Identifier     (1 octet)    |\n+---------------------------------------------+\n| Sequence of Signature Segments (variable)   |\n+---------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 21,
+      "text": "Figure 6: Signature_Block Format",
+      "zh": "图 6：签名块格式"
+    },
+    {
+      "indent": 3,
+      "text": "The Signature_Block Length in Figure 6 is the total number of octets in the Signature_Block (including the 2 octets used to express this length field).",
+      "zh": "图 6 中的 \"Signature_Block Length\"（签名块长度）是签名块中的八位字节总数（包括用于表示该长度字段的 2 个八位字节）。"
+    },
+    {
+      "indent": 3,
+      "text": "The Algorithm Suite Identifier is a 1-octet identifier specifying the digest algorithm and digital signature algorithm used to produce the digital signature in each Signature Segment. An IANA registry of algorithm suite identifiers for use in BGPsec is specified in the BGPsec algorithms document [RFC8208].",
+      "zh": "算法套件标识符（Algorithm Suite Identifier）是一个 1 八位字节标识符，用于指定每个签名段中用于生成数字签名的摘要算法和数字签名算法。BGPsec 算法文档 [RFC8208] 中规定了用于 BGPsec 的算法套件标识符的 IANA 注册表。"
+    },
+    {
+      "indent": 3,
+      "text": "A Signature_Block in Figure 6 has exactly one Signature Segment (see Figure 7) for each Secure_Path Segment in the Secure_Path portion of the BGPsec_PATH attribute (that is, one Signature Segment for each distinct AS on the path for the prefix in the UPDATE message).",
+      "zh": "图 6 中的签名块（Signature_Block）为 BGPsec_PATH 属性 Secure_Path 部分中的每个 Secure_Path 段（即为 UPDATE 报文中前缀路径上的每个不同 AS 提供一个签名段）提供一个签名段（见图 7）。"
+    },
+    {
+      "indent": 14,
+      "text": "+---------------------------------------------+\n| Subject Key Identifier (SKI)  (20 octets)   |\n+---------------------------------------------+\n| Signature Length              (2 octets)    |\n+---------------------------------------------+\n| Signature                     (variable)    |\n+---------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 20,
+      "text": "Figure 7: Signature Segment Format",
+      "zh": "图 7：签名段格式"
+    },
+    {
+      "indent": 3,
+      "text": "The Subject Key Identifier (SKI) field in Figure 7 contains the value in the Subject Key Identifier extension of the RPKI router certificate [RFC6487] that is used to verify the signature (see Section 5 for details on the validity of BGPsec UPDATE messages). The SKI field has a fixed size of 20 octets. See Section 6.2 for considerations for the SKI size.",
+      "zh": "图 7 中的主题密钥标识符（SKI）字段包含 RPKI 路由器证书 [RFC6487] 的主题密钥标识符扩展中的值，该值用于验证签名（有关 BGPsec UPDATE 消息有效性的详情，请参阅第 5 节）。SKI 字段的大小固定为 20 个八位字节。有关 SKI 大小的注意事项，请参阅第 6.2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "The Signature Length field contains the size (in octets) of the value in the Signature field of the Signature Segment.",
+      "zh": "签名长度字段包含签名段签名字段值的大小（八位字节）。"
+    },
+    {
+      "indent": 3,
+      "text": "The Signature field in Figure 7 contains a digital signature that protects the prefix and the BGPsec_PATH attribute (see Sections 4 and 5 for details on signature generation and validation, respectively).",
+      "zh": "图 7 中的签名字段包含一个数字签名，用于保护前缀和 BGPsec_PATH 属性（关于签名生成和验证的详细信息，请分别参见第 4 节和第 5 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "4. BGPsec UPDATE Messages",
+      "section_title": true,
+      "zh": "4. BGPsec UPDATE 信息"
+    },
+    {
+      "indent": 3,
+      "text": "Section 4.1 provides general guidance on the creation of BGPsec UPDATE messages -- that is, UPDATE messages containing the BGPsec_PATH attribute.",
+      "zh": "第 4.1 节提供了创建 BGPsec UPDATE 消息（即包含 BGPsec_PATH 属性的 UPDATE 消息）的一般指导。"
+    },
+    {
+      "indent": 3,
+      "text": "Section 4.2 specifies how a BGPsec speaker generates the BGPsec_PATH attribute to include in a BGPsec UPDATE message.",
+      "zh": "第 4.2 节规定了 BGPsec 说话者如何生成 BGPsec_PATH 属性并将其包含在 BGPsec UPDATE 消息中。"
+    },
+    {
+      "indent": 3,
+      "text": "Section 4.3 contains special processing instructions for members of an AS confederation [RFC5065]. A BGPsec speaker that is not a member of such a confederation MUST NOT set the Confed_Segment flag in its Secure_Path Segment (i.e., leave the Confed_Segment flag at the default value of 0) in all BGPsec UPDATE messages it sends.",
+      "zh": "第 4.3 节包含针对 AS 联盟成员的特殊处理说明 [RFC5065]。不属于此类联盟成员的 BGPsec 发言者不得在其发送的所有 BGPsec UPDATE 消息中设置其 Secure_Path 段中的 Confed_Segment 标志（即，将 Confed_Segment 标志保留为默认值 0）。"
+    },
+    {
+      "indent": 3,
+      "text": "Section 4.4 contains instructions for reconstructing the AS_PATH attribute in cases where a BGPsec speaker receives an UPDATE message with a BGPsec_PATH attribute and wishes to propagate the UPDATE message to a peer who does not support BGPsec.",
+      "zh": "第 4.4 节包含在 BGPsec 说话者收到带有 BGPsec_PATH 属性的 UPDATE 消息并希望将该 UPDATE 消息传播给不支持 BGPsec 的对等节点时重建 AS_PATH 属性的说明。"
+    },
+    {
+      "indent": 0,
+      "text": "4.1. General Guidance",
+      "section_title": true,
+      "zh": "4.1. 一般指导"
+    },
+    {
+      "indent": 3,
+      "text": "The information protected by the signature on a BGPsec UPDATE message includes the AS number of the peer to whom the UPDATE message is being sent. Therefore, if a BGPsec speaker wishes to send a BGPsec UPDATE message to multiple BGP peers, it MUST generate a separate BGPsec UPDATE message for each unique peer AS to whom the UPDATE message is sent.",
+      "zh": "BGPsec UPDATE 消息上受签名保护的信息包括发送 UPDATE 消息的对等体的 AS 号。因此，如果 BGPsec 发言者希望向多个 BGP 对等体发送 BGPsec UPDATE 消息，它必须为每个接收 UPDATE 消息的唯一对等体 AS 生成单独的 BGPsec UPDATE 消息。"
+    },
+    {
+      "indent": 3,
+      "text": "A BGPsec UPDATE message MUST advertise a route to only a single prefix. This is because a BGPsec speaker receiving an UPDATE message with multiple prefixes would be unable to construct a valid BGPsec UPDATE message (i.e., valid path signatures) containing a subset of the prefixes in the received update. If a BGPsec speaker wishes to advertise routes to multiple prefixes, then it MUST generate a separate BGPsec UPDATE message for each prefix. Additionally, a BGPsec UPDATE message MUST use the MP_REACH_NLRI attribute [RFC4760] to encode the prefix.",
+      "zh": "BGPsec UPDATE 消息必须只向一个前缀公布路由。这是因为收到包含多个前缀的 UPDATE 消息的 BGPsec 说话者将无法构建包含所收到的更新中的前缀子集的有效 BGPsec UPDATE 消息（即有效路径签名）。如果 BGPsec 说话者希望向多个前缀公布路由，那么它必须为每个前缀生成单独的 BGPsec UPDATE 消息。此外，BGPsec UPDATE 消息必须使用 MP_REACH_NLRI 属性 [RFC4760] 对前缀进行编码。"
+    },
+    {
+      "indent": 3,
+      "text": "The BGPsec_PATH attribute and the AS_PATH attribute are mutually exclusive. That is, any UPDATE message containing the BGPsec_PATH attribute MUST NOT contain the AS_PATH attribute. The information that would be contained in the AS_PATH attribute is instead conveyed in the Secure_Path portion of the BGPsec_PATH attribute.",
+      "zh": "BGPsec_PATH 属性和 AS_PATH 属性是互斥的。也就是说，任何包含 BGPsec_PATH 属性的 UPDATE 消息都不得包含 AS_PATH 属性。AS_PATH 属性中包含的信息将在 BGPsec_PATH 属性的 Secure_Path 部分中传达。"
+    },
+    {
+      "indent": 3,
+      "text": "In order to create or add a new signature to a BGPsec UPDATE message with a given algorithm suite, the BGPsec speaker MUST possess a private key suitable for generating signatures for this algorithm suite. Additionally, this private key must correspond to the public key in a valid RPKI end entity certificate whose AS number resource extension includes the BGPsec speaker's AS number [RFC8209]. Note also that new signatures are only added to a BGPsec UPDATE message when a BGPsec speaker is generating an UPDATE message to send to an external peer (i.e., when the AS number of the peer is not equal to the BGPsec speaker's own AS number).",
+      "zh": "要使用给定算法套件为 BGPsec UPDATE 消息创建或添加新签名，BGPsec 发言者必须拥有适合为该算法套件生成签名的私钥。此外，该私钥必须与有效的 RPKI 终端实体证书中的公钥相对应，该证书的 AS 号资源扩展包括 BGPsec 说话者的 AS 号 [RFC8209]。另请注意，只有当 BGPsec 说话者生成要发送给外部对等方的 UPDATE 消息时（即对等方的 AS 号不等于 BGPsec 说话者自己的 AS 号），新签名才会被添加到 BGPsec UPDATE 消息中。"
+    },
+    {
+      "indent": 3,
+      "text": "The RPKI enables the legitimate holder of IP address prefix(es) to issue a signed object, called a Route Origin Authorization (ROA), that authorizes a given AS to originate routes to a given set of prefixes (see RFC 6482 [RFC6482]). It is expected that most Relying Parties (RPs) will utilize BGPsec in tandem with origin validation (see RFC 6483 [RFC6483] and RFC 6811 [RFC6811]). Therefore, it is RECOMMENDED that a BGPsec speaker only originate a BGPsec UPDATE message advertising a route for a given prefix if there exists a valid ROA authorizing the BGPsec speaker's AS to originate routes to this prefix.",
+      "zh": "RPKI 使 IP 地址前缀的合法持有者能够签发称为路由起源授权（ROA）的签名对象，授权给定的 AS 将路由起源到给定的前缀集（见 RFC 6482 [RFC6482]）。预计大多数依赖方 (RP) 将在使用 BGPsec 的同时进行起源验证（见 RFC 6483 [RFC6483] 和 RFC 6811 [RFC6811]）。因此，建议 BGPsec 发言者只有在存在有效 ROA 授权 BGPsec 发言者的 AS 为特定前缀发布路由广告时，才发起 BGPsec UPDATE 消息。"
+    },
+    {
+      "indent": 3,
+      "text": "If a BGPsec router has received only a non-BGPsec UPDATE message containing the AS_PATH attribute (instead of the BGPsec_PATH attribute) from a peer for a given prefix, then it MUST NOT attach a BGPsec_PATH attribute when it propagates the UPDATE message. (Note that a BGPsec router may also receive a non-BGPsec UPDATE message from an internal peer without the AS_PATH attribute, i.e., with just the Network Layer Reachability Information (NLRI) in it. In that case, the prefix is originating from that AS, and if it is selected for advertisement, the BGPsec speaker SHOULD attach a BGPsec_PATH attribute and send a signed route (for that prefix) to its external BGPsec-speaking peers.)",
+      "zh": "如果 BGPsec 路由器只从对等方收到了包含特定前缀的 AS_PATH 属性（而非 BGPsec_PATH 属性）的非 BGPsec UPDATE 消息，那么它在传播 UPDATE 消息时不得附加 BGPsec_PATH 属性。(请注意，BGPsec 路由器也可能从内部对等方接收到不含 AS_PATH 属性的非 BGPsec UPDATE 消息，即其中只包含网络层可达性信息 (NLRI)。在这种情况下，前缀源于该 AS，如果被选中用于广告，BGPsec 发言者应附加 BGPsec_PATH 属性，并向其外部 BGPsec 发言对等体发送（该前缀的）签名路由。）"
+    },
+    {
+      "indent": 3,
+      "text": "Conversely, if a BGPsec router has received a BGPsec UPDATE message (with the BGPsec_PATH attribute) from a peer for a given prefix and it chooses to propagate that peer's route for the prefix, then it SHOULD propagate the route as a BGPsec UPDATE message containing the BGPsec_PATH attribute.",
+      "zh": "相反，如果 BGPsec 路由器从对等方收到了给定前缀的 BGPsec UPDATE 消息（带有 BGPsec_PATH 属性），并选择传播该对等方的前缀路由，那么它就应将该路由作为包含 BGPsec_PATH 属性的 BGPsec UPDATE 消息进行传播。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that removing BGPsec signatures (i.e., propagating a route advertisement without the BGPsec_PATH attribute) has significant security ramifications. (See Section 8 for a discussion of the security ramifications of removing BGPsec signatures.) Therefore, when a route advertisement is received via a BGPsec UPDATE message, propagating the route advertisement without the BGPsec_PATH attribute is NOT RECOMMENDED, unless the message is sent to a peer that did not advertise the capability to receive BGPsec UPDATE messages (see Section 4.4).",
+      "zh": "请注意，移除 BGPsec 签名（即传播没有 BGPsec_PATH 属性的路由广告）会产生重大的安全影响。(有关移除 BGPsec 签名的安全影响的讨论，请参阅第 8 节）。因此，当通过 BGPsec UPDATE 消息接收到路由广告时，不建议传播不带 BGPsec_PATH 属性的路由广告，除非该消息是发送给一个没有发布接收 BGPsec UPDATE 消息功能的对等（请参阅第 4.4 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "Furthermore, note that when a BGPsec speaker propagates a route advertisement with the BGPsec_PATH attribute, it is not attesting to the validation state of the UPDATE message it received. (See Section 8 for more discussion of the security semantics of BGPsec signatures.)",
+      "zh": "此外，请注意当 BGPsec 发言者传播带有 BGPsec_PATH 属性的路由广告时，它并不是在证明其收到的 UPDATE 消息的验证状态。(有关 BGPsec 签名安全语义的更多讨论，请参阅第 8 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "If the BGPsec speaker is producing an UPDATE message that would, in the absence of BGPsec, contain an AS_SET (e.g., the BGPsec speaker is performing proxy aggregation), then the BGPsec speaker MUST NOT include the BGPsec_PATH attribute. In such a case, the BGPsec speaker MUST remove any existing BGPsec_PATH in the received advertisement(s) for this prefix and produce a traditional (non-BGPsec) UPDATE message. It should be noted that BCP 172 [RFC6472] recommends against the use of AS_SET and AS_CONFED_SET in the AS_PATH of BGP UPDATE messages.",
+      "zh": "如果 BGPsec 说话者生成的 UPDATE 消息在没有 BGPsec 的情况下包含 AS_SET（例如，BGPsec 说话者正在执行代理聚合），则 BGPsec 说话者不得包含 BGPsec_PATH 属性。在这种情况下，BGPsec 说话者必须删除已收到的该前缀广告中的任何现有 BGPsec_PATH，并生成传统（非 BGPsec）UPDATE 消息。需要注意的是，BCP 172 [RFC6472] 建议不要在 BGP UPDATE 消息的 AS_PATH 中使用 AS_SET 和 AS_CONFED_SET。"
+    },
+    {
+      "indent": 3,
+      "text": "The case where the BGPsec speaker sends a BGPsec UPDATE message to an iBGP (internal BGP) peer is quite simple. When originating a new route advertisement and sending it to a BGPsec-capable iBGP peer, the BGPsec speaker omits the BGPsec_PATH attribute. When originating a new route advertisement and sending it to a non-BGPsec iBGP peer, the BGPsec speaker includes an empty AS_PATH attribute in the UPDATE message. (An empty AS_PATH attribute is one whose length field contains the value 0 [RFC4271].) When a BGPsec speaker chooses to forward a BGPsec UPDATE message to an iBGP peer, the BGPsec_PATH attribute SHOULD NOT be removed, unless the peer doesn't support BGPsec. In the case when an iBGP peer doesn't support BGPsec, then a BGP UPDATE message with AS_PATH is reconstructed from the BGPsec UPDATE message and then forwarded (see Section 4.4). In particular, when forwarding to a BGPsec-capable iBGP (or eBGP) peer, the BGPsec_PATH attribute SHOULD NOT be removed even in the case where the BGPsec UPDATE message has not been successfully validated. (See Section 5 for more information on validation and Section 8 for the security ramifications of removing BGPsec signatures.) All BGPsec UPDATE messages MUST conform to BGP's maximum message size. If the resulting message exceeds the maximum message size, then the guidelines in Section 9.2 of RFC 4271 [RFC4271] MUST be followed.",
+      "zh": "BGPsec 说话者向 iBGP（内部 BGP）对等点发送 BGPsec UPDATE 消息的情况非常简单。当发起新的路由广告并将其发送给具有 BGPsec 功能的 iBGP 对等体时，BGPsec 发言者会省略 BGPsec_PATH 属性。当发起新的路由广告并将其发送给非 BGPsec iBGP 对等体时，BGPsec 发言者会在 UPDATE 消息中包含一个空的 AS_PATH 属性。(空 AS_PATH 属性是指长度字段的值为 0 [RFC4271]）。当 BGPsec 说话者选择将 BGPsec UPDATE 消息转发给 iBGP 对等体时，除非对等体不支持 BGPsec，否则不应删除 BGPsec_PATH 属性。如果 iBGP 对等体不支持 BGPsec，那么带有 AS_PATH 的 BGP UPDATE 消息将从 BGPsec UPDATE 消息中重建，然后再转发（参见第 4.4 节）。特别是，在转发给具有 BGPsec 功能的 iBGP（或 eBGP）对等方时，即使 BGPsec UPDATE 消息未被成功验证，也不应删除 BGPsec_PATH 属性。(有关验证的更多信息，请参阅第 5 节；有关移除 BGPsec 签名的安全影响，请参阅第 8 节）。所有 BGPsec UPDATE 消息都必须符合 BGP 的最大消息大小。如果生成的报文超过了最大报文大小，则必须遵循 RFC 4271 [RFC4271] 第 9.2 节中的指导原则。"
+    },
+    {
+      "indent": 0,
+      "text": "4.2. Constructing the BGPsec_PATH Attribute",
+      "section_title": true,
+      "zh": "4.2. 构建 BGPsec_PATH 属性"
+    },
+    {
+      "indent": 3,
+      "text": "When a BGPsec speaker receives a BGPsec UPDATE message containing a BGPsec_PATH attribute (with one or more signatures) from an (internal or external) peer, it may choose to propagate the route advertisement by sending it to its other (internal or external) peers. When sending the route advertisement to an internal BGPsec-speaking peer, the BGPsec_PATH attribute SHALL NOT be modified. When sending the route advertisement to an external BGPsec-speaking peer, the following procedures are used to form or update the BGPsec_PATH attribute.",
+      "zh": "当 BGPsec 发言者从（内部或外部）对等方接收到包含 BGPsec_PATH 属性（带有一个或多个签名）的 BGPsec UPDATE 消息时，它可以选择将路由广告发送给其他（内部或外部）对等方来传播该路由广告。向内部 BGPsec 对等体发送路由广告时，不得修改 BGPsec_PATH 属性。向外部 BGPsec 演讲对等体发送路由广告时，将使用以下步骤来形成或更新 BGPsec_PATH 属性。"
+    },
+    {
+      "indent": 3,
+      "text": "To generate the BGPsec_PATH attribute on the outgoing UPDATE message, the BGPsec speaker first generates a new Secure_Path Segment. Note that if the BGPsec speaker is not the origin AS and there is an existing BGPsec_PATH attribute, then the BGPsec speaker prepends its new Secure_Path Segment (places in first position) onto the existing Secure_Path.",
+      "zh": "要在发出的 UPDATE 消息中生成 BGPsec_PATH 属性，BGPsec 发言者首先要生成一个新的 Secure_Path 段。请注意，如果 BGPsec 说话者不是源 AS，且存在现有的 BGPsec_PATH 属性，那么 BGPsec 说话者会将其新的 Secure_Path 段（放在第一位）预置到现有的 Secure_Path 上。"
+    },
+    {
+      "indent": 3,
+      "text": "The AS number in this Secure_Path Segment MUST match the AS number in the Subject field of the RPKI router certificate that will be used to verify the digital signature constructed by this BGPsec speaker (see Section 3.1.1 in [RFC8209] and RFC 6487 [RFC6487]).",
+      "zh": "此 Secure_Path 段中的 AS 号码必须与 RPKI 路由器证书的主题字段中的 AS 号码一致，该证书将用于验证此 BGPsec 发言者构建的数字签名（参见 [RFC8209] 第 3.1.1 节和 RFC 6487 [RFC6487]）。"
+    },
+    {
+      "indent": 3,
+      "text": "The pCount field of the Secure_Path Segment is typically set to the value 1. However, a BGPsec speaker may set the pCount field to a value greater than 1. Setting the pCount field to a value greater than 1 has the same semantics as repeating an AS number multiple times in the AS_PATH of a non-BGPsec UPDATE message (e.g., for traffic engineering purposes).",
+      "zh": "安全路径段的 pCount 字段通常设置为 1。将 pCount 字段设置为大于 1 的值，其语义与在非 BGPsec UPDATE 消息的 AS_PATH 中多次重复 AS 号码相同（例如，出于流量工程目的）。"
+    },
+    {
+      "indent": 3,
+      "text": "To prevent unnecessary processing load in the validation of BGPsec signatures, a BGPsec speaker SHOULD NOT produce multiple consecutive Secure_Path Segments with the same AS number. This means that to achieve the semantics of prepending the same AS number k times, a BGPsec speaker SHOULD produce a single Secure_Path Segment -- with a pCount of k -- and a single corresponding Signature Segment.",
+      "zh": "为防止在验证BGPsec签名时产生不必要的处理负荷，BGPsec发言者不应生成多个具有相同AS号的连续Secure_Path段。这意味着，为实现 k 次预置相同 AS 号码的语义，BGPsec 发言者应生成一个 pCount 为 k 的 Secure_Path 段和一个相应的签名段。"
+    },
+    {
+      "indent": 3,
+      "text": "A route server that participates in the BGP control plane but does not act as a transit AS in the data plane may choose to set pCount to 0. This option enables the route server to participate in BGPsec and obtain the associated security guarantees without increasing the length of the AS path. (Note that BGPsec speakers compute the length of the AS path by summing the pCount values in the BGPsec_PATH attribute; see Section 5.) However, when a route server sets the pCount value to 0, it still inserts its AS number into the Secure_Path Segment, as this information is needed to validate the signature added by the route server. See [RFC8206] for a discussion of setting pCount to 0 to facilitate AS Number migration. Also, see Section 4.3 for the use of pCount=0 in the context of an AS confederation. See Section 7.2 for operational guidance for configuring a BGPsec router for setting pCount=0 and/or accepting pCount=0 from a peer.",
+      "zh": "参与 BGP 控制平面但不作为数据平面中转 AS 的路由服务器可选择将 pCount 设为 0。 该选项使路由服务器能够参与 BGPsec 并获得相关的安全保证，而不会增加 AS 路径的长度。(请注意，BGPsec 发言者通过对 BGPsec_PATH 属性中的 pCount 值求和来计算 AS 路径的长度；请参阅第 5 节）。然而，当路由服务器将 pCount 值设置为 0 时，它仍会将其 AS 编号插入 Secure_Path 段，因为需要此信息来验证路由服务器添加的签名。有关将 pCount 设为 0 以方便 AS 号码迁移的讨论，请参阅 [RFC8206]。此外，关于在 AS 联盟中使用 pCount=0 的问题，请参见第 4.3 节。有关配置 BGPsec 路由器以设置 pCount=0 和/或接受对等方 pCount=0 的操作指南，请参阅第 7.2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Next, the BGPsec speaker generates one or two Signature_Blocks. Typically, a BGPsec speaker will use only a single algorithm suite and thus create only a single Signature_Block in the BGPsec_PATH attribute. However, to ensure backwards compatibility during a period of transition from a 'current' algorithm suite to a 'new' algorithm suite, it will be necessary to originate UPDATE messages that contain a Signature_Block for both the 'current' and the 'new' algorithm suites (see Section 6.1).",
+      "zh": "接下来，BGPsec 说话者会生成一个或两个 Signature_Block。通常情况下，BGPsec 说话者只使用一种算法套件，因此在 BGPsec_PATH 属性中只创建一个 Signature_Block。然而，为了确保从 \"当前 \"算法套件向 \"新 \"算法套件过渡期间的向后兼容性，有必要发出包含 \"当前 \"和 \"新 \"算法套件的Signature_Block的UPDATE报文（见第6.1节）。"
+    },
+    {
+      "indent": 3,
+      "text": "If the received BGPsec UPDATE message contains two Signature_Blocks and the BGPsec speaker supports both of the corresponding algorithm suites, then the new UPDATE message generated by the BGPsec speaker MUST include both of the Signature_Blocks. If the received BGPsec UPDATE message contains two Signature_Blocks and the BGPsec speaker only supports one of the two corresponding algorithm suites, then the BGPsec speaker MUST remove the Signature_Block corresponding to the algorithm suite that it does not understand. If the BGPsec speaker does not support the algorithm suites in any of the Signature_Blocks contained in the received UPDATE message, then the BGPsec speaker MUST NOT propagate the route advertisement with the BGPsec_PATH attribute. (That is, if it chooses to propagate this route advertisement at all, it MUST do so as an unsigned BGP UPDATE message. See Section 4.4 for more information on converting to an unsigned BGP UPDATE message.)",
+      "zh": "如果收到的 BGPsec UPDATE 消息包含两个 Signature_Blocks，且 BGPsec 说话者支持两个相应的算法套件，则 BGPsec 说话者生成的新 UPDATE 消息必须包含这两个 Signature_Blocks。如果接收到的 BGPsec UPDATE 消息包含两个 Signature_Block，而 BGPsec 说话者只支持两个相应算法套件中的一个，则 BGPsec 说话者必须删除与它不理解的算法套件相对应的 Signature_Block。如果 BGPsec 发言者不支持接收到的 UPDATE 消息中包含的任何 Signature_Block 中的算法套件，则 BGPsec 发言者不得传播带有 BGPsec_PATH 属性的路由广告。(也就是说，如果它选择传播该路由广告，则必须以无签名 BGP UPDATE 消息的形式传播。有关转换为无符号 BGP UPDATE 消息的更多信息，请参阅第 4.4 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that in the case where the BGPsec_PATH has two Signature_Blocks (corresponding to different algorithm suites), the validation algorithm (see Section 5.2) deems a BGPsec UPDATE message to be 'Valid' if there is at least one supported algorithm suite (and corresponding Signature_Block) that is deemed 'Valid'. This means that a 'Valid' BGPsec UPDATE message may contain a Signature_Block that is not deemed 'Valid' (e.g., contains signatures that BGPsec does not successfully verify). Nonetheless, such Signature_Blocks MUST NOT be removed. (See Section 8 for a discussion of the security ramifications of this design choice.) For each Signature_Block corresponding to an algorithm suite that the BGPsec speaker does support, the BGPsec speaker MUST add a new Signature Segment to the Signature_Block. This Signature Segment is prepended to the list of Signature Segments (placed in the first position) so that the list of Signature Segments appears in the same order as the corresponding Secure_Path Segments. The BGPsec speaker populates the fields of this new Signature Segment as follows.",
+      "zh": "请注意，在 BGPsec_PATH 有两个 Signature_Block（对应不同算法套件）的情况下，如果至少有一个支持的算法套件（和对应的 Signature_Block）被视为 \"有效\"，则验证算法（见第 5.2 节）会将 BGPsec UPDATE 报文视为 \"有效\"。这意味着 \"有效 \"的BGPsec UPDATE报文可能包含不被视为 \"有效 \"的Signature_Block（例如，包含BGPsec无法成功验证的签名）。尽管如此，此类签名块不得删除。(关于这一设计选择的安全影响，请参见第 8 节）。对于与 BGPsec 发言者支持的算法套件相对应的每个 Signature_Block，BGPsec 发言者必须在 Signature_Block 中添加一个新的签名段。该签名段将被添加到签名段列表中（放在第一个位置），这样签名段列表的显示顺序就与相应的安全路径段相同。BGPsec 发言者将按如下方式填充新签名段的字段。"
+    },
+    {
+      "indent": 3,
+      "text": "The Subject Key Identifier field in the new segment is populated with the identifier contained in the Subject Key Identifier extension of the RPKI router certificate corresponding to the BGPsec speaker [RFC8209]. This Subject Key Identifier will be used by recipients of the route advertisement to identify the proper certificate to use in verifying the signature.",
+      "zh": "新网段中的主体密钥标识符字段由与 BGPsec 说话者相对应的 RPKI 路由器证书的主体密钥标识符扩展 [RFC8209] 中包含的标识符填充。路由广告的接收者将使用此主题密钥标识符来识别用于验证签名的正确证书。"
+    },
+    {
+      "indent": 3,
+      "text": "The Signature field in the new segment contains a digital signature that binds the prefix and BGPsec_PATH attribute to the RPKI router certificate corresponding to the BGPsec speaker. The digital signature is computed as follows:",
+      "zh": "新网段中的签名字段包含一个数字签名，它将前缀和 BGPsec_PATH 属性与 BGPsec 发言者对应的 RPKI 路由器证书绑定。数字签名的计算方法如下："
+    },
+    {
+      "indent": 3,
+      "text": "o For clarity, let us number the Secure_Path and corresponding Signature Segments from 1 to N, as follows. Let Secure_Path Segment 1 and Signature Segment 1 be the segments produced by the origin AS. Let Secure_Path Segment 2 and Signature Segment 2 be the segments added by the next AS after the origin. Continue this method of numbering, and ultimately let Secure_Path Segment N and Signature Segment N be those that are being added by the current AS. The current AS (Nth AS) is signing and forwarding the UPDATE message to the next AS (i.e., the (N+1)th AS) in the chain of ASes that form the AS path.",
+      "zh": "o 为清楚起见，我们将安全路径和相应的签名段从 1 到 N 编号如下。让 Secure_Path 段 1 和签名段 1 成为由起源 AS 产生的网段。Secure_Path Segment 2 和 Signature Segment 2 是源 AS 之后的下一个 AS 添加的网段。继续采用这种编号方法，最终让 Secure_Path Segment N 和 Signature Segment N 成为当前 AS 添加的网段。当前 AS（第 N 个 AS）签署 UPDATE 消息并转发给 AS 路径链中的下一个 AS（即第 (N+1)th AS）。"
+    },
+    {
+      "indent": 3,
+      "text": "o In order to construct the digital signature for Signature Segment N (the Signature Segment being produced by the current AS), first construct the sequence of octets to be hashed as shown in Figure 8. This sequence of octets includes all the data that the Nth AS attests to by adding its digital signature in the UPDATE message that is being forwarded to a BGPsec speaker in the (N+1)th AS. (For the design rationale for choosing the specific structure in Figure 8, please see [Borchert].)",
+      "zh": "o 为了构建签名段 N（当前 AS 生成的签名段）的数字签名，首先要构建要散列的八进制数序列，如图 8 所示。该八进制数序列包括第 N 个 AS 通过在转发给第 (N+1)AS 的 BGPsec 说话者的 UPDATE 消息中添加数字签名来证明的所有数据。(有关选择图 8 中特定结构的设计原理，请参阅 [Borchert]）。"
+    },
+    {
+      "indent": 15,
+      "text": "+------------------------------------+\n| Target AS Number                   |\n+------------------------------------+----\\\n| Signature Segment   : N-1          |     \\\n+------------------------------------+     |\n| Secure_Path Segment : N            |     |\n+------------------------------------+     \\\n       ...                                  >  Data from\n+------------------------------------+     /   N Segments\n| Signature Segment   : 1            |     |\n+------------------------------------+     |\n| Secure_Path Segment : 2            |     |\n+------------------------------------+     /\n| Secure_Path Segment : 1            |    /\n+------------------------------------+---/\n| Algorithm Suite Identifier         |\n+------------------------------------+\n| AFI                                |\n+------------------------------------+\n| SAFI                               |\n+------------------------------------+\n| NLRI                               |\n+------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 17,
+      "text": "Figure 8: Sequence of Octets to Be Hashed",
+      "zh": "图 8：要散列的八进制数序列"
+    },
+    {
+      "indent": 6,
+      "text": "The elements in this sequence (Figure 8) MUST be ordered exactly as shown. The 'Target AS Number' is the AS to whom the BGPsec speaker intends to send the UPDATE message. (Note that the 'Target AS Number' is the AS number announced by the peer in the OPEN message of the BGP session within which the UPDATE message is sent.) The Secure_Path and Signature Segments (1 through N-1) are obtained from the BGPsec_PATH attribute. Finally, the Address Family Identifier (AFI), Subsequent Address Family Identifier (SAFI), and NLRI fields are obtained from the MP_REACH_NLRI attribute [RFC4760]. Additionally, in the Prefix field within the NLRI field (see Section 5 in RFC 4760 [RFC4760]), all of the trailing bits MUST be set to 0 when constructing this sequence.",
+      "zh": "该序列（图 8）中的元素必须按所示顺序排列。目标 AS 编号 \"是 BGPsec 说话者打算向其发送 UPDATE 消息的 AS。(请注意，\"目标 AS 号 \"是对等方在发送 UPDATE 消息的 BGP 会话的 OPEN 消息中公布的 AS 号）。安全路径和签名段（1 至 N-1）从 BGPsec_PATH 属性中获取。最后，地址族标识符（AFI）、后续地址族标识符（SAFI）和 NLRI 字段来自 MP_REACH_NLRI 属性 [RFC4760]。此外，在 NLRI 字段内的前缀字段（参见 RFC 4760 [RFC4760] 第 5 节）中，构建此序列时必须将所有尾部位设置为 0。"
+    },
+    {
+      "indent": 3,
+      "text": "o Apply to this octet sequence (in Figure 8) the digest algorithm (for the algorithm suite of this Signature_Block) to obtain a digest value.",
+      "zh": "o 对该八位位组序列（如图 8 所示）应用摘要算法（针对该签名块的算法套件），以获得摘要值。"
+    },
+    {
+      "indent": 3,
+      "text": "o Apply to this digest value the signature algorithm (for the algorithm suite of this Signature_Block) to obtain the digital signature. Then populate the Signature field (in Figure 7) with this digital signature.",
+      "zh": "o 对该摘要值应用签名算法（针对该 Signature_Block 的算法套件）以获得数字签名。然后用该数字签名填充签名字段（如图 7 所示）。"
+    },
+    {
+      "indent": 3,
+      "text": "The Signature Length field (in Figure 7) is populated with the length (in octets) of the value in the Signature field.",
+      "zh": "签名长度字段（如图 7 所示）用签名字段值的长度（以八位字节为单位）填充。"
+    },
+    {
+      "indent": 0,
+      "text": "4.3. Processing Instructions for Confederation Members",
+      "section_title": true,
+      "zh": "4.3. 联邦成员处理说明"
+    },
+    {
+      "indent": 3,
+      "text": "Members of AS confederations [RFC5065] MUST additionally follow the instructions in this section for processing BGPsec UPDATE messages.",
+      "zh": "AS 联盟 [RFC5065] 成员还必须遵守本节中有关处理 BGPsec UPDATE 消息的说明。"
+    },
+    {
+      "indent": 3,
+      "text": "When a BGPsec speaker in an AS confederation receives a BGPsec UPDATE message from a peer that is external to the confederation and chooses to propagate the UPDATE message within the confederation, it first adds a signature signed to its own Member-AS (i.e., the 'Target AS Number' is the BGPsec speaker's Member-AS Number). In this internally modified UPDATE message, the newly added Secure_Path Segment contains the public AS number (i.e., Confederation Identifier), the segment's pCount value is set to 0, and Confed_Segment flag is set to 1. Setting pCount=0 in this case helps ensure that the AS path length is not unnecessarily incremented. The newly added signature is generated using a private key corresponding to the public AS number of the confederation. The BGPsec speaker propagates the modified UPDATE message to its peers within the confederation.",
+      "zh": "当AS邦联中的BGPsec发言者从邦联外部的对等方接收到BGPsec UPDATE报文并选择在邦联内传播UPDATE报文时，它首先会添加一个签名到自己的成员AS（即 \"目标AS号 \"是BGPsec发言者的成员AS号）。在这个内部修改的 UPDATE 报文中，新添加的 Secure_Path 段包含公共 AS 编号（即联盟标识符），该段的 pCount 值被设为 0，Confed_Segment 标志被设为 1。 在这种情况下，设置 pCount=0 有助于确保 AS 路径长度不会被不必要地增加。新添加的签名使用与联盟的公共 AS 编号相对应的私钥生成。BGPsec 发言者将修改后的 UPDATE 消息传播给联盟内的对等方。"
+    },
+    {
+      "indent": 3,
+      "text": "Any BGPsec_PATH modifications mentioned below in the context of propagation of the UPDATE message within the confederation are in addition to the modification described above (i.e., with pCount=0).",
+      "zh": "除了上述修改（即 pCount=0 时）外，下面提到的在联盟内传播 UPDATE 消息时对 BGPsec_PATH 的任何修改都是额外的。"
+    },
+    {
+      "indent": 3,
+      "text": "When a BGPsec speaker sends a BGPsec UPDATE message to a peer that belongs within its own Member-AS, the confederation member SHALL NOT modify the BGPsec_PATH attribute. When a BGPsec speaker sends a BGPsec UPDATE message to a peer that is within the same confederation but in a different Member-AS, the BGPsec speaker puts its Member-AS Number in the AS Number field of the Secure_Path Segment that it adds to the BGPsec UPDATE message. Additionally, in this case, the Member-AS that generates the Secure_Path Segment sets the Confed_Segment flag to 1. Further, the signature is generated with a private key corresponding to the BGPsec speaker's Member-AS Number. (Note: In this document, intra-Member-AS peering is regarded as iBGP, and inter-Member-AS peering is regarded as eBGP. The latter is also known as confederation-eBGP.)",
+      "zh": "当 BGPsec 说话者向属于其自己的成员-AS 的对等点发送 BGPsec UPDATE 消息时，联盟成员不得修改 BGPsec_PATH 属性。当 BGPsec 说话者向属于同一联盟但不同成员-AS 中的对等点发送 BGPsec UPDATE 消息时，BGPsec 说话者会将其成员-AS 号码放入其添加到 BGPsec UPDATE 消息的 Secure_Path 段的 AS 号码字段中。此外，在这种情况下，生成 Secure_Path Segment 的成员-AS 会将 Confed_Segment 标志设为 1。此外，签名是用与 BGPsec 说话者的成员-AS 编号相对应的私钥生成的。(注：在本文中，成员-AS 内部的对等互联被视为 iBGP，成员-AS 之间的对等互联被视为 eBGP。后者也称为联盟-eBGP）。"
+    },
+    {
+      "indent": 3,
+      "text": "Within a confederation, the verification of BGPsec signatures added by other members of the confederation is optional. Note that if a confederation chooses not to verify digital signatures within the confederation, then BGPsec is not able to provide any assurances about the integrity of the Member-AS Numbers placed in Secure_Path Segments where the Confed_Segment flag is set to 1.",
+      "zh": "在联盟内部，验证联盟其他成员添加的 BGPsec 签名是可选的。请注意，如果联盟选择不验证联盟内的数字签名，那么 BGPsec 就无法对安全路径段（Confed_Segment 标志设为 1）中的成员-AS 编号的完整性提供任何保证。"
+    },
+    {
+      "indent": 3,
+      "text": "When a confederation member receives a BGPsec UPDATE message from a peer within the confederation and propagates it to a peer outside the confederation, it needs to remove all of the Secure_Path Segments added by confederation members as well as the corresponding Signature Segments. To do this, the confederation member propagating the route outside the confederation does the following:",
+      "zh": "当邦联成员从邦联内的对等点收到 BGPsec UPDATE 消息并将其传播给邦联外的对等点时，它需要删除邦联成员添加的所有 Secure_Path 段以及相应的签名段。为此，向联盟外传播路由的联盟成员需要执行以下操作："
+    },
+    {
+      "indent": 3,
+      "text": "o First, starting with the most recently added Secure_Path Segment, remove all of the consecutive Secure_Path Segments that have the Confed_Segment flag set to 1. Stop this process once a Secure_Path Segment that has its Confed_Segment flag set to 0 is reached. Keep a count of the number of segments removed in this fashion.",
+      "zh": "o 首先，从最近添加的 Secure_Path 网段开始，移除所有 Confed_Segment 标志设置为 1 的连续 Secure_Path 网段。 一旦到达 Confed_Segment 标志设置为 0 的 Secure_Path 网段，即停止此过程。记录以这种方式删除的网段数量。"
+    },
+    {
+      "indent": 3,
+      "text": "o Second, starting with the most recently added Signature Segment, remove a number of Signature Segments equal to the number of Secure_Path Segments removed in the previous step. (That is, remove the K most recently added Signature Segments, where K is the number of Secure_Path Segments removed in the previous step.)",
+      "zh": "o 第二步，从最近添加的签名段开始，移除与上一步移除的安全路径段数量相等的签名段（即移除 K 个最近添加的签名段，其中 K 为上一步移除的安全路径段数量）。(也就是说，删除 K 个最近添加的签名段，其中 K 是上一步删除的安全路径段的数量）。"
+    },
+    {
+      "indent": 3,
+      "text": "o Finally, add a Secure_Path Segment containing, in the AS field, the AS Confederation Identifier (the public AS number of the confederation) as well as a corresponding Signature Segment. Note that all fields other than the AS field are populated as per Section 4.2.",
+      "zh": "o 最后，添加一个 Secure_Path 段，在 AS 字段中包含 AS 联盟标识符（联盟的公共 AS 号）以及相应的签名段。请注意，除 AS 字段外，所有其他字段都将按第 4.2 节的规定填充。"
+    },
+    {
+      "indent": 3,
+      "text": "Finally, as discussed above, an AS confederation MAY optionally decide that its members will not verify digital signatures added by members. In such a confederation, when a BGPsec speaker runs the algorithm in Section 5.2, the BGPsec speaker, during the process of signature verifications, first checks whether the Confed_Segment flag in a Secure_Path Segment is set to 1. If the flag is set to 1, the BGPsec speaker skips the verification for the corresponding signature and immediately moves on to the next Secure_Path Segment. Note that as specified in Section 5.2, it is an error when a BGPsec speaker receives, from a peer who is not in the same AS confederation, a BGPsec UPDATE message containing a Confed_Segment flag set to 1.",
+      "zh": "最后，如上所述，AS 联盟可以选择决定其成员不验证成员添加的数字签名。在这种联盟中，当 BGPsec 说话者运行第 5.2 节中的算法时，BGPsec 说话者在验证签名的过程中会首先检查安全路径段中的 Confed_Segment 标志是否被设为 1。 如果该标志被设为 1，BGPsec 说话者会跳过相应签名的验证并立即转到下一个安全路径段。请注意，如第 5.2 节所述，当 BGPsec 说话者从不在同一 AS 邦联中的对等方接收到包含被设为 1 的 Confed_Segment 标志的 BGPsec UPDATE 消息时，这将是一个错误。"
+    },
+    {
+      "indent": 0,
+      "text": "4.4. Reconstructing the AS_PATH Attribute",
+      "section_title": true,
+      "zh": "4.4. 重建 AS_PATH 属性"
+    },
+    {
+      "indent": 3,
+      "text": "BGPsec UPDATE messages do not contain the AS_PATH attribute. However, the AS_PATH attribute can be reconstructed from the BGPsec_PATH attribute. This is necessary in the case where a route advertisement is received via a BGPsec UPDATE message and then propagated to a peer via a non-BGPsec UPDATE message (e.g., because the latter peer does not support BGPsec). Note that there may be additional cases where an implementation finds it useful to perform this reconstruction. Before attempting to reconstruct an AS_PATH for the purpose of forwarding an unsigned (non-BGPsec) UPDATE message to a peer, a BGPsec speaker MUST perform the basic integrity checks listed in Section 5.2 to ensure that the received BGPsec UPDATE message is properly formed.",
+      "zh": "BGPsec UPDATE 消息不包含 AS_PATH 属性。不过，AS_PATH 属性可从 BGPsec_PATH 属性中重建。如果路由广告是通过 BGPsec UPDATE 消息接收的，然后又通过非 BGPsec UPDATE 消息传播给对等（例如，因为后一对等体不支持 BGPsec），则有必要这样做。请注意，在其他情况下，实施可能会发现执行这种重构是有用的。在尝试重构 AS_PATH 以将未签名（非 BGPsec）UPDATE 消息转发给对等体之前，BGPsec 说话者必须执行第 5.2 节中列出的基本完整性检查，以确保接收到的 BGPsec UPDATE 消息是正确形成的。"
+    },
+    {
+      "indent": 3,
+      "text": "The AS_PATH attribute can be constructed from the BGPsec_PATH attribute as follows. Starting with a blank AS_PATH attribute, process the Secure_Path Segments in order from least recently added (corresponding to the origin) to most recently added. For each Secure_Path Segment, perform the following steps:",
+      "zh": "AS_PATH 属性可按如下方式从 BGPsec_PATH 属性构建。从空白的 AS_PATH 属性开始，按照从最近添加的最少（对应于起源）到最近添加的最多的顺序处理 Secure_Path 网段。对于每个 Secure_Path 网段，执行以下步骤："
+    },
+    {
+      "indent": 3,
+      "text": "1. If the Secure_Path Segment has pCount=0, then do nothing (i.e., move on to process the next Secure_Path Segment).",
+      "zh": "1. 如果 Secure_Path 段的 pCount=0，则什么也不做（即继续处理下一个 Secure_Path 段）。"
+    },
+    {
+      "indent": 3,
+      "text": "2. If the Secure_Path Segment has pCount greater than 0 and the Confed_Segment flag is set to 1, then look at the most recently added segment in the AS_PATH.",
+      "zh": "2. 如果 Secure_Path 网段的 pCount 大于 0，且 Confed_Segment 标志设置为 1，则查看 AS_PATH 中最近添加的网段。"
+    },
+    {
+      "indent": 7,
+      "text": "* In the case where the AS_PATH is blank or in the case where the most recently added segment is of type AS_SEQUENCE, add (prepend to the AS_PATH) a new AS_PATH segment of type AS_CONFED_SEQUENCE. This segment of type AS_CONFED_SEQUENCE shall contain a number of elements equal to the pCount field in the current Secure_Path Segment. Each of these elements shall be the AS number contained in the current Secure_Path Segment. (That is, if the pCount field is X, then the segment of type AS_CONFED_SEQUENCE contains X copies of the Secure_Path Segment's AS Number field.)",
+      "zh": "* 在 AS_PATH 为空或最近添加的段为 AS_SEQUENCE 类型的情况下，应添加（预先添加到 AS_PATH）一个 AS_CONFED_SEQUENCE 类型的新 AS_PATH 段。AS_CONFED_SEQUENCE 类型的段包含的元素数应等于当前 Secure_Path 段中的 pCount 字段。每个元素都应是当前 Secure_Path 段中包含的 AS 编号。(也就是说，如果 pCount 字段为 X，那么 AS_CONFED_SEQUENCE 类型的段就包含 Secure_Path 段的 AS 编号字段的 X 份副本）。"
+    },
+    {
+      "indent": 7,
+      "text": "* In the case where the most recently added segment in the AS_PATH is of type AS_CONFED_SEQUENCE, then add (prepend to the segment) a number of elements equal to the pCount field in the current Secure_Path Segment. The value of each of these elements shall be the AS number contained in the current Secure_Path Segment. (That is, if the pCount field is X, then add X copies of the Secure_Path Segment's AS Number field to the existing AS_CONFED_SEQUENCE.)",
+      "zh": "* 如果 AS_PATH 中最近添加的网段类型为 AS_CONFED_SEQUENCE，则在当前 Secure_Path 网段中添加（预先添加到网段中）与 pCount 字段数量相等的元素。每个元素的值都应是当前 Secure_Path 段中包含的 AS 编号。(也就是说，如果 pCount 字段为 X，则在现有的 AS_CONFED_SEQUENCE 中添加 X 份 Secure_Path 段的 AS 编号字段副本）。"
+    },
+    {
+      "indent": 3,
+      "text": "3. If the Secure_Path Segment has pCount greater than 0 and the Confed_Segment flag is set to 0, then look at the most recently added segment in the AS_PATH.",
+      "zh": "3. 如果 Secure_Path 网段的 pCount 大于 0，且 Confed_Segment 标志设置为 0，则查看 AS_PATH 中最近添加的网段。"
+    },
+    {
+      "indent": 7,
+      "text": "* In the case where the AS_PATH is blank or in the case where the most recently added segment is of type AS_CONFED_SEQUENCE, add (prepend to the AS_PATH) a new AS_PATH segment of type AS_SEQUENCE. This segment of type AS_SEQUENCE shall contain a number of elements equal to the pCount field in the current Secure_Path Segment. Each of these elements shall be the AS number contained in the current Secure_Path Segment. (That is, if the pCount field is X, then the segment of type AS_SEQUENCE contains X copies of the Secure_Path Segment's AS Number field.)",
+      "zh": "* 如果 AS_PATH 为空或最近添加的网段为 AS_CONFED_SEQUENCE 类型，则添加（在 AS_PATH 前添加）一个 AS_SEQUENCE 类型的新 AS_PATH 网段。AS_SEQUENCE 类型的段所包含的元素数应等于当前 Secure_Path 段中的 pCount 字段。每个元素都应是当前 Secure_Path 段中包含的 AS 编号。(也就是说，如果 pCount 字段为 X，那么 AS_SEQUENCE 类型的段就包含 Secure_Path 段的 AS 编号字段的 X 份副本）。"
+    },
+    {
+      "indent": 7,
+      "text": "* In the case where the most recently added segment in the AS_PATH is of type AS_SEQUENCE, then add (prepend to the segment) a number of elements equal to the pCount field in the current Secure_Path Segment. The value of each of these elements shall be the AS number contained in the current Secure_Path Segment. (That is, if the pCount field is X, then add X copies of the Secure_Path Segment's AS Number field to the existing AS_SEQUENCE.)",
+      "zh": "* 如果 AS_PATH 中最近添加的段是 AS_SEQUENCE 类型，则添加（在段前添加）与当前 Secure_Path 段中 pCount 字段数量相等的元素。每个元素的值都应是当前 Secure_Path 段中包含的 AS 编号。(也就是说，如果 pCount 字段为 X，则在现有的 AS_SEQUENCE 中添加 X 份 Secure_Path 网段的 AS 编号字段副本）。"
+    },
+    {
+      "indent": 3,
+      "text": "As part of the procedure described above, the following additional actions are performed in order not to exceed the size limitations of AS_SEQUENCE and AS_CONFED_SEQUENCE. While adding the next Secure_Path Segment (with its prepends, if any) to the AS_PATH being assembled, if it would cause the AS_SEQUENCE (or AS_CONFED_SEQUENCE) at hand to exceed the limit of 255 AS numbers per segment [RFC4271] [RFC5065], then the BGPsec speaker would follow the recommendations in RFC 4271 [RFC4271] and RFC 5065 [RFC5065] of creating another segment of the same type (AS_SEQUENCE or AS_CONFED_SEQUENCE) and continue filling that.",
+      "zh": "作为上述程序的一部分，为了不超出 AS_SEQUENCE 和 AS_CONFED_SEQUENCE 的大小限制，还要执行以下附加操作。在将下一个 Secure_Path 段（及其前缀（如有））添加到正在组装的 AS_PATH 时，如果会导致手头的 AS_SEQUENCE（或 AS_CONFED_SEQUENCE）超过每个段 255 个 AS 号的限制 [RFC4271] [RFC5065]，则 BGPsec 发言者将遵循 RFC 4271 [RFC4271] 和 RFC 5065 [RFC5065] 中的建议，创建另一个相同类型的段（AS_SEQUENCE 或 AS_CONFED_SEQUENCE）并继续填充。"
+    },
+    {
+      "indent": 3,
+      "text": "Finally, one special case of reconstruction of AS_PATH is when the BGPsec_PATH attribute is absent. As explained in Section 4.1, when a BGPsec speaker originates a prefix and sends it to a BGPsec-capable iBGP peer, the BGPsec_PATH is not attached. So, when received from a BGPsec-capable iBGP peer, no BGPsec_PATH attribute in a BGPsec UPDATE message is equivalent to an empty AS_PATH [RFC4271].",
+      "zh": "最后，重建 AS_PATH 的一个特殊情况是 BGPsec_PATH 属性缺失。如第 4.1 节所述，当 BGPsec 发言者发起前缀并将其发送给具有 BGPsec 功能的 iBGP 对等体时，不会附加 BGPsec_PATH。因此，当从具有 BGPsec 功能的 iBGP 对等方接收到 BGPsec UPDATE 消息时，如果消息中没有 BGPsec_PATH 属性，就等同于空 AS_PATH[RFC4271]。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Processing a Received BGPsec UPDATE Message",
+      "section_title": true,
+      "zh": "5. 处理收到的 BGPsec UPDATE 报文"
+    },
+    {
+      "indent": 3,
+      "text": "Upon receiving a BGPsec UPDATE message from an external (eBGP) peer, a BGPsec speaker SHOULD validate the message to determine the authenticity of the path information contained in the BGPsec_PATH attribute. Typically, a BGPsec speaker will also wish to perform origin validation (see RFC 6483 [RFC6483] and RFC 6811 [RFC6811]) on an incoming BGPsec UPDATE message, but such validation is independent of the validation described in this section.",
+      "zh": "收到来自外部（eBGP）对等方的 BGPsec UPDATE 消息后，BGPsec 说话者应验证该消息以确定 BGPsec_PATH 属性中包含的路径信息的真实性。通常，BGPsec 说话者还希望对传入的 BGPsec UPDATE 消息执行起源验证（请参阅 RFC 6483 [RFC6483] 和 RFC 6811 [RFC6811]），但这种验证与本节所述的验证无关。"
+    },
+    {
+      "indent": 3,
+      "text": "Section 5.1 provides an overview of BGPsec validation, and Section 5.2 provides a specific algorithm for performing such validation. (Note that an implementation need not follow the specific algorithm in Section 5.2 as long as the input/output behavior of the validation is identical to that of the algorithm in Section 5.2.) During exceptional conditions (e.g., the BGPsec speaker receives an incredibly large number of UPDATE messages at once), a BGPsec speaker MAY temporarily defer validation of incoming BGPsec UPDATE messages. The treatment of such BGPsec UPDATE messages, whose validation has been deferred, is a matter of local policy. However, an implementation SHOULD ensure that deferment of validation and status of deferred messages is visible to the operator.",
+      "zh": "第 5.1 节概述了 BGPsec 验证，第 5.2 节提供了执行此类验证的具体算法。(请注意，只要验证的输入/输出行为与第 5.2 节中的算法相同，实施就不必遵循第 5.2 节中的具体算法）。在特殊情况下（例如，BGPsec 说话者同时收到大量的 UPDATE 消息），BGPsec 说话者可以暂时推迟验证传入的 BGPsec UPDATE 消息。如何处理此类被推迟验证的 BGPsec UPDATE 消息是本地策略的问题。但是，实现应确保操作员能看到延迟验证和延迟报文的状态。"
+    },
+    {
+      "indent": 3,
+      "text": "The validity of BGPsec UPDATE messages is a function of the current RPKI state. When a BGPsec speaker learns that the RPKI state has changed (e.g., from an RPKI validating cache via the RPKI-Router protocol [RFC8210]), the BGPsec speaker MUST rerun validation on all affected UPDATE messages stored in its Adj-RIB-In [RFC4271]. For example, when a given RPKI router certificate ceases to be valid (e.g., it expires or is revoked), all UPDATE messages containing a signature whose SKI matches the SKI in the given certificate MUST be reassessed to determine if they are still valid. If this reassessment determines that the validity state of an UPDATE message has changed, then, depending on local policy, it may be necessary to rerun best path selection.",
+      "zh": "BGPsec UPDATE 消息的有效性是当前 RPKI 状态的函数。当 BGPsec 说话者得知 RPKI 状态发生变化时（例如，通过 RPKI-Router 协议 [RFC8210] 从 RPKI 验证缓存中得知），BGPsec 说话者必须对其 Adj-RIB-In [RFC4271] 中存储的所有受影响的 UPDATE 消息重新进行验证。例如，当给定的 RPKI 路由器证书不再有效（如过期或被撤销）时，必须重新评估所有包含签名（其 SKI 与给定证书中的 SKI 相符）的 UPDATE 报文，以确定它们是否仍然有效。如果重新评估确定 UPDATE 报文的有效状态已发生变化，则根据本地策略，可能需要重新运行最佳路径选择。"
+    },
+    {
+      "indent": 3,
+      "text": "BGPsec UPDATE messages do not contain an AS_PATH attribute. The Secure_Path contains AS path information for the BGPsec UPDATE message. Therefore, a BGPsec speaker MUST utilize the AS path information in the Secure_Path in all cases where it would otherwise use the AS path information in the AS_PATH attribute. The only exception to this rule is when AS path information must be updated in order to propagate a route to a peer (in which case the BGPsec speaker follows the instructions in Section 4). Section 4.4 provides an algorithm for constructing an AS_PATH attribute from a BGPsec_PATH attribute. Whenever the use of AS path information is called for (e.g., loop detection or the use of the AS path length in best path selection), the externally visible behavior of the implementation shall be the same as if the implementation had run the algorithm in Section 4.4 and used the resulting AS_PATH attribute as it would for a non-BGPsec UPDATE message.",
+      "zh": "BGPsec UPDATE 报文不包含 AS_PATH 属性。Secure_Path 包含 BGPsec UPDATE 消息的 AS 路径信息。因此，BGPsec 说话者必须在所有需要使用 AS_PATH 属性中的 AS 路径信息的情况下使用 Secure_Path 中的 AS 路径信息。这一规则的唯一例外是，为了向对等方传播路由而必须更新 AS 路径信息时（在这种情况下，BGPsec 说话者应遵循第 4 节中的说明）。第 4.4 节提供了从 BGPsec_PATH 属性构建 AS_PATH 属性的算法。无论何时需要使用 AS 路径信息（例如，环路检测或在最佳路径选择中使用 AS 路径长度），实现的外部可见行为都应与运行第 4.4 节中的算法和使用所生成的 AS_PATH 属性（如非 BGPsec UPDATE 消息）时的行为相同。"
+    },
+    {
+      "indent": 0,
+      "text": "5.1. Overview of BGPsec Validation",
+      "section_title": true,
+      "zh": "5.1. BGPsec 验证概述"
+    },
+    {
+      "indent": 3,
+      "text": "Validation of a BGPsec UPDATE message makes use of data from RPKI router certificates. In particular, it is necessary that the recipient have access to the following data obtained from valid RPKI router certificates: the AS Number, Public Key, and Subject Key Identifier from each valid RPKI router certificate.",
+      "zh": "BGPsec UPDATE 消息的验证需要使用 RPKI 路由器证书中的数据。特别是，接收方必须能访问从有效 RPKI 路由器证书中获取的以下数据：AS 编号、公钥和每个有效 RPKI 路由器证书的主题密钥标识符。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that the BGPsec speaker could perform the validation of RPKI router certificates on its own and extract the required data, or it could receive the same data from a trusted cache that performs RPKI validation on behalf of (some set of) BGPsec speakers. (For example, the trusted cache could deliver the necessary validity information to the BGPsec speaker by using the Router Key PDU (Protocol Data Unit) for the RPKI-Router protocol [RFC8210].)",
+      "zh": "请注意，BGPsec 发言者可以自行对 RPKI 路由器证书进行验证并提取所需的数据，也可以从代表（某一组）BGPsec 发言者执行 RPKI 验证的可信缓存中接收相同的数据。(例如，可信缓存可通过使用 RPKI-Router 协议 [RFC8210] 的路由器密钥 PDU（协议数据单元）向 BGPsec 发言者提供必要的有效性信息）。"
+    },
+    {
+      "indent": 3,
+      "text": "To validate a BGPsec UPDATE message containing the BGPsec_PATH attribute, the recipient performs the validation steps specified in Section 5.2. The validation procedure results in one of two states: 'Valid' and 'Not Valid'.",
+      "zh": "要验证包含 BGPsec_PATH 属性的 BGPsec UPDATE 消息，接收方要执行第 5.2 节中规定的验证步骤。验证过程会产生两种状态之一：有效 \"和 \"无效\"。"
+    },
+    {
+      "indent": 3,
+      "text": "It is expected that the output of the validation procedure will be used as an input to BGP route selection. That said, BGP route selection, and thus the handling of the validation states, is a matter of local policy and is handled using local policy mechanisms. Implementations SHOULD enable operators to set such local policy on a per-session basis. (That is, it is expected that some operators will choose to treat BGPsec validation status differently for UPDATE messages received over different BGP sessions.)",
+      "zh": "预计验证程序的输出将用作 BGP 路由选择的输入。也就是说，BGP 路由选择以及验证状态的处理是本地策略的问题，并使用本地策略机制进行处理。实施应允许操作员按会话设置此类本地策略。(也就是说，预计有些操作员会选择对通过不同 BGP 会话接收的 UPDATE 消息采用不同的 BGPsec 验证状态）。"
+    },
+    {
+      "indent": 3,
+      "text": "BGPsec validation need only be performed at the eBGP edge. The validation status of a BGP signed/unsigned UPDATE message MAY be conveyed via iBGP from an ingress edge router to an egress edge router via some mechanism, according to local policy within an AS. As discussed in Section 4, when a BGPsec speaker chooses to forward a (syntactically correct) BGPsec UPDATE message, it SHOULD be forwarded with its BGPsec_PATH attribute intact (regardless of the validation state of the UPDATE message). Based entirely on local policy, an egress router receiving a BGPsec UPDATE message from within its own AS MAY choose to perform its own validation.",
+      "zh": "BGPsec 验证只需在 eBGP 边缘执行。BGP 已签名/未签名 UPDATE 消息的验证状态可根据 AS 内的本地策略，通过某种机制从入口边缘路由器向出口边缘路由器通过 iBGP 传达。如第 4 节所述，当 BGPsec 说话者选择转发（语法上正确的）BGPsec UPDATE 消息时，该消息应在转发时保留其 BGPsec_PATH 属性（无论 UPDATE 消息的验证状态如何）。完全根据本地策略，从自己的 AS 中接收 BGPsec UPDATE 消息的出口路由器可以选择执行自己的验证。"
+    },
+    {
+      "indent": 0,
+      "text": "5.2. Validation Algorithm",
+      "section_title": true,
+      "zh": "5.2. 验证算法"
+    },
+    {
+      "indent": 3,
+      "text": "This section specifies an algorithm for validation of BGPsec UPDATE messages. A conformant implementation MUST include a BGPsec update validation algorithm that is functionally equivalent to the externally visible behavior of this algorithm.",
+      "zh": "本节规定了 BGPsec UPDATE 消息的验证算法。符合要求的实现必须包含一种 BGPsec 更新验证算法，其功能等同于该算法的外部可见行为。"
+    },
+    {
+      "indent": 3,
+      "text": "First, the recipient of a BGPsec UPDATE message performs a check to ensure that the message is properly formed. Both syntactical and protocol violation errors are checked. The BGPsec_PATH attribute MUST be present when a BGPsec UPDATE message is received from an external (eBGP) BGPsec peer and also when such an UPDATE message is propagated to an internal (iBGP) BGPsec peer (see Section 4.2). The error checks specified in Section 6.3 of [RFC4271] are performed, except that for BGPsec UPDATE messages the checks on the AS_PATH attribute do not apply and instead the following checks on the BGPsec_PATH attribute are performed: 1. Check to ensure that the entire BGPsec_PATH attribute is syntactically correct (conforms to the specification in this document).",
+      "zh": "首先，BGPsec UPDATE 报文的接收方会执行检查，以确保报文格式正确。语法错误和协议违规错误都会被检查。从外部（eBGP）BGPsec 对等体接收 BGPsec UPDATE 消息时，以及向内部（iBGP）BGPsec 对等体传播此类 UPDATE 消息时，BGPsec_PATH 属性必须存在（参见第 4.2 节）。将执行 [RFC4271] 第 6.3 节规定的错误检查，但对于 BGPsec UPDATE 消息，对 AS_PATH 属性的检查并不适用，而是执行以下对 BGPsec_PATH 属性的检查：1.检查以确保整个 BGPsec_PATH 属性语法正确（符合本文档中的规范）。"
+    },
+    {
+      "indent": 3,
+      "text": "2. Check that the AS number in the most recently added Secure_Path Segment (i.e., the one corresponding to the eBGP peer from which the UPDATE message was received) matches the AS number of that peer as specified in the BGP OPEN message. (Note: This check is performed only at an ingress BGPsec router where the UPDATE message is first received from a peer AS.)",
+      "zh": "2. 检查最近添加的 Secure_Path 段中的 AS 号（即与接收到 UPDATE 消息的 eBGP 对等体相对应的 AS 号）是否与 BGP OPEN 消息中指定的该对等体的 AS 号相匹配。(注意：该检查仅在首次从对等 AS 收到 UPDATE 消息的入口 BGPsec 路由器上执行）。"
+    },
+    {
+      "indent": 3,
+      "text": "3. Check that each Signature_Block contains one Signature Segment for each Secure_Path Segment in the Secure_Path portion of the BGPsec_PATH attribute. (Note that the entirety of each Signature_Block MUST be checked to ensure that it is well formed, even though the validation process may terminate before all signatures are cryptographically verified.)",
+      "zh": "3. 检查每个 Signature_Block 是否包含 BGPsec_PATH 属性 Secure_Path 部分中每个 Secure_Path 段的一个签名段。(请注意，必须检查每个签名块的全部内容，以确保其形成良好，即使验证过程可能在所有签名得到加密验证之前就已终止）。"
+    },
+    {
+      "indent": 3,
+      "text": "4. Check that the UPDATE message does not contain an AS_PATH attribute.",
+      "zh": "4. 检查 UPDATE 报文是否包含 AS_PATH 属性。"
+    },
+    {
+      "indent": 3,
+      "text": "5. If the UPDATE message was received from a BGPsec peer that is not a member of the BGPsec speaker's AS confederation, check to ensure that none of the Secure_Path Segments contain a Flags field with the Confed_Segment flag set to 1.",
+      "zh": "5. 如果从不属于 BGPsec 说话者的 AS 邦联成员的 BGPsec 对等体接收到 UPDATE 报文，则检查以确保 Secure_Path 片段中没有包含将 Confed_Segment 标志设置为 1 的 Flags 字段。"
+    },
+    {
+      "indent": 3,
+      "text": "6. If the UPDATE message was received from a BGPsec peer that is a member of the BGPsec speaker's AS confederation, check to ensure that the Secure_Path Segment corresponding to that peer contains a Flags field with the Confed_Segment flag set to 1.",
+      "zh": "6. 如果从属于 BGPsec 说话者 AS 联盟成员的 BGPsec 对等体接收到 UPDATE 消息，则检查以确保与该对等体相对应的 Secure_Path Segment 包含一个 Flags 字段，且 Confed_Segment 标志设置为 1。"
+    },
+    {
+      "indent": 3,
+      "text": "7. If the UPDATE message was received from a peer that is not expected to set pCount=0 (see Sections 4.2 and 4.3), then check to ensure that the pCount field in the most recently added Secure_Path Segment is not equal to 0. (Note: See Section 7.2 for router configuration guidance related to this item.)",
+      "zh": "7. 如果 UPDATE 消息是从预计不会设置 pCount=0 的对等设备接收的（请参阅第 4.2 节和第 4.3 节），则应检查以确保最近添加的 Secure_Path 段中的 pCount 字段不等于 0（注：有关此项目的路由器配置指导，请参阅第 7.2 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "8. Using the equivalent of AS_PATH corresponding to the Secure_Path in the UPDATE message (see Section 4.4), check that the local AS number is not present in the AS path (i.e., rule out an AS loop).",
+      "zh": "8. 使用与 UPDATE 消息中的 Secure_Path 相对应的 AS_PATH（见第 4.4 节），检查 AS 路径中是否不存在本地 AS 号码（即排除 AS 循环）。"
+    },
+    {
+      "indent": 3,
+      "text": "If any of these checks fail, it is an error in the BGPsec_PATH attribute. BGPsec speakers MUST handle any syntactical or protocol errors in the BGPsec_PATH attribute by using the \"treat-as-withdraw\" approach as defined in RFC 7606 [RFC7606]. (Note: Since the AS number of a transparent route server does appear in the Secure_Path with pCount=0, the route server MAY check to see if its local AS is listed in the Secure_Path, and this check MAY be included in the loop-detection check listed above.)",
+      "zh": "如果其中任何一项检查失败，则表示 BGPsec_PATH 属性出错。BGPsec 发言者必须使用 RFC 7606 [RFC7606] 中定义的 \"视为撤回 \"方法来处理 BGPsec_PATH 属性中的任何语法或协议错误。(注：由于透明路由服务器的 AS 号确实出现在 pCount=0 的 Secure_Path 中，因此路由服务器可检查其本地 AS 是否列在 Secure_Path 中，此检查可包括在上述循环检测检查中）。"
+    },
+    {
+      "indent": 3,
+      "text": "Next, the BGPsec speaker examines the Signature_Blocks in the BGPsec_PATH attribute. A Signature_Block corresponding to an algorithm suite that the BGPsec speaker does not support is not considered in the validation process. If there is no Signature_Block corresponding to an algorithm suite that the BGPsec speaker supports, then in order to consider the UPDATE message in the route selection process, the BGPsec speaker MUST strip the Signature_Block(s), reconstruct the AS_PATH from the Secure_Path (see Section 4.4), and treat the UPDATE message as if it were received as an unsigned BGP UPDATE message.",
+      "zh": "接下来，BGPsec 说话者会检查 BGPsec_PATH 属性中的 Signature_Block。与 BGPsec 说话者不支持的算法套件相对应的 Signature_Block 在验证过程中不予考虑。如果没有与 BGPsec 说话者支持的算法套件相对应的 Signature_Block，则为了在路由选择过程中考虑 UPDATE 消息，BGPsec 说话者必须剥离 Signature_Block，从 Secure_Path 重构 AS_PATH（参见第 4.4 节），并将 UPDATE 消息当作未签名的 BGP UPDATE 消息来处理。"
+    },
+    {
+      "indent": 3,
+      "text": "For each remaining Signature_Block (corresponding to an algorithm suite supported by the BGPsec speaker), the BGPsec speaker iterates through the Signature Segments in the Signature_Block, starting with the most recently added segment (and concluding with the least recently added segment). Note that there is a one-to-one correspondence between Signature Segments and Secure_Path Segments within the BGPsec_PATH attribute. The following steps make use of this correspondence:",
+      "zh": "对于每个剩余的 Signature_Block（对应于 BGPsec 发言者支持的算法套件），BGPsec 发言者会遍历 Signature_Block 中的签名段，从最近添加的段开始（从最近添加的最少的段结束）。请注意，在 BGPsec_PATH 属性中，签名段与安全路径段之间存在一一对应关系。以下步骤将利用这种对应关系："
+    },
+    {
+      "indent": 3,
+      "text": "o Step 1: Let there be K AS hops in a received BGPsec_PATH attribute that is to be validated. Let AS(1), AS(2), ..., AS(K+1) denote the sequence of AS numbers from the origin AS to the validating AS. Let Secure_Path Segment N and Signature Segment N in the BGPsec_PATH attribute refer to those corresponding to AS(N) (where N = 1, 2, ..., K). The BGPsec speaker that is processing and validating the BGPsec_PATH attribute resides in AS(K+1). Let Signature Segment N be the Signature Segment that is currently being verified.",
+      "zh": "o 步骤 1：假设接收到的待验证 BGPsec_PATH 属性中有 K 个 AS 跳。让 AS(1)、AS(2)、......、AS(K+1) 表示从起源 AS 到验证 AS 的 AS 号序列。让 BGPsec_PATH 属性中的 Secure_Path Segment N 和 Signature Segment N 指的是与 AS(N) 相对应的那些（其中 N = 1, 2, ..., K）。处理和验证 BGPsec_PATH 属性的 BGPsec 说话者位于 AS(K+1)。让签名段 N 成为当前正在验证的签名段。"
+    },
+    {
+      "indent": 3,
+      "text": "o Step 2: Locate the public key needed to verify the signature (in the current Signature Segment). To do this, consult the valid RPKI router certificate data and look up all valid (AS Number, Public Key, Subject Key Identifier) triples in which the AS matches the AS number in the corresponding Secure_Path Segment. Of these triples that match the AS number, check whether there is an SKI that matches the value in the Subject Key Identifier field of the Signature Segment. If this check finds no such matching SKI value, then mark the entire Signature_Block as 'Not Valid' and proceed to the next Signature_Block.",
+      "zh": "o 第 2 步：找到验证签名所需的公开密钥（在当前签名段中）。为此，请查阅有效的 RPKI 路由器证书数据，并查找所有 AS 与相应安全路径段中的 AS 编号相匹配的有效（AS 编号、公开密钥、主题密钥标识符）三元组。在这些与 AS 编号匹配的三元组中，检查是否有与签名段主题密钥标识符字段中的值匹配的 SKI。如果检查未发现匹配的 SKI 值，则将整个签名段标记为 \"无效\"，然后继续下一个签名段。"
+    },
+    {
+      "indent": 3,
+      "text": "o Step 3: Compute the digest function (for the given algorithm suite) on the appropriate data.",
+      "zh": "o 步骤 3：在适当的数据上计算摘要函数（针对给定的算法套件）。"
+    },
+    {
+      "indent": 6,
+      "text": "In order to verify the digital signature in Signature Segment N, construct the sequence of octets to be hashed as shown in Figure 9 (using the notations defined in Step 1). (Note that this sequence is the same sequence that was used by AS(N) that created the Signature Segment N (see Section 4.2 and Figure 8).)",
+      "zh": "为了验证签名段 N 中的数字签名，请构建如图 9 所示的散列八位位组序列（使用步骤 1 中定义的符号）。(注意该序列与创建签名段 N 的 AS(N) 所用的序列相同（见第 4.2 节和图 8））。"
+    },
+    {
+      "indent": 9,
+      "text": "+------------------------------------+\n| Target AS Number                   |\n+------------------------------------+----\\\n| Signature Segment   : N-1          |     \\\n+------------------------------------+     |\n| Secure_Path Segment : N            |     |\n+------------------------------------+     \\\n       ...                                  >  Data from\n+------------------------------------+     /   N Segments\n| Signature Segment   : 1            |     |\n+------------------------------------+     |\n| Secure_Path Segment : 2            |     |\n+------------------------------------+     /\n| Secure_Path Segment : 1            |    /\n+------------------------------------+---/\n| Algorithm Suite Identifier         |\n+------------------------------------+\n| AFI                                |\n+------------------------------------+\n| SAFI                               |\n+------------------------------------+\n| NLRI                               |\n+------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Figure 9: Sequence of Octets to Be Hashed for Signature Verification of Signature Segment N; N = 1,2, ..., K, Where K Is the Number of AS Hops in the BGPsec_PATH Attribute",
+      "zh": "图 9：对签名段 N 进行签名验证时要散列的八进制数序列；N = 1,2,...,K，其中 K 是 BGPsec_PATH 属性中的 AS 跳数"
+    },
+    {
+      "indent": 6,
+      "text": "The elements in this sequence (Figure 9) MUST be ordered exactly as shown. For the first segment to be processed (the most recently added segment (i.e., N = K) given that there are K hops in the Secure_Path), the 'Target AS Number' is AS(K+1), the AS number of the BGPsec speaker validating the UPDATE message. Note that if a BGPsec speaker uses multiple AS Numbers (e.g., the BGPsec speaker is a member of a confederation), the AS number used here MUST be the AS number announced in the OPEN message for the BGP session over which the BGPsec UPDATE message was received.",
+      "zh": "该序列（图 9）中的元素必须按所示顺序排列。对于要处理的第一个网段（最近添加的网段（即 N = K），因为 Secure_Path 中有 K 跳），\"目标 AS 编号 \"是 AS(K+1)，即验证 UPDATE 消息的 BGPsec 说话者的 AS 编号。请注意，如果 BGPsec 说话者使用多个 AS 编号（例如，BGPsec 说话者是一个联盟的成员），则此处使用的 AS 编号必须是收到 BGPsec UPDATE 消息的 BGP 会话的 OPEN 消息中公布的 AS 编号。"
+    },
+    {
+      "indent": 6,
+      "text": "For each other Signature Segment (N smaller than K), the 'Target AS Number' is AS(N+1), the AS number in the Secure_Path Segment that corresponds to the Signature Segment added immediately after the one being processed (that is, in the Secure_Path Segment that corresponds to the Signature Segment that the validator just finished processing).",
+      "zh": "对于其他每一个签名段（N 小于 K），\"目标 AS 号 \"为 AS(N+1)，即与紧随被处理签名段之后添加的签名段相对应的 Secure_Path 段中的 AS 号（即与验证器刚处理完的签名段相对应的 Secure_Path 段中的 AS 号）。"
+    },
+    {
+      "indent": 6,
+      "text": "The Secure_Path and Signature Segment are obtained from the BGPsec_PATH attribute. The AFI, SAFI, and NLRI fields are obtained from the MP_REACH_NLRI attribute [RFC4760]. Additionally, in the Prefix field within the NLRI field (see Section 5 in RFC 4760 [RFC4760]), all of the trailing bits MUST be set to 0 when constructing this sequence.",
+      "zh": "Secure_Path 和签名段来自 BGPsec_PATH 属性。AFI、SAFI 和 NLRI 字段来自 MP_REACH_NLRI 属性 [RFC4760]。此外，在 NLRI 字段内的前缀字段（参见 RFC 4760 [RFC4760] 第 5 节）中，构建此序列时必须将所有尾部位设置为 0。"
+    },
+    {
+      "indent": 3,
+      "text": "o Step 4: Use the signature validation algorithm (for the given algorithm suite) to verify the signature in the current segment. That is, invoke the signature validation algorithm on the following three inputs: the value of the Signature field in the current segment, the digest value computed in Step 3 above, and the public key obtained from the valid RPKI data in Step 2 above. If the signature validation algorithm determines that the signature is invalid, then mark the entire Signature_Block as 'Not Valid' and proceed to the next Signature_Block. If the signature validation algorithm determines that the signature is valid, then continue processing Signature Segments (within the current Signature_Block).",
+      "zh": "o 步骤 4：使用签名验证算法（针对给定的算法套件）验证当前段中的签名。也就是说，根据以下三个输入调用签名验证算法：当前段中签名字段的值、上述步骤 3 中计算的摘要值和上述步骤 2 中从有效 RPKI 数据中获取的公钥。如果签名验证算法判定签名无效，则将整个签名块标记为 \"无效\"，然后进入下一个签名块。如果签名验证算法确定签名有效，则继续处理（当前签名块内的）签名段。"
+    },
+    {
+      "indent": 3,
+      "text": "If all Signature Segments within a Signature_Block pass validation (i.e., all segments are processed and the Signature_Block has not yet been marked 'Not Valid'), then the Signature_Block is marked as 'Valid'.",
+      "zh": "如果签名块中的所有签名段都通过了验证（即所有签名段都已处理且签名块尚未被标记为 \"无效\"），则签名块被标记为 \"有效\"。"
+    },
+    {
+      "indent": 3,
+      "text": "If at least one Signature_Block is marked as 'Valid', then the validation algorithm terminates and the BGPsec UPDATE message is deemed 'Valid'. (That is, if a BGPsec UPDATE message contains two Signature_Blocks, then the UPDATE message is deemed 'Valid' if the first Signature_Block is marked 'Valid' OR the second Signature_Block is marked 'Valid'.)",
+      "zh": "如果至少有一个签名块被标记为 \"有效\"，则验证算法终止，BGPsec UPDATE 报文被视为 \"有效\"。(也就是说，如果 BGPsec UPDATE 报文包含两个签名块，那么如果第一个签名块被标记为 \"有效 \"或第二个签名块被标记为 \"有效\"，则 UPDATE 报文被视为 \"有效\"）。"
+    },
+    {
+      "indent": 0,
+      "text": "6. Algorithms and Extensibility",
+      "section_title": true,
+      "zh": "6. 算法和可扩展性"
+    },
+    {
+      "indent": 0,
+      "text": "6.1. Algorithm Suite Considerations",
+      "section_title": true,
+      "zh": "6.1. 算法套件考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "Note that there is currently no support for bilateral negotiation (using BGP capabilities) between BGPsec peers to use a particular (digest and signature) algorithm suite. This is because the algorithm suite used by the sender of a BGPsec UPDATE message MUST be understood not only by the peer to whom it is directly sending the message but also by all BGPsec speakers to whom the route advertisement is eventually propagated. Therefore, selection of an algorithm suite cannot be a local matter negotiated by BGP peers but instead must be coordinated throughout the Internet.",
+      "zh": "请注意，目前不支持 BGPsec 对等方之间就使用特定（摘要和签名）算法套件进行双边协商（使用 BGP 功能）。这是因为 BGPsec UPDATE 消息的发送方所使用的算法套件不仅必须被其直接发送消息的对等方所理解，还必须被最终传播路由广告的所有 BGPsec 说话者所理解。因此，算法套件的选择不能由 BGP 对等方在本地协商决定，而必须在整个互联网上协调进行。"
+    },
+    {
+      "indent": 3,
+      "text": "To this end, [RFC8208] specifies a mandatory-to-use 'current' algorithm suite for use by all BGPsec speakers.",
+      "zh": "为此，[RFC8208] 规定了一个强制使用的 \"当前 \"算法套件，供所有 BGPsec 发言者使用。"
+    },
+    {
+      "indent": 3,
+      "text": "It is anticipated that, in the future, [RFC8208] or its successor will be updated to specify a transition from the 'current' algorithm suite to a 'new' algorithm suite. During the period of transition, all BGPsec UPDATE messages SHOULD simultaneously use both the 'current' algorithm suite and the 'new' algorithm suite. (Note that Sections 3 and 4 specify how the BGPsec_PATH attribute can contain signatures, in parallel, for two algorithm suites.) Once the transition is complete, the use of the old 'current' algorithm will be deprecated, the use of the 'new' algorithm will be mandatory, and a subsequent 'even newer' algorithm suite may be specified as \"recommended to implement\". Once the transition has successfully been completed in this manner, BGPsec speakers SHOULD include only a single Signature_Block (corresponding to the 'new' algorithm).",
+      "zh": "预计未来将更新 [RFC8208] 或其后续版本，以指定从 \"当前 \"算法套件向 \"新 \"算法套件的过渡。在过渡期间，所有 BGPsec UPDATE 消息应同时使用 \"当前 \"算法套件和 \"新 \"算法套件（请注意，第 3 节和第 4 节规定了 BGPsec_PATH 属性如何并行包含两个算法套件的签名）。一旦过渡完成，旧的 \"当前 \"算法将不再使用，\"新 \"算法将强制使用，随后的 \"更新 \"算法套件可指定为 \"建议实施\"。一旦以这种方式成功完成过渡，BGPsec 发言者应只包含一个 Signature_Block（对应于 \"新 \"算法）。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2. Considerations for the SKI Size",
+      "section_title": true,
+      "zh": "6.2. 考虑 SKI 尺寸"
+    },
+    {
+      "indent": 3,
+      "text": "Depending on the method of generating key identifiers [RFC7093], the size of the SKI in an RPKI router certificate may vary. The SKI field in the BGPsec_PATH attribute has a fixed size of 20 octets (see Figure 7). If the SKI is longer than 20 octets, then use the leftmost 20 octets of the SKI (excluding the tag and length) [RFC7093]. If the SKI value is shorter than 20 octets, then pad the SKI (excluding the tag and length) to the right (least significant octets) with octets having \"0\" values.",
+      "zh": "根据生成密钥标识符 [RFC7093] 的方法，RPKI 路由器证书中 SKI 的大小可能会有所不同。BGPsec_PATH 属性中 SKI 字段的固定大小为 20 个八位字节（见图 7）。如果 SKI 长于 20 个八位字节，则使用 SKI 最左侧的 20 个八位字节（不包括标记和长度）[RFC7093]。如果 SKI 值短于 20 个八位字节，则在 SKI（不包括标记和长度）的右侧（最不重要的八位字节）填充具有 \"0 \"值的八位字节。"
+    },
+    {
+      "indent": 0,
+      "text": "6.3. Extensibility Considerations",
+      "section_title": true,
+      "zh": "6.3. 可扩展性考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This section discusses potential changes to BGPsec that would require substantial changes to the processing of the BGPsec_PATH and thus necessitate a new version of BGPsec. Examples of such changes include:",
+      "zh": "本节讨论对 BGPsec 可能进行的更改，这些更改将要求对 BGPsec_PATH 的处理进行重大更改，从而需要 BGPsec 的新版本。此类变更的例子包括"
+    },
+    {
+      "indent": 3,
+      "text": "o A new type of signature algorithm that produces signatures of variable length",
+      "zh": "o 可生成长度可变签名的新型签名算法"
+    },
+    {
+      "indent": 3,
+      "text": "o A new type of signature algorithm for which the number of signatures in the Signature_Block is not equal to the number of ASes in the Secure_Path (e.g., aggregate signatures)",
+      "zh": "o Signature_Block 中的签名数与安全路径中的 AS 数量不相等的新型签名算法（如聚合签名）； - Signature_Block 中的签名数与安全路径中的 AS 数量不相等的新型签名算法（如聚合签名）； - Signature_Block 中的签名数与安全路径中的 AS 数量不相等的新型签名算法（如聚合签名）。"
+    },
+    {
+      "indent": 3,
+      "text": "o Changes to the data that is protected by the BGPsec signatures (e.g., attributes other than the AS path)",
+      "zh": "o 更改受 BGPsec 签名保护的数据（如 AS 路径以外的属性）"
+    },
+    {
+      "indent": 3,
+      "text": "In the case that such a change to BGPsec were deemed desirable, it is expected that a subsequent version of BGPsec would be created and that this version of BGPsec would specify a new BGP path attribute -- let's call it \"BGPsec_PATH_Two\" -- that is designed to accommodate the desired changes to BGPsec. In such a case, [RFC8208] or its successor would be updated to specify algorithm suites appropriate for the new version of BGPsec.",
+      "zh": "如果认为对 BGPsec 进行这样的更改是可取的，预计将创建 BGPsec 的后续版本，该版本的 BGPsec 将指定一个新的 BGP 路径属性（我们称之为 \"BGPsec_PATH_Two\"），该属性旨在适应对 BGPsec 的预期更改。在这种情况下，[RFC8208] 或其后续版本将被更新，以指定适合新版 BGPsec 的算法套件。"
+    },
+    {
+      "indent": 3,
+      "text": "At this point, a transition would begin that is analogous to the algorithm transition discussed in Section 6.1. During the transition period, all BGPsec speakers SHOULD simultaneously include both the BGPsec_PATH attribute and the new BGPsec_PATH_Two attribute. Once the transition is complete, the use of BGPsec_PATH could then be deprecated, at which point BGPsec speakers should include only the new BGPsec_PATH_Two attribute. Such a process could facilitate a transition to a new BGPsec semantics in a backwards-compatible fashion.",
+      "zh": "此时，过渡将开始，类似于第 6.1 节中讨论的算法过渡。在过渡期间，所有 BGPsec 发言者都应同时包含 BGPsec_PATH 属性和新的 BGPsec_PATH_Two 属性。一旦过渡完成，BGPsec_PATH 的使用将被废弃，此时 BGPsec 发言者应只包含新的 BGPsec_PATH_Two 属性。这样一个过程可以促进以一种向后兼容的方式过渡到新的 BGPsec 语义。"
+    },
+    {
+      "indent": 0,
+      "text": "7. Operations and Management Considerations",
+      "section_title": true,
+      "zh": "7. 运营和管理方面的考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "Some operations and management issues that are closely relevant to BGPsec protocol specification and deployment are highlighted here. The best practices concerning operations and deployment of BGPsec are provided in [RFC8207].",
+      "zh": "这里重点介绍一些与 BGPsec 协议规范和部署密切相关的操作和管理问题。有关 BGPsec 运行和部署的最佳实践见 [RFC8207]。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1. Capability Negotiation Failure",
+      "section_title": true,
+      "zh": "7.1. 能力谈判失败"
+    },
+    {
+      "indent": 3,
+      "text": "Section 2.2 describes the negotiation required to establish a BGPsec-capable peering session. Not only must the BGPsec capability be exchanged (and agreed on), but the BGP multiprotocol extension [RFC4760] for the same AFI and the 4-byte AS capability [RFC6793] MUST also be exchanged. Failure to properly negotiate a BGPsec session -- due to a missing capability, for example -- may still result in the exchange of BGP (unsigned) UPDATE messages. It is RECOMMENDED that an implementation log the failure to properly negotiate a BGPsec session. Also, an implementation MUST have the ability to prevent a BGP session from being established if configured to only use BGPsec.",
+      "zh": "第 2.2 节介绍了建立具有 BGPsec 功能的对等会话所需的协商。不仅必须交换（并商定）BGPsec 能力，而且还必须交换相同 AFI 的 BGP 多协议扩展 [RFC4760] 和 4 字节 AS 能力 [RFC6793]。未能正确协商 BGPsec 会话（例如由于能力缺失）仍可能导致 BGP（未签名）UPDATE 消息的交换。建议实施记录未能正确协商 BGPsec 会话的情况。此外，如果配置为仅使用 BGPsec，实施必须能够阻止 BGP 会话的建立。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2. Preventing Misuse of pCount=0",
+      "section_title": true,
+      "zh": "7.2. 防止滥用 pCount=0"
+    },
+    {
+      "indent": 3,
+      "text": "A peer that is an Internet Exchange Point (IXP) (i.e., route server) with a transparent AS is expected to set pCount=0 in its Secure_Path Segment while forwarding an UPDATE message to a peer (see Section 4.2). Clearly, such an IXP MUST configure its BGPsec router to set pCount=0 in its Secure_Path Segment. This also means that a BGPsec speaker MUST be configured so that it permits pCount=0 from an IXP peer. Two other cases where pCount is set to 0 are in the contexts of an AS confederation (see Section 4.3) and of AS migration [RFC8206]. In these two cases, pCount=0 is set and accepted within the same AS (albeit the AS has two different identities). Note that if a BGPsec speaker does not expect a peer AS to set its pCount=0 and if an UPDATE message received from that peer violates this, then the UPDATE message MUST be considered to be in error (see the list of checks in Section 5.2). See Section 8.4 for a discussion of security considerations concerning pCount=0.",
+      "zh": "作为具有透明 AS 的互联网交换点（IXP）（即路由服务器）的对等点在向对等点转发 UPDATE 消息时，应在其 Secure_Path 段中设置 pCount=0（见第 4.2 节）。显然，这样的 IXP 必须配置其 BGPsec 路由器，在其 Secure_Path 段中设置 pCount=0。这也意味着 BGPsec 说话者必须配置为允许来自 IXP 对等方的 pCount=0。pCount 设置为 0 的另外两种情况是 AS 联盟（见第 4.3 节）和 AS 迁移 [RFC8206]。在这两种情况下，pCount=0 在同一个 AS 中被设置和接受（尽管 AS 有两个不同的身份）。请注意，如果 BGPsec 说话者不希望对等 AS 设置其 pCount=0，并且如果从该对等 AS 收到的 UPDATE 消息违反了这一规定，那么该 UPDATE 消息必须被视为错误（请参阅第 5.2 节中的检查列表）。有关 pCount=0 的安全考虑因素，请参阅第 8.4 节。"
+    },
+    {
+      "indent": 0,
+      "text": "7.3. Early Termination of Signature Verification",
+      "section_title": true,
+      "zh": "7.3. 提前终止签名验证"
+    },
+    {
+      "indent": 3,
+      "text": "During the validation of a BGPsec UPDATE message, route processor performance speedup can be achieved by incorporating the following observations. An UPDATE message is deemed 'Valid' if at least one of the Signature_Blocks is marked as 'Valid' (see Section 5.2). Therefore, if an UPDATE message contains two Signature_Blocks and the first one verified is found 'Valid', then the second Signature_Block does not have to be verified. And if the UPDATE message is chosen for best path, then the BGPsec speaker adds its signature (generated with the respective algorithm) to each of the two Signature_Blocks and forwards the UPDATE message. Also, a BGPsec UPDATE message is deemed 'Not Valid' if at least one signature in each of the Signature_Blocks is invalid. This principle can also be used for route processor workload savings, i.e., the verification for a Signature_Block terminates early when the first invalid signature is encountered.",
+      "zh": "在 BGPsec UPDATE 报文的验证过程中，路由处理器性能的提升可通过以下方法实现。如果至少有一个签名块被标记为 \"有效\"，则 UPDATE 报文被视为 \"有效\"（见第 5.2 节）。因此，如果一个 UPDATE 报文包含两个签名块，且第一个签名块被验证为 \"有效\"，那么第二个签名块就无需验证。如果 UPDATE 报文被选为最佳路径，那么 BGPsec 发言者就会在两个 Signature_Blocks 上分别添加自己的签名（用相应算法生成），然后转发 UPDATE 报文。此外，如果每个签名块中至少有一个签名无效，BGPsec UPDATE 报文将被视为 \"无效\"。这一原则也可用于节省路由处理器的工作量，即当遇到第一个无效签名时，Signature_Block 的验证就会提前结束。"
+    },
+    {
+      "indent": 0,
+      "text": "7.4. Non-deterministic Signature Algorithms",
+      "section_title": true,
+      "zh": "7.4. 非确定性签名算法"
+    },
+    {
+      "indent": 3,
+      "text": "Many signature algorithms are non-deterministic. That is, many signature algorithms will produce different signatures each time they are run (even when they are signing the same data with the same key). Therefore, if a BGPsec router receives a BGPsec UPDATE message from a peer and later receives a second BGPsec UPDATE message from the same peer for the same prefix with the same Secure_Path and SKIs, the second UPDATE message MAY differ from the first UPDATE message in the signature fields (for a non-deterministic signature algorithm). However, the two sets of signature fields will not differ if the sender caches and reuses the previous signature. For a deterministic signature algorithm, the signature fields MUST be identical between the two UPDATE messages. On the basis of these observations, an implementation MAY incorporate optimizations in update validation processing.",
+      "zh": "许多签名算法是非确定性的。也就是说，许多签名算法在每次运行时都会产生不同的签名（即使是使用相同密钥对相同数据进行签名）。因此，如果 BGPsec 路由器从对等方收到一条 BGPsec UPDATE 消息，随后又从同一对等方收到第二条 BGPsec UPDATE 消息，该消息涉及具有相同 Secure_Path 和 SKI 的相同前缀，则第二条 UPDATE 消息的签名字段可能与第一条 UPDATE 消息不同（对于非确定签名算法而言）。但是，如果发送方缓存并重复使用之前的签名，两组签名字段将不会不同。对于确定性签名算法，两个 UPDATE 消息的签名字段必须完全相同。根据这些观察结果，实现可以在更新验证处理中进行优化。"
+    },
+    {
+      "indent": 0,
+      "text": "7.5. Private AS Numbers",
+      "section_title": true,
+      "zh": "7.5. 私人 AS 号码"
+    },
+    {
+      "indent": 3,
+      "text": "It is possible that a stub customer of an ISP employs a private AS number. Such a stub customer cannot publish a ROA in the Global RPKI for the private AS number and the prefixes that they use. Also, the Global RPKI cannot support private AS numbers (i.e., BGPsec speakers in private ASes cannot be issued router certificates in the Global RPKI). For interactions between the stub customer (with the private AS number) and the ISP, the following two scenarios are possible:",
+      "zh": "ISP 的存根客户有可能使用私有 AS 号。这样的存根客户无法在全球 RPKI 中为其使用的私有 AS 号和前缀发布 ROA。此外，全球 RPKI 也不支持私有 AS 号码（即私有 AS 中的 BGPsec 发言者无法在全球 RPKI 中获得路由器证书）。对于存根客户（使用私有 AS 号）和 ISP 之间的交互，可能会出现以下两种情况："
+    },
+    {
+      "indent": 3,
+      "text": "1. The stub customer sends an unsigned BGP UPDATE message for a prefix to the ISP's AS. An edge BGPsec speaker in the ISP's AS may choose to propagate the prefix to its non-BGPsec and BGPsec peers. If so, the ISP's edge BGPsec speaker MUST strip the AS_PATH with the private AS number and then (a) re-originate the prefix without any signatures towards its non-BGPsec peer and (b) re-originate the prefix including its own signature towards its BGPsec peer. In both cases (i.e., (a) and (b)), the prefix MUST have a ROA in the Global RPKI authorizing the ISP's AS to originate it.",
+      "zh": "1. 存根客户向 ISP 的 AS 发送未签名的前缀 BGP UPDATE 消息。ISP AS 中的边缘 BGPsec 发言者可能会选择将该前缀传播给其非 BGPsec 和 BGPsec 对等方。如果是这样，ISP 的边缘 BGPsec 发言者必须用私有 AS 编号剥离 AS_PATH，然后 (a) 将不含任何签名的前缀重新发往其非 BGPsec 对等体，(b) 将包含自身签名的前缀重新发往其 BGPsec 对等体。在这两种情况下（即 (a) 和 (b)），前缀必须在全局 RPKI 中具有 ROA，授权 ISP 的 AS 发起。"
+    },
+    {
+      "indent": 3,
+      "text": "2. The ISP and the stub customer may use a local RPKI repository (using a mechanism such as one of the mechanisms described in [SLURM]). Then, there can be a ROA for the prefix originated by the stub AS, and the eBGP speaker in the stub AS can be a BGPsec speaker having a router certificate, albeit the ROA and router certificate are valid only locally. With this arrangement, the stub AS sends a signed UPDATE message for the prefix to the ISP's AS. An edge BGPsec speaker in the ISP's AS validates the UPDATE message, using RPKI data based on the local RPKI view. Further, it may choose to propagate the prefix to its non-BGPsec and BGPsec peers. If so, the ISP's edge BGPsec speaker MUST strip the Secure_Path and the Signature Segment received from the stub AS with the private AS number and then (a) re-originate the prefix without any signatures towards its non-BGPsec peer and (b) re-originate the prefix including its own signature towards its BGPsec peer. In both cases (i.e., (a) and (b)), the prefix MUST have a ROA in the Global RPKI authorizing the ISP's AS to originate it.",
+      "zh": "2. ISP 和存根客户可使用本地 RPKI 资源库（使用 [SLURM] 中描述的机制之一）。然后，存根 AS 可以为该前缀创建一个 ROA，存根 AS 中的 eBGP 说话者可以是具有路由器证书的 BGPsec 说话者，尽管 ROA 和路由器证书仅在本地有效。在这种安排下，存根 AS 向 ISP 的 AS 发送经过签名的前缀 UPDATE 消息。ISP AS 中的边缘 BGPsec 说话者使用基于本地 RPKI 视图的 RPKI 数据验证 UPDATE 消息。此外，它可能会选择向其非 BGPsec 和 BGPsec 对等方传播该前缀。如果是这样，ISP 的边缘 BGPsec 发言者必须剥离从存根 AS 收到的带有私有 AS 编号的 Secure_Path 和签名段，然后 (a) 向其非 BGPsec 对等方重新分配不含任何签名的前缀，(b) 向其 BGPsec 对等方重新分配包含自身签名的前缀。在这两种情况下（即 (a) 和 (b)），前缀必须在全局 RPKI 中具有 ROA，授权 ISP 的 AS 发起。"
+    },
+    {
+      "indent": 3,
+      "text": "It is possible that private AS numbers are used in an AS confederation [RFC5065]. The BGPsec protocol requires that when a BGPsec UPDATE message propagates through a confederation, each Member-AS that forwards it to a peer Member-AS MUST sign the UPDATE message (see Section 4.3). However, the Global RPKI cannot support private AS numbers. In order for the BGPsec speakers in Member-ASes with private AS numbers to have digital certificates, there MUST be a mechanism in place in the confederation that allows the establishment of a local, customized view of the RPKI, augmenting the Global RPKI repository data as needed. Since this mechanism (for augmenting and maintaining a local image of RPKI data) operates locally within an AS or AS confederation, it need not be standard based. However, a standard-based mechanism can be used (see [SLURM]). Recall that in order to prevent exposure of the internals of AS confederations, a BGPsec speaker exporting to a non-member removes all intra-confederation Secure_Path Segments and Signatures (see Section 4.3).",
+      "zh": "AS联盟中可能使用私有AS号[RFC5065]。BGPsec 协议要求，当 BGPsec UPDATE 消息在联盟中传播时，将其转发给对等成员-AS 的每个成员-AS 都必须签署 UPDATE 消息（见第 4.3 节）。但是，全局 RPKI 不支持私有 AS 号码。为了使具有私有 AS 号码的成员-AS 中的 BGPsec 发言者拥有数字证书，联盟中必须建立一种机制，允许建立本地的、定制的 RPKI 视图，并根据需要扩充全球 RPKI 资源库数据。由于这种机制（用于增强和维护 RPKI 数据的本地映像）是在 AS 或 AS 联盟内本地运行的，因此无需基于标准。不过，可以使用基于标准的机制（见 [SLURM]）。回想一下，为了防止 AS 联盟的内部信息泄露，向非成员出口的 BGPsec 说话者会删除所有联盟内部的 Secure_Path 段和签名（见第 4.3 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "7.6. Robustness Considerations for Accessing RPKI Data",
+      "section_title": true,
+      "zh": "7.6. 访问 RPKI 数据的稳健性考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "The deployment structure, technologies, and best practices concerning Global RPKI data to reach routers (via local RPKI caches) are described in [RFC6810], [RFC8210], [RFC8181], [RFC7115], [RFC8207], and [RFC8182]. For example, Serial-Number-based incremental update mechanisms are used for efficient transfer of just the data records that have changed since the last update [RFC6810] [RFC8210]. The update notification file is used by Relying Parties (RPs) to discover whether any changes exist between the state of the Global RPKI repository and the RP's cache [RFC8182]. The notification describes the location of (1) the files containing the snapshot and (2) incremental deltas, which can be used by the RP to synchronize with the repository. Making use of these technologies and best practices results in enabling robustness, efficiency, and better security for the BGPsec routers and RPKI caches in terms of the flow of RPKI data from repositories to RPKI caches to routers. With these mechanisms, it is believed that an attacker wouldn't be able to meaningfully correlate RPKI data flows with BGPsec RP (or router) actions, thus avoiding attacks that may attempt to determine the set of ASes interacting with an RP via the interactions between the RP and RPKI servers.",
+      "zh": "有关全球 RPKI 数据到达路由器（通过本地 RPKI 缓存）的部署结构、技术和最佳实践在 [RFC6810]、[RFC8210]、[RFC8181]、[RFC7115]、[RFC8207] 和 [RFC8182] 中有所描述。例如，基于序列号的增量更新机制可用于有效传输自上次更新以来发生变化的数据记录 [RFC6810] [RFC8210]。依赖方（RP）使用更新通知文件来发现全球 RPKI 资源库的状态与 RP 的缓存之间是否存在任何变化 [RFC8182]。通知描述了 (1) 包含快照的文件的位置和 (2) 增量三角洲的位置，RP 可利用增量三角洲与存储库同步。利用这些技术和最佳实践，BGPsec 路由器和 RPKI 缓存在 RPKI 数据从资源库到 RPKI 缓存再到路由器的流动过程中，就能实现稳健、高效和更好的安全性。有了这些机制，我们相信攻击者就无法将 RPKI 数据流与 BGPsec RP（或路由器）的行为进行有意义的关联，从而避免了试图通过 RP 与 RPKI 服务器之间的交互来确定与 RP 交互的 AS 集的攻击。"
+    },
+    {
+      "indent": 0,
+      "text": "7.7. Graceful Restart",
+      "section_title": true,
+      "zh": "7.7. 优雅重启"
+    },
+    {
+      "indent": 3,
+      "text": "During Graceful Restart (GR), restarting and receiving BGPsec speakers MUST follow the procedures specified in [RFC4724] for restarting and receiving BGP speakers, respectively. In particular, the behavior of retaining the forwarding state for the routes in the Loc-RIB [RFC4271] and marking them as stale, as well as not differentiating between stale routing information and other information during forwarding, will be the same as the behavior specified in [RFC4724].",
+      "zh": "在 Graceful Restart (GR) 期间，重启和接收 BGPsec 发言者必须分别遵循 [RFC4724] 中规定的重启和接收 BGP 发言者的程序。特别是，保留 Loc-RIB [RFC4271] 中路由的转发状态并将其标记为陈旧路由，以及在转发过程中不区分陈旧路由信息和其他信息的行为将与 [RFC4724] 中规定的行为相同。"
+    },
+    {
+      "indent": 0,
+      "text": "7.8. Robustness of Secret Random Number in ECDSA",
+      "section_title": true,
+      "zh": "7.8. ECDSA 中秘密随机数的稳健性"
+    },
+    {
+      "indent": 3,
+      "text": "The Elliptic Curve Digital Signature Algorithm (ECDSA) with curve P-256 is used for signing UPDATE messages in BGPsec [RFC8208]. For ECDSA, it is stated in Section 6.3 of [FIPS186-4] that a new secret random number \"k\" shall be generated prior to the generation of each digital signature. A high-entropy random bit generator (RBG) must be used for generating \"k\", and any potential bias in the \"k\" generation algorithm must be mitigated (see the methods described in [FIPS186-4] and [SP800-90A]).",
+      "zh": "在 BGPsec [RFC8208] 中，曲线为 P-256 的椭圆曲线数字签名算法（ECDSA）用于签署 UPDATE 报文。对于 ECDSA，[FIPS186-4] 第 6.3 节规定，在生成每个数字签名之前，应生成一个新的秘密随机数 \"k\"。生成 \"k \"必须使用高熵随机比特生成器 (RBG)，而且必须减少 \"k \"生成算法中的任何潜在偏差（见 [FIPS186-4] 和 [SP800-90A] 中描述的方法）。"
+    },
+    {
+      "indent": 0,
+      "text": "7.9. Incremental/Partial Deployment Considerations",
+      "section_title": true,
+      "zh": "7.9. 增量/部分部署考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "What will migration from BGP to BGPsec look like? What are the benefits for the first adopters? Initially, small groups of contiguous ASes would be doing BGPsec. There would possibly be one or more such groups in different geographic regions of the global Internet. Only the routes originated within each group and propagated within its borders would get the benefits of cryptographic AS path protection. As BGPsec adoption grows, each group grows in size, and eventually they join together to form even larger BGPsec-capable groups of contiguous ASes. The benefit for early adopters starts with AS path security within the regions of contiguous ASes spanned by their respective groups. Over time, they would see those regions of contiguous ASes grow much larger.",
+      "zh": "从 BGP 迁移到 BGPsec 会是什么样子？首批采用者有什么好处？最初，会有一小批毗连的 AS 使用 BGPsec。在全球互联网的不同地理区域可能会有一个或多个这样的组。只有在每个组内起源并在其边界内传播的路由才能获得加密 AS 路径保护的好处。随着 BGPsec 采用率的提高，每个群组的规模也会扩大，最终它们会联合起来，形成更大的具有 BGPsec 功能的连续 AS 群组。对于早期采用者来说，他们可以从各自组所跨越的毗连 AS 区域内的 AS 路径安全中获益。随着时间的推移，它们将看到这些毗连 AS 的区域变得更大。"
+    },
+    {
+      "indent": 3,
+      "text": "During partial deployment, if an AS in the path doesn't support BGPsec, then BGP goes back to traditional mode, i.e., BGPsec UPDATE messages are converted to unsigned UPDATE messages before forwarding to that AS (see Section 4.4). At this point, the assurance that the UPDATE message propagated via the sequence of ASes listed is lost. In other words, for the BGPsec routers residing in the ASes starting from the origin AS to the AS before the one not supporting BGPsec, the assurance can still be provided, but not beyond that (for the UPDATE messages in consideration).",
+      "zh": "在部分部署期间，如果路径中的某个 AS 不支持 BGPsec，那么 BGP 将回到传统模式，即在转发到该 AS 之前，BGPsec UPDATE 消息将被转换为无符号 UPDATE 消息（见第 4.4 节）。此时，UPDATE 消息通过所列 AS 顺序传播的保证将不复存在。换句话说，对于驻留在从起源 AS 开始到不支持 BGPsec 的 AS 之前的 AS 中的 BGPsec 路由器来说，仍然可以提供保证，但不能超出这个范围（对于考虑中的 UPDATE 消息）。"
+    },
+    {
+      "indent": 0,
+      "text": "8. Security Considerations",
+      "section_title": true,
+      "zh": "8. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "For a discussion of the BGPsec threat model and related security considerations, please see RFC 7132 [RFC7132].",
+      "zh": "有关 BGPsec 威胁模型和相关安全考虑因素的讨论，请参阅 RFC 7132 [RFC7132]。"
+    },
+    {
+      "indent": 0,
+      "text": "8.1. Security Guarantees",
+      "section_title": true,
+      "zh": "8.1. 安全保证"
+    },
+    {
+      "indent": 3,
+      "text": "When used in conjunction with origin validation (see RFC 6483 [RFC6483] and RFC 6811 [RFC6811]), a BGPsec speaker who receives a valid BGPsec UPDATE message containing a route advertisement for a given prefix is provided with the following security guarantees:",
+      "zh": "当与起源验证（见 RFC 6483 [RFC6483] 和 RFC 6811 [RFC6811]）结合使用时，收到有效 BGPsec UPDATE 消息（包含给定前缀的路由广告）的 BGPsec 说话者可获得以下安全保证："
+    },
+    {
+      "indent": 3,
+      "text": "o The origin AS number corresponds to an AS that has been authorized, in the RPKI, by the IP address space holder to originate route advertisements for the given prefix.",
+      "zh": "o 起源 AS 编号对应于 IP 地址空间持有者在 RPKI 中授权为给定前缀发布路由广告的 AS。"
+    },
+    {
+      "indent": 3,
+      "text": "o For each AS in the path, a BGPsec speaker authorized by the holder of the AS number intentionally chose (in accordance with local policy) to propagate the route advertisement to the subsequent AS in the path.",
+      "zh": "o 对于路径中的每个 AS，由 AS 号持有者授权的 BGPsec 说话者有意选择（根据本地策略）向路径中的后续 AS 传播路由广告。"
+    },
+    {
+      "indent": 3,
+      "text": "That is, the recipient of a valid BGPsec UPDATE message is assured that the UPDATE message propagated via the sequence of ASes listed in the Secure_Path portion of the BGPsec_PATH attribute. (It should be noted that BGPsec does not offer any guarantee that the data packets would flow along the indicated path; it only guarantees that the BGP UPDATE message conveying the path indeed propagated along the indicated path.) Furthermore, the recipient is assured that this path terminates in an AS that has been authorized by the IP address space holder as a legitimate destination for traffic to the given prefix.",
+      "zh": "也就是说，有效 BGPsec UPDATE 消息的接收者可以确信 UPDATE 消息是通过 BGPsec_PATH 属性的 Secure_Path 部分所列的 AS 序列传播的。(应该注意的是，BGPsec 并不保证数据包会沿着指定路径流动；它只保证传达路径的 BGP UPDATE 信息确实沿着指定路径传播）。此外，收件人还可以确信，该路径的终点是一个 AS，该 AS 已被 IP 地址空间持有者授权为给定前缀流量的合法目的地。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that although BGPsec provides a mechanism for an AS to validate that a received UPDATE message has certain security properties, the use of such a mechanism to influence route selection is completely a matter of local policy. Therefore, a BGPsec speaker can make no assumptions about the validity of a route received from an external (eBGP) BGPsec peer. That is, a compliant BGPsec peer may (depending on the local policy of the peer) send UPDATE messages that fail the validity test in Section 5. Thus, a BGPsec speaker MUST completely validate all BGPsec UPDATE messages received from external peers. (Validation of UPDATE messages received from internal peers is also a matter of local policy; see Section 5.)",
+      "zh": "请注意，尽管 BGPsec 为 AS 提供了一种机制来验证收到的 UPDATE 消息是否具有某些安全属性，但使用这种机制来影响路由选择完全是本地策略的问题。因此，BGPsec 说话者不能假定从外部（eBGP）BGPsec 对等者收到的路由的有效性。也就是说，符合要求的 BGPsec 对等体可能（取决于对等体的本地策略）发送未能通过第 5 节中有效性测试的 UPDATE 消息。因此，BGPsec 说话者必须完全验证从外部对等体收到的所有 BGPsec UPDATE 消息。(验证从内部对等体收到的 UPDATE 消息也是本地策略的问题；请参阅第 5 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "8.2. On the Removal of BGPsec Signatures",
+      "section_title": true,
+      "zh": "8.2. 关于删除 BGPsec 签名"
+    },
+    {
+      "indent": 3,
+      "text": "There may be cases where a BGPsec speaker deems 'Valid' (as per the validation algorithm in Section 5.2) a BGPsec UPDATE message that contains both a 'Valid' and a 'Not Valid' Signature_Block. That is, the UPDATE message contains two sets of signatures corresponding to two algorithm suites, and one set of signatures verifies correctly and the other set of signatures fails to verify. In this case, the protocol specifies that a BGPsec speaker choosing to propagate the route advertisement in such an UPDATE message MUST add its signature to each of the Signature_Blocks (see Section 4.2). Thus, the BGPsec speaker creates a signature using both algorithm suites and creates a new UPDATE message that contains both the 'Valid' and the 'Not Valid' set of signatures (from its own vantage point).",
+      "zh": "在某些情况下，BGPsec 说话者会将同时包含 \"有效 \"和 \"无效 \"签名块的 BGPsec UPDATE 报文视为 \"有效\"（根据第 5.2 节中的验证算法）。也就是说，UPDATE 报文包含对应于两个算法套件的两组签名，其中一组签名验证正确，另一组签名验证失败。在这种情况下，协议规定选择在这种 UPDATE 报文中传播路由广告的 BGPsec 说话者必须在每个签名块中添加自己的签名（见第 4.2 节）。因此，BGPsec 说话者使用两种算法套件创建签名，并创建一个包含 \"有效 \"和 \"无效 \"签名集（从其自身角度看）的新 UPDATE 消息。"
+    },
+    {
+      "indent": 3,
+      "text": "To understand the reason for such a design decision, consider the case where the BGPsec speaker receives an UPDATE message with both a set of algorithm A signatures that are 'Valid' and a set of algorithm B signatures that are 'Not Valid'. In such a case, it is possible (perhaps even likely, depending on the state of the algorithm transition) that some of the BGPsec speaker's peers (or other entities further downstream in the BGP topology) do not support algorithm A. Therefore, if the BGPsec speaker were to remove the 'Not Valid' set of signatures corresponding to algorithm B, such entities would treat the message as though it were unsigned. By including the 'Not Valid' set of signatures when propagating a route advertisement, the BGPsec speaker ensures that downstream entities have as much information as possible to make an informed opinion about the validation status of a BGPsec UPDATE message.",
+      "zh": "要理解这种设计决策的原因，可以考虑这样一种情况：BGPsec 说话者收到的 UPDATE 消息中既有一组算法 A 签名为 \"有效\"，也有一组算法 B 签名为 \"无效\"。在这种情况下，BGPsec 说话者的某些对等体（或 BGP 拓扑中更下游的其他实体）可能（甚至很可能，取决于算法转换的状态）不支持算法 A。通过在传播路由广告时加入 \"无效 \"签名集，BGPsec 说话者可确保下游实体获得尽可能多的信息，从而对 BGPsec UPDATE 消息的验证状态做出明智的判断。"
+    },
+    {
+      "indent": 3,
+      "text": "Note also that during a period of partial BGPsec deployment, a downstream entity might reasonably treat unsigned messages differently from BGPsec UPDATE messages that contain a single set of 'Not Valid' signatures. That is, by removing the set of 'Not Valid' signatures, the BGPsec speaker might actually cause a downstream entity to 'upgrade' the status of a route advertisement from 'Not Valid' to unsigned. Finally, note that in the above scenario, the BGPsec speaker might have deemed algorithm A signatures 'Valid' only because of some issue with the RPKI state local to its AS (for example, its AS might not yet have obtained a Certificate Revocation List (CRL) indicating that a key used to verify an algorithm A signature belongs to a newly revoked certificate). In such a case, it is highly desirable for a downstream entity to treat the UPDATE message as 'Not Valid' (due to the revocation) and not as 'unsigned' (which would happen if the 'Not Valid' Signature_Blocks were removed en route).",
+      "zh": "还要注意的是，在部分部署 BGPsec 期间，下游实体可能会合理地区别对待未签名报文与包含单组 \"无效 \"签名的 BGPsec UPDATE 报文。也就是说，通过删除 \"无效 \"签名集，BGPsec 说话者实际上可能会导致下游实体将路由广告的状态从 \"无效\"\"升级 \"为未签名。最后，请注意，在上述情况下，BGPsec 发言者认为算法 A 签名 \"有效 \"可能只是因为其 AS 本地的 RPKI 状态存在某些问题（例如，其 AS 可能尚未获得证书吊销列表（CRL），该列表显示用于验证算法 A 签名的密钥属于新吊销的证书）。在这种情况下，下游实体最好将 UPDATE 消息视为 \"无效\"（由于证书被吊销），而不是 \"未签名\"（如果 \"无效 \"签名块在途中被删除，就会出现这种情况）。"
+    },
+    {
+      "indent": 3,
+      "text": "A similar argument applies to the case where a BGPsec speaker (for some reason, such as a lack of viable alternatives) selects as its best path (to a given prefix) a route obtained via a 'Not Valid' BGPsec UPDATE message. In such a case, the BGPsec speaker should propagate a signed BGPsec UPDATE message, adding its signature to the 'Not Valid' signatures that already exist. Again, this is to ensure that downstream entities are able to make an informed decision and not erroneously treat the route as unsigned. It should also be noted that due to possible differences in RPKI data observed at different vantage points in the network, a BGPsec UPDATE message deemed 'Not Valid' at an upstream BGPsec speaker may be deemed 'Valid' by another BGP speaker downstream.",
+      "zh": "类似的论点也适用于 BGPsec 说话者（由于某种原因，如缺乏可行的替代方案）选择通过 \"无效 \"BGPsec UPDATE 消息获得的路由作为其（通往给定前缀的）最佳路径的情况。在这种情况下，BGPsec 说话者应传播已签名的 BGPsec UPDATE 消息，将其签名添加到已存在的 \"无效 \"签名中。这也是为了确保下游实体能够做出明智的决定，而不会错误地将路由视为未签名。还应注意的是，由于在网络中不同的有利位置观察到的 RPKI 数据可能存在差异，上游 BGPsec 说话者认为 \"无效 \"的 BGPsec UPDATE 消息可能被下游的另一个 BGP 说话者认为是 \"有效 \"的。"
+    },
+    {
+      "indent": 3,
+      "text": "Indeed, when a BGPsec speaker signs an outgoing UPDATE message, it is not attesting to a belief that all signatures prior to its own signature are valid. Instead, it is merely asserting that:",
+      "zh": "事实上，当 BGPsec 发言者在发出的 UPDATE 消息上签名时，它并不是在证明自己签名之前的所有签名都是有效的。相反，它只是断言："
+    },
+    {
+      "indent": 3,
+      "text": "o The BGPsec speaker received the given route advertisement with the indicated prefix, AFI, SAFI, and Secure_Path, and",
+      "zh": "o BGPsec 发言者收到了带有指定前缀、AFI、SAFI 和 Secure_Path 的路由广告，并且"
+    },
+    {
+      "indent": 3,
+      "text": "o The BGPsec speaker chose to propagate an advertisement for this route to the peer (implicitly) indicated by the 'Target AS Number'.",
+      "zh": "o BGPsec 发言者选择向 \"目标 AS 编号\"（隐式）指示的对等方传播该路由的广告。"
+    },
+    {
+      "indent": 0,
+      "text": "8.3. Mitigation of Denial-of-Service Attacks",
+      "section_title": true,
+      "zh": "8.3. 缓解拒绝服务攻击"
+    },
+    {
+      "indent": 3,
+      "text": "The BGPsec update validation procedure is a potential target for denial-of-service attacks against a BGPsec speaker. The mitigation of denial-of-service attacks that are specific to the BGPsec protocol is considered here.",
+      "zh": "BGPsec 更新验证程序是针对 BGPsec 说话者的拒绝服务攻击的潜在目标。这里考虑的是如何缓解 BGPsec 协议特有的拒绝服务攻击。"
+    },
+    {
+      "indent": 3,
+      "text": "To mitigate the effectiveness of such denial-of-service attacks, BGPsec speakers should implement an update validation algorithm that performs expensive checks (e.g., signature verification) after performing checks that are less expensive (e.g., syntax checks). The validation algorithm specified in Section 5.2 was chosen so as to perform checks that are likely to be expensive after checks that are likely to be inexpensive. However, the relative cost of performing required validation steps may vary between implementations, and thus the algorithm specified in Section 5.2 may not provide the best denial-of-service protection for all implementations.",
+      "zh": "为降低此类拒绝服务攻击的有效性，BGPsec 发言者应实施一种更新验证算法，在执行代价较低的检查（如语法检查）之后再执行代价较高的检查（如签名验证）。选择第 5.2 节中规定的验证算法，是为了在执行费用可能较低的检查后，再执行费用可能较高的检查。但是，执行所需验证步骤的相对成本可能因实现而异，因此第 5.2 节中规定的算法可能无法为所有实现提供最佳的拒绝服务保护。"
+    },
+    {
+      "indent": 3,
+      "text": "Additionally, sending UPDATE messages with very long AS paths (and hence a large number of signatures) is a potential mechanism to conduct denial-of-service attacks. For this reason, it is important that an implementation of the validation algorithm stops attempting to verify signatures as soon as an invalid signature is found. (This ensures that long sequences of invalid signatures cannot be used for denial-of-service attacks.) Furthermore, implementations can mitigate such attacks by only performing validation on UPDATE messages that, if valid, would be selected as the best path. That is, if an UPDATE message contains a route that would lose out in best path selection for other reasons (e.g., a very long AS path), then it is not necessary to determine the BGPsec-validity status of the route.",
+      "zh": "此外，发送具有超长 AS 路径（因此具有大量签名）的 UPDATE 消息是一种潜在的拒绝服务攻击机制。因此，验证算法的实现必须在发现无效签名后立即停止验证签名的尝试。(这可确保长序列的无效签名无法用于拒绝服务攻击）。此外，实施程序还可以通过只对 UPDATE 消息执行验证来减少此类攻击，因为这些消息如果有效，就会被选为最佳路径。也就是说，如果 UPDATE 消息包含的路由因其他原因（如 AS 路径过长）而在最佳路径选择中落选，那么就没有必要确定该路由的 BGPsec 有效性状态。"
+    },
+    {
+      "indent": 0,
+      "text": "8.4. Additional Security Considerations",
+      "section_title": true,
+      "zh": "8.4. 其他安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "The mechanism of setting the pCount field to 0 is included in this specification to enable route servers in the control path to participate in BGPsec without increasing the length of the AS path. Two other scenarios where pCount=0 is utilized are in the contexts of an AS confederation (see Section 4.3) and of AS migration [RFC8206]. In these two scenarios, pCount=0 is set and also accepted within the same AS (albeit the AS has two different identities). However, entities other than route servers, confederation ASes, or migrating ASes could conceivably use this mechanism (set the pCount to 0) to attract traffic (by reducing the length of the AS path) illegitimately. This risk is largely mitigated if every BGPsec speaker follows the operational guidance in Section 7.2 for configuration for setting pCount=0 and/or accepting pCount=0 from a peer. However, note that a recipient of a BGPsec UPDATE message within which an upstream entity two or more hops away has set pCount to 0 is unable to verify for themselves whether pCount was set to 0 legitimately.",
+      "zh": "本规范中包含了将 pCount 字段设置为 0 的机制，以使控制路径中的路由服务器能够参与 BGPsec，而不会增加 AS 路径的长度。使用 pCount=0 的另外两种情况是 AS 联盟（见第 4.3 节）和 AS 迁移 [RFC8206]。在这两种情况下，同一 AS（尽管 AS 有两个不同的身份）内设置并接受 pCount=0。然而，路由服务器、联盟 AS 或迁移的 AS 以外的实体完全可以利用这一机制（将 pCount 设为 0）来非法吸引流量（通过减少 AS 路径的长度）。如果每个 BGPsec 发言者都遵守第 7.2 节中关于设置 pCount=0 和/或接受来自对等方的 pCount=0 的配置的操作指南，这种风险就会大大降低。但是，请注意，如果两跳或两跳以上的上游实体将 pCount 设置为 0，则 BGPsec UPDATE 消息的接收者将无法自行验证 pCount 是否被合法地设置为 0。"
+    },
+    {
+      "indent": 3,
+      "text": "There is a possibility of passing a BGPsec UPDATE message via tunneling between colluding ASes. For example, let's say that AS-X does not peer with AS-Y but colludes with AS-Y, and it signs and sends a BGPsec UPDATE message to AS-Y by tunneling. AS-Y can then further sign and propagate the BGPsec UPDATE message to its peers. It is beyond the scope of the BGPsec protocol to detect this form of malicious behavior. BGPsec is designed to protect messages sent within BGP (i.e., within the control plane) -- not when the control plane is bypassed.",
+      "zh": "串通的 AS 之间有可能通过隧道传递 BGPsec UPDATE 信息。例如，假设 AS-X 没有与 AS-Y 对等，而是与 AS-Y 串谋，它通过隧道签署并向 AS-Y 发送 BGPsec UPDATE 信息。然后，AS-Y 可进一步签署 BGPsec UPDATE 消息并将其传播给对等网络。检测这种形式的恶意行为超出了 BGPsec 协议的范围。BGPsec 的设计目的是保护在 BGP 内（即在控制平面内）发送的报文，而不是在控制平面被绕过时提供保护。"
+    },
+    {
+      "indent": 3,
+      "text": "A variant of the collusion by tunneling mentioned above can happen in the context of AS confederations. When a BGPsec router (outside of a confederation) is forwarding an UPDATE message to a Member-AS in the confederation, it signs the UPDATE message to the public AS number of the confederation and not to the member's AS number (see Section 4.3). The Member-AS can tunnel the signed UPDATE message to another Member-AS as received (i.e., without adding a signature). The UPDATE message can then be propagated using BGPsec to other confederation members or to BGPsec neighbors outside of the confederation. This kind of operation is possible, but no grave security or reachability compromise is feared for the following reasons:",
+      "zh": "上述通过隧道串通的变种可能发生在 AS 联盟中。当一个 BGPsec 路由器（在联盟之外）向联盟中的成员-AS 转发 UPDATE 消息时，它会将 UPDATE 消息签署为联盟的公共 AS 号，而不是成员的 AS 号（见第 4.3 节）。成员-AS 可将已签名的 UPDATE 消息以隧道方式发送给另一个已收到的成员-AS（即不添加签名）。然后，UPDATE 消息可使用 BGPsec 传播给其他联盟成员或联盟外的 BGPsec 邻居。这种操作是可能的，但由于以下原因，并不担心会出现严重的安全性或可达性问题："
+    },
+    {
+      "indent": 3,
+      "text": "o The confederation members belong to one organization, and strong internal trust is expected.",
+      "zh": "o 联合会成员属于一个组织，内部信任度很高。"
+    },
+    {
+      "indent": 3,
+      "text": "o Recall that the signatures that are internal to the confederation MUST be removed prior to forwarding the UPDATE message to an outside BGPsec router (see Section 4.3).",
+      "zh": "o 请注意，在将 UPDATE 消息转发给外部 BGPsec 路由器之前，必须删除联盟内部的签名（见第 4.3 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "BGPsec does not provide protection against attacks at the transport layer. As with any BGP session, an adversary on the path between a BGPsec speaker and its peer is able to perform attacks such as modifying valid BGPsec UPDATE messages to cause them to fail validation, injecting (unsigned) BGP UPDATE messages without BGPsec_PATH attributes, injecting BGPsec UPDATE messages with BGPsec_PATH attributes that fail validation, or causing the peer to tear down the BGP session. The use of BGPsec does nothing to increase the power of an on-path adversary -- in particular, even an on-path adversary cannot cause a BGPsec speaker to believe that a BGPsec-invalid route is valid. However, as with any BGP session, BGPsec sessions SHOULD be protected by appropriate transport security mechanisms (see the Security Considerations section in [RFC4271]).",
+      "zh": "BGPsec 不提供针对传输层攻击的保护。与任何 BGP 会话一样，BGPsec 说话者与其对等方之间路径上的敌方能够实施攻击，如修改有效的 BGPsec UPDATE 消息使其无法通过验证、注入不带 BGPsec_PATH 属性的（未签名）BGP UPDATE 消息、注入无法通过验证的带 BGPsec_PATH 属性的 BGPsec UPDATE 消息或导致对等方中断 BGP 会话。使用 BGPsec 不会增强路径上攻击者的能力，尤其是，即使是路径上攻击者也无法让 BGPsec 发言者相信 BGPsec 无效路由是有效的。不过，与任何 BGP 会话一样，BGPsec 会话也应受到适当的传输安全机制的保护（请参阅 [RFC4271] 中的 \"安全考虑因素 \"部分）。"
+    },
+    {
+      "indent": 3,
+      "text": "There is a possibility of replay attacks, defined as follows. In the context of BGPsec, a replay attack occurs when a malicious BGPsec speaker in the AS path suppresses a prefix withdrawal (implicit or explicit). Further, a replay attack is said to occur also when a malicious BGPsec speaker replays a previously received BGPsec announcement for a prefix that has since been withdrawn. The mitigation strategy for replay attacks involves router certificate rollover; please see [ROLLOVER] for details.",
+      "zh": "重放攻击的定义如下。就 BGPsec 而言，当 AS 路径中的恶意 BGPsec 发言者压制（隐式或显式）前缀撤回时，就会发生重放攻击。此外，当恶意 BGPsec 发言者重播之前收到的前缀 BGPsec 公告时，也会发生重放攻击。重放攻击的缓解策略包括路由器证书翻转；详情请参见 [ROLLOVER]。"
+    },
+    {
+      "indent": 0,
+      "text": "9. IANA Considerations",
+      "section_title": true,
+      "zh": "9. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has registered a new BGP capability described in Section 2.1 in the \"Capability Codes\" registry's \"IETF Review\" range [RFC8126]. The description for the new capability is \"BGPsec Capability\". This document is the reference for the new capability.",
+      "zh": "IANA 在 \"能力代码 \"注册表的 \"IETF 审查 \"范围 [RFC8126] 中注册了第 2.1 节所述的新 BGP 能力。新能力的描述是 \"BGPsec 能力\"。本文档是新功能的参考文献。"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has also registered a new path attribute described in Section 3 in the \"BGP Path Attributes\" registry. The code for this new attribute is \"BGPsec_PATH\". This document is the reference for the new attribute.",
+      "zh": "IANA 还在 \"BGP 路径属性 \"注册表中注册了第 3 节所述的新路径属性。这一新属性的代码为 \"BGPsec_PATH\"。本文档是新属性的参考文献。"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has defined the \"BGPsec Capability\" registry in the \"Resource Public Key Infrastructure (RPKI)\" group. The registry is as shown in Figure 10, with values assigned from Section 2.1:",
+      "zh": "IANA 在 \"资源公钥基础设施 (RPKI) \"组中定义了 \"BGPsec 能力 \"注册表。注册表如图 10 所示，其值根据第 2.1 节分配："
+    },
+    {
+      "indent": 8,
+      "text": "+------+------------------------------------+------------+\n| Bits | Field                              | Reference  |\n+------+------------------------------------+------------+\n| 0-3  | Version                            | [RFC8205]  |\n|      | Value = 0x0                        |            |\n+------+------------------------------------+------------+\n| 4    | Direction                          | [RFC8205]  |\n|      |(Both possible values 0 and 1 are   |            |\n|      | fully specified by this RFC)       |            |\n+------+------------------------------------+------------+\n| 5-7  | Unassigned                         | [RFC8205]  |\n|      | Value = 000 (in binary)            |            |\n+------+------------------------------------+------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 14,
+      "text": "Figure 10: IANA Registry for BGPsec Capability",
+      "zh": "图 10：BGPsec 功能的 IANA 注册表"
+    },
+    {
+      "indent": 3,
+      "text": "The Direction bit (fourth bit) has a value of either 0 or 1, and both values are fully specified by this document. Future Version values and future values of the Unassigned bits are assigned using the \"Standards Action\" registration procedures defined in RFC 8126 [RFC8126].",
+      "zh": "方向位（第四位）的值为 0 或 1，本文件对这两个值都作了充分规定。未来版本值和未指定位的未来值使用 RFC 8126 [RFC8126] 中定义的 \"标准行动 \"注册程序进行分配。"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has defined the \"BGPsec_PATH Flags\" registry in the \"Resource Public Key Infrastructure (RPKI)\" group. The registry is as shown in Figure 11, with one value assigned from Section 3.1:",
+      "zh": "IANA 在 \"资源公钥基础设施 (RPKI) \"组中定义了 \"BGPsec_PATH 标志 \"注册表。注册表如图 11 所示，其中一个值来自第 3.1 节："
+    },
+    {
+      "indent": 5,
+      "text": "+------+-------------------------------------------+------------+\n| Flag | Description                               | Reference  |\n+------+-------------------------------------------+------------+\n| 0    | Confed_Segment                            | [RFC8205]  |\n|      | Bit value = 1 means Flag set              |            |\n|      |                (indicates Confed_Segment) |            |\n|      | Bit value = 0 is default                  |            |\n+------+-------------------------------------------+------------+\n| 1-7  | Unassigned                                | [RFC8205]  |\n|      | Value: All 7 bits set to zero             |            |\n+------+-------------------------------------------+------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 11,
+      "text": "Figure 11: IANA Registry for BGPsec_PATH Flags Field",
+      "zh": "图 11：BGPsec_PATH 标志字段的 IANA 注册表"
+    },
+    {
+      "indent": 3,
+      "text": "Future values of the Unassigned bits are assigned using the \"Standards Action\" registration procedures defined in RFC 8126 [RFC8126].",
+      "zh": "未指定位的未来值通过 RFC 8126 [RFC8126] 中定义的 \"标准行动 \"注册程序进行分配。"
+    },
+    {
+      "indent": 0,
+      "text": "10. References",
+      "section_title": true,
+      "zh": "10. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "10.1. Normative References",
+      "section_title": true,
+      "zh": "10.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[IANA-AF] IANA, \"Address Family Numbers\", <https://www.iana.org/assignments/address-family-numbers>.",
+      "zh": "[IANA-AF] IANA，\"地址族编号\"，<https://www.iana.org/assignments/address-family-numbers>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, DOI 10.17487/RFC4271, January 2006, <https://www.rfc-editor.org/info/rfc4271>.",
+      "zh": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, DOI 10.17487/RFC4271, January 2006, <https://www.rfc-editor.org/info/rfc4271>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4724] Sangli, S., Chen, E., Fernando, R., Scudder, J., and Y. Rekhter, \"Graceful Restart Mechanism for BGP\", RFC 4724, DOI 10.17487/RFC4724, January 2007, <https://www.rfc-editor.org/info/rfc4724>.",
+      "zh": "[RFC4724] Sangli, S., Chen, E., Fernando, R., Scudder, J., and Y. Rekhter, \"Graceful Restart Mechanism for BGP\", RFC 4724, DOI 10.17487/RFC4724, January 2007, <https://www.rfc-editor.org/info/rfc4724>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4760] Bates, T., Chandra, R., Katz, D., and Y. Rekhter, \"Multiprotocol Extensions for BGP-4\", RFC 4760, DOI 10.17487/RFC4760, January 2007, <https://www.rfc-editor.org/info/rfc4760>.",
+      "zh": "[RFC4760] Bates, T., Chandra, R., Katz, D., and Y. Rekhter, \"Multiprotocol Extensions for BGP-4\", RFC 4760, DOI 10.17487/RFC4760, January 2007, <https://www.rfc-editor.org/info/rfc4760>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5065] Traina, P., McPherson, D., and J. Scudder, \"Autonomous System Confederations for BGP\", RFC 5065, DOI 10.17487/RFC5065, August 2007, <https://www.rfc-editor.org/info/rfc5065>.",
+      "zh": "[RFC5065] Traina, P., McPherson, D., and J. Scudder, \"Autonomous System Confederations for BGP\", RFC 5065, DOI 10.17487/RFC5065, August 2007, <https://www.rfc-editor.org/info/rfc5065>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5492] Scudder, J. and R. Chandra, \"Capabilities Advertisement with BGP-4\", RFC 5492, DOI 10.17487/RFC5492, February 2009, <https://www.rfc-editor.org/info/rfc5492>.",
+      "zh": "[RFC5492] Scudder, J. and R. Chandra, \"Capabilities Advertisement with BGP-4\", RFC 5492, DOI 10.17487/RFC5492, February 2009, <https://www.rfc-editor.org/info/rfc5492>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, DOI 10.17487/RFC6482, February 2012, <https://www.rfc-editor.org/info/rfc6482>.",
+      "zh": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, DOI 10.17487/RFC6482, February 2012, <https://www.rfc-editor.org/info/rfc6482>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, DOI 10.17487/RFC6487, February 2012, <https://www.rfc-editor.org/info/rfc6487>.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, DOI 10.17487/RFC6487, February 2012, <https://www.rfc-editor.org/info/rfc6487>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6793] Vohra, Q. and E. Chen, \"BGP Support for Four-Octet Autonomous System (AS) Number Space\", RFC 6793, DOI 10.17487/RFC6793, December 2012, <https://www.rfc-editor.org/info/rfc6793>.",
+      "zh": "[RFC6793] Vohra, Q. and E. Chen, \"BGP Support for Four-Octet Autonomous System (AS) Number Space\", RFC 6793, DOI 10.17487/RFC6793, December 2012, <https://www.rfc-editor.org/info/rfc6793>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7606] Chen, E., Ed., Scudder, J., Ed., Mohapatra, P., and K. Patel, \"Revised Error Handling for BGP UPDATE Messages\", RFC 7606, DOI 10.17487/RFC7606, August 2015, <https://www.rfc-editor.org/info/rfc7606>.",
+      "zh": "[RFC7606] Chen, E., Ed., Scudder, J., Ed., Mohapatra, P., and K. Patel, \"Revised Error Handling for BGP UPDATE Messages\", RFC 7606, DOI 10.17487/RFC7606, August 2015, <https://www.rfc-editor.org/info/rfc7606>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8126] Cotton, M., Leiba, B., and T. Narten, \"Guidelines for Writing an IANA Considerations Section in RFCs\", BCP 26, RFC 8126, DOI 10.17487/RFC8126, June 2017, <https://www.rfc-editor.org/info/rfc8126>.",
+      "zh": "[RFC8126] Cotton, M., Leiba, B., and T. Narten, \"Guidelines for Writing an IANA Considerations Section in RFCs\", BCP 26, RFC 8126, DOI 10.17487/RFC8126, June 2017, <https://www.rfc-editor.org/info/rfc8126>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>.",
+      "zh": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8208] Turner, S. and O. Borchert, \"BGPsec Algorithms, Key Formats, and Signature Formats\", RFC 8208, DOI 10.17487/RFC8208, September 2017, <https://www.rfc-editor.org/info/rfc8208>.",
+      "zh": "[RFC8208] Turner, S. and O. Borchert, \"BGPsec Algorithms, Key Formats, and Signature Formats\", RFC 8208, DOI 10.17487/RFC8208, September 2017, <https://www.rfc-editor.org/info/rfc8208>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8209] Reynolds, M., Turner, S., and S. Kent, \"A Profile for BGPsec Router Certificates, Certificate Revocation Lists, and Certification Requests\", RFC 8209, DOI 10.17487/RFC8209, September 2017, <https://www.rfc-editor.org/info/rfc8209>.",
+      "zh": "[RFC8209] Reynolds, M., Turner, S., and S. Kent, \"A Profile for BGPsec Router Certificates, Certificate Revocation Lists, and Certification Requests\", RFC 8209, DOI 10.17487/RFC8209, September 2017, <https://www.rfc-editor.org/info/rfc8209>。"
+    },
+    {
+      "indent": 0,
+      "text": "10.2. Informative References",
+      "section_title": true,
+      "zh": "10.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[Borchert] Borchert, O. and M. Baer, \"Subject: Modification request: draft-ietf-sidr-bgpsec-protocol-14\", message to the IETF SIDR WG Mailing List, 10 February 2016, <https://mailarchive.ietf.org/arch/msg/ sidr/8B_e4CNxQCUKeZ_AUzsdnn2f5Mu>.",
+      "zh": "[Borchert] Borchert, O. and M. Baer, \"Subject：Modification request: draft-ietf-sidr-bgpsec-protocol-14\", message to the IETF SIDR WG Mailing List, 10 February 2016, <https://mailarchive.ietf.org/arch/msg/ sidr/8B_e4CNxQCUKeZ_AUzsdnn2f5Mu>."
+    },
+    {
+      "indent": 3,
+      "text": "[FIPS186-4] National Institute of Standards and Technology, \"Digital Signature Standard (DSS)\", NIST FIPS Publication 186-4, DOI 10.6028/NIST.FIPS.186-4, July 2013, <http://nvlpubs.nist.gov/nistpubs/FIPS/ NIST.FIPS.186-4.pdf>.",
+      "zh": "[FIPS186-4] 美国国家标准与技术研究院，\"数字签名标准（DSS）\"，NIST FIPS Publication 186-4，DOI 10.6028/NIST.FIPS.186-4，2013 年 7 月，<http://nvlpubs.nist.gov/nistpubs/FIPS/ NIST.FIPS.186-4.pdf>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6472] Kumari, W. and K. Sriram, \"Recommendation for Not Using AS_SET and AS_CONFED_SET in BGP\", BCP 172, RFC 6472, DOI 10.17487/RFC6472, December 2011, <https://www.rfc-editor.org/info/rfc6472>.",
+      "zh": "[RFC6472] Kumari, W. and K. Sriram, \"Recommendation for Not Using AS_SET and AS_CONFED_SET in BGP\", BCP 172, RFC 6472, DOI 10.17487/RFC6472, December 2011, <https://www.rfc-editor.org/info/rfc6472>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6483] Huston, G. and G. Michaelson, \"Validation of Route Origination Using the Resource Certificate Public Key Infrastructure (PKI) and Route Origin Authorizations (ROAs)\", RFC 6483, DOI 10.17487/RFC6483, February 2012, <https://www.rfc-editor.org/info/rfc6483>.",
+      "zh": "[RFC6483] Huston, G. and G. Michaelson, \"Validation of Route Origination Using the Resource Certificate Public Key Infrastructure (PKI) and Route Origin Authorizations (ROAs)\", RFC 6483, DOI 10.17487/RFC6483, February 2012, <https://www.rfc-editor.org/info/rfc6483>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6810] Bush, R. and R. Austein, \"The Resource Public Key Infrastructure (RPKI) to Router Protocol\", RFC 6810, DOI 10.17487/RFC6810, January 2013, <https://www.rfc-editor.org/info/rfc6810>.",
+      "zh": "[RFC6810] Bush, R. and R. Austein, \"The Resource Public Key Infrastructure (RPKI) to Router Protocol\", RFC 6810, DOI 10.17487/RFC6810, January 2013, <https://www.rfc-editor.org/info/rfc6810>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP Prefix Origin Validation\", RFC 6811, DOI 10.17487/RFC6811, January 2013, <https://www.rfc-editor.org/info/rfc6811>.",
+      "zh": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP Prefix Origin Validation\", RFC 6811, DOI 10.17487/RFC6811, January 2013, <https://www.rfc-editor.org/info/rfc6811>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7093] Turner, S., Kent, S., and J. Manger, \"Additional Methods for Generating Key Identifiers Values\", RFC 7093, DOI 10.17487/RFC7093, December 2013, <https://www.rfc-editor.org/info/rfc7093>.",
+      "zh": "[RFC7093] Turner, S., Kent, S., and J. Manger, \"Additional Methods for Generating Key Identifiers Values\", RFC 7093, DOI 10.17487/RFC7093, December 2013, <https://www.rfc-editor.org/info/rfc7093>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7115] Bush, R., \"Origin Validation Operation Based on the Resource Public Key Infrastructure (RPKI)\", BCP 185, RFC 7115, DOI 10.17487/RFC7115, January 2014, <https://www.rfc-editor.org/info/rfc7115>.",
+      "zh": "[RFC7115] Bush, R., \"Origin Validation Operation Based on Resource Public Key Infrastructure (RPKI)\", BCP 185, RFC 7115, DOI 10.17487/RFC7115, January 2014, <https://www.rfc-editor.org/info/rfc7115>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7132] Kent, S. and A. Chi, \"Threat Model for BGP Path Security\", RFC 7132, DOI 10.17487/RFC7132, February 2014, <https://www.rfc-editor.org/info/rfc7132>.",
+      "zh": "[RFC7132] Kent, S. and A. Chi, \"Threat Model for BGP Path Security\", RFC 7132, DOI 10.17487/RFC7132, February 2014, <https://www.rfc-editor.org/info/rfc7132>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8181] Weiler, S., Sonalker, A., and R. Austein, \"A Publication Protocol for the Resource Public Key Infrastructure (RPKI)\", July 2017, <https://www.rfc-editor.org/info/rfc8181>.",
+      "zh": "[RFC8181] Weiler, S., Sonalker, A., and R. Austein, \"A Publication Protocol for the Resource Public Key Infrastructure (RPKI)\", July 2017, <https://www.rfc-editor.org/info/rfc8181>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8182] Bruijnzeels, T., Muravskiy, O., Weber, B., and R. Austein, \"The RPKI Repository Delta Protocol (RRDP)\", RFC 8182, DOI 10.17487/RFC8182, July 2017, <https://www.rfc-editor.org/info/rfc8182>.",
+      "zh": "[RFC8182] Bruijnzeels, T., Muravskiy, O., Weber, B., and R. Austein, \"The RPKI Repository Delta Protocol (RRDP)\", RFC 8182, DOI 10.17487/RFC8182, July 2017, <https://www.rfc-editor.org/info/rfc8182>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8206] George, W. and S. Murphy, \"BGPsec Considerations for Autonomous System (AS) Migration\", RFC 8206, DOI 10.17487/RFC8206, September 2017, <https://www.rfc-editor.org/info/rfc8206>.",
+      "zh": "[RFC8206] George, W. and S. Murphy, \"BGPsec Considerations for Autonomous System (AS) Migration\", RFC 8206, DOI 10.17487/RFC8206, September 2017, <https://www.rfc-editor.org/info/rfc8206>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8207] Bush, R., \"BGPsec Operational Considerations\", BCP 211, RFC 8207, DOI 10.17487/RFC8207, September 2017, <https://www.rfc-editor.org/info/rfc8207>.",
+      "zh": "[RFC8207] Bush, R., \"BGPsec Operational Considerations\", BCP 211, RFC 8207, DOI 10.17487/RFC8207, September 2017, <https://www.rfc-editor.org/info/rfc8207>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8210] Bush, R. and R. Austein, \"The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1\", RFC 8210, DOI 10.17487/RFC8210, September 2017, <https://www.rfc-editor.org/info/rfc8210>.",
+      "zh": "[RFC8210] Bush, R. and R. Austein, \"The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1\", RFC 8210, DOI 10.17487/RFC8210, September 2017, <https://www.rfc-editor.org/info/rfc8210>。"
+    },
+    {
+      "indent": 3,
+      "text": "[ROLLOVER] Weis, B., Gagliano, R., and K. Patel, \"BGPsec Router Certificate Rollover\", Work in Progress, draft-ietf-sidrops-bgpsec-rollover-01, August 2017.",
+      "zh": "[ROLLOVER] Weis, B., Gagliano, R., and K. Patel, \"BGPsec Router Certificate Rollover\", Work in Progress, draft-ietf-sidrops-bgpsec-rollover-01, August 2017."
+    },
+    {
+      "indent": 3,
+      "text": "[SLURM] Mandelberg, D., Ma, D., and T. Bruijnzeels, \"Simplified Local internet nUmber Resource Management with the RPKI\", Work in Progress, draft-ietf-sidr-slurm-04, March 2017.",
+      "zh": "[SLURM] Mandelberg, D., Ma, D., and T. Bruijnzeels, \"Simplified Local internet nUmber Resource Management with the RPKI\", Work in Progress, draft-ietf-sidr-slurm-04, March 2017."
+    },
+    {
+      "indent": 3,
+      "text": "[SP800-90A] National Institute of Standards and Technology, \"Recommendation for Random Number Generation Using Deterministic Random Bit Generators\", NIST SP 800-90A Rev 1, DOI 10.6028/NIST.SP.800-90Ar1, June 2015, <http://nvlpubs.nist.gov/nistpubs/SpecialPublications/ NIST.SP.800-90Ar1.pdf>.",
+      "zh": "[SP800-90A] 美国国家标准与技术研究院，《使用确定性随机比特生成器生成随机数的建议》，NIST SP 800-90A Rev 1，DOI 10.6028/NIST.SP.800-90Ar1，2015 年 6 月，<http://nvlpubs.nist.gov/nistpubs/SpecialPublications/ NIST.SP.800-90Ar1.pdf>。"
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgements",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors would like to thank Michael Baer, Oliver Borchert, David Mandelberg, Mehmet Adalier, Sean Turner, Wes George, Jeff Haas, Alvaro Retana, Nevil Brownlee, Matthias Waehlisch, Tim Polk, Russ Mundy, Wes Hardaker, Sharon Goldberg, Ed Kern, Doug Maughan, Pradosh Mohapatra, Mark Reynolds, Heather Schiller, Jason Schiller, Ruediger Volk, and David Ward for their review, comments, and suggestions during the course of this work. Thanks are also due to many IESG reviewers whose comments greatly helped improve the clarity, accuracy, and presentation in the document.",
+      "zh": "作者感谢 Michael Baer、Oliver Borchert、David Mandelberg、Mehmet Adalier、Sean Turner、Wes George、Jeff Haas、Alvaro Retana、Nevil Brownlee、Matthias Waehlisch、Tim Polk、Russ Mundy、Wes Hardaker、Sharon Goldberg、Ed Kern、Doug Maughan、Pradosh Mohapatra、Mark Reynolds、Heather Schiller、Jason Schiller、Ruediger Volk 和 David Ward 在工作过程中提供的审阅、评论和建议。此外，还要感谢 IESG 的许多审稿人，他们的意见极大地改进了文件的清晰度、准确性和表达方式。"
+    },
+    {
+      "indent": 3,
+      "text": "The authors particularly wish to acknowledge Oliver Borchert and Michael Baer for their review and suggestions [Borchert] concerning the sequence of octets to be hashed (Figures 8 and 9 in Sections 4.2 and 5.2, respectively). This was an important contribution based on their implementation experience.",
+      "zh": "作者特别感谢 Oliver Borchert 和 Michael Baer 对散列八位位组序列（分别见第 4.2 和 5.2 节中的图 8 和图 9）的审查和建议 [Borchert]。这是基于他们的实施经验而做出的重要贡献。"
+    },
+    {
+      "indent": 0,
+      "text": "Contributors",
+      "zh": "贡献者"
+    },
+    {
+      "indent": 3,
+      "text": "The following people have made significant contributions to this document and should be considered co-authors:",
+      "zh": "以下人员对本文件做出了重要贡献，应视为共同作者："
+    },
+    {
+      "indent": 3,
+      "text": "Rob Austein Dragon Research Labs Email: sra@hactrn.net",
+      "zh": "Rob Austein 龙研究实验室 电子邮件：sra@hactrn.net"
+    },
+    {
+      "indent": 3,
+      "text": "Steven Bellovin Columbia University Email: smb@cs.columbia.edu",
+      "zh": "Steven Bellovin 哥伦比亚大学 电子邮件：smb@cs.columbia.edu"
+    },
+    {
+      "indent": 3,
+      "text": "Russ Housley Vigil Security Email: housley@vigilsec.com",
+      "zh": "Russ Housley Vigil 安全部电子邮件：housley@vigilsec.com"
+    },
+    {
+      "indent": 3,
+      "text": "Stephen Kent BBN Technologies Email: kent@alum.mit.edu",
+      "zh": "Stephen Kent BBN Technologies 电子邮箱：kent@alum.mit.edu"
+    },
+    {
+      "indent": 3,
+      "text": "Warren Kumari Google Email: warren@kumari.net",
+      "zh": "Warren Kumari 谷歌电子邮件：warren@kumari.net"
+    },
+    {
+      "indent": 3,
+      "text": "Doug Montgomery USA National Institute of Standards and Technology Email: dougm@nist.gov",
+      "zh": "Doug Montgomery 美国国家标准与技术研究院 电子邮件：dougm@nist.gov"
+    },
+    {
+      "indent": 3,
+      "text": "Chris Morrow Google, Inc. Email: morrowc@google.com",
+      "zh": "Chris Morrow 谷歌公司电子邮件：morrowc@google.com"
+    },
+    {
+      "indent": 3,
+      "text": "Sandy Murphy SPARTA, Inc., a Parsons Company Email: sandy@tislabs.com",
+      "zh": "Sandy Murphy SPARTA, Inc., a Parsons Company 电子邮件：sandy@tislabs.com"
+    },
+    {
+      "indent": 3,
+      "text": "Keyur Patel Arrcus Email: keyur@arrcus.com",
+      "zh": "Keyur Patel Arrcus 电子邮件：keyur@arrcus.com"
+    },
+    {
+      "indent": 3,
+      "text": "John Scudder Juniper Networks Email: jgs@juniper.net",
+      "zh": "John Scudder 瞻博网络电子邮件：jgs@juniper.net"
+    },
+    {
+      "indent": 3,
+      "text": "Samuel Weiler W3C/MIT Email: weiler@csail.mit.edu",
+      "zh": "Samuel Weiler W3C/MIT 电子邮件：weiler@csail.mit.edu"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Matthew Lepinski (editor) New College of Florida 5800 Bay Shore Road Sarasota, FL 34243 United States of America",
+      "zh": "Matthew Lepinski（编辑） 佛罗里达新学院（New College of Florida） 美国佛罗里达州萨拉索塔市湾岸路 5800 号 邮编：34243"
+    },
+    {
+      "indent": 3,
+      "text": "Email: mlepinski@ncf.edu",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Kotikalapudi Sriram (editor) USA National Institute of Standards and Technology 100 Bureau Drive Gaithersburg, MD 20899 United States of America",
+      "zh": "Kotikalapudi Sriram（编辑） 美国国家标准与技术研究院 100 Bureau Drive Gaithersburg, MD 20899 美利坚合众国"
+    },
+    {
+      "indent": 3,
+      "text": "Email: kotikalapudi.sriram@nist.gov",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

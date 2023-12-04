@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 4012 - Routing Policy Specification Language next generation (RPSLng) 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">4012</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc4012">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 4012 - Routing Policy Specification Language next generation (RPSLng) 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc4012">
+            https://datatracker.ietf.org/doc/html/rfc4012
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 4012 - 下一代路由策略规范语言（RPSLng）</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Network Working Group                                           L. Blunk
+Request for Comments: 4012                                 Merit Network
+Updates: 2725, 2622                                             J. Damas
+Category: Standards Track                    Internet Systems Consortium
+                                                               F. Parent
+                                                                  Hexago
+                                                          A. Robachevsky
+                                                                RIPE NCC
+                                                              March 2005
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-5">
+Routing Policy Specification Language next generation (RPSLng)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-5">
+下一代路由策略规范语言（RPSLng）
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of this Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document specifies an Internet standards track protocol for the Internet community, and requests discussion and suggestions for improvements. Please refer to the current edition of the &#34;Internet Official Protocol Standards&#34; (STD 1) for the standardization state and status of this protocol. Distribution of this memo is unlimited.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件为互联网社区规定了一个互联网标准跟踪协议，并请求讨论和提出改进建议。有关本协议的标准化状况和状态，请参阅当前版本的 &#34;互联网官方协议标准&#34;（STD 1）。本备忘录的分发不受限制。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (C) The Internet Society (2005).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版权所有 (C) 互联网协会 (2005)。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This memo introduces a new set of simple extensions to the Routing Policy Specification Language (RPSL), enabling the language to document routing policies for the IPv6 and multicast address families currently used in the Internet.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本备忘录介绍了路由策略规范语言（RPSL）的一组新的简单扩展，使该语言能够记录目前在互联网中使用的 IPv6 和组播地址族的路由策略。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction . . . . . . . . . . . . . . . . . . . . . . . . .  2
+   2.  Specifying routing policy for different address families . . .  2
+       2.1.  Ambiguity Resolution . . . . . . . . . . . . . . . . . .  3
+       2.2.  The afi dictionary attribute . . . . . . . . . . . . . .  3
+       2.3.  RPSL dictionary extensions . . . . . . . . . . . . . . .  4
+       2.4.  IPv6 RPSL types  . . . . . . . . . . . . . . . . . . . .  4
+       2.5.  mp-import, mp-export, and mp-default . . . . . . . . . .  4
+             2.5.1.  &lt;mp-peering&gt; . . . . . . . . . . . . . . . . . .  6
+             2.5.2.  &lt;mp-filter&gt;  . . . . . . . . . . . . . . . . . .  6
+             2.5.3.  Policy examples  . . . . . . . . . . . . . . . .  7
+   3.  route6 Class . . . . . . . . . . . . . . . . . . . . . . . . .  7
+   4.  Updates to existing Classes to support the extensions  . . . .  8
+       4.1.  as-set Class . . . . . . . . . . . . . . . . . . . . . .  8
+       4.2.  route-set Class  . . . . . . . . . . . . . . . . . . . .  9
+          4.3.  filter-set Class . . . . . . . . . . . . . . . . . . . .  9
+       4.4.  peering-set Class  . . . . . . . . . . . . . . . . . . .  9
+       4.5.  inet-rtr Class . . . . . . . . . . . . . . . . . . . . . 10
+       4.6.  rtr-set Class  . . . . . . . . . . . . . . . . . . . . . 11
+   5.  RFC 2725 Extensions  . . . . . . . . . . . . . . . . . . . . . 11
+       5.1.  Authorization model for route6 Objects . . . . . . . . . 13
+   6.  Security Considerations  . . . . . . . . . . . . . . . . . . . 13
+   7.  Acknowledgments  . . . . . . . . . . . . . . . . . . . . . . . 14
+   8.  References . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+       8.1.  Normative References . . . . . . . . . . . . . . . . . . 14
+       8.2.  Informative References . . . . . . . . . . . . . . . . . 14
+       Authors&#39; Addresses . . . . . . . . . . . . . . . . . . . . . . 15
+       Full Copyright Statement . . . . . . . . . . . . . . . . . . . 16
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RFC 2622 [1] defines the RPSL language for the IPv4 unicast routing protocols and provides a series of guidelines for extending the RPSL language itself. Additionally, security extensions to the RPSL language are specified in RFC 2725 [2].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RFC 2622 [1] 为 IPv4 单播路由协议定义了 RPSL 语言，并为扩展 RPSL 语言本身提供了一系列指南。此外，RFC 2725 [2] 还规定了 RPSL 语言的安全扩展。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document proposes to extend RPSL according to the following goals and requirements:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件建议根据以下目标和要求扩展 RPSL：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o Provide RPSL extensibility in the dimension of address families, specifically, to allow users to document routing policy for IPv6 and multicast. o Extensions should be backward compatible with minimal impact on existing tools and processes, following Section 10 of RFC 2622 [1] for guidelines on extending RPSL. o Maintain clarity and non-ambiguity: RPSL information is used by humans in addition to software tools. o Minimize duplication of information, particularly when routing policies for different address families are the same.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 在地址族方面提供 RPSL 的可扩展性，特别是允许用户记录 IPv6 和组播的路由策略。 o 扩展应向下兼容，对现有工具和流程的影响最小，遵循 RFC 2622 [1] 第 10 节关于扩展 RPSL 的指导原则：o 尽量减少信息重复，特别是当不同地址族的路由策略相同时。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The addition of IPv6 and multicast support to RPSL leads to four distinct routing policies that need to be distinguished in this specification, namely, (IPv4 {unicast|multicast}, IPv6 {unicast|multicast}).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 RPSL 中增加 IPv6 和组播支持后，本规范需要区分四种不同的路由策略，即（IPv4 {单播|组播}、IPv6 {单播|组播}）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Specifying-Routing-Policy-for-Different-Address-Families">
+2. Specifying Routing Policy for Different Address Families
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 为不同地址系列指定路由策略
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Routing policy is currently specified in the aut-num class using &#34;import:&#34;, &#34;export:&#34;, and &#34;default:&#34; attributes. Sometimes it is important to distinguish policy for different address families, as well as a unicast routing policy from a multicast one.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由策略目前在 aut-num 类中使用 &#34;import:&#34;、&#34;export: &#34;和 &#34;default: &#34;属性指定。有时需要区分不同地址族的策略，以及单播路由策略和组播路由策略。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Although the syntax of the existing import, export, and default attributes could be extended, this would present backward compatibility issues and could undermine clarity in the expressions.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+虽然现有的导入、导出和默认属性的语法可以扩展，但这将带来向后兼容的问题，并可能影响表达式的清晰度。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Keeping this in mind, the &#34;import:&#34;, &#34;export:&#34;, and &#34;default:&#34; attributes implicitly specify IPv4 unicast policy and will remain as previously defined in RPSL, and new multi-protocol (prefixed with the string &#34;mp-&#34;) attributes will be introduced. These new &#34;mp-&#34; attributes are described below.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+考虑到这一点，&#34;import:&#34;、&#34;export: &#34;和 &#34;default: &#34;属性隐含地指定了 IPv4 单播策略，并将保持 RPSL 以前的定义，同时将引入新的多协议（前缀为字符串 &#34;mp-&#34;）属性。下文将介绍这些新的 &#34;mp-&#34;属性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-1--Ambiguity-Resolution">
+2.1. Ambiguity Resolution
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.1. 模糊解决
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The same peering can be covered by more than one multi-protocol policy attribute or by a combination of multi-protocol policy attributes (when specifying IPv4 unicast policy) and the previously defined IPv4 unicast policy attributes. In these cases, implementations should follow the specification-order rule as defined in Section 6.4 of RFC 2622 [1]. To break the ambiguity, the action corresponding to the first peering specification is used.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+同一对等互联可由多个多协议策略属性覆盖，或由多协议策略属性（指定 IPv4 单播策略时）和先前定义的 IPv4 单播策略属性组合覆盖。在这些情况下，实施应遵循 RFC 2622 [1] 第 6.4 节中定义的规范顺序规则。为了消除歧义，应使用与第一个对等互联规范相对应的操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-2--The-afi-Dictionary-Attribute">
+2.2. The afi Dictionary Attribute
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.2. afi 词典属性
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This section introduces a new dictionary attribute:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本节介绍一个新的字典属性：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Address Family Identifier, &lt;afi&gt;, is an RPSL list of address families for which a given routing policy expression should be evaluated. &lt;afi&gt; is optional within the new multi-protocol attributes introduced in the aut-num class. A pseudo identifier named &#34;any&#34; is defined to allow for more compact policy expressions with converged routing policy.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+地址族标识符&lt;afi&gt;是地址族的 RPSL 列表，指定路由策略表达式应针对该地址族进行评估。在 aut-num 类别中引入的新多协议属性中，&lt;afi&gt; 是可选的。定义了一个名为 &#34;any &#34;的伪标识符，以便在融合路由策略中使用更紧凑的策略表达式。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The possible values for &lt;afi&gt; are as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;afi&gt; 的可能值如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+ipv4.unicast ipv4.multicast ipv4 (equivalent to ipv4.unicast, ipv4.multicast) ipv6.unicast ipv6.multicast ipv6 (equivalent to ipv6.unicast, ipv6.multicast) any (equivalent to ipv4, ipv6) any.unicast (equivalent to ipv4.unicast, ipv6.unicast) any.multicast (equivalent to ipv4.multicast, ipv6.multicast)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+ipv4.unicast ipv4.multicast ipv4（等同于 ipv4.unicast、 ipv4.multicast） ipv6.unicast ipv6.multicast ipv6（等同于 ipv6.unicast、 ipv6.multicast） any（等同于 ipv4、 ipv6任何（等同于 ipv4、ipv6） any.unicast （等同于 ipv4.unicast、ipv6.unicast） any.multicast （等同于 ipv4.multicast、ipv6.multicast）
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Appearance of these values in an attribute must be preceded by the keyword afi.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在属性中出现这些值时，必须在前面加上关键字 afi。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An &lt;afi-list&gt; is defined as a comma-separated list of one or more afi values.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;afi-list&gt; 被定义为一个或多个 afi 值的逗号分隔列表。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-3--RPSL-Dictionary-Extensions">
+2.3. RPSL Dictionary Extensions
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.3. RPSL 词典扩展
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In order to support IPv6 addresses specified with the next-hop rp-attribute, a new predefined dictionary type entitled &#34;ipv6_address&#34; is added to the RPSL dictionary. The definition of this type is taken from Section 2.2 of RFC 3513 [3].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为了支持使用下一跳属性（next-hop rp-attribute）指定的 IPv6 地址，RPSL 字典中新增了一个名为 &#34;ipv6_address &#34;的预定义字典类型。该类型的定义摘自 RFC 3513 第 2.2 节[3]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The next-hop rp-attribute is expanded in the dictionary as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下一跳 rp 属性在字典中的展开如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+rp-attribute: # next hop router in a static route next-hop operator=(union ipv4_address, ipv6_address, enum[self])
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+rp-attribute：# 静态路由中的下一跳路由器 next-hop operator=(union ipv4_address, ipv6_address, enum[self])
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A new value has been added for the &lt;protocol&gt; dictionary specification: MPBGP
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为 &lt;protocol&gt; 字典规范添加了一个新值：MPBGP
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+MPBGP is understood to be BGP4 with multi-protocol extensions (often referred to as BGP4+). BGP4+ could not be used, as the &#39;+&#39; character is not allowed by the RPSL specification in protocol names.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+MPBGP 被理解为具有多协议扩展的 BGP4（通常称为 BGP4+）。由于 RPSL 规范不允许在协议名称中使用 &#34;+&#34;字符，因此无法使用 BGP4+。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-4--IPv6-RPSL-Types">
+2.4. IPv6 RPSL Types
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.4. IPv6 RPSL 类型
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document will reference three new IPv6 RPSL types, namely, &lt;ipv6-address&gt;, &lt;ipv6-address-prefix&gt;, and &lt;ipv6-address-prefix-range&gt;. The &lt;ipv6-address&gt; and &lt;ipv6-address-prefix&gt; types are defined in Sections 2.2 and 2.3 of RFC 3513 [3]. The &lt;ipv6-address-prefix-range&gt; type adds a range operator to the &lt;ipv6-address-prefix&gt; type. The range operator is defined in Section 2 of RFC 2622 [1].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档将引用三种新的 IPv6 RPSL 类型，即 &lt;ipv6-address&gt;、&lt;ipv6-address-prefix&gt; 和 &lt;ipv6-address-prefix-range&gt;。RFC 3513 [3] 的第 2.2 和 2.3 节定义了 &lt;ipv6-address&gt; 和 &lt;ipv6-address-prefix&gt; 类型。&lt;ipv6-address-prefix-range&gt; 类型为 &lt;ipv6-address-prefix&gt; 类型添加了范围操作符。RFC 2622 [1] 第 2 节定义了范围操作符。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-5--mp-import-mp-export-and-mp-default">
+2.5. mp-import, mp-export, and mp-default
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.5. mp-import, mp-export, 和 mp-default
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Three new policy attributes are introduced in the aut-num Class:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+aut-num 类中引入了三个新的策略属性：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+mp-import: mp-export: mp-default:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+mp-import: mp-export: mp-default：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+These attributes incorporate the afi (address-family) specification. Note that the afi specification is optional. If no afi specification is present, the policy expression is presumed to apply to all protocol families, namely, ipv4.unicast, ipv4.multicast, ipv6.unicast, and ipv6.multicast. This is the equivalent of the afi specification &#34;afi any&#34;. The mp-import and mp-export attributes have both a basic policy specification and a more powerful structured policy specification.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这些属性包含 afi（地址家族）规范。请注意，afi 规范是可选的。如果没有 afi 规范，策略表达式将被假定为适用于所有协议族，即 ipv4.单播、ipv4.组播、ipv6.单播和 ipv6.组播。这相当于 afi 规范中的 &#34;afi any&#34;。mp-import 和 mp-export 属性既有基本策略规范，也有功能更强大的结构化策略规范。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The syntax for the mp-default attribute and the basic policy specification of the mp-import and mp-export attributes is as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+mp-default 属性的语法以及 mp-import 和 mp-export 属性的基本策略规范如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Attribute  Value                                         Type
+   mp-import  [protocol &lt;protocol-1&gt;] [into &lt;protocol-2&gt;]   optional,
+              [afi &lt;afi-list&gt;]                              multi-valued
+              from &lt;mp-peering-1&gt; [action &lt;action-1&gt;; ... &lt;action-N&gt;;]
+              . . .
+              from &lt;mp-peering-M&gt; [action &lt;action-1&gt;; ... &lt;action-N&gt;;]
+              accept &lt;mp-filter&gt; [;]
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   mp-export  [protocol &lt;protocol-1&gt;] [into &lt;protocol-2&gt;]   optional,
+              [afi &lt;afi-list&gt;]                              multi-valued
+              to &lt;mp-peering-1&gt; [action &lt;action-1&gt;; ... &lt;action-N&gt;;]
+              . . .
+              to &lt;mp-peering-M&gt; [action &lt;action-1&gt;; ... &lt;action-N&gt;;]
+              announce &lt;mp-filter&gt; [;]
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   mp-default [afi &lt;afi-list&gt;] to &lt;mp-peering&gt;              optional,
+              [action &lt;action-1&gt;; ... &lt;action-N&gt;;]          multi-valued
+              [networks &lt;mp-filter&gt;]
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The mp-import and mp-export policies can be structured. As with RFC 2622 [1], structured policies are recommended only to advanced RPSL users. The mp-import structured policy syntax is defined below. Please note the semicolon at the end of an &lt;import-factor&gt; is mandatory for structured policy expressions, while being optional on non-structured policy expressions. The mp-export structured policy syntax is expressed symmetrically to the mp-import attribute. The structured syntax allows exceptions and refinements to policies by use of the &#34;except&#34; and &#34;refine&#34; keywords. Further, the exceptions and refinements may specify an optional &#34;afi&#34; list to restrict the policy expression to particular address families.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+mp-import 和 mp-export 策略可以是结构化的。与 RFC 2622 [1]一样，结构化策略只推荐给高级 RPSL 用户。mp-import 结构化策略语法定义如下。请注意，&lt;import-factor&gt; 结尾的分号对于结构化策略表达式是强制性的，而对于非结构化策略表达式则是可选的。mp-export 结构化策略语法与 mp-import 属性对称表达。结构化语法允许使用 &#34;except &#34;和 &#34;refine &#34;关键字对策略进行例外处理和细化。此外，例外和细化还可指定一个可选的 &#34;afi &#34;列表，将策略表达式限制为特定的地址系列。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that the definition allows subsequent or &#34;cascading&#34; refinements and exceptions. RFC 2622 [1] incorrectly refers to these as &#34;nested&#34; expressions. The syntax does not allow true nested expressions.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，该定义允许后续或 &#34;级联 &#34;细化和例外。RFC 2622 [1] 将其称为 &#34;嵌套 &#34;表达式是不正确的。该语法不允许真正的嵌套表达式。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;import-factor&gt; ::=
+        from &lt;mp-peering-1&gt; [action &lt;action-1&gt;; ... &lt;action-M&gt;;]
+        . . .
+        from &lt;mp-peering-N&gt; [action &lt;action-1&gt;; ... &lt;action-K&gt;;]
+        accept &lt;mp-filter&gt;;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;import-term&gt; :: = import-factor |
+        {
+        &lt;import-factor-1&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-8">
+. . . &lt;import-factor-N&gt; }
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-8">
+.. .&lt;进口系数-N&gt; }
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;import-expression&gt; ::= &lt;import-term&gt; |
+        &lt;import-term&gt; EXCEPT &lt;afi-import-expression&gt; |
+        &lt;import-term&gt; REFINE &lt;afi-import-expression&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;afi-import-expression&gt; ::= [afi &lt;afi-list&gt;] &lt;import-expression&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   mp-import: [protocol &lt;protocol-1&gt;] [into &lt;protocol-2&gt;]
+        &lt;afi-import-expression&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-5-1--mp-peering">
+2.5.1. &lt;mp-peering&gt;
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.5.1. &lt;mp-peering&gt;
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;mp-peering&gt; indicates the AS (and the router if present) and is defined as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;mp-peering&gt; 表示 AS（和路由器，如果存在），定义如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;mp-peering&gt; ::= &lt;as-expression&gt; [&lt;mp-router-expression-1&gt;]
+                    [at &lt;mp-router-expression-2&gt;] | &lt;peering-set-name&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+where &lt;as-expression&gt; is an expression over AS numbers and AS sets using operators AND, OR, and EXCEPT, and &lt;mp-router-expression&gt; is an expression over router ipv4-addresses or ipv6-addresses, inet-rtr names, and rtr-set names using operators AND, OR, and EXCEPT. The binary &#34;EXCEPT&#34; operator is the set subtraction operator and has the same precedence as the operator AND (it is semantically equivalent to &#34;AND NOT&#34; combination). That is, &#34;(AS65001 OR AS65002) EXCEPT AS65002&#34; equals &#34;AS65001&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+其中，&lt;as-expression&gt; 是使用运算符 AND、OR 和 EXCEPT 对 AS 号和 AS 集的表达式；&lt;mp-router-expression&gt; 是使用运算符 AND、OR 和 EXCEPT 对路由器 ipv4 地址或 ipv6 地址、inet-rtr 名称和 rtr-set 名称的表达式。二进制 &#34;EXCEPT &#34;运算符是集合减法运算符，其优先级与运算符 AND 相同（在语义上等同于 &#34;AND NOT &#34;组合）。也就是说，&#34;（AS65001 OR AS65002）EXCEPT AS65002 &#34;等于 &#34;AS65001&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-5-2--mp-filter">
+2.5.2. &lt;mp-filter&gt;
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.5.2. &lt;mp 过滤器
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &lt;mp-filter&gt; policy filter expression is derived from the RPSL &lt;filter&gt; policy filter expression defined in section 5.4 of RFC 2622 [1]. &lt;mp-filter&gt; extends the &lt;filter&gt; expression to allow the specification of IPv6 prefixes and prefix ranges. In particular, an Address-Prefix Set expression in an &lt;mp-filter&gt; expression may include both IPv4 and IPv6 prefixes or prefix ranges. &lt;mp-filter&gt; is otherwise identical to the RPSL &lt;filter&gt; expression. Address-Prefix Sets are enclosed in braces, &#39;{&#39; and &#39;}&#39;. The policy filter matches the set of routes whose destination address-prefix is in the set. For example:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;mp-filter&gt; 策略过滤器表达式源自 RFC 2622 [1] 第 5.4 节中定义的 RPSL &lt;filter&gt; 策略过滤器表达式。&lt;mp-filter&gt; 扩展了 &lt;filter&gt; 表达式，允许指定 IPv6 前缀和前缀范围。特别是，&lt;mp-filter&gt; 表达式中的地址-前缀集表达式可以同时包含 IPv4 和 IPv6 前缀或前缀范围。&lt;mp-filter&gt; 在其他方面与 RPSL &lt;filter&gt; 表达式相同。地址-前缀集用大括号&#34;{&#34;和&#34;}&#34;括起来。策略过滤器匹配目标地址前缀在该集合中的路由集。例如
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+      { 192.0.2.0/24, 2001:0DB8::/32 }
+      { 2001:0DB8:0100::/48^+, 2001:0DB8:0200::/48^64 }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-5-3--Policy-Examples">
+2.5.3. Policy Examples
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.5.3. 政策范例
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The address family may be specified in subsequent refine or except policy expressions and is valid only within the policy expression that contains it.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+地址族可在后续的细化或例外策略表达式中指定，并且仅在包含该地址族的策略表达式中有效。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Therefore, in the example
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+因此，在示例中
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   aut-num:    AS65534
+   mp-import: afi any.unicast from AS65001 accept as-foo;
+                except afi any.unicast {
+                  from AS65002 accept AS65226;
+                } except afi ipv6.unicast {
+                    from AS65003 accept {2001:0DB8::/32};
+                  }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+the last &#34;except&#34; is evaluated only for the IPv6 unicast address family, while other import-expressions are evaluated for both the IPv6 and IPv4 unicast address families.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+最后一个 &#34;except &#34;只对 IPv6 单播地址系列进行评估，而其他导入表达式则同时对 IPv6 和 IPv4 单播地址系列进行评估。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The evaluation of a policy expression is done by evaluating each of its components. Evaluation of peering-sets and filter-sets is constrained by the address family. Such constraints may result in a &#34;NOT ANY&#34; &lt;mp-filter&gt; or invalid &lt;mp-peering&gt; depending on implicit or explicit definitions of the address family in the set. Conflicts with explicit or implicit declarations are resolved at runtime during the evaluation of a policy expression. An RPSL evaluation implementation may wish to issue a warning in the case of a &#34;NOT ANY&#34; &lt;mp-filter&gt;. The following mp-import policy contains an example of an &lt;mp-filter&gt; that should be evaluated as &#34;NOT ANY&#34;:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+策略表达式的评估是通过评估其每个组件来完成的。对等互联集和过滤集的评估受地址族限制。这种限制可能会导致 &#34;NOT ANY&#34;&lt;mp-filter&gt;或无效的&lt;mp-peering&gt;，具体取决于集合中地址族的隐式或显式定义。与显式或隐式声明的冲突将在运行时对策略表达式进行评估时解决。RPSL 评估实现可能希望在出现 &#34;NOT ANY&#34;&lt;mp-filter&gt;时发出警告。下面的 mp-import 策略包含一个应被评估为 &#34;NOT ANY &#34;的 &lt;mp-filter&gt; 的示例：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   aut-num: AS65002
+   mp-import: afi ipv6.unicast from AS65001 accept {192.0.2.0/24}
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--route6-Class">
+3. route6 Class
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 路由6 级
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The route6 class is the IPv6 equivalent of the route class. As with the route class, the class key for the route6 class is specified by the route6 and origin attribute pair. Other than the route6 attribute, the route6 class shares the same attribute names with the route class. Although the attribute names remain identical, the inject, components, exports-comps, holes, and mnt-routes attributes must specify IPv6 prefixes and addresses rather than IPv4 prefixes and addresses. This requirement is reflected by the specification of &lt;ipv6-router-expression&gt;, &lt;ipv6-filter&gt;, and &lt;ipv6-address-prefix&gt; below. &lt;ipv6-address-prefix&gt; has been previously defined. &lt;ipv6- filter&gt; is related to &lt;mp-filter&gt; as defined above in Section 2.5.2, with the exception that only &lt;ipv6-address-prefix&gt; types are permitted. Similarly, &lt;ipv6-router-expression&gt; is related to &lt;mp-router-expression&gt; as defined above in Section 2.5.1 with the exception that only &lt;ipv6-address&gt; types are permitted.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+route6 类别相当于 IPv6 的路由类别。与路由类一样，route6 类的类键由 route6 和 origin 属性对指定。除 route6 属性外，route6 类与路由类共享相同的属性名。虽然属性名称相同，但 inject、components、exports-comps、holes 和 mnt-routes 属性必须指定 IPv6 前缀和地址，而不是 IPv4 前缀和地址。这一要求反映在下面的 &lt;ipv6-router-expression&gt;、&lt;ipv6-filter&gt; 和 &lt;ipv6-address-prefix&gt; 的规范中。&lt;ipv6-address-prefix&gt; 此前已定义。&lt;ipv6- filter&gt; 与第 2.5.2 节中定义的 &lt;mp-filter&gt; 有关，但只允许使用 &lt;ipv6-address-prefix&gt; 类型。同样，&lt;ipv6-router-expression&gt; 与第 2.5.1 节中定义的 &lt;mp-router-expression&gt; 有关，但只允许使用 &lt;ipv6-address&gt; 类型。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Attribute     Value                             Type
+route6        &lt;ipv6-address-prefix&gt;             mandatory, class key,
+                                                single-valued
+origin        &lt;as-number&gt;                       mandatory, class key,
+                                                single-valued
+member-of     list of &lt;route-set-name&gt;          optional, multi-valued
+inject        [at &lt;ipv6-router-expression&gt;] ... optional, multi-valued
+              [action &lt;action&gt;]
+              [upon &lt;condition&gt;]
+components    [ATOMIC] [[&lt;ipv6-filter&gt;]         optional, single-valued
+              [protocol &lt;protocol&gt; &lt;ipv6-filter&gt; ...]]
+aggr-bndry    &lt;as-expression&gt;                   optional, single-valued
+aggr-mtd      inbound or outbound               optional, single-valued
+              [&lt;as-expression&gt;]
+export-comps  &lt;ipv6-filter&gt;                     optional, single-valued
+holes         list of &lt;ipv6-address-prefix&gt;     optional, multi-valued
+mnt-lower     list of &lt;mntner-name&gt;             optional, multi-valued
+mnt-routes    list of &lt;mntner-name&gt;             optional, multi-valued
+              [{list of &lt;ipv6-address-prefix-range&gt;} or ANY]
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Example:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+例如
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   route6:   2001:0DB8::/32
+   origin:   AS65001
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Updates-to-Existing-Classes-to-Support-the-Extensions">
+4. Updates to Existing Classes to Support the Extensions
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 更新现有类以支持扩展功能
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-1--as-set-Class">
+4.1. as-set Class
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.1. as-set 类
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The as-set class defines a set of Autonomous Systems (AS), specified either directly by listing them in the members attribute or indirectly by referring to another as-set or using the mbrs-by-ref facility. More importantly, &#34;In a context that expects a route set (e.g., members attribute of the route-set class), [...] an as-set AS-X defines the set of routes that are originated by the ASes in AS-X&#34;, (section 5.3 of RFC 2622 [1]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+as-set 类定义了一组自治系统（AS），可以通过在 members 属性中列出它们来直接指定，也可以通过引用另一个 as-set 或使用 mbrs-by-ref 工具来间接指定。更重要的是，&#34;在期望路由集（如路由集类的成员属性）的上下文中，[...]as-set AS-X 定义了由 AS-X 中的 AS 发起的路由集&#34;（RFC 2622 [1] 第 5.3 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The as-set class is therefore used to collect a set of route prefixes, which may be restricted to a specific address family.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+因此，as-set 类用于收集一组路由前缀，这些路由前缀可能仅限于特定的地址族。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The existing as-set class does not need any modifications. The evaluation of the class must be filtered to obtain prefixes belonging to a particular address family using the traditional filtering mechanism in use in Internet Routing Registry (IRR) systems today.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+现有的 as-set 类别不需要做任何修改。必须对该类的评估进行过滤，以便使用目前互联网路由注册（IRR）系统中使用的传统过滤机制，获取属于特定地址族的前缀。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-2--route-set-Class">
+4.2. route-set Class
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.2. 路由设置类
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This class is used to specify a set of route prefixes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该类用于指定一组路由前缀。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A new attribute &#34;mp-members:&#34; is defined for this class. This attribute allows the specification of IPv4 or IPv6 address-prefix-ranges.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为该类定义了一个新属性 &#34;mp-members:&#34;。该属性允许指定 IPv4 或 IPv6 地址前缀范围。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Attribute   Value                                 Type
+mp-members  list of (&lt;ipv4-address-prefix-range&gt;  optional, multi-valued
+            or &lt;ipv6-address-prefix-range&gt;
+            or &lt;route-set-name&gt;
+            or &lt;route-set-name&gt;&lt;range-operator&gt;)
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Example:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+例如
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+route-set:  rs-foo
+mp-members: rs-bar
+mp-members: 2001:0DB8::/32  # v6 member
+mp-members: 192.0.2.0/24   # v4 member
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-3--filter-set-Class">
+4.3. filter-set Class
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.3. 过滤器设置类
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The new &#34;mp-filter:&#34; attribute defines the set&#39;s policy filter. A policy filter is a logical expression that when applied to a set of routes returns a subset of these routes. The relevant parts of the updated filter-set class are shown below:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+新的 &#34;mp-filter: &#34;属性定义了路由集的策略过滤器。策略过滤器是一个逻辑表达式，当应用于一组路由时，会返回这些路由的一个子集。更新后的过滤器集类的相关部分如下所示：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Attribute   Value                Type
+   filter-set  &lt;object-name&gt;        mandatory, single-valued, class key
+   filter      &lt;filter&gt;             optional, single-valued
+   mp-filter   &lt;mp-filter&gt;          optional, single-valued
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Where &lt;mp-filter&gt; is defined above in Section 2.5.2. While the &#34;filter:&#34; and &#34;mp-filter:&#34; attributes are of type &#34;optional&#34;, a filter-set must contain one of these two attributes. Implementations should reject instances where both attributes are defined in an object, as the interpretation of such a filter-set is undefined.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+其中，&lt;mp-filter&gt; 的定义见第 2.5.2 节。虽然 &#34;filter: &#34;和 &#34;mp-filter: &#34;属性的类型是 &#34;可选&#34;，但一个过滤器组必须包含这两个属性中的一个。如果在一个对象中同时定义了这两个属性，那么实现时应拒绝接受这种情况，因为这种过滤集的解释是未定义的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-4--peering-set-Class">
+4.4. peering-set Class
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.4. 对等集类别
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The peering set class is updated with a &#34;mp-peering:&#34; attribute.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+使用 &#34;mp-peering: &#34;属性更新对等互联集类别。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Attribute Value Type peering-set &lt;object-name&gt; mandatory, single-valued, class key peering &lt;peering&gt; optional, multi-valued mp-peering &lt;mp-peering&gt; optional, multi-valued Example:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+属性值类型 peering-set &lt;对象名&gt; 必选，单值，类键 peering &lt;对等互联&gt; 可选，多值 mp-peering &lt;对等互联&gt; 可选，多值 例
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   peering-set:   prng-ebgp-peers
+   mp-peering:    AS65002 2001:0DB8::1 at 2001:0DB8::2
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+With &lt;mp-peering&gt; defined as above in Section 2.5.1. While the &#34;peering:&#34; and &#34;mp-peering:&#34; attributes are of type &#34;optional&#34;, a peering-set must contain at least one of these two attributes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+与第 2.5.1 节中定义的 &lt;mp-peering&gt; 相同。虽然 &#34;peering: &#34;和 &#34;mp-peering: &#34;属性的类型为 &#34;可选&#34;，但对等互联集合必须至少包含这两个属性中的一个。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-5--inet-rtr-Class">
+4.5. inet-rtr Class
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.5. inet-rtr 级
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Two new attributes are introduced to the inet-rtr class -- &#34;interface:&#34;, which allows the definition of generic interfaces, including the information previously contained in the &#34;ifaddr:&#34; attribute, as well as support for tunnel definitions; and &#34;mp-peer:&#34;, which includes and extends the functionality of the existing &#34;peer:&#34; attribute. The syntax definition for the &#34;interface:&#34; attribute follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+inet-rtr 类引入了两个新属性--&#34;interface:&#34;，它允许定义通用接口，包括以前包含在 &#34;ifaddr: &#34;属性中的信息，并支持隧道定义；以及 &#34;mp-peer:&#34;，它包括并扩展了现有 &#34;peer: &#34;属性的功能。接口: &#34;属性的语法定义如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Attribute  Value                               Type
+   interface  &lt;ipv4-address&gt; or &lt;ipv6-address&gt;    optional, multi-valued
+              masklen &lt;mask&gt;
+              [action &lt;action&gt;]
+              [tunnel &lt;remote-endpoint-address&gt;,&lt;encapsulation&gt;]
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The syntax allows native IPv4 and IPv6 interface definitions, as well as the definition of tunnels as virtual interfaces. Without the optional tunnel definition, this attribute allows the same functionality as the &#34;ifaddr:&#34; attribute but extends it to allow IPv6 addresses.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该语法允许本地 IPv4 和 IPv6 接口定义，也允许将隧道定义为虚拟接口。在没有可选隧道定义的情况下，该属性的功能与 &#34;ifaddr: &#34;属性相同，但允许扩展到 IPv6 地址。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the interface is a tunnel, the syntax is as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果接口是隧道，语法如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;remote-endpoint-address&gt; indicates the IPv4 or IPv6 address of the remote endpoint of the tunnel. The address family must match that of the local endpoint. &lt;encapsulation&gt; denotes the encapsulation used in the tunnel and is one of {GRE,IPinIP} (note that the outer and inner IP protocol versions can be deduced from the interface context -- for example, IPv6-in-IPv4 encapsulation is just IPinIP). Routing policies for these routers should be described in the appropriate classes (e.g., aut-num).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;remote-endpoint-address&gt; 表示隧道远程端点的 IPv4 或 IPv6 地址。地址族必须与本地端点的地址族一致。&lt;封装&gt;表示隧道中使用的封装，是{GRE,IPinIP}中的一种（注意，外部和内部 IP 协议版本可从接口上下文中推断，例如，IPv6-in-IPv4 封装就是 IPinIP）。这些路由器的路由策略应在适当的类别（如 aut-num）中描述。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &#34;mp-peer:&#34; attribute is defined below. The difference between this attribute and the &#34;peer:&#34; attribute is the inclusion of support for IPv6 addresses.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+mp-peer:&#34; 属性定义如下。该属性与 &#34;peer: &#34;属性的区别在于加入了对 IPv6 地址的支持。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Attribute  Value                                     Type
+   mp-peer    &lt;protocol&gt; &lt;ipv4-address&gt; &lt;options&gt;  or   optional,
+              &lt;protocol&gt; &lt;ipv6-address&gt; &lt;options&gt;  or   multi-valued
+              &lt;protocol&gt; &lt;inet-rtr-name&gt; &lt;options&gt; or
+              &lt;protocol&gt; &lt;rtr-set-name&gt; &lt;options&gt;  or
+              &lt;protocol&gt; &lt;peering-set-name&gt; &lt;options&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+where &lt;protocol&gt; is a protocol name, and &lt;options&gt; is a comma-separated list of peering options for &lt;protocol&gt;, as provided in the RPSL dictionary.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+其中 &lt;protocol&gt; 是协议名称，&lt;options&gt; 是 RPSL 字典中提供的以逗号分隔的 &lt;protocol&gt; 对等互联选项列表。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-6--rtr-set-Class">
+4.6. rtr-set Class
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.6. rtr-set 类
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The rtr-set class is extended with a new attribute, &#34;mp-members:&#34;. This attribute extends the original &#34;members:&#34; attribute by allowing the specification of IPv6 addresses. It is defined as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+rtr-set 类扩展了一个新属性 &#34;mp-members:&#34;。该属性扩展了原有的 &#34;members: &#34;属性，允许指定 IPv6 地址。其定义如下
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Attribute   Value                             Type
+   mp-members  list of (&lt;inet-rtr-name&gt; or       optional, multi-valued
+               &lt;rtr-set-name&gt; or
+               &lt;ipv4-address&gt; or
+               &lt;ipv6-address&gt;)
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--RFC-2725-Extensions">
+5. RFC 2725 Extensions
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. RFC 2725 扩展
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RFC 2725 [2] introduces an authorization model to address the integrity of policy expressed in routing registries. Two new attributes were defined to support this authorization model: the &#34;mnt-routes&#34; and &#34;mnt-lower&#34; attributes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RFC 2725 [2] 引入了一个授权模型，以解决路由注册表中表达的策略的完整性问题。为支持这一授权模型，定义了两个新属性：&#34;mnt-routes &#34;和 &#34;mnt-lower &#34;属性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In RPSLng, these attributes are extended to the route6 and inet6num (described below) classes. Further, the syntax of the existing mnt-routes attribute is modified to allow the optional specification of IPv6 prefix range lists when present in inet6num, route6, and aut-num class objects. This optional list of prefix ranges is a comma-separated list enclosed in curly braces. In the aut-num class, the IPv6 prefix ranges may be mixed with IPv4 prefix ranges. The keyword &#34;ANY&#34; may also be used instead of prefix ranges. In the case of inet6num and route6 objects, &#34;ANY&#34; refers to all more specifics of the prefix in the class key field. For the aut-num class, &#34;ANY&#34; literally means any prefix. The default when no additional set items are specified is &#34;ANY&#34;. An abbreviated definition of the aut-num class with the updated syntax for the mnt-routes attribute is presented below.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 RPSLng 中，这些属性被扩展到 route6 和 inet6num（如下所述）类。此外，还修改了现有 mnt-routes 属性的语法，以允许在 inet6num、route6 和 aut-num 类对象中指定 IPv6 前缀范围列表。可选的前缀范围列表是一个用逗号分隔的列表，并用大括号括起来。在 aut-num 类中，IPv6 前缀范围可与 IPv4 前缀范围混合使用。也可以使用关键字 &#34;ANY &#34;代替前缀范围。对于 inet6num 和 route6 对象，&#34;ANY &#34;指的是类关键字段中前缀的所有详细信息。对于 aut-num 类，&#34;ANY &#34;字面意思是任何前缀。未指定其他设置项时，默认值为 &#34;ANY&#34;。下面是 aut-num 类的简短定义和 mnt-routes 属性的更新语法。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Attribute     Value                             Type
+aut-num       &lt;as-number&gt;                       mandatory, class key,
+                                                single-valued
+mnt-routes    list of &lt;mntner-name&gt;             optional, multi-valued
+              [{list of (&lt;ipv6-address-prefix-range&gt; or
+                         &lt;ipv4-address-prefix-range&gt;)} or ANY]
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following is an example of mnt-routes usage. This example authorizes MAINT-65001 to create route6 objects with an origin AS of 65002 for IPv6 address prefixes within the 2001:0DB8::/32^+ range, and route objects with origin AS 65002 for IPv4 prefixes within the 192.0.2.0/24^+ range.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下面是一个 mnt-routes 使用示例。该示例授权 MAINT-65001 为 2001:0DB8::/32^+ 范围内的 IPv6 地址前缀创建 origin AS 为 65002 的 route6 对象，为 192.0.2.0/24^+ 范围内的 IPv4 前缀创建 origin AS 为 65002 的 route 对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   aut-num: AS65002
+   mnt-routes: MAINT-AS65001 {2001:0DB8::/32^+, 192.0.2.0/24^+}
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note, that the inclusion of IPv6 prefix ranges within a mnt-routes attribute in an aut-num object may conflict with existing implementations of RPSL that support only IPv4 prefix ranges. However, given the perceived lack of implementation of this optional prefix range list, it was considered more acceptable to extend the existing definition of the mnt-routes attribute in the aut-num class rather than to create a new attribute type.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，在 aut-num 对象的 mnt-routes 属性中包含 IPv6 前缀范围，可能会与仅支持 IPv4 前缀范围的现有 RPSL 实现发生冲突。不过，考虑到这种可选前缀范围列表缺乏实施，我们认为扩展 aut-num 类中 mnt-routes 属性的现有定义比创建新的属性类型更容易接受。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Attribute     Value                    Type
+   inet6num      &lt;ipv6-address-prefix&gt;    mandatory, single-valued,
+                                          class key
+   netname       &lt;netname&gt;                mandatory, single-valued
+   descr         &lt;free-form&gt;              mandatory, multi-valued
+   country       &lt;country-code&gt;           mandatory, multi-valued
+   admin-c       &lt;nic-handle&gt;             mandatory, multi-valued
+   tech-c        &lt;nic-handle&gt;             mandatory, multi-valued
+   remarks       &lt;free-form&gt;              optional, multi-valued
+   notify        &lt;email-address&gt;          optional, multi-valued
+   mnt-lower     list of &lt;mntner-name&gt;    optional, multi-valued
+   mnt-routes    list of &lt;mntner-name&gt;    optional, multi-valued
+                 [{list of &lt;ipv6-address-prefix-range&gt;} or ANY]
+   mnt-by        list of &lt;mntner-name&gt;    mandatory, multi-valued
+   changed       &lt;email-address&gt; &lt;date&gt;   mandatory, multi-valued
+   source        &lt;registry-name&gt;          mandatory, single-valued
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &lt;country-code&gt; must be a valid two-letter ISO 3166 country code identifier. &lt;netname&gt; is a symbolic name for the specified IPv6 address space. It does not have a restriction on RPSL reserved prefixes. These definitions are taken from the RIPE Database Reference Manual [4].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;country-code&gt; 必须是有效的双字母 ISO 3166 国家代码标识符。&lt;netname&gt; 是指定 IPv6 地址空间的符号名称。它对 RPSL 保留前缀没有限制。这些定义摘自《RIPE 数据库参考手册》[4]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-1--Authorization-Model-for-route6-Objects">
+5.1. Authorization Model for route6 Objects
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.1. 路由 6 对象的授权模式
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Deletion and update of a route6 object is not different from other objects, as defined in RFC 2725 [2]. Creation rules of a route6 object is replicated here from the corresponding rules for route object in RFC 2725 [2] section 9.9.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+根据 RFC 2725 [2] 的定义，route6 对象的删除和更新与其他对象并无不同。路由 6 对象的创建规则与 RFC 2725 [2] 第 9.9 节中路由对象的相应规则相同。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When a route6 object is added, the submission must satisfy two authentication criteria. It must match the authentication specified in the aut-num object and that specified in either a route6 object or, if no applicable route6 object is found, an inet6num object.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+添加路由 6 对象时，提交必须满足两个身份验证条件。它必须与 aut-num 对象中指定的认证和 route6 对象中指定的认证相匹配，如果找不到适用的 route6 对象，则必须与 inet6num 对象中指定的认证相匹配。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An addition is submitted with an AS number and IPv6 prefix as its key. If the aut-num object does not exist on a route6 to add, then the addition is rejected. If the aut-num exists, then the submission is checked against the applicable maintainers. A search is then done for the prefix, looking first for an exact match and then, failing that, for the longest prefix match less specific than the prefix specified. If this search succeeds, it will return one or more route6 objects. The submission must match an applicable maintainer in at least one of these route6 objects for the addition to succeed. If the search for a route6 object fails, then a search is performed for an inet6num object that exactly matches the prefix, or for the most specific inet6num less specific than the route6 object submission.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+提交的添加内容以 AS 号和 IPv6 前缀为关键字。如果要添加的路由 6 上不存在 aut-num 对象，则添加将被拒绝。如果 aut-num 存在，则会根据适用的维护者对提交内容进行检查。然后对前缀进行搜索，首先查找完全匹配的前缀，如果不匹配，则查找比指定前缀更不特定的最长前缀匹配。如果搜索成功，将返回一个或多个 route6 对象。提交的内容必须至少与其中一个 route6 对象中的适用维护者匹配，添加才能成功。如果路由 6 对象搜索失败，则会搜索与前缀完全匹配的 inet6num 对象，或与提交的路由 6 对象相比不那么具体的最具体的 inet6num。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Once the aut-num and either a list of route6 objects or an inet6num is found, the authorization is taken from these objects. The applicable maintainer object is any referenced by the mnt-routes attributes. If one or more mnt-routes attributes are present in an object, the mnt-by or mnt-lower attributes are not considered. In the absence of a mnt-routes attribute in a given object, the first mnt-lower attributes are used (only if the given object is an inet6num object and it is less specific than the route6 object to be added). If no applicable mnt-lower attribute is found, then the mnt-by attributes are used for that object. The authentication must match one of the authorizations in each of the two objects.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+一旦找到 aut-num 和路由 6 对象列表或 inet6num，就会从这些对象中获取授权。适用的维护者对象是由 mnt-routes 属性引用的对象。如果对象中有一个或多个 mnt-routes 属性，则不考虑 mnt-by 或 mnt-lower 属性。如果给定对象中没有 mnt-routes 属性，则会使用第一个 mnt-lower 属性（仅当给定对象是 inet6num 对象，且比要添加的 route6 对象更具体时）。如果找不到适用的 mnt-lower 属性，则使用该对象的 mnt-by 属性。身份验证必须与两个对象中的一个授权相匹配。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Security-Considerations">
+6. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document describes extensions to RFC 2622 [1] and RFC 2725 [2]. The extensions address the limitations of the aforementioned documents with respect to IPv6 and multicast. The extensions do not introduce any new security functionality or threats.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件描述了 RFC 2622 [1] 和 RFC 2725 [2] 的扩展。这些扩展解决了上述文件在 IPv6 和组播方面的局限性。这些扩展并不引入任何新的安全功能或威胁。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Although the extensions introduce no additional security threats, it should be noted that the original RFC 2622 [1] RPSL standard included several weak and/or vulnerable authentication mechanisms: first, the &#34;MAIL-FROM&#34; scheme, which can be easily defeated via source email address spoofing; second, the &#34;CRYPT-PW&#34; scheme, which is subject to dictionary attacks and password sniffing if RPSL objects are submitted via unencrypted channels such as email; and, finally, the &#34;NONE&#34; mechanism, which offers no protection for objects.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+尽管扩展功能没有带来额外的安全威胁，但应注意的是，最初的 RFC 2622 [1] RPSL 标准包括几种薄弱和/或脆弱的验证机制：首先是 &#34;MAIL-FROM &#34;方案，它可以通过欺骗源电子邮件地址轻易破解；其次是 &#34;CRYPT-PW &#34;方案，如果通过电子邮件等未加密渠道提交 RPSL 对象，该方案会受到字典攻击和密码嗅探；最后是 &#34;NONE &#34;机制，它不为对象提供任何保护。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--Acknowledgements">
+7. Acknowledgements
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 致谢
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors wish to thank all the people who have contributed to this document through numerous discussions, particularly Ekaterina Petrusha, for highly valuable discussions and suggestions: Shane Kerr, Engin Gunduz, Marc Blanchet, and David Kessens who participated constructively in many discussions and Cengiz Alaettinoglu, who is still the reference in all things RPSL.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者衷心感谢通过多次讨论为本文档做出贡献的所有人，特别是叶卡捷琳娜-彼得鲁莎（Ekaterina Petrusha），感谢她提出的宝贵意见和建议：Shane Kerr、Engin Gunduz、Marc Blanchet 和 David Kessens 也建设性地参与了多次讨论。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8--References">
+8. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8-1--Normative-References">
+8.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[1] Alaettinoglu, C., Villamizar, C., Gerich, E., Kessens, D., Meyer, D., Bates, T., Karrenberg, D., and M. Terpstra, &#34;Routing Policy Specification Language (RPSL)&#34;, RFC 2622, June 1999.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[1] Alaettinoglu, C., Villamizar, C., Gerich, E., Kessens, D., Meyer, D., Bates, T., Karrenberg, D., and M. Terpstra, &#34;Routing Policy Specification Language (RPSL)&#34;, RFC 2622, June 1999.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[2] Villamizar, C., Alaettinoglu, C., Meyer, D., and S. Murphy, &#34;Routing Policy System Security&#34;, RFC 2725, December 1999.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[2] Villamizar, C., Alaettinoglu, C., Meyer, D., and S. Murphy, &#34;Routing Policy System Security&#34;, RFC 2725, December 1999.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[3] Hinden, R. and S. Deering, &#34;Internet Protocol Version 6 (IPv6) Addressing Architecture&#34;, RFC 3513, April 2003.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[3] Hinden, R. 和 S. Deering，&#34;互联网协议版本 6 (IPv6) 地址体系结构&#34;，RFC 3513，2003 年 4 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8-2--Informative-References">
+8.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[4] Damas, J. and A. Robachevsky, &#34;RIPE Database Reference Manual&#34;, August 2002.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[4] Damas, J. 和 A. Robachevsky，《RIPE 数据库参考手册》，2002 年 8 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Larry Blunk Merit Network
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+拉里-布伦克功绩网络
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: ljb@merit.edu
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Joao Damas Internet Systems Consortium
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+若昂-达马斯互联网系统联盟
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: Joao_Damas@isc.org
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Florent Parent Hexago
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Florent 家长 Hexago
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: Florent.Parent@hexago.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Andrei Robachevsky RIPE NCC
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+安德烈-罗巴切夫斯基 RIPE NCC
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: andrei@ripe.net
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Full Copyright Statement
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明全文
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (C) The Internet Society (2005).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版权所有 (C) 互联网协会 (2005)。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to the rights, licenses and restrictions contained in BCP 78, and except as set forth therein, the authors retain all their rights.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件受 BCP 78 中所载权利、许可和限制的约束，除其中规定外，作者保留其所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document and the information contained herein are provided on an &#34;AS IS&#34; basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档和其中包含的信息按 &#34;原样 &#34;提供，撰稿人、其所代表或赞助的组织（如有）、互联网协会和互联网工程工作组不作任何保证、明示或默示保证，包括但不限于使用本网站信息不侵犯任何权利的保证或适销性或特定用途适用性的默示保证。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Intellectual Property
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+知识产权
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The IETF takes no position regarding the validity or scope of any Intellectual Property Rights or other rights that might be claimed to pertain to the implementation or use of the technology described in this document or the extent to which any license under such rights might or might not be available; nor does it represent that it has made any independent effort to identify any such rights. Information on the procedures with respect to rights in RFC documents can be found in BCP 78 and BCP 79.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+IETF 不对任何知识产权或其他权利的有效性或范围，或可能声称与本文档所述技术的实施或使用有关的权利，或在多大程度上可以或不可以获得此类权利下的任何许可采取任何立场；IETF 也不表示它已作出任何独立努力来确定任何此类权利。有关 RFC 文件中权利的程序信息，请参见 BCP 78 和 BCP 79。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copies of IPR disclosures made to the IETF Secretariat and any assurances of licenses to be made available, or the result of an attempt made to obtain a general license or permission for the use of such proprietary rights by implementers or users of this specification can be obtained from the IETF on-line IPR repository at http://www.ietf.org/ipr.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+向 IETF 秘书处披露的知识产权副本、将提供的任何许可保证，或为本规范的实施者或用户使用此类专有权而试图获得一般许可或授权的结果，均可从 http://www.ietf.org/ipr 的 IETF 在线知识产权库中获取。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The IETF invites any interested party to bring to its attention any copyrights, patents or patent applications, or other proprietary rights that may cover technology that may be required to implement this standard. Please address the information to the IETF at ietf-ipr@ietf.org.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+IETF 邀请任何有关方面提请其注意可能涉及实施本标准所需技术的任何版权、专利或专利申请，或其他专有权利。请将信息发送至 IETF：ietf-ipr@ietf.org。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Acknowledgement
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+致谢
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Funding for the RFC Editor function is currently provided by the Internet Society.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RFC 编辑职能的经费目前由互联网协会提供。
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

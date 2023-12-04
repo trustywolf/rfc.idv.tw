@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 9286 - Manifests for the Resource Public Key Infrastructure (RPKI) 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">9286</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc9286">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 9286 - Manifests for the Resource Public Key Infrastructure (RPKI) 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc9286">
+            https://datatracker.ietf.org/doc/html/rfc9286
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 9286 - 资源公钥基础设施 (RPKI) 的清单</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                        R. Austein
+Request for Comments: 9286                                  Arrcus, Inc.
+Obsoletes: 6486                                                G. Huston
+Category: Standards Track                                          APNIC
+ISSN: 2070-1721                                                  S. Kent
+                                                             Independent
+                                                             M. Lepinski
+                                                     New College Florida
+                                                               June 2022
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Manifests for the Resource Public Key Infrastructure (RPKI)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+资源公钥基础设施 (RPKI) 的清单
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines a &#34;manifest&#34; for use in the Resource Public Key Infrastructure (RPKI). A manifest is a signed object (file) that contains a listing of all the signed objects (files) in the repository publication point (directory) associated with an authority responsible for publishing in the repository. For each certificate, Certificate Revocation List (CRL), or other type of signed objects issued by the authority that are published at this repository publication point, the manifest contains both the name of the file containing the object and a hash of the file content. Manifests are intended to enable a relying party (RP) to detect certain forms of attacks against a repository. Specifically, if an RP checks a manifest&#39;s contents against the signed objects retrieved from a repository publication point, then the RP can detect replay attacks, and unauthorized in-flight modification or deletion of signed objects. This document obsoletes RFC 6486.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件定义了用于资源公钥基础设施（RPKI）的 &#34;清单&#34;。清单是一个签名对象（文件），包含与负责在存储库中发布的机构相关联的存储库发布点（目录）中所有签名对象（文件）的列表。对于在该版本库发布点发布的每份证书、证书吊销列表（CRL）或由授权机构签发的其他类型签名对象，清单都包含包含该对象的文件名和文件内容的哈希值。清单旨在帮助依赖方（RP）检测针对版本库的某些形式的攻击。具体来说，如果 RP 根据从版本库发布点获取的签名对象检查清单内容，那么 RP 就能检测到重放攻击以及对签名对象的未经授权的飞行修改或删除。本文档废止 RFC 6486。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This is an Internet Standards Track document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这是一份互联网标准跟踪文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参阅 RFC 7841 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc9286.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc9286。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2022 IETF Trust 和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (https://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节所述的修订版 BSD 许可文本，并且不提供修订版 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction
+     1.1.  Requirements Language
+   2.  Manifest Scope
+   3.  Manifest Signing
+   4.  Manifest Definition
+     4.1.  eContentType
+     4.2.  eContent
+       4.2.1.  Manifest
+       4.2.2.  Names in FileAndHash Objects
+     4.3.  Content-Type Attribute
+     4.4.  Manifest Validation
+   5.  Manifest Generation
+     5.1.  Manifest Generation Procedure
+     5.2.  Considerations for Manifest Generation
+   6.  Relying Party Processing of Manifests
+     6.1.  Manifest Processing Overview
+     6.2.  Acquiring a Manifest for a CA
+     6.3.  Detecting Stale and/or Prematurely Issued Manifests
+     6.4.  Acquiring Files Referenced by a Manifest
+     6.5.  Matching File Names and Hashes
+     6.6.  Failed Fetches
+   7.  Publication Repositories
+   8.  Security Considerations
+   9.  IANA Considerations
+   10. References
+     10.1.  Normative References
+     10.2.  Informative References
+   Appendix A.  ASN.1 Module
+   Appendix B.  Changes since RFC 6486
+   Acknowledgements
+   Authors&#39; Addresses
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Resource Public Key Infrastructure (RPKI) [RFC6480] makes use of a distributed repository system [RFC6481] to make available a variety of objects needed by relying parties (RPs). Because all of the objects stored in the repository system are digitally signed by the entities that created them, attacks that modify these published objects are detectable by RPs. However, digital signatures alone provide no protection against attacks that substitute &#34;stale&#34; versions of signed objects (i.e., objects that were valid and have not yet expired, but have since been superseded), or in-flight attacks that remove an object that should be present in the repository. To assist in the detection of such attacks, RPKI repository systems make use of a signed object called a &#34;manifest&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源公钥基础设施（RPKI）[RFC6480]利用分布式资源库系统[RFC6481]提供可信赖方（RP）所需的各种对象。由于存储在存储库系统中的所有对象都由创建它们的实体进行了数字签名，因此 RP 可以检测到修改这些已发布对象的攻击。但是，数字签名本身并不能抵御以下攻击：替换已签名对象的 &#34;过期 &#34;版本（即对象曾经有效且尚未过期，但后来已被取代），或移除本应存在于资源库中的对象的飞行攻击。为协助检测此类攻击，RPKI 资源库系统使用了一种称为 &#34;清单 &#34;的签名对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A manifest is a signed object that enumerates all the signed objects (files) in the repository publication point (directory) that are associated with an authority responsible for publishing at that publication point. Each manifest contains both the name of the file containing the object and a hash of the file content, for every signed object issued by an authority that is published at the authority&#39;s repository publication point. A manifest is intended to allow an RP to detect unauthorized object removal or the substitution of stale versions of objects at a publication point. A manifest also is intended to allow an RP to detect similar outcomes that may result from an on-path attack during the retrieval of objects from the repository. Manifests are intended to be used in Certification Authority (CA) publication points in repositories (directories containing files that are subordinate certificates and Certificate Revocation Lists (CRLs) issued by this CA and other signed objects that are verified by End-Entity (EE) certificates issued by this CA).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+清单是一个签名对象，它列举了版本库发布点（目录）中与负责在该发布点发布的机构相关联的所有签名对象（文件）。每个清单都包含包含对象的文件名和文件内容的哈希值，适用于由授权机构发布并在该授权机构的版本库发布点发布的每个签名对象。清单的目的是让 RP 在发布点检测未经授权的对象删除或过时版本的对象替换。清单的另一个目的是让 RP 在从版本库检索对象时，检测路径上攻击可能导致的类似结果。清单旨在用于存储库中的认证机构 (CA) 发布点（包含由该 CA 签发的从属证书和证书吊销列表 (CRL) 的文件目录，以及由该 CA 签发的终端实体 (EE) 证书验证的其他签名对象）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Manifests are modeled on CRLs, as the issues involved in detecting stale manifests and potential attacks using manifest replays, etc., are similar to those for CRLs. The syntax of the manifest payload differs from CRLs, since RPKI repositories contain objects not covered by CRLs, e.g., digitally signed objects, such as Route Origin Authorizations (ROAs) [RFC6482].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+清单以 CRL 为模型，因为检测过期清单和使用清单重播等潜在攻击所涉及的问题与 CRL 类似。清单有效载荷的语法与 CRL 不同，因为 RPKI 资源库包含 CRL 未涵盖的对象，如路由起源授权（ROA）[RFC6482] 等数字签名对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document obsoletes [RFC6486].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件废止 [RFC6486]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-1--Requirements-Language">
+1.1. Requirements Language
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.1. 要求语言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;NOT RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, 以及 &#34;OPTIONAL&#34; 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Manifest-Scope">
+2. Manifest Scope
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 清单范围
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A manifest associated with a CA&#39;s repository publication point contains a list of:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+与 CA 的存储库发布点相关联的清单包含以下列表：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* the set of (non-expired, non-revoked) certificates issued and published by this CA,
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 由该 CA 签发和公布的（非过期、非废止）证书的集合、
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* the most recent CRL issued by this CA, and
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 该 CA 签发的最新 CRL，以及
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* all published signed objects that are verifiable using EE certificates [RFC6487] issued by this CA (other than the manifest itself).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 可使用该 CA 签发的 EE 证书 [RFC6487] 验证的所有已发布签名对象（清单本身除外）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Every RPKI signed object includes, in the Cryptographic Message Syntax (CMS) [RFC5652] wrapper of the object, the EE certificate used to verify it [RFC6488]. Thus, there is no requirement to separately publish that EE certificate at the CA&#39;s repository publication point.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+每个 RPKI 签名对象的加密信息语法（CMS）[RFC5652] 包装中都包含用于验证该对象的 EE 证书[RFC6488]。因此，无需在 CA 的存储库发布点单独发布 EE 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Where multiple CA instances share a common publication point, as can occur when a CA performs a key-rollover operation [RFC6489], the repository publication point will contain multiple manifests. In this case, each manifest describes only the collection of published products of its associated CA instance.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当多个 CA 实例共享一个共同的发布点时（如 CA 执行密钥转移操作 [RFC6489] 时），存储库发布点将包含多个清单。在这种情况下，每个清单只描述其相关 CA 实例的已发布产品集合。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Manifest-Signing">
+3. Manifest Signing
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 舱单签署
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A CA&#39;s manifest is verified using an EE certificate. The SubjectInfoAccess (SIA) field of this EE certificate contains the accessMethod Object Identifier (OID) of id-ad-signedObject.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CA 的清单使用 EE 证书验证。EE 证书的 SubjectInfoAccess (SIA) 字段包含 id-ad-signedObject 的 accessMethod Object Identifier (OID)。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The CA MUST sign only one manifest with each generated private key and MUST generate a new key pair for each new version of the manifest. An associated EE certificate used in this fashion is termed a &#34;one-time-use&#34; EE certificate (see Section 3 of [RFC6487]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CA 必须使用每个生成的私钥只签署一份清单，并且必须为每个新版本的清单生成一个新的密钥对。以这种方式使用的相关 EE 证书称为 &#34;一次性使用 &#34;EE 证书（见 [RFC6487] 第 3 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Manifest-Definition">
+4. Manifest Definition
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 表征定义
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A manifest is an RPKI signed object, as specified in [RFC6488]. The RPKI signed object template requires specification of the following data elements in the context of the manifest structure.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+清单是 RPKI 签名对象，如 [RFC6488] 所规定。RPKI 签名对象模板要求在清单结构中指定以下数据元素。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-1--eContentType">
+4.1. eContentType
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.1. 电子内容类型
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The eContentType for a manifest is defined as id-ct-rpkiManifest and has the numerical OID of 1.2.840.113549.1.9.16.1.26.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+清单的电子内容类型定义为 id-ct-rpkiManifest，其数字 OID 为 1.2.840.113549.1.9.16.1.26。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+      id-smime OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)
+                                rsadsi(113549) pkcs(1) pkcs9(9) 16 }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+      id-ct OBJECT IDENTIFIER ::= { id-smime 1 }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+      id-ct-rpkiManifest OBJECT IDENTIFIER ::= { id-ct 26 }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-2--eContent">
+4.2. eContent
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.2. 电子内容
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The content of a manifest is ASN.1 encoded using the Distinguished Encoding Rules (DER) [X.690]. The content of a manifest is defined as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+清单内容使用区分编码规则（DER）[X.690] 进行 ASN.1 编码。清单内容定义如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+       Manifest ::= SEQUENCE {
+        version     [0] INTEGER DEFAULT 0,
+        manifestNumber  INTEGER (0..MAX),
+        thisUpdate      GeneralizedTime,
+        nextUpdate      GeneralizedTime,
+        fileHashAlg     OBJECT IDENTIFIER,
+        fileList        SEQUENCE SIZE (0..MAX) OF FileAndHash
+        }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+      FileAndHash ::=     SEQUENCE {
+        file            IA5String,
+        hash            BIT STRING
+     }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-2-1--Manifest">
+4.2.1. Manifest
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.2.1. 体现
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The manifestNumber, thisUpdate, and nextUpdate fields are modeled after the corresponding fields in X.509 CRLs (see [RFC5280]). Analogous to CRLs, a manifest is nominally current until the time specified in nextUpdate or until a manifest is issued with a greater manifest number, whichever comes first.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+清单编号（manifestNumber）、本次更新（thisUpdate）和下次更新（nextUpdate）字段仿照 X.509 CRL 中的相应字段（见 [RFC5280]）。与 CRL 类似，清单名义上也是最新的，直到 nextUpdate 中指定的时间或清单号更大的清单发布为止，以先到者为准。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Because a &#34;one-time-use&#34; EE certificate is employed to verify a manifest, the EE certificate MUST be issued with a validity period that coincides with the interval from thisUpdate to nextUpdate in the manifest, to prevent needless growth of the CA&#39;s CRL.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于使用 &#34;一次性 &#34;EE 证书来验证清单，因此签发的 EE 证书的有效期必须与清单中从 thisUpdate 到 nextUpdate 的时间间隔一致，以防止 CA 的 CRL 出现不必要的增长。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The data elements of the manifest structure are defined as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+清单结构的数据元素定义如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+version: The version number of this version of the manifest specification MUST be 0.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版本：此版本清单规范的版本号必须为 0。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+manifestNumber: This field is an integer that is incremented (by 1) each time a new manifest is issued for a given publication point. This field allows an RP to detect gaps in a sequence of published manifests.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+清单编号：该字段是一个整数，每次为给定的发布点发布新清单时都会递增（1）。通过该字段，RP 可以检测已发布清单序列中的间隙。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+As the manifest is modeled on the CRL specification, the manifestNumber is analogous to the CRLNumber, and the guidance in [RFC5280] for CRLNumber values is appropriate as to the range of number values that can be used for the manifestNumber. Manifest numbers can be expected to contain long integers. Manifest verifiers MUST be able to process number values up to 20 octets. Conforming manifest issuers MUST NOT use number values longer than 20 octets. The issuer MUST increase the value of this field monotonically for each newly generated manifest. Each RP MUST verify that a purported &#34;new&#34; manifest contains a higher manifestNumber than previously validated manifests. If the purported &#34;new&#34; manifest contains a manifestNumber value equal to or lower than manifestNumber values of previously validated manifests, the RP SHOULD use locally cached versions of objects, as described in Section 6.6.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+由于清单是以 CRL 规范为蓝本的，manifestNumber 与 CRLNumber 类似，因此 [RFC5280] 中关于 CRLNumber 值的指导也适用于可用于 manifestNumber 的数值范围。清单编号应包含长整数。清单验证器必须能够处理多达 20 个八进制数的数值。符合要求的清单签发者不得使用长于 20 个八进制数的数值。对于每个新生成的清单，签发者必须单调地增加此字段的值。每个 RP 必须验证声称的 &#34;新 &#34;清单是否包含比以前验证过的清单更高的清单编号。如果声称的 &#34;新 &#34;清单包含的 manifestNumber 值等于或低于先前已验证清单的 manifestNumber 值，则 RP 应使用本地缓存的对象版本，如第 6.6 节所述。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+thisUpdate: This field contains the time when the manifest was created. This field has the same format constraints as specified in [RFC5280] for the CRL field of the same name. The issuer MUST ensure that the value of this field is more recent than any previously generated manifest. Each RP MUST verify that this field value is greater (more recent) than the most recent manifest it has validated. If this field in a purported &#34;new&#34; manifest is smaller (less recent) than previously validated manifests, the RP SHOULD use locally cached versions of objects, as described in Section 6.6.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+thisUpdate：该字段包含创建清单的时间。该字段的格式限制与 [RFC5280] 中为同名 CRL 字段规定的格式限制相同。签发者必须确保此字段的值比之前生成的清单都要新。每个 RP 必须验证该字段值大于（最近）其已验证的最新清单。如果声称的 &#34;新 &#34;清单中的该字段比以前验证过的清单小（较新），则 RP 应使用本地缓存的对象版本，如第 6.6 节所述。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+nextUpdate: This field contains the time at which the next scheduled manifest will be issued. The value of nextUpdate MUST be later than the value of thisUpdate. The specification of the GeneralizedTime value is the same as required for the thisUpdate field.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+nextUpdate（下一次更新）： 该字段包含下一次发布计划清单的时间。nextUpdate 的值必须晚于 thisUpdate 的值。GeneralizedTime 值的指定与 thisUpdate 字段的要求相同。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+If the authority alters any of the items that it has published in the repository publication point, then the authority MUST issue a new manifest. Even if no changes are made to objects at a publication point, a new manifest MUST be issued before the nextUpdate time. Each manifest encompasses a CRL, and the nextUpdate field of the manifest SHOULD match that of the CRL&#39;s nextUpdate field, as the manifest will be reissued when a new CRL is published. When a new manifest is issued before the time specified in nextUpdate of the current manifest, the CA MUST also issue a new CRL that revokes the EE certificate corresponding to the old manifest.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+如果管理机构更改了其在版本库发布点发布的任何项目，则必须发布新的清单。即使未对发布点的对象进行更改，也必须在 nextUpdate 时间之前发布新的清单。每个清单都包含一个 CRL，清单的 nextUpdate 字段应与 CRL 的 nextUpdate 字段相匹配，因为在发布新的 CRL 时，清单将重新发布。当新清单在当前清单的 nextUpdate 指定时间之前发布时，CA 也必须发布新的 CRL，撤销与旧清单相对应的 EE 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+fileHashAlg: This field contains the OID of the hash algorithm used to hash the files that the authority has placed into the repository. The hash algorithm used MUST conform to the RPKI Algorithms and Key Size Profile specification [RFC7935].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+fileHashAlg：该字段包含用于对授权机构放入存储库的文件进行散列的散列算法的 OID。使用的哈希算法必须符合 RPKI 算法和密钥大小配置文件规范 [RFC7935]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+fileList: This field is a sequence of FileAndHash objects. There is one FileAndHash entry for each currently valid signed object that has been published by the authority (at this publication point). Each FileAndHash is an ordered pair consisting of the name of the file in the repository publication point (directory) that contains the object in question and a hash of the file&#39;s contents.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+文件列表：该字段是 FileAndHash 对象的序列。授权机构（在此发布点）发布的每个当前有效的签名对象都有一个 FileAndHash 条目。每个 FileAndHash 都是一个有序对，由存储库发布点（目录）中包含相关对象的文件名和文件内容的哈希值组成。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-2-2--Names-in-FileAndHash-Objects">
+4.2.2. Names in FileAndHash Objects
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.2.2. 文件和哈希对象中的名称
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Names that appear in the fileList MUST consist of one or more characters chosen from the set a-z, A-Z, 0-9, - (HYPHEN), or _ (UNDERSCORE), followed by a single . (DOT), followed by a three-letter extension. The extension MUST be one of those enumerated in the &#34;RPKI Repository Name Schemes&#34; registry maintained by IANA [IANA-NAMING].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+出现在文件列表中的名称必须由 a-z、A-Z、0-9、-（HYPHEN）或 _（UNDERSCORE）中的一个或多个字符组成，后跟一个.（DOT），再跟一个三个字母的扩展名。扩展名必须是由 IANA [IANA-NAMING] 维护的 &#34;RPKI 资源库名称方案 &#34;注册表中列举的扩展名之一。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As an example, &#39;vixxBTS_TVXQ-2pmGOT7.cer&#39; is a valid file name.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+例如，&#34;vixxBTS_TVXQ-2pmGOT7.cer &#34;就是一个有效的文件名。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The example above contains a mix of uppercase and lowercase characters in the file name. CAs and RPs MUST be able to perform filesystem operations in a case-sensitive, case-preserving manner.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+上例中的文件名混合使用了大写和小写字符。CA 和 RP 必须能够以大小写敏感、大小写保留的方式执行文件系统操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-3--Content-Type-Attribute">
+4.3. Content-Type Attribute
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.3. 内容类型属性
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The mandatory content-type attribute MUST have its attrValues field set to the same OID as eContentType. This OID is id-ct-rpkiManifest and has the numerical value of 1.2.840.113549.1.9.16.1.26.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+强制内容类型属性的 attrValues 字段必须设置为与 eContentType 相同的 OID。该 OID 为 id-ct-rpkiManifest，数值为 1.2.840.113549.1.9.16.1.26。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-4--Manifest-Validation">
+4.4. Manifest Validation
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.4. 载体验证
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+To determine whether a manifest is valid, the RP MUST perform the following checks in addition to those specified in [RFC6488]:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+要确定清单是否有效，除了 [RFC6488] 中规定的检查外，RP 还必须执行以下检查：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. The eContentType in the EncapsulatedContentInfo is id-ad-rpkiManifest (OID 1.2.840.113549.1.9.16.1.26).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. EncapsulatedContentInfo 中的 eContentType 是 id-ad-rpkiManifest（OID 1.2.840.113549.1.9.16.1.26）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. The version of the rpkiManifest is 0.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. rpkiManifest 的版本为 0。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. In the rpkiManifest, thisUpdate precedes nextUpdate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 在 rpkiManifest 中，thisUpdate 优先于 nextUpdate。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note: Although the thisUpdate and nextUpdate fields in the manifest eContent MUST match the corresponding fields in the CRL associated with the manifest, RPs MUST NOT reject a manifest solely because these fields are not identical.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+注意：尽管清单电子内容中的 thisUpdate 和 nextUpdate 字段必须与清单相关联的 CRL 中的相应字段相匹配，但 RP 不得仅仅因为这些字段不一致而拒绝清单。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the above procedure indicates that the manifest is invalid, then the manifest MUST be discarded and treated as though no manifest were present.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果上述程序显示清单无效，则必须丢弃该清单，并将其视为不存在清单。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Manifest-Generation">
+5. Manifest Generation
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 表现世代
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-1--Manifest-Generation-Procedure">
+5.1. Manifest Generation Procedure
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.1. 清单生成程序
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For a CA publication point in the RPKI repository system, a CA MUST perform the following steps to generate a manifest:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于 RPKI 资源库系统中的 CA 发布点，CA 必须执行以下步骤来生成清单：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. Generate a new key pair for use in a &#34;one-time-use&#34; EE certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 生成新的密钥对，用于 &#34;一次性 &#34;EE 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. Issue an EE certificate for this key pair. The CA MUST revoke the EE certificate used for the manifest being replaced.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 为该密钥对签发 EE 证书。CA 必须撤销用于被替换清单的 EE 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+This EE certificate MUST have an SIA extension access description field with an accessMethod OID value of id-ad-signedObject, where the associated accessLocation references the publication point of the manifest as an object URL. (RPs are required to verify both of these syntactic constraints.)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+此 EE 证书必须有一个 SIA 扩展访问描述字段，其 accessMethod OID 值为 id-ad-signedObject，其中相关的 accessLocation 引用清单的发布点作为对象 URL。(注册管理员必须验证这两个语法限制）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+This EE certificate MUST describe its Internet Number Resources (INRs) using the &#34;inherit&#34; attribute, rather than an explicit description of a resource set (see [RFC3779]). (RPs are required to verify this.)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+此 EE 证书必须使用 &#34;继承 &#34;属性描述其互联网号码资源（INR），而不是明确描述资源集（见 [RFC3779]）。(要求 RP 对此进行验证）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+The validity interval of the EE certificate MUST exactly match the thisUpdate and nextUpdate times specified in the manifest&#39;s eContent. (An RP MUST NOT consider misalignment of the validity interval in and of itself to be an error.)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+EE 证书的有效期必须与清单电子内容中指定的 thisUpdate 和 nextUpdate 时间完全一致。(注册中心不得将有效期错配本身视为错误）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. The EE certificate MUST NOT be published in the authority&#39;s repository publication point.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. EE 证书不得在授权机构的存储库发布点发布。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. Construct the manifest content.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. 构建清单内容。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+The manifest content is described in Section 4.2.1. The manifest&#39;s fileList includes the file name and hash pair for each object issued by this CA that has been published at this repository publication point (directory). The collection of objects to be included in the manifest includes all certificates issued by this CA that are published at the CA&#39;s repository publication point, the most recent CRL issued by the CA, and all objects verified by EE certificates that were issued by this CA that are published at this repository publication point. (Sections 6.1 through 6.5 describe the checks that an RP MUST perform in support of the manifest content noted here.)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+清单内容见第 4.2.1 节。清单的 fileList 包括该存储库发布点（目录）发布的该 CA 签发的每个对象的文件名和哈希对。清单中包含的对象集合包括由该 CA 签发并在该 CA 的存储库发布点发布的所有证书、该 CA 签发的最新 CRL 以及由该 CA 签发并在该存储库发布点发布的 EE 证书验证的所有对象。(第 6.1 节至第 6.5 节描述了 RP 必须执行的检查以支持此处指出的清单内容）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+Note that the manifest does not include a self reference (i.e., its own file name and hash), since it would be impossible to compute the hash of the manifest itself prior to it being signed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+请注意，清单不包括自引用（即清单本身的文件名和哈希值），因为在签署清单之前不可能计算清单本身的哈希值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5. Encapsulate the manifest content using the CMS SignedData content type (as specified in Section 4), sign the manifest using the private key corresponding to the subject key contained in the EE certificate, and publish the manifest in the repository system publication point that is described by the manifest. (RPs are required to verify the CMS signature.)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5. 使用 CMS SignedData 内容类型（如第 4 节所述）封装清单内容，使用与 EE 证书中包含的主体密钥相对应的私钥签署清单，并在清单描述的存储库系统发布点发布清单。(要求 RP 验证 CMS 签名）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+6. Because the key pair is to be used only once, the private key associated with this key pair MUST now be destroyed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+6. 由于配对密钥只能使用一次，因此现在必须销毁与该配对密钥相关的私人密钥。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-2--Considerations-for-Manifest-Generation">
+5.2. Considerations for Manifest Generation
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.2. 生成清单的注意事项
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A new manifest MUST be issued and published before the nextUpdate time.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+新的清单必须在下一次更新时间之前发布。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An authority MUST issue a new manifest in conjunction with the finalization of changes made to objects in the publication point. If any named objects in the publication point are replaced, the authority MUST ensure that the file hash for each replaced object is updated accordingly in the new manifest. Additionally, the authority MUST revoke the certificate associated with each replaced object (other than a CRL), if it is not expired. An authority MAY perform a number of object operations on a publication repository within the scope of a repository change before issuing a single manifest that covers all the operations within the scope of this change. Repository operators MUST implement some form of repository update procedure that mitigates, to the extent possible, the risk that RPs that are performing retrieval operations on the repository are exposed to inconsistent, transient, intermediate states during updates to the repository publication point (directory) and the associated manifest.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+授权机构在最终确定对发布点中的对象所做的更改时，必须同时发布新的清单。如果公布点中的任何已命名对象被替换，管理机构必须确保在新的清单中相应更新每个被替换对象的文件哈希值。此外，如果与每个被替换对象相关的证书（CRL 除外）尚未过期，授权机构必须撤销该证书。管理机构可以在发布一份涵盖此次变更范围内所有操作的清单之前，在发布存储库变更的范围内对发布存储库执行一系列对象操作。版本库操作员必须实施某种形式的版本库更新程序，以尽可能降低在版本库上执行检索操作的 RP 在更新版本库发布点（目录）和相关清单时暴露于不一致、短暂的中间状态的风险。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Since the manifest object URL is included in the SIA of issued certificates, a new manifest MUST NOT invalidate the manifest object URL of previously issued certificates. This implies that the manifest&#39;s publication name in the repository, in the form of an object URL, is unchanged across manifest generation cycles.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于清单对象 URL 包含在已签发证书的 SIA 中，因此新清单不得使以前签发证书的清单对象 URL 失效。这就意味着，清单在存储库中的发布名称（对象 URL 的形式）在清单生成周期中保持不变。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When a CA entity is performing a key rollover, the entity MAY choose to have two CA instances simultaneously publishing into the same repository publication point. In this case, there will be one manifest associated with each active CA instance that is publishing into the common repository publication point (directory).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CA 实体在执行密钥展期时，可以选择让两个 CA 实例同时发布到同一个存储库发布点。在这种情况下，将有一个清单与发布到共同存储库发布点（目录）的每个活动 CA 实例相关联。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Relying-Party-Processing-of-Manifests">
+6. Relying Party Processing of Manifests
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 依赖方处理舱单
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Each RP MUST use the current manifest of a CA to control addition of listed files to the set of signed objects the RP employs for validating basic RPKI objects: certificates, ROAs, and CRLs. Any files not listed on the manifest MUST NOT be used for validation of these objects. However, files not listed on a manifest MAY be employed to validate other signed objects, if the profile of the object type explicitly states that such behavior is allowed (or required). Note that relying on files not listed in a manifest may allow an attacker to effect substitution attacks against such objects.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+每个 RP 必须使用 CA 的当前清单来控制将列出的文件添加到 RP 用于验证基本 RPKI 对象（证书、ROA 和 CRL）的签名对象集。清单上未列出的任何文件不得用于验证这些对象。但是，如果对象类型的配置文件明确规定允许（或要求）使用清单上未列出的文件来验证其他签名对象，则可以使用清单上未列出的文件来验证其他签名对象。请注意，依赖清单中未列出的文件可能会让攻击者对这些对象实施替换攻击。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As noted earlier, manifests are designed to allow an RP to detect manipulation of repository data, errors by a CA or repository manager, and/or active attacks on the communication channel between an RP and a repository. Unless all of the files enumerated in a manifest can be obtained by an RP during a fetch operation, the fetch is considered to have failed and the RP MUST retry the fetch later.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如前所述，清单的设计允许 RP 检测存储库数据的操纵、CA 或存储库管理器的错误和/或对 RP 与存储库之间通信通道的主动攻击。除非 RP 能在提取操作中获取清单中列举的所有文件，否则提取操作将被视为失败，RP 必须稍后重试提取操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] suggests (but does not mandate) that the RPKI model employ fetches that are incremental, e.g., an RP transfers files from a publication point only if they are new/changed since the previous, successful fetch represented in the RP&#39;s local cache. This document avoids language that relies on details of the underlying file transfer mechanism employed by an RP and a publication point to effect this operation. Thus, the term &#34;fetch&#34; refers to an operation that attempts to acquire the full set of files at a publication point, consistent with the id-ad-rpkiManifest URI extracted from a CA certificate&#39;s SIA (see below).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480]建议（但并不强制）RPKI 模型采用增量式获取，例如，RP 从发布点传输的文件只有在 RP 本地缓存中的上一次成功获取后新增/更改的情况下才传输。本文档避免使用依赖于 RP 和发布点所采用的底层文件传输机制细节的语言来实现这一操作。因此，术语 &#34;获取 &#34;指的是尝试在发布点获取全套文件的操作，与从 CA 证书 SIA 中提取的 id-ad-rpkiManifest URI 一致（见下文）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If a fetch fails, it is assumed that a subsequent fetch will resolve problems encountered during the fetch. Until such time as a successful fetch is executed, an RP SHOULD use cached data from a previous, successful fetch. This response is intended to prevent an RP from misinterpreting data associated with a publication point and thus possibly treating invalid routes as valid, or vice versa.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果提取失败，则假定后续提取将解决提取过程中遇到的问题。在成功获取之前，RP 应使用上次成功获取的缓存数据。此响应旨在防止 RP 误解与发布点相关的数据，从而可能将无效路由视为有效路由，反之亦然。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The processing described below is designed to cause all RPs with access to the same local cache and RPKI repository data to acquire the same set of validated repository files. It does not ensure that the RPs will achieve the same results with regard to validation of RPKI data, since that depends on how each RP resolves any conflicts that may arise in processing the retrieved files. Moreover, in operation, different RPs will access repositories at different times, and some RPs may experience local cache failures, so there is no guarantee that all RPs will achieve the same results with regard to acquisition or validation of RPKI data.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下面描述的处理过程旨在使所有能够访问相同本地高速缓存和 RPKI 资源库数据的 RP 获得同一套经过验证的资源库文件。这并不能确保 RP 在 RPKI 数据验证方面取得相同的结果，因为这取决于每个 RP 如何解决在处理检索文件时可能出现的任何冲突。此外，在运行过程中，不同的 RP 将在不同的时间访问存储库，一些 RP 可能会出现本地缓存故障，因此无法保证所有 RP 在获取或验证 RPKI 数据方面都能取得相同的结果。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note also that there is a &#34;chicken and egg&#34; relationship between the manifest and the CRL for a given CA instance. If the EE certificate for the current manifest is revoked, i.e., it appears in the current CRL, then the CA or publication point manager has made a serious error. In this case, the fetch has failed; proceed to Section 6.6. Similarly, if the CRL is not listed on a valid, current manifest, acquired during a fetch, the fetch has failed; proceed to Section 6.6, because the CRL is considered missing.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+还要注意的是，某一 CA 实例的清单和 CRL 之间存在 &#34;鸡和蛋 &#34;的关系。如果当前清单的 EE 证书被撤销，即出现在当前的 CRL 中，那么 CA 或发布点管理器就犯了严重错误。在这种情况下，取证失败；请转到第 6.6 节。同样，如果在提取过程中获取的有效当前清单上未列出 CRL，则提取失败；继续执行第 6.6 节，因为 CRL 被视为丢失。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-1--Manifest-Processing-Overview">
+6.1. Manifest Processing Overview
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.1. 舱单处理概述
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For a given publication point, an RP MUST perform a series of tests to determine which signed object files at the publication point are acceptable. The tests described below (Sections 6.2 through 6.5) are to be performed using the manifest identified by the id-ad-rpkiManifest URI extracted from a CA certificate&#39;s SIA. All of the files referenced by the manifest MUST be located at the publication point specified by the id-ad-caRepository URI from the (same) CA certificate&#39;s SIA. The manifest and the files it references MUST reside at the same publication point. If an RP encounters any files that appear on a manifest but do not reside at the same publication point as the manifest, the RP MUST treat the fetch as failed, and a warning MUST be issued (see Section 6.6 below).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于给定的发布点，RP 必须执行一系列测试，以确定发布点上哪些签名对象文件是可接受的。下面描述的测试（第 6.2 节至第 6.5 节）将使用从 CA 证书 SIA 中提取的 id-ad-rpkiManifest URI 所标识的清单来执行。清单引用的所有文件必须位于（同一）CA 证书 SIA 中 id-ad-caRepository URI 指定的发布点。清单及其引用的文件必须位于同一发布点。如果 RP 发现清单上出现的任何文件与清单不在同一发布点，RP 必须将获取视为失败，并发出警告（见下文第 6.6 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that, during CA key rollover [RFC6489], signed objects for two or more different CA instances will appear at the same publication point. Manifest processing is to be performed separately for each CA instance, guided by the SIA id-ad-rpkiManifest URI in each CA certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，在 CA 密钥展期[RFC6489]期间，两个或多个不同 CA 实例的签名对象将出现在同一发布点。应根据每个 CA 证书中的 SIA id-ad-rpkiManifest URI，对每个 CA 实例分别进行清单处理。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-2--Acquiring-a-Manifest-for-a-CA">
+6.2. Acquiring a Manifest for a CA
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.2. 为 CA 获取清单
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RP MUST fetch the manifest identified by the SIA id-ad-rpkiManifest URI in the CA certificate. If an RP cannot retrieve a manifest using this URI or if the manifest is not valid (Section 4.4), an RP MUST treat this as a failed fetch; proceed to Section 6.6. Otherwise, proceed to Section 6.3.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RP 必须获取 CA 证书中 SIA id-ad-rpkiManifest URI 标识的清单。如果 RP 无法使用此 URI 获取清单或清单无效（第 4.4 节），RP 必须将此视为获取失败；继续执行第 6.6 节。否则，转至第 6.3 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-3--Detecting-Stale-andor-Prematurely-Issued-Manifests">
+6.3. Detecting Stale and/or Prematurely Issued Manifests
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.3. 检测过期和/或过早签发的舱单
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RP MUST check that the current time (translated to UTC) is between thisUpdate and nextUpdate. If the current time lies within this interval, proceed to Section 6.4. If the current time is earlier than thisUpdate, the CA may have made an error or the RP&#39;s local notion of time may be in error. The RP MUST treat this as a failed fetch; proceed to Section 6.6. If the current time is later than nextUpdate, then the manifest is stale; the RP MUST treat this as a failed fetch. Proceed to Section 6.6. Otherwise, proceed to Section 6.4.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RP 必须检查当前时间（转换为 UTC）是否在 thisUpdate 和 nextUpdate 之间。如果当前时间在此时间间隔内，则继续执行第 6.4 节。如果当前时间早于 thisUpdate，则 CA 可能出错或 RP 的本地时间概念可能有误。RP 必须将此视为取回失败；继续执行第 6.6 节。如果当前时间晚于 nextUpdate，则清单已过时；RP 必须将其视为获取失败。继续执行第 6.6 节。否则，转至第 6.4 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-4--Acquiring-Files-Referenced-by-a-Manifest">
+6.4. Acquiring Files Referenced by a Manifest
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.4. 获取清单引用的文件
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RP MUST acquire all of the files enumerated in the manifest (fileList) from the publication point. If there are files listed in the manifest that cannot be retrieved from the publication point, the RP MUST treat this as a failed fetch. Proceed to Section 6.6. Otherwise, proceed to Section 6.5.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RP 必须从发布点获取清单（fileList）中列举的所有文件。如果清单中列出的文件无法从发布点获取，则 RP 必须将其视为获取失败。请转至第 6.6 节。否则，转至第 6.5 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-5--Matching-File-Names-and-Hashes">
+6.5. Matching File Names and Hashes
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.5. 匹配文件名和哈希值
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RP MUST verify that the hash value of each file listed in the manifest matches the value obtained by hashing the file acquired from the publication point. If the computed hash value of a file listed on the manifest does not match the hash value contained in the manifest, then the fetch has failed, and the RP MUST respond accordingly. Proceed to Section 6.6.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RP 必须验证清单中列出的每个文件的哈希值是否与从发布点获取的文件的哈希值相匹配。如果清单中列出的文件的计算哈希值与清单中包含的哈希值不匹配，则提取失败，RP 必须做出相应响应。请继续阅读第 6.6 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-6--Failed-Fetches">
+6.6. Failed Fetches
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.6. 失败的撷取
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If a fetch fails for any of the reasons cited in Sections 6.2 through 6.5, the RP MUST issue a warning indicating the reason(s) for termination of processing with regard to this CA instance. It is RECOMMENDED that a human operator be notified of this warning.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果由于第 6.2 节至第 6.5 节中列举的任何原因导致获取失败，则 RP 必须发出警告，说明终止处理此 CA 实例的原因。建议将此警告通知人工操作员。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Termination of processing means that the RP SHOULD continue to use cached versions of the objects associated with this CA instance, until such time as they become stale or they can be replaced by objects from a successful fetch. This implies that the RP MUST NOT try to acquire and validate subordinate signed objects, e.g., subordinate CA certificates, until the next interval when the RP is scheduled to fetch and process data for this CA instance.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+终止处理是指 RP 应继续使用与该 CA 实例相关的对象的缓存版本，直到这些缓存版本过时或被成功获取的对象所取代。这意味着在下一次 RP 计划获取和处理该 CA 实例的数据之前，RP 不得尝试获取和验证从属签名对象（如从属 CA 证书）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--Publication-Repositories">
+7. Publication Repositories
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 出版资料库
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RPKI publication system model requires that every publication point be associated with one or more CAs and be non-empty. Upon creation of the publication point associated with a CA, the CA MUST create and publish a manifest as well as a CRL. A CA&#39;s manifest will always contain at least one entry, i.e., a CRL issued by the CA [RFC6481], corresponding to the scope of this manifest.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 发布系统模型要求每个发布点都与一个或多个 CA 关联，并且是非空的。在创建与 CA 关联的发布点时，CA 必须创建并发布清单和 CRL。CA 的清单将始终包含至少一个条目，即由 CA [RFC6481] 签发的 CRL，与该清单的范围相对应。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Every published signed object in the RPKI [RFC6488] is published in the repository publication point of the CA that issued the EE certificate, and is listed in the manifest associated with that CA certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI [RFC6488]中每个已发布的签名对象都发布在签发 EE 证书的 CA 的存储库发布点中，并列在与该 CA 证书相关的清单中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8--Security-Considerations">
+8. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Manifests provide an additional level of protection for RPKI RPs. Manifests can assist an RP in determining if a repository object has been deleted, occluded, or otherwise removed from view, or if a publication of a newer version of an object has been suppressed (and an older version of the object has been substituted).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+清单为 RPKI RP 提供了额外的保护。清单可以帮助 RP 确定某个版本库对象是否已被删除、遮挡或以其他方式从视图中移除，或者某个对象的较新版本是否已被禁止发布（该对象的较旧版本已被替代）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Manifests cannot repair the effects of such forms of corruption of repository retrieval operations. However, a manifest enables an RP to determine if a locally maintained copy of a repository is a complete and up-to-date copy, even when the repository retrieval operation is conducted over an insecure channel. In cases where the manifest and the retrieved repository contents differ, the manifest can assist in determining which repository objects form the difference set in terms of missing, extraneous, or superseded objects.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+清单无法修复这种形式的版本库检索操作损坏所造成的影响。不过，清单能让 RP 确定本地维护的版本库副本是否是完整的最新副本，即使版本库检索操作是通过不安全通道进行的。在清单和检索到的存储库内容不同的情况下，清单可以帮助确定哪些存储库对象构成了缺失、无关或被取代对象的差异集。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The signing structure of a manifest and the use of the nextUpdate value allow an RP to determine if the manifest itself is the subject of attempted alteration. The requirement for every repository publication point to contain at least one manifest allows an RP to determine if the manifest itself has been occluded from view. Such attacks against the manifest are detectable within the time frame of the regular schedule of manifest updates. Forms of replay attacks within finer-grained time frames are not necessarily detectable by the manifest structure.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+通过清单的签名结构和 nextUpdate 值的使用，RP 可以确定清单本身是否被试图更改。要求每个存储库发布点至少包含一个清单，这使 RP 能够确定清单本身是否被遮挡。这种针对清单的攻击可以在清单定期更新的时间范围内检测到。在更细粒度的时间范围内进行的重放攻击不一定能被清单结构检测到。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9--IANA-Considerations">
+9. IANA Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9. IANA考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &#34;RPKI Signed Objects&#34; registry was originally created and populated by [RFC6488]. The &#34;RPKI Repository Name Schemes&#34; registry was created by [RFC6481] and created four of the initial three-letter file name extensions. IANA has updated the reference for the &#34;Manifest&#34; row in the &#34;RPKI Signed Objects&#34; registry to point to this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 签名对象 &#34;注册表最初由 [RFC6488] 创建和填充。RPKI 资源库名称方案 &#34;注册表由 [RFC6481] 创建，并创建了四个首字母为三个字母的文件扩展名。IANA 已更新了 &#34;RPKI 签名对象 &#34;注册表中 &#34;Manifest &#34;行的引用，使其指向本文档。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+IANA has also updated the following entries to refer to this document instead of RFC 6486:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+IANA 还更新了以下条目，以引用本文档而非 RFC 6486：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* id-mod-rpkiManifest (60) in the &#34;SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0)&#34; registry
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* SMI 安全性 S/MIME 模块标识符（1.2.840.113549.1.9.16.0）&#34;注册表中的 id-mod-rpkiManifest (60)
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* id-ct-rpkiManifest (26) in the &#34;SMI Security for S/MIME CMS Content Type (1.2.840.113549.1.9.16.1)&#34; registry
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* S/MIME CMS 内容类型的 SMI 安全性 (1.2.840.113549.1.9.16.1)&#34; 注册表中的 id-ct-rpkiManifest (26)
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* the &#34;Security considerations&#34; entry in the application media type registration for rpki-manifest
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* rpki-manifest 应用程序媒体类型注册中的 &#34;安全考虑因素 &#34;条目
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+No other actions are required.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+无需采取其他行动。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="10--References">
+10. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+10. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="10-1--Normative-References">
+10.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+10.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[IANA-NAMING] IANA, &#34;RPKI Repository Name Schemes&#34;, &lt;https://www.iana.org/assignments/rpki/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[IANA-NAMING] IANA，&#34;RPKI 资源库名称方案&#34;，&lt;https://www.iana.org/assignments/rpki/&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, DOI 10.17487/RFC5280, May 2008, &lt;https://www.rfc-editor.org/info/rfc5280&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, DOI 10.17487/RFC5280, May 2008, &lt;https://www.rfc-editor.org/info/rfc5280&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, DOI 10.17487/RFC6481, February 2012, &lt;https://www.rfc-editor.org/info/rfc6481&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, DOI 10.17487/RFC6481, February 2012, &lt;https://www.rfc-editor.org/info/rfc6481&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Huston, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, DOI 10.17487/RFC6487, February 2012, &lt;https://www.rfc-editor.org/info/rfc6487&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Huston, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, DOI 10.17487/RFC6487, February 2012, &lt;https://www.rfc-editor.org/info/rfc6487&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6488] Lepinski, M., Chi, A., and S. Kent, &#34;Signed Object Template for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6488, DOI 10.17487/RFC6488, February 2012, &lt;https://www.rfc-editor.org/info/rfc6488&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6488] Lepinski, M., Chi, A., and S. Kent, &#34;Signed Object Template for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6488, DOI 10.17487/RFC6488, February 2012, &lt;https://www.rfc-editor.org/info/rfc6488&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7935] Huston, G. and G. Michaelson, Ed., &#34;The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure&#34;, RFC 7935, DOI 10.17487/RFC7935, August 2016, &lt;https://www.rfc-editor.org/info/rfc7935&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7935] Huston, G. and G. Michaelson, Ed., &#34;The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure&#34;, RFC 7935, DOI 10.17487/RFC7935, August 2016, &lt;https://www.rfc-editor.org/info/rfc7935&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[X.690] International Telecommunication Union, &#34;Information technology - ASN.1 encoding rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)&#34;, ITU-T Recommendation X.690, February 2021, &lt;https://www.itu.int/rec/T-REC-X.690-202102-I/en&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[X.690] 国际电信联盟，&#34;信息技术--ASN.1 编码规则：基本编码规则（BER）、规范编码规则（CER）和区分编码规则（DER）的规范&#34;，ITU-T 建议 X.690，2021 年 2 月，&lt;https://www.itu.int/rec/T-REC-X.690-202102-I/en&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="10-2--Informative-References">
+10.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+10.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3779] Lynn, C., Kent, S., and K. Seo, &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34;, RFC 3779, DOI 10.17487/RFC3779, June 2004, &lt;https://www.rfc-editor.org/info/rfc3779&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3779] Lynn, C., Kent, S., and K. Seo, &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34;, RFC 3779, DOI 10.17487/RFC3779, June 2004, &lt;https://www.rfc-editor.org/info/rfc3779&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5652] Housley, R., &#34;Cryptographic Message Syntax (CMS)&#34;, STD 70, RFC 5652, DOI 10.17487/RFC5652, September 2009, &lt;https://www.rfc-editor.org/info/rfc5652&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5652] Housley, R., &#34;Cryptographic Message Syntax (CMS)&#34;, STD 70, RFC 5652, DOI 10.17487/RFC5652, September 2009, &lt;https://www.rfc-editor.org/info/rfc5652&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;https://www.rfc-editor.org/info/rfc6480&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;https://www.rfc-editor.org/info/rfc6480&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, &#34;Manifests for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6486, DOI 10.17487/RFC6486, February 2012, &lt;https://www.rfc-editor.org/info/rfc6486&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, &#34;Manifests for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6486, DOI 10.17487/RFC6486, February 2012, &lt;https://www.rfc-editor.org/info/rfc6486&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6489] Huston, G., Michaelson, G., and S. Kent, &#34;Certification Authority (CA) Key Rollover in the Resource Public Key Infrastructure (RPKI)&#34;, BCP 174, RFC 6489, DOI 10.17487/RFC6489, February 2012, &lt;https://www.rfc-editor.org/info/rfc6489&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6489] Huston, G., Michaelson, G., and S. Kent, &#34;Certification Authority (CA) Key Rollover in the Resource Public Key Infrastructure (RPKI)&#34;, BCP 174, RFC 6489, DOI 10.17487/RFC6489, February 2012, &lt;https://www.rfc-editor.org/info/rfc6489&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="Appendix-A--ASN-1-Module">
+Appendix A. ASN.1 Module
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+附录A. ASN.1 模块
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+       RPKIManifest { iso(1) member-body(2) us(840) rsadsi(113549)
+                      pkcs(1) pkcs9(9) smime(16) mod(0) 60 }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   DEFINITIONS EXPLICIT TAGS ::=
+      BEGIN
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+-- EXPORTS ALL --
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+-- 全部出口
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+IMPORTS
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+进口
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+        CONTENT-TYPE
+        FROM CryptographicMessageSyntax-2010 -- in RFC 6268
+          { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
+            pkcs-9(9) smime(16) modules(0) id-mod-cms-2009(58) } ;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+-- Manifest Content Type
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+-- Manifest 内容类型
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+      ct-rpkiManifest CONTENT-TYPE ::=
+          { TYPE Manifest IDENTIFIED BY id-ct-rpkiManifest }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+      id-smime OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+          us(840) rsadsi(113549) pkcs(1) pkcs9(9) 16 }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+      id-ct OBJECT IDENTIFIER ::= { id-smime 1 }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+      id-ct-rpkiManifest OBJECT IDENTIFIER ::= { id-ct 26 }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+      Manifest ::= SEQUENCE {
+         version        [0] INTEGER DEFAULT 0,
+         manifestNumber     INTEGER (0..MAX),
+         thisUpdate         GeneralizedTime,
+         nextUpdate         GeneralizedTime,
+         fileHashAlg        OBJECT IDENTIFIER,
+         fileList           SEQUENCE SIZE (0..MAX) OF FileAndHash
+         }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+      FileAndHash ::= SEQUENCE {
+         file  IA5String,
+         hash  BIT STRING
+         }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+END
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+结束
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="Appendix-B--Changes-since-RFC-6486">
+Appendix B. Changes since RFC 6486
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+附录B. 自 RFC 6486 以来的变化
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In 2019, it came to light that multiple RP implementations were in a vulnerable position, possibly due to perceived ambiguity in the original [RFC6486] specification. This document attempts to clarify the innovative concept and application of RPKI manifests in light of real-world deployment experience in the global Internet routing system, to avoid future problematic cases.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2019 年，人们发现多个 RP 实现处于易受攻击的位置，这可能是由于原始 [RFC6486] 规范中的感知歧义造成的。本文件试图根据全球互联网路由系统的实际部署经验，澄清 RPKI 的创新概念和应用表现，以避免未来出现问题。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following list summarizes the changes between RFC 6486 and this document:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+以下列表总结了 RFC 6486 与本文档之间的变化：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Forbidding &#34;sequential-use&#34; EE certificates and instead mandating &#34;one-time-use&#34; EE certificates.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 禁止 &#34;连续使用 &#34;的能源效率证书，而强制要求 &#34;一次性使用 &#34;的能源效率证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Clarifying that manifest EE certificates are to be issued with a validity period that coincides with the interval specified in the manifest eContent, which coincides with the CRL&#39;s thisUpdate and nextUpdate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 澄清清单 EE 证书的有效期应与清单电子内容中指定的时间间隔一致，即与 CRL 的 thisUpdate 和 nextUpdate 一致。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Clarifying that the manifestNumber is monotonically incremented in steps of 1.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 说明 manifestNumber 以 1 为单位单调递增。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Recommending that CA issuers include the applicable CRL&#39;s nextUpdate with the manifest&#39;s nextUpdate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 建议 CA 签发者在清单的 nextUpdate 中包含适用的 CRL 的 nextUpdate。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Constraining the set of valid characters in FileAndHash file names.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 限制 FileAndHash 文件名中的有效字符集。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Clarifying that an RP unable to obtain the full set of files listed on a manifest is considered to be in a failure state, in which case cached data from a previous attempt should be used (if available).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 澄清无法获取清单上列出的全套文件的 RP 将被视为处于失败状态，在这种情况下，应使用上次尝试的缓存数据（如果可用）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Clarifying the requirement for a current CRL to be present, listed, and verified.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 明确当前 CRL 存在、列出和验证的要求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Removing the notion of &#34;local policy&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 取消 &#34;地方政策 &#34;的概念。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Acknowledgements
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+致谢
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors would like to acknowledge the contributions from George Michaelson and Randy Bush in the preparation of the manifest specification. Additionally, the authors would like to thank Mark Reynolds and Christopher Small for assistance in clarifying manifest validation and RP behavior. The authors also wish to thank Tim Bruijnzeels, Job Snijders, Oleg Muravskiy, Sean Turner, Adianto Wibisono, Murray Kucherawy, Francesca Palombini, Roman Danyliw, Lars Eggert, Robert Wilton, and Benjamin Kaduk for their helpful review of this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢乔治-迈克尔逊（George Michaelson）和兰迪-布什（Randy Bush）在清单规范编写过程中做出的贡献。此外，作者还要感谢马克-雷诺兹（Mark Reynolds）和克里斯托弗-斯莫尔（Christopher Small）在澄清清单验证和 RP 行为方面提供的帮助。作者还要感谢 Tim Bruijnzeels、Job Snijders、Oleg Muravskiy、Sean Turner、Adianto Wibisono、Murray Kucherawy、Francesca Palombini、Roman Danyliw、Lars Eggert、Robert Wilton 和 Benjamin Kaduk 对本文档的审阅。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Rob Austein Arrcus, Inc. Email: sra@hactrn.net
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Rob Austein Arrcus, Inc.电子邮件：sra@hactrn.net
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Geoff Huston APNIC 6 Cordelia St South Brisbane QLD 4101 Australia Email: gih@apnic.net
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Geoff Huston APNIC 6 Cordelia St South Brisbane QLD 4101 Australia Email: gih@apnic.net
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Stephen Kent Independent Email: kent@alum.mit.edu
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Stephen Kent 独立电子邮件：kent@alum.mit.edu
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Matt Lepinski New College Florida 5800 Bay Shore Rd. Sarasota, FL 34243 United States of America Email: mlepinski@ncf.edu
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Matt Lepinski New College Florida 5800 Bay Shore Rd.Sarasota, FL 34243 美国 电子邮件: mlepinski@ncf.edu
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 6793 - BGP Support for Four-Octet Autonomous System (AS) Number Space 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">6793</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc6793">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 6793 - BGP Support for Four-Octet Autonomous System (AS) Number Space 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc6793">
+            https://datatracker.ietf.org/doc/html/rfc6793
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 6793 - BGP 支持四八位自治系统 (AS) 编号空间</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                          Q. Vohra
+Request for Comments: 6793                              Juniper Networks
+Obsoletes: 4893                                                  E. Chen
+Updates: 4271                                              Cisco Systems
+Category: Standards Track                                  December 2012
+ISSN: 2070-1721
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-5">
+BGP Support for Four-Octet Autonomous System (AS) Number Space
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-5">
+BGP 支持四八位自治系统 (AS) 编号空间
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Autonomous System number is encoded as a two-octet entity in the base BGP specification. This document describes extensions to BGP to carry the Autonomous System numbers as four-octet entities. This document obsoletes RFC 4893 and updates RFC 4271.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在基本 BGP 规范中，自治系统号码被编码为两个八位字节的实体。本文件描述了 BGP 的扩展，以便将自治系统号码作为四八位字节实体。本文件废止了 RFC 4893 并更新了 RFC 4271。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This is an Internet Standards Track document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这是一份互联网标准跟踪文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 5741 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6793.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6793。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2012 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版权所有 (c) 2012 IETF 信托基金会和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节所述的简化 BSD 许可文本，并且按照简化 BSD 许可的规定提供，但不提供担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the base BGP specification [RFC4271], the Autonomous System (AS) number is encoded as a two-octet entity. To prepare for the anticipated exhaustion of the two-octet AS numbers, this document describes extensions to BGP to carry the AS numbers as four-octet entities.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在基本 BGP 规范 [RFC4271]中，自治系统 (AS) 号被编码为两个八位字节的实体。为了应对预期中的双八位字节 AS 号码的耗尽，本文档介绍了 BGP 的扩展，以便将 AS 号码作为四八位字节实体。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+More specifically, this document defines a BGP capability code, &#34;support for four-octet AS number capability&#34;, to be used by a BGP speaker to indicate its support for four-octet AS numbers. Two attributes, AS4_PATH and AS4_AGGREGATOR, are introduced that can be used to propagate four-octet-based AS path information across BGP speakers that do not support four-octet AS numbers. This document also specifies mechanisms for constructing the AS path information from the AS_PATH attribute and the AS4_PATH attribute.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+更具体地说，本文档定义了 BGP 能力代码 &#34;支持四八位字节 AS 号能力&#34;，供 BGP 发言者用来表示其对四八位字节 AS 号的支持。本文引入了 AS4_PATH 和 AS4_AGGREGATOR 这两个属性，可用于在不支持四八位位组 AS 号的 BGP 发言者之间传播基于四八位位组的 AS 路径信息。本文档还规定了从 AS_PATH 属性和 AS4_PATH 属性构建 AS 路径信息的机制。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The extensions specified in this document allow a gradual transition from two-octet AS numbers to four-octet AS numbers.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件规定的扩展允许从两个八位字节的 AS 号码逐步过渡到四个八位字节的 AS 号码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document obsoletes RFC 4893 and updates RFC 4271. It includes several clarifications and editorial changes, and it specifies the error handling for the new attributes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件废止了 RFC 4893 并更新了 RFC 4271。它包括一些说明和编辑上的改动，并规定了新属性的错误处理方法。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Specification-of-Requirements">
+2. Specification of Requirements
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 需求说明
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in [RFC2119].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;、&#34;MUST NOT&#34;、&#34;REQUIRED&#34;、&#34;SHALL&#34;、&#34;SHALL NOT&#34;、&#34;SHOULD&#34;、&#34;SHOULD NOT&#34;、&#34;RECOMMENDED&#34;、&#34;MAY &#34;和 &#34;OPTIONAL &#34;应按照 [RFC2119] 中的描述进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Protocol-Extensions">
+3. Protocol Extensions
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 协议扩展
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For the purpose of this document, we define a BGP speaker that does not support the new four-octet AS number extensions as an OLD BGP speaker, and a BGP speaker that supports the new four-octet AS number extensions as a NEW BGP speaker.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在本文档中，我们将不支持新的四八位 AS 号扩展的 BGP 说话者定义为旧 BGP 说话者，将支持新的四八位 AS 号扩展的 BGP 说话者定义为新 BGP 说话者。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+BGP carries the AS numbers in the &#34;My Autonomous System&#34; field of the OPEN message, in the AS_PATH attribute of the UPDATE message, and in the AGGREGATOR attribute of the UPDATE message. BGP also carries the AS numbers in the BGP Communities attribute.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+BGP 在 OPEN 消息的 &#34;我的自治系统 &#34;字段、UPDATE 消息的 AS_PATH 属性和 UPDATE 消息的 AGGREGATOR 属性中携带 AS 号码。BGP 还在 BGP Communities 属性中携带 AS 号码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A NEW BGP speaker uses BGP Capabilities Advertisements [RFC5492] to advertise to its neighbors (either internal or external) that it supports four-octet AS number extensions, as specified in this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+新 BGP 发言者使用 BGP 能力广告 [RFC5492] 向其邻居（内部或外部）发布广告，说明它支持本文档规定的四八位 AS 号码扩展。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The capability that is used by a BGP speaker to convey to its BGP peer the four-octet Autonomous System number capability also carries the AS number (encoded as a four-octet entity) of the speaker in the Capability Value field of the capability. The Capability Length field of the capability is set to 4.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+BGP 发言者用来向其 BGP 对等方传达四八位字节的 &#34;自治系统号 &#34;能力的能力也会在该能力的 &#34;能力值 &#34;字段中携带发言者的 AS 号（编码为四八位字节实体）。能力的能力长度字段设置为 4。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The AS path information exchanged between NEW BGP speakers is carried in the existing AS_PATH attribute, except that each AS number in the attribute is encoded as a four-octet entity (instead of a two-octet entity). The same applies to the AGGREGATOR attribute -- the same attribute is used between NEW BGP speakers, except that the AS number carried in the attribute is encoded as a four-octet entity.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+新 BGP 发言者之间交换的 AS 路径信息由现有的 AS_PATH 属性承载，但属性中的每个 AS 编号都编码为四八位字节实体（而非二八位字节实体）。AGGREGATOR 属性也是如此 -- 新 BGP 发言者之间使用相同的属性，只是属性中的 AS 编号被编码为四八位字节实体。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The AS_PATH attribute and the AGGREGATOR attribute carried between a NEW BGP speaker and an OLD BGP speaker will continue to contain two-octet AS numbers.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+新 BGP 说话者和旧 BGP 说话者之间携带的 AS_PATH 属性和 AGGREGATOR 属性将继续包含两个八位字节的 AS 号码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+To preserve the AS path information with four-octet AS numbers across OLD BGP speakers, this document defines a new BGP path attribute called AS4_PATH. This is an optional transitive attribute that contains the AS path encoded with four-octet AS numbers. The AS4_PATH attribute has the same semantics and the same encoding as the AS_PATH attribute, except that it is &#34;optional transitive&#34;, and it carries four-octet AS numbers.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为了在 OLD BGP 发言者中保留带有四八位字节 AS 号码的 AS 路径信息，本文档定义了一个名为 AS4_PATH 的新 BGP 路径属性。这是一个可选的传递属性，包含用四八位 AS 号编码的 AS 路径。AS4_PATH 属性与 AS_PATH 属性具有相同的语义和编码，不同的是它是 &#34;可选的传递 &#34;属性，并携带四八位字节的 AS 号码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+To prevent the possible propagation of Confederation-related path segments outside of a Confederation, the path segment types AS_CONFED_SEQUENCE and AS_CONFED_SET [RFC5065] are declared invalid for the AS4_PATH attribute and MUST NOT be included in the AS4_PATH attribute of an UPDATE message.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为防止与邦联相关的路径段可能传播到邦联之外，路径段类型 AS_CONFED_SEQUENCE 和 AS_CONFED_SET [RFC5065] 已被宣布为 AS4_PATH 属性无效，且不得包含在 UPDATE 消息的 AS4_PATH 属性中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Similarly, this document defines a new BGP path attribute called AS4_AGGREGATOR, which is optional transitive. The AS4_AGGREGATOR attribute has the same semantics and the same encoding as the AGGREGATOR attribute, except that it carries a four-octet AS number.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+同样，本文档定义了一个新的 BGP 路径属性 AS4_AGGREGATOR，它是可选的传递属性。AS4_AGGREGATOR 属性的语义和编码与 AGGREGATOR 属性相同，只是它携带了一个四八位字节的 AS 号码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Currently assigned two-octet AS numbers are converted into four-octet AS numbers by setting the two high-order octets of the four-octet field to zero. Such a four-octet AS number is said to be mappable to a two-octet AS number.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+通过将四八位字节字段的两个高阶八位字节设置为零，可将当前分配的二八位字节 AS 号码转换为四八位字节 AS 号码。这样的四八位字节 AS 号可映射为二八位字节 AS 号。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document reserves a two-octet AS number called &#34;AS_TRANS&#34;. AS_TRANS can be used to represent non-mappable four-octet AS numbers as two-octet AS numbers in AS path information that is encoded with two-octet AS numbers. (In this context, four-octet AS numbers that are not mapped from two-octet AS numbers are referred to as &#34;non-mappable&#34;.) We denote this special AS number as AS_TRANS for ease of description in the rest of this specification. This AS number is also placed in the &#34;My Autonomous System&#34; field of the OPEN message originated by a NEW BGP speaker, if and only if the speaker does not have a (globally unique) two-octet AS number.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件保留了一个名为 &#34;AS_TRANS &#34;的双八位字节 AS 号码。AS_TRANS 可用于在用双八位字节 AS 号码编码的 AS 路径信息中，将不可映射的四八位字节 AS 号码表示为双八位字节 AS 号码。(在这种情况下，不能从双八位字节 AS 号映射的四八位字节 AS 号被称为 &#34;不可映射&#34;）。在本规范的其余部分中，为便于描述，我们将这种特殊的 AS 编号称为 AS_TRANS。如果且仅当新 BGP 发言者没有（全局唯一的）双八位字节 AS 号时，该 AS 号也会被放置在新 BGP 发言者发出的 OPEN 消息的 &#34;我的自治系统&#34;（My Autonomous System）字段中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Operations">
+4. Operations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 业务
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-1--Interaction-between-NEW-BGP-Speakers">
+4.1. Interaction between NEW BGP Speakers
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.1. 新 BGP 发言者之间的互动
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A BGP speaker that supports four-octet AS numbers SHALL advertise this to its peers using BGP Capabilities Advertisements. The AS number of the BGP speaker MUST be carried in the Capability Value field of the &#34;support for four-octet AS number capability&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+支持四八位字节 AS 号码的 BGP 发言者应使用 BGP 能力广告（BGP Capabilities Advertisements）向其对等方宣传这一点。BGP 发言者的 AS 号码必须包含在 &#34;支持四八位 AS 号码能力 &#34;的 &#34;能力值 &#34;字段中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When a NEW BGP speaker processes an OPEN message from another NEW BGP speaker, it MUST use the AS number encoded in the Capability Value field of the &#34;support for four-octet AS number capability&#34; in lieu of the &#34;My Autonomous System&#34; field of the OPEN message.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当一个新 BGP 发言者处理来自另一个新 BGP 发言者的 OPEN 消息时，它必须使用 &#34;支持四字节 AS 号码能力 &#34;的能力值字段中编码的 AS 号码来代替 OPEN 消息中的 &#34;我的自治系统 &#34;字段。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A BGP speaker that advertises such a capability to a particular peer, and receives from that peer the advertisement of such a capability, MUST encode AS numbers as four-octet entities in both the AS_PATH attribute and the AGGREGATOR attribute in the updates it sends to the peer and MUST assume that these attributes in the updates received from the peer encode AS numbers as four-octet entities.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+向特定对等方发布此类功能广告并从该对等方收到此类功能广告的 BGP 发言者，必须在其发送给对等方的更新中的 AS_PATH 属性和 AGGREGATOR 属性中将 AS 号码编码为四八位实体，并且必须假定从对等方收到的更新中的这些属性也将 AS 号码编码为四八位实体。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The new attributes, AS4_PATH and AS4_AGGREGATOR, MUST NOT be carried in an UPDATE message between NEW BGP speakers. A NEW BGP speaker that receives the AS4_PATH attribute or the AS4_AGGREGATOR attribute in an UPDATE message from another NEW BGP speaker MUST discard the path attribute and continue processing the UPDATE message.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+新属性 AS4_PATH 和 AS4_AGGREGATOR 不得在新 BGP 说话者之间的 UPDATE 消息中携带。一个新 BGP 演讲者从另一个新 BGP 演讲者的 UPDATE 消息中接收到 AS4_PATH 属性或 AS4_AGGREGATOR 属性时，必须丢弃路径属性并继续处理 UPDATE 消息。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-2--Interaction-between-NEW-and-OLD-BGP-Speakers">
+4.2. Interaction between NEW and OLD BGP Speakers
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.2. 新旧 BGP 发言者之间的互动
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-2-1--BGP-Peering">
+4.2.1. BGP Peering
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.2.1. BGP 对等互联
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that peering between a NEW BGP speaker and an OLD BGP speaker is possible only if the NEW BGP speaker has a two-octet AS number. However, this document does not assume that an Autonomous System with NEW BGP speakers has to have a globally unique two-octet AS number -- AS_TRANS MUST be used when the NEW BGP speaker does not have a two-octet AS number (even if multiple Autonomous Systems would use it).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，只有当新 BGP 发言者拥有双八位字节 AS 号时，新 BGP 发言者与旧 BGP 发言者之间才可能进行对等互联。但是，本文档并不假定有新 BGP 发言者的自治系统必须有一个全球唯一的双八位位组 AS 号--当新 BGP 发言者没有双八位位组 AS 号时，必须使用 AS_TRANS（即使多个自治系统都会使用它）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-2-2--Generating-Updates">
+4.2.2. Generating Updates
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.2.2. 生成更新
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When communicating with an OLD BGP speaker, a NEW BGP speaker MUST send the AS path information in the AS_PATH attribute encoded with two-octet AS numbers. The NEW BGP speaker MUST also send the AS path information in the AS4_PATH attribute (encoded with four-octet AS numbers), except for the case where all of the AS path information is composed of mappable four-octet AS numbers only. In this case, the NEW BGP speaker MUST NOT send the AS4_PATH attribute.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在与旧 BGP 说话者通信时，新 BGP 说话者必须在 AS_PATH 属性中发送用两个八位位组 AS 号编码的 AS 路径信息。新 BGP 发言者也必须在 AS4_PATH 属性（用四八位字节 AS 号编码）中发送 AS 路径信息，除非所有 AS 路径信息都只由可映射的四八位字节 AS 号组成。在这种情况下，新 BGP 发言者不得发送 AS4_PATH 属性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the AS_PATH attribute encoded with two-octet AS numbers, non-mappable four-octet AS numbers are represented by the well-known two-octet AS number, AS_TRANS. This will preserve the path length property of the AS path information and also help in updating the AS path information received on a NEW BGP speaker from an OLD BGP speaker, as explained in the next section.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在用双八位字节 AS 号编码的 AS_PATH 属性中，不可套用的四八位字节 AS 号由著名的双八位字节 AS 号 AS_TRANS 表示。这将保留 AS 路径信息的路径长度属性，也有助于更新新 BGP 说话者从旧 BGP 说话者处接收到的 AS 路径信息，下一节将对此进行说明。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The NEW BGP speaker constructs the AS4_PATH attribute from the AS path information. Whenever the AS path information contains the AS_CONFED_SEQUENCE or AS_CONFED_SET path segment, the NEW BGP speaker MUST exclude such path segments from the AS4_PATH attribute being constructed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+新 BGP 演讲者根据 AS 路径信息构建 AS4_PATH 属性。只要 AS 路径信息包含 AS_CONFED_SEQUENCE 或 AS_CONFED_SET 路径段，新 BGP 演讲者就必须在构建的 AS4_PATH 属性中排除此类路径段。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The AS4_PATH attribute, being optional transitive, will be carried across a series of OLD BGP speakers without modification and will help preserve the non-mappable four-octet AS numbers in the AS path information.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+AS4_PATH 属性是可选的传递属性，将在一系列 OLD BGP 发言者之间传递，无需修改，并有助于在 AS 路径信息中保留不可贴用的四八位 AS 号码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Similarly, if the NEW BGP speaker has to send the AGGREGATOR attribute, and if the aggregating Autonomous System&#39;s AS number is a non-mappable four-octet AS number, then the speaker MUST use the AS4_AGGREGATOR attribute and set the AS number field in the existing AGGREGATOR attribute to the reserved AS number, AS_TRANS. Note that if the AS number is mappable, then the AS4_AGGREGATOR attribute MUST NOT be sent.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+同样，如果新 BGP 发言者必须发送 AGGREGATOR 属性，而聚合自治系统的 AS 号是不可映射的四字节 AS 号，那么发言者必须使用 AS4_AGGREGATOR 属性，并将现有 AGGREGATOR 属性中的 AS 号字段设置为保留的 AS 号 AS_TRANS。请注意，如果 AS 号码是可映射的，则不得发送 AS4_AGGREGATOR 属性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-2-3--Processing-Received-Updates">
+4.2.3. Processing Received Updates
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.2.3. 处理收到的更新
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When a NEW BGP speaker receives an update from an OLD BGP speaker, it MUST be prepared to receive the AS4_PATH attribute along with the existing AS_PATH attribute. If the AS4_PATH attribute is also received, both of the attributes will be used to construct the exact AS path information, and therefore the information carried by both of the attributes will be considered for AS path loop detection.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当新 BGP 发言者从旧 BGP 发言者接收更新时，它必须准备好接收 AS4_PATH 属性和现有的 AS_PATH 属性。如果同时接收到 AS4_PATH 属性，则这两个属性都将被用于构建准确的 AS 路径信息，因此这两个属性所携带的信息都将被用于 AS 路径环路检测。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that a route may have traversed a series of Autonomous Systems with two-octet AS numbers and OLD BGP speakers only. In that case, if the route carries the AS4_PATH attribute, this attribute would have remained unmodified since the route left the last NEW BGP speaker. The trailing AS path information (representing Autonomous Systems with two-octet AS numbers and OLD BGP speakers only) is contained only in the current AS_PATH attribute (encoded in the leading part of the AS_PATH attribute).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，路由可能已经穿越了一系列只有两个八位位组 AS 号和 OLD BGP 发言者的自治系统。在这种情况下，如果路由带有 AS4_PATH 属性，则该属性在路由离开最后一个新 BGP 发言者后将保持不变。尾部 AS 路径信息（仅代表具有双八位位组 AS 号的自治系统和 OLD BGP 发言者）只包含在当前 AS_PATH 属性中（编码在 AS_PATH 属性的前导部分）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Under certain conditions, it may not be possible to reconstruct all of the AS path information from the AS_PATH and the AS4_PATH attributes of a route. This occurs, for example, when two or more routes that carry the AS4_PATH attribute are aggregated by an OLD BGP speaker, and the AS4_PATH attribute of at least one of these routes carries at least one four-octet AS number (as opposed to a two-octet AS number that is encoded in 4 octets). Depending on the implementation, either the AS4_PATH attribute would be lost during route aggregation, or both the AS_PATH attribute and the AS4_PATH attribute would contain valid, partial information that cannot be combined seamlessly, resulting in incomplete AS path information in these cases.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在某些情况下，可能无法从路由的 AS_PATH 和 AS4_PATH 属性中重建所有 AS 路径信息。例如，当两个或多个带有 AS4_PATH 属性的路由被 OLD BGP 发言者聚合，且其中至少一个路由的 AS4_PATH 属性带有至少一个四八位字节的 AS 号（而不是用 4 个八位字节编码的二八位字节 AS 号）时，就会出现这种情况。根据不同的实现，AS4_PATH 属性会在路由聚合过程中丢失，或者 AS_PATH 属性和 AS4_PATH 属性都包含有效的部分信息，无法无缝结合，从而导致这些情况下的 AS 路径信息不完整。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A NEW BGP speaker MUST also be prepared to receive the AS4_AGGREGATOR attribute along with the AGGREGATOR attribute from an OLD BGP speaker. When both of the attributes are received, if the AS number in the AGGREGATOR attribute is not AS_TRANS, then:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+新 BGP 发言者也必须准备好接收 AS4_AGGREGATOR 属性和来自旧 BGP 发言者的 AGGREGATOR 属性。当收到这两个属性时，如果 AGGREGATOR 属性中的 AS 编号不是 AS_TRANS，那么：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- the AS4_AGGREGATOR attribute and the AS4_PATH attribute SHALL be ignored,
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- AS4_AGGREGATOR 属性和 AS4_PATH 属性将被忽略、
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- the AGGREGATOR attribute SHALL be taken as the information about the aggregating node, and
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- AGGREGATOR 属性应被视为有关聚合节点的信息，并且
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- the AS_PATH attribute SHALL be taken as the AS path information.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- AS_PATH 属性应作为 AS 路径信息。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Otherwise,
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+否则
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- the AGGREGATOR attribute SHALL be ignored,
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- AGGREGATOR 属性将被忽略、
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- the AS4_AGGREGATOR attribute SHALL be taken as the information about the aggregating node, and
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- AS4_AGGREGATOR 属性应被视为有关聚合节点的信息，并且
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- the AS path information would need to be constructed, as in all other cases.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- 与所有其他情况一样，需要构建 AS 路径信息。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In order to construct the AS path information, it is necessary to first calculate the number of AS numbers in the AS_PATH and AS4_PATH attributes using the method specified in Section 9.1.2.2 of [RFC4271] and in [RFC5065] for route selection.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为了构建 AS 路径信息，有必要首先使用 [RFC4271] 第 9.1.2.2 节和 [RFC5065] 中规定的路由选择方法计算 AS_PATH 和 AS4_PATH 属性中的 AS 号数。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the number of AS numbers in the AS_PATH attribute is less than the number of AS numbers in the AS4_PATH attribute, then the AS4_PATH attribute SHALL be ignored, and the AS_PATH attribute SHALL be taken as the AS path information.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果 AS_PATH 属性中的 AS 编号少于 AS4_PATH 属性中的 AS 编号，那么 AS4_PATH 属性将被忽略，而 AS_PATH 属性将被视为 AS 路径信息。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the number of AS numbers in the AS_PATH attribute is larger than or equal to the number of AS numbers in the AS4_PATH attribute, then the AS path information SHALL be constructed by taking as many AS numbers and path segments as necessary from the leading part of the AS_PATH attribute, and then prepending them to the AS4_PATH attribute so that the AS path information has a number of AS numbers identical to that of the AS_PATH attribute. Note that a valid AS_CONFED_SEQUENCE or AS_CONFED_SET path segment SHALL be prepended if it is either the leading path segment or is adjacent to a path segment that is prepended.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果 AS_PATH 属性中的 AS 号码数大于或等于 AS4_PATH 属性中的 AS 号码数，则 AS 路径信息的构造应从 AS_PATH 属性的前导部分中提取所需的 AS 号码和路径段，然后将其预置到 AS4_PATH 属性中，以便 AS 路径信息中的 AS 号码数与 AS_PATH 属性中的 AS 号码数相同。请注意，如果一个有效的 AS_CONFED_SEQUENCE 或 AS_CONFED_SET 路径段是前导路径段或与被前导的路径段相邻，则该路径段应被前导。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Handling-BGP-Communities">
+5. Handling BGP Communities
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 处理 BGP 社区
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As specified in [RFC1997], when the high-order two octets of the community attribute is neither 0x0000 nor 0xffff, these two octets encode the AS number. Quite clearly, this would not work for a NEW BGP speaker with a non-mappable four-octet AS number. Such BGP speakers should use four-octet AS specific extended communities [RFC5668] instead.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+根据 [RFC1997] 的规定，当社区属性的高阶两个八位字节既不是 0x0000 也不是 0xffffff，这两个八位字节就会编码 AS 号码。很明显，这对于使用非可移植四八位位组 AS 号的新 BGP 发言者来说是行不通的。此类 BGP 发言者应使用特定于 AS 的四八位位组扩展社区 [RFC5668]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Error-Handling">
+6. Error Handling
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 错误处理
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This section provides an update to RFC 4271 [RFC4271] with respect to the error conditions noted here and their handling.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本节更新了 RFC 4271 [RFC4271] 中的错误条件及其处理方法。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Given that the two-octet AS numbers dominate during the transition and are carried in the AS_PATH attribute by an OLD BGP speaker, in this document the &#34;attribute discard&#34; approach is chosen to handle a malformed AS4_PATH attribute.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+鉴于在过渡期间，两个八位字节的 AS 号码占主导地位，并且由 OLD BGP 说话者在 AS_PATH 属性中携带，本文档选择了 &#34;属性丢弃 &#34;方法来处理畸形的 AS4_PATH 属性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Similarly, as the AS4_AGGREGATOR is just informational, the &#34;attribute discard&#34; approach is chosen to handle a malformed AS4_AGGREGATOR attribute.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+同样，由于 AS4_AGGREGATOR 只是一个信息属性，因此选择 &#34;属性丢弃 &#34;的方法来处理畸形的 AS4_AGGREGATOR 属性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The AS4_PATH attribute and AS4_AGGREGATOR attribute MUST NOT be carried in an UPDATE message between NEW BGP speakers. A NEW BGP speaker that receives the AS4_PATH attribute or the AS4_AGGREGATOR attribute in an UPDATE message from another NEW BGP speaker MUST discard the path attribute and continue processing the UPDATE message. This case SHOULD be logged locally for analysis.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+AS4_PATH 属性和 AS4_AGGREGATOR 属性不得在新 BGP 演讲者之间的 UPDATE 消息中携带。新 BGP 演讲者从另一个新 BGP 演讲者收到的 UPDATE 消息中包含 AS4_PATH 属性或 AS4_AGGREGATOR 属性时，必须丢弃路径属性并继续处理 UPDATE 消息。这种情况应记录在本地以便分析。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In addition, the path segment types AS_CONFED_SEQUENCE and AS_CONFED_SET [RFC5065] MUST NOT be carried in the AS4_PATH attribute of an UPDATE message. A NEW BGP speaker that receives these path segment types in the AS4_PATH attribute of an UPDATE message from an OLD BGP speaker MUST discard these path segments, adjust the relevant attribute fields accordingly, and continue processing the UPDATE message. This case SHOULD be logged locally for analysis.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+此外，UPDATE 消息的 AS4_PATH 属性中不得包含路径段类型 AS_CONFED_SEQUENCE 和 AS_CONFED_SET [RFC5065]。新 BGP 说话者从旧 BGP 说话者收到 UPDATE 消息的 AS4_PATH 属性中的这些路径段类型时，必须丢弃这些路径段，相应调整相关属性字段，并继续处理 UPDATE 消息。这种情况应记录在本地进行分析。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The AS4_PATH attribute in an UPDATE message SHALL be considered malformed under the following conditions:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在以下情况下，更新报文中的 AS4_PATH 属性应被视为畸形：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- the attribute length is not a multiple of two or is too small (i.e., less than 6) for the attribute to carry at least one AS number, or
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- 属性长度不是 2 的倍数或太小（即小于 6），属性无法携带至少一个 AS 编号，或
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- the path segment length in the attribute is either zero or is inconsistent with the attribute length, or
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- 属性中的路径段长度为零或与属性长度不一致，或
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- the path segment type in the attribute is not one of the types defined: AS_SEQUENCE, AS_SET, AS_CONFED_SEQUENCE, and AS_CONFED_SET.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+- 属性中的路径段类型不是已定义的类型之一：AS_SEQUENCE、AS_SET、AS_CONFED_SEQUENCE 和 AS_CONFED_SET。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A NEW BGP speaker that receives a malformed AS4_PATH attribute in an UPDATE message from an OLD BGP speaker MUST discard the attribute and continue processing the UPDATE message. The error SHOULD be logged locally for analysis.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+新 BGP 说话者从旧 BGP 说话者的 UPDATE 消息中收到畸形 AS4_PATH 属性时，必须丢弃该属性并继续处理 UPDATE 消息。该错误应记录在本地以便分析。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The AS4_AGGREGATOR attribute in an UPDATE message SHALL be considered malformed if the attribute length is not 8.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果属性长度不是 8，更新报文中的 AS4_AGGREGATOR 属性将被视为畸形。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A NEW BGP speaker that receives a malformed AS4_AGGREGATOR attribute in an UPDATE message from an OLD BGP speaker MUST discard the attribute and continue processing the UPDATE message. The error SHOULD be logged locally for analysis.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+新 BGP 说话者从旧 BGP 说话者的 UPDATE 消息中收到畸形 AS4_AGGREGATOR 属性时，必须丢弃该属性并继续处理 UPDATE 消息。该错误应记录在本地以便分析。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--Transition">
+7. Transition
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 过渡
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When an Autonomous System is using a two-octet AS number, then the BGP speakers within that Autonomous System MAY be upgraded to support the four-octet AS number extensions on a piecemeal basis. There is no requirement for a coordinated upgrade of the four-octet AS number capability in this case. However, if an Autonomous System wishes to use a four-octet AS number as its own AS number, then this document assumes that an Autonomous System can use a four-octet AS number only after all the BGP speakers within that Autonomous System have been upgraded to support four-octet AS numbers.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当一个自治系统使用双八位字节 AS 号时，该自治系统内的 BGP 发言者可以进行零散升级，以支持四八位字节 AS 号扩展。在这种情况下，不需要协调升级四八位字节 AS 号码功能。但是，如果一个自治系统希望使用四八位字节 AS 号作为自己的 AS 号，那么本文档假定只有在该自治系统内的所有 BGP 发言者都升级到支持四八位字节 AS 号之后，该自治系统才能使用四八位字节 AS 号。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A non-mappable four-octet AS number cannot be used as a &#34;Member AS Number&#34; of a BGP Confederation until all the BGP speakers within the Confederation have transitioned to support four-octet AS numbers.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 BGP 联盟内的所有 BGP 发言者过渡到支持四八位字节 AS 号码之前，不可应用的四八位字节 AS 号码不能用作 BGP 联盟的 &#34;成员 AS 号码&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In an environment where an Autonomous System that has OLD BGP speakers peers with two or more Autonomous Systems that have NEW BGP speakers and use AS_TRANS (rather than having a globally unique mappable AS number), the use of the MULTI_EXIT_DISC attribute [RFC4271] by the Autonomous System with the OLD BGP speakers may result in a situation where the MULTI_EXIT_DISC attribute will influence route selection among the routes that were received from different neighboring Autonomous Systems.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在一个具有旧 BGP 发言者的自治系统与两个或多个具有新 BGP 发言者并使用 AS_TRANS（而不是具有全球唯一可映射的 AS 号）的自治系统对等的环境中，具有旧 BGP 发言者的自治系统使用 MULTI_EXIT_DISC 属性 [RFC4271]，可能会导致 MULTI_EXIT_DISC 属性影响从不同相邻自治系统接收的路由之间的路由选择。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Under certain conditions, it may not be possible to reconstruct all of the AS path information from the AS_PATH and the AS4_PATH attributes of a route. This occurs when two or more routes that carry the AS4_PATH attribute are aggregated by an OLD BGP speaker, and the AS4_PATH attribute of at least one of these routes carries at least one four-octet AS number (as opposed to a two-octet AS number that is encoded in 4 octets). When such aggregation results in creating a route that is less specific than any of the component routes (routes whose Network Layer Reachability Information (NLRI) covers the NLRI of all the component routes), loss of the AS path information does not create the risk of a routing loop. In all other cases, loss of the AS path information does create the risk of a routing loop.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在某些情况下，可能无法从路由的 AS_PATH 和 AS4_PATH 属性中重建所有 AS 路径信息。当一个 OLD BGP 发言者聚合了两个或多个带有 AS4_PATH 属性的路由，且其中至少一个路由的 AS4_PATH 属性带有至少一个四八位字节的 AS 号码（而不是用 4 个八位字节编码的二八位字节 AS 号码）时，就会出现这种情况。当这种聚合导致创建的路由比任何组成路由（其网络层可达性信息（NLRI）涵盖所有组成路由的 NLRI 的路由）都不那么特殊时，AS 路径信息的丢失不会造成路由环路的风险。在所有其他情况下，AS 路径信息的丢失会造成路由环路的风险。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8--Manageability-Considerations">
+8. Manageability Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8. 可管理性考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the BGP4-MIB [RFC4273] is supported, there are no additional manageability concerns that arise from the use of four-octet AS numbers, since the InetAutonomousSystemNumber textual convention [RFC4001] is defined as Unsigned32.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果支持 BGP4-MIB [RFC4273]，由于 InetAutonomousSystemNumber 文本约定 [RFC4001]被定义为 Unsigned32，因此使用四八位 AS 编号不会产生额外的可管理性问题。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When IP Flow Information Export (IPFIX) [RFC5101] is supported, there are no additional manageability concerns that arise from the use of four-octet AS numbers. The bgpSourceAsNumber and bgpDestinationAsNumber information elements [IANA-IPFIX] can continue to be used, with a new template record, specifying the new length of 4 bytes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+支持 IP 流量信息导出（IPFIX）[RFC5101]时，使用四八位字节的 AS 号码不会产生额外的可管理性问题。可以继续使用 bgpSourceAsNumber 和 bgpDestinationAsNumber 信息元素 [IANA-IPFIX]，并使用新的模板记录，指定新的 4 字节长度。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9--IANA-Considerations">
+9. IANA Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9. IANA考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document expands the pool for AS numbers from 0-65535 to 0-4294967295. The AS numbers are managed by the IANA &#34;Autonomous System Numbers&#34; registry. Other than expanding the AS number pool, this document does not propose any modifications to the existing policies and procedures pertaining to the allocation of AS numbers.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件将 AS 号码库从 0-65535 扩展到 0-4294967295。AS 号码由 IANA &#34;自治系统号码 &#34;注册机构管理。除扩大 AS 号码池外，本文件不建议修改与分配 AS 号码有关的现有政策和程序。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document uses a BGP capability code to indicate that a BGP speaker supports four-octet AS numbers. Capability Code 65 has been assigned by IANA per [RFC5492].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档使用 BGP 能力代码来表示 BGP 说话者支持四八位 AS 号码。能力代码 65 已由 IANA 根据 [RFC5492] 分配。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In addition, this document introduces two BGP optional transitive attributes, and their type codes have been assigned by IANA. The first one is the AS4_PATH attribute, value 17, which preserves the AS path information with four-octet AS numbers across old BGP speakers. The second one is the AS4_AGGREGATOR attribute, value 18, which is similar in use to the current AGGREGATOR attribute, but it carries a four-octet AS number.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+此外，本文档还引入了两个 BGP 可选传递属性，其类型代码已由 IANA 分配。第一个是 AS4_PATH 属性，其值为 17，用于在旧的 BGP 发言者中保留带有四八位字节 AS 号码的 AS 路径信息。第二个是 AS4_AGGREGATOR 属性，值为 18，其用途与当前的 AGGREGATOR 属性类似，但它带有一个四八位字节的 AS 编号。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Finally, IANA has replaced a reference to RFC 4893 with a reference to this document for a reserved two-octet AS number -- AS_TRANS (23456). Also, IANA has replaced a reference to RFC 4893 with a reference to this document for the &#34;32-bit Autonomous System Numbers&#34; registry.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+最后，IANA 已将对 RFC 4893 的引用替换为对本文档中保留的两个八位位组 AS 编号 AS_TRANS (23456) 的引用。此外，IANA 还将 &#34;32 位自治系统编号 &#34;注册表中对 RFC 4893 的引用替换为对本文档的引用。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="10--Security-Considerations">
+10. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+10. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension to BGP does not change the underlying security issues inherent in the existing BGP, except for the following:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对 BGP 的这一扩展不会改变现有 BGP 固有的基本安全问题，但以下问题除外：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The inconsistency between the AS_PATH attribute and the AS4_PATH attribute can create loss of the AS path information, and potential routing loops in certain cases, as discussed in this document. This could be exploited by an attacker.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+AS_PATH 属性和 AS4_PATH 属性之间的不一致会导致 AS 路径信息丢失，并在某些情况下造成潜在的路由循环，本文档对此进行了讨论。这可能会被攻击者利用。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is a misconfiguration to assign a non-mappable four-octet AS number as the &#34;Member AS Number&#34; in a BGP Confederation before all the BGP speakers within the Confederation have transitioned to support four-octet AS numbers. Such a misconfiguration would weaken AS path loop detection within a Confederation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 BGP 联盟内的所有 BGP 发言者都过渡到支持四八位字节 AS 号码之前，将不可应用的四八位字节 AS 号码指定为 BGP 联盟中的 &#34;成员 AS 号码 &#34;是一种错误配置。这种错误配置会削弱联盟内的 AS 路径循环检测功能。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="11--Acknowledgments">
+11. Acknowledgments
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+11. 致谢
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors would like to thank Yakov Rekhter, Chaitanya Kodeboyina, and Jeffrey Haas for the numerous discussions that went into the making of this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢 Yakov Rekhter、Chaitanya Kodeboyina 和 Jeffrey Haas 在编写本文件过程中进行的多次讨论。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors would also like to thank members of the IDR Working Group for their review and comments.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者还要感谢 IDR 工作组成员的审查和评论。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="12--References">
+12. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+12. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="12-1--Normative-References">
+12.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+12.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC1997] Chandra, R., Traina, P., and T. Li, &#34;BGP Communities Attribute&#34;, RFC 1997, August 1996.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC1997] Chandra, R., Traina, P., and T. Li, &#34;BGP Communities Attribute&#34;, RFC 1997, August 1996.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, January 2006.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, January 2006.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5065] Traina, P., McPherson, D., and J. Scudder, &#34;Autonomous System Confederations for BGP&#34;, RFC 5065, August 2007.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5065] Traina, P., McPherson, D., and J. Scudder, &#34;Autonomous System Confederations for BGP&#34;, RFC 5065, August 2007.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5492] Scudder, J. and R. Chandra, &#34;Capabilities Advertisement with BGP-4&#34;, RFC 5492, February 2009.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5492] Scudder, J. and R. Chandra, &#34;Capabilities Advertisement with BGP-4&#34;, RFC 5492, February 2009.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5668] Rekhter, Y., Sangli, S., and D. Tappan, &#34;4-Octet AS Specific BGP Extended Community&#34;, RFC 5668, October 2009.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5668] Rekhter, Y., Sangli, S., and D. Tappan, &#34;4-Octet AS Specific BGP Extended Community&#34;, RFC 5668, October 2009.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="12-2--Informative-References">
+12.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+12.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[IANA-IPFIX] IANA, &#34;IP Flow Information Export (IPFIX) Entities&#34;, &lt;http://www.iana.org/assignments/ipfix&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[IANA-IPFIX] IANA，&#34;IP 流量信息导出（IPFIX）实体&#34;，&lt;http://www.iana.org/assignments/ipfix&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4001] Daniele, M., Haberman, B., Routhier, S., and J. Schoenwaelder, &#34;Textual Conventions for Internet Network Addresses&#34;, RFC 4001, February 2005.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4001] Daniele, M., Haberman, B., Routhier, S., and J. Schoenwaelder, &#34;Textual Conventions for Internet Network Addresses&#34;, RFC 4001, February 2005.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4273] Haas, J., Ed., and S. Hares, Ed., &#34;Definitions of Managed Objects for BGP-4&#34;, RFC 4273, January 2006.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4273] Haas, J., Ed. 和 S. Hares, Ed., &#34;Definitions of Managed Objects for BGP-4&#34;, RFC 4273, January 2006.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5101] Claise, B., Ed., &#34;Specification of the IP Flow Information Export (IPFIX) Protocol for the Exchange of IP Traffic Flow Information&#34;, RFC 5101, January 2008.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5101] Claise, B., Ed., &#34;Specification of the IP Flow Information Export (IPFIX) Protocol for the Exchange of IP Traffic Flow Information&#34;, RFC 5101, January 2008.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Quaizar Vohra Juniper Networks 1194 N. Mathilda Ave. Sunnyvale, CA 94089 USA
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Quaizar Vohra Juniper Networks 1194 N. Mathilda Ave.桑尼维尔，加利福尼亚州 94089 美国
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: quaizar.vohra@gmail.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Enke Chen Cisco Systems, Inc. 170 W. Tasman Dr. San Jose, CA 95134 USA
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Enke Chen Cisco Systems, Inc.170 W. Tasman Dr. San Jose, CA 95134 USA
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: enkechen@cisco.com
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

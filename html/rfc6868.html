@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 6868 - Parameter Value Encoding in iCalendar and vCard 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">6868</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc6868">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 6868 - Parameter Value Encoding in iCalendar and vCard 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc6868">
+            https://datatracker.ietf.org/doc/html/rfc6868
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 6868 - iCalendar 和 vCard 中的参数值编码</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                          C. Daboo
+Request for Comments: 6868                                         Apple
+Updates: 5545, 6321, 6350, 6351                            February 2013
+Category: Standards Track
+ISSN: 2070-1721
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-12">
+Parameter Value Encoding in iCalendar and vCard
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-12">
+iCalendar 和 vCard 中的参数值编码
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This specification updates the data formats for iCalendar (RFC 5545) and vCard (RFC 6350) to allow parameter values to include certain characters forbidden by the existing specifications.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本规范更新了 iCalendar（RFC 5545）和 vCard（RFC 6350）的数据格式，允许参数值包含现有规范禁止的某些字符。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This is an Internet Standards Track document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这是一份互联网标准跟踪文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 5741 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6868.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6868。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2013 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版权所有 (c) 2013 IETF 信托基金会和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1. Introduction ....................................................2
+   2. Conventions Used in This Document ...............................2
+   3. Parameter Value Encoding Scheme .................................3
+      3.1. iCalendar Example ..........................................4
+      3.2. vCard Example ..............................................4
+   4. Security Considerations .........................................4
+   5. Acknowledgments .................................................4
+   6. Normative References ............................................5
+   Appendix A. Choice of Quoting Mechanism ............................6
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The iCalendar [RFC5545] specification defines a standard way to describe calendar data. The vCard [RFC6350] specification defines a standard way to describe contact data. Both of these use a similar text-based data format. Each iCalendar and vCard data object can include &#34;properties&#34; that have &#34;parameters&#34; and a &#34;value&#34;. The value of a &#34;parameter&#34; is typically a token or URI value, but a &#34;generic&#34; text value is also allowed. However, the syntax rules for both iCalendar and vCard prevent the use of a double-quote character or control characters in such values, though double-quote characters and some subset of control characters are allowed in the actual property values.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+iCalendar [RFC5545] 规范定义了一种描述日历数据的标准方法。vCard [RFC6350] 规范定义了描述联系人数据的标准方法。两者都使用类似的基于文本的数据格式。每个 iCalendar 和 vCard 数据对象都可以包含具有 &#34;参数 &#34;和 &#34;值 &#34;的 &#34;属性&#34;。参数 &#34;的值通常是一个标记或 URI 值，但也允许使用 &#34;通用 &#34;文本值。不过，iCalendar 和 vCard 的语法规则禁止在此类值中使用双引号字符或控制字符，但在实际属性值中允许使用双引号字符和某些控制字符子集。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As more and more extensions are being developed for these data formats, there is a need to allow at least double-quotes and line feeds to be included in parameter values. The \-escaping mechanism used for property text values is not defined for use with parameter values and cannot be easily used in a backwards-compatible manner. This specification defines a new character escaping mechanism, compatible with existing parsers and chosen to minimize any impact on existing data.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+随着为这些数据格式开发的扩展越来越多，有必要允许在参数值中至少包含双引号和换行符。用于属性文本值的转（escaping）机制未定义用于参数值，因此无法以向后兼容的方式轻松使用。本规范定义了一种新的字符转义机制，与现有解析器兼容，并尽量减少对现有数据的影响。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Conventions-Used-in-This-Document">
+2. Conventions Used in This Document
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 本文件使用的约定
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;NOT RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in [RFC2119].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;、&#34;MUST NOT&#34;、&#34;REQUIRED&#34;、&#34;SHALL&#34;、&#34;SHALL NOT&#34;、&#34;SHOULD&#34;、&#34;SHOULD NOT&#34;、&#34;RECOMMENDED&#34;、&#34;NOT RECOMMENDED&#34;、&#34;MAY &#34;和 &#34;OPTIONAL &#34;应按照 [RFC2119] 中的描述进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Parameter-Value-Encoding-Scheme">
+3. Parameter Value Encoding Scheme
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 参数值编码方案
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This specification defines the ^ character (U+005E -- Circumflex Accent) as an escape character in parameter values whose value type is defined using the &#34;param-value&#34; syntax element (Section 3.1 of iCalendar [RFC5545] and Section 3.3 of vCard [RFC6350]). The ^-escaping mechanism can be used when the value is either unquoted or quoted (i.e., whether or not the value is surrounded by double-quotes).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本规范将 ^ 字符（U+005E -- 环形重音符号）定义为参数值中的转义字符，参数值类型使用 &#34;param-value &#34;语法元素定义（iCalendar [RFC5545] 第 3.1 节和 vCard [RFC6350] 第 3.3 节）。当值为无引号或有引号时（即无论值是否被双引号包围），都可以使用 ^-escaping 机制。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When generating iCalendar or vCard parameter values, the following apply:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+生成 iCalendar 或 vCard 参数值时，适用以下情况：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o formatted text line breaks are encoded into ^n (U+005E, U+006E)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 格式化文本的换行符编码为 ^n (U+005E, U+006E)
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o the ^ character (U+005E) is encoded into ^^ (U+005E, U+005E)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 将 ^ 字符（U+005E）编码为 ^^ (U+005E, U+005E)
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o the &#34; character (U+0022) is encoded into ^&#39; (U+005E, U+0027)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 字符 &#34; (U+0022) 被编码为 ^&#39; (U+005E, U+0027)
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When parsing iCalendar or vCard parameter values, the following apply:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在解析 iCalendar 或 vCard 参数值时，以下情况适用：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o the character sequence ^n (U+005E, U+006E) is decoded into an appropriate formatted line break according to the type of system being used
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 字符序列 ^n (U+005E, U+006E) 将根据所用系统的类型被解码为适当格式的换行符
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o the character sequence ^^ (U+005E, U+005E) is decoded into the ^ character (U+005E)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 字符序列 ^^ (U+005E, U+005E) 被解码为 ^ 字符 (U+005E)
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o the character sequence ^&#39; (U+005E, U+0027) is decoded into the &#34; character (U+0022)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 字符序列 ^&#39; (U+005E, U+0027) 被解码为&#34;&#34;字符 (U+0022)
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o if a ^ (U+005E) character is followed by any character other than the ones above, parsers MUST leave both the ^ and the following character in place
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 如果在 ^ (U+005E) 字符后面跟着除上述字符以外的任何字符，解析器必须保留 ^ 和下面的字符
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When converting between iCalendar and vCard text-based data formats and alternative data-format representations such as XML (as described in [RFC6321] and [RFC6351], respectively), implementations MUST ensure that parameter value escape sequences are generated correctly in the text-based format and are decoded when the parameter values appear in the alternate data formats.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 iCalendar 和 vCard 基于文本的数据格式与 XML 等替代数据格式表示法（分别在 [RFC6321] 和 [RFC6351] 中描述）之间转换时，实现必须确保在基于文本的格式中正确生成参数值转义序列，并在参数值出现在替代数据格式中时进行解码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-1--iCalendar-Example">
+3.1. iCalendar Example
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.1. iCalendar 示例
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following example is an &#34;ATTENDEE&#34; property with a &#34;CN&#34; parameter whose value includes two double-quote characters. The parameter value is not quoted, as there are no characters in the value that would trigger quoting as required by iCalendar.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下面的示例是一个带有 &#34;CN &#34;参数的 &#34;ATTENDEE &#34;属性，其值包含两个双引号字符。参数值没有加引号，因为值中没有会触发 iCalendar 所要求的引号的字符。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   ATTENDEE;CN=George Herman ^&#39;Babe^&#39; Ruth:mailto:babe@example.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The unescaped parameter value is
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+未转义的参数值为
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+George Herman &#34;Babe&#34; Ruth
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+乔治-赫尔曼-&#34;贝比&#34;-鲁斯
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-2--vCard-Example">
+3.2. vCard Example
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.2. vCard 示例
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following example is a &#34;GEO&#34; property with an &#34;X-ADDRESS&#34; parameter whose value includes several line feed characters. The parameter value is also quoted, since it contains a comma, which triggers quoting as required by vCard.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下面的示例是一个带有 &#34;X-ADDRESS &#34;参数的 &#34;GEO &#34;属性，其值包含多个换行符。由于参数值中包含一个逗号，因此也使用了引号，这触发了 vCard 所要求的引号。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   GEO;X-ADDRESS=&#34;Pittsburgh Pirates^n115 Federal St^nPitt
+    sburgh, PA 15212&#34;:geo:40.446816,-80.00566
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The unescaped parameter value (where each line is terminated by a line break character sequence) is
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+未换行的参数值（每行以一个换行符序列结束）为
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Pittsburgh Pirates 115 Federal St Pittsburgh, PA 15212
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+匹兹堡海盗队 115 Federal St 匹兹堡，宾夕法尼亚州 15212
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Security-Considerations">
+4. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+There are no additional security issues beyond those of iCalendar [RFC5545] and vCard [RFC6350].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+除了 iCalendar [RFC5545] 和 vCard [RFC6350] 之外，没有其他安全问题。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Acknowledgments">
+5. Acknowledgments
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 致谢
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Thanks to Michael Angstadt, Tim Bray, Mike Douglass, Barry Leiba, Simon Perreault, and Pete Resnick for feedback on this specification.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+感谢 Michael Angstadt、Tim Bray、Mike Douglass、Barry Leiba、Simon Perreault 和 Pete Resnick 对本规范的反馈意见。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Normative-References">
+6. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5545] Desruisseaux, B., &#34;Internet Calendaring and Scheduling Core Object Specification (iCalendar)&#34;, RFC 5545, September 2009.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5545] Desruisseaux, B., &#34;Internet Calendaring and Scheduling Core Object Specification (iCalendar)&#34;, RFC 5545, September 2009.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6321] Daboo, C., Douglass, M., and S. Lees, &#34;xCal: The XML Format for iCalendar&#34;, RFC 6321, August 2011.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6321] Daboo, C., Douglass, M., and S. Lees, &#34;xCal: The XML Format for iCalendar&#34;, RFC 6321, August 2011.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6350] Perreault, S., &#34;vCard Format Specification&#34;, RFC 6350, August 2011.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6350] Perreault, S.，&#34;vCard 格式规范&#34;，RFC 6350，2011 年 8 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6351] Perreault, S., &#34;xCard: vCard XML Representation&#34;, RFC 6351, August 2011.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6351] Perreault, S., &#34;xCard: vCard XML Representation&#34;, RFC 6351, 2011 年 8 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="Appendix-A--Choice-of-Quoting-Mechanism">
+Appendix A. Choice of Quoting Mechanism
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+附录A. 报价机制的选择
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Having recognized the need for escaping parameter values, the question is what mechanism to use? One obvious choice would be to adopt the \-escaping used for property values. However, that could not be used as-is, because it escapes a double-quote as the sequence of \ followed by double-quote. Consider what the example in Section 3.1 might look like using \-escaping:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在认识到需要对参数值进行转义处理后，问题是使用什么机制？一个显而易见的选择是采用用于属性值的\-转义。然而，这并不能按原样使用，因为它将双引号转义为 \ 后跟双引号的序列。考虑一下第 3.1 节中的示例在使用 \-escaping 时会是什么样子：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   ATTENDEE;CN=&#34;George Herman \&#34;Babe\&#34; Ruth&#34;:mailto:babe@example.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Existing iCalendar/vCard parsers know nothing about escape sequences in parameters. So they would parse the parameter value as:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+现有的 iCalendar/vCard 解析器对参数中的转义序列一无所知。因此，它们会将参数值解析为
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+George Herman \
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+George Herman \
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+i.e., the text between the first and second occurrence of a double-quote. However, the text after the second double-quote ought to be either a : or a ; (to delimit the parameter value from the following parameter or property) but is not, so the parser could legitimately throw an error at that point because the data is syntactically invalid. Thus, for backwards-compatibility reasons, a double-quote cannot be escaped using a sequence that itself includes a double-quote, and hence the choice of using a single-quote in this specification.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+即第一个和第二个双引号之间的文本。然而，第二个双引号之后的文本应该是:或;（用于将参数值与下面的参数或属性分隔开来），但却不是，因此解析器可能会在这一点上合法地抛出错误，因为数据在语法上是无效的。因此，出于向后兼容的考虑，双引号不能使用本身包含双引号的序列来转义，因此本规范选择使用单引号。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Another option would be to use a form of \-escaping modified for use in parameter values only. However, some incorrect, non-interoperable use of \ in parameter values has been observed, and thus it is best to steer clear of that to achieve guaranteed, reliable interoperability. Also, given that double-quote gets changed to single-quote in the escape sequence for a parameter, but not for a value, it is better to not give the impression that the same escape mechanism (and thus code) can be used for both (which could lead to other issues, such as an implementation incorrectly escaping a ; as \; as opposed to quoting the parameter value).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+另一种选择是使用一种经过修改的 \-escaping 形式，仅用于参数值。然而，在参数值中使用 \ 时会出现一些不正确、不可互操作的情况，因此最好不要使用，以保证可靠的互操作性。此外，考虑到在参数的转义序列中，双引号会变为单引号，而参数值则不会，因此最好不要让人觉得两者可以使用相同的转义机制（以及代码）（这可能会导致其他问题，例如实现时错误地将 ; 转义为 \; 而不是引用参数值）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The choice of ^ as the escape character was made based on the requirement that an ASCII symbol (non-alphanumeric character) be used, and it ought to be one least likely to be found in existing data.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+选择 ^ 作为转义字符是基于使用 ASCII 符号（非字母字符）的要求，而且它应该是最不可能在现有数据中找到的符号。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Author&#39;s Address
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Cyrus Daboo Apple Inc. 1 Infinite Loop Cupertino, CA 95014 USA
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Cyrus Daboo 苹果公司1 Infinite Loop Cupertino, CA 95014 美国
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: cyrus@daboo.name
+   URI:   http://www.apple.com/
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

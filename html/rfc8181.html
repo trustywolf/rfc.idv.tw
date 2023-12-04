@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 8181 - A Publication Protocol for the Resource Public Key Infrastructure (RPKI) 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">8181</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc8181">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 8181 - A Publication Protocol for the Resource Public Key Infrastructure (RPKI) 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc8181">
+            https://datatracker.ietf.org/doc/html/rfc8181
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 8181 - 资源公钥基础设施 (RPKI) 的发布协议</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                         S. Weiler
+Request for Comments: 8181                                     W3C / MIT
+Category: Standards Track                                    A. Sonalker
+ISSN: 2070-1721                                               STEER Tech
+                                                              R. Austein
+                                                    Dragon Research Labs
+                                                               July 2017
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+A Publication Protocol for the Resource Public Key Infrastructure (RPKI)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+资源公钥基础设施 (RPKI) 的发布协议
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines a protocol for publishing Resource Public Key Infrastructure (RPKI) objects. Even though the RPKI will have many participants issuing certificates and creating other objects, it is operationally useful to consolidate the publication of those objects. Even in cases where a certificate issuer runs its own publication repository, it can be useful to run the certificate engine itself on a different machine from the publication repository. This document defines a protocol which addresses these needs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档定义了发布资源公钥基础设施（RPKI）对象的协议。尽管 RPKI 将有许多参与者签发证书并创建其他对象，但合并发布这些对象在操作上是非常有用的。即使在证书颁发者运行自己的发布库的情况下，在不同于发布库的机器上运行证书引擎本身也是有用的。本文件定义了一个满足这些需求的协议。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This is an Internet Standards Track document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这是一份互联网标准跟踪文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc8181.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc8181。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2017 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版权所有 (c) 2017 IETF 信托基金会和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
+     1.1.  Historical Note . . . . . . . . . . . . . . . . . . . . .   4
+     1.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   5
+   2.  Protocol Specification  . . . . . . . . . . . . . . . . . . .   5
+     2.1.  Common XML Message Format . . . . . . . . . . . . . . . .   6
+     2.2.  Publication and Withdrawal  . . . . . . . . . . . . . . .   7
+     2.3.  Listing the Repository  . . . . . . . . . . . . . . . . .   8
+     2.4.  Error Handling  . . . . . . . . . . . . . . . . . . . . .   8
+     2.5.  Error Codes . . . . . . . . . . . . . . . . . . . . . . .   9
+     2.6.  XML Schema  . . . . . . . . . . . . . . . . . . . . . . .  10
+   3.  Examples  . . . . . . . . . . . . . . . . . . . . . . . . . .  12
+     3.1.  &lt;publish/&gt; Query, No Existing Object  . . . . . . . . . .  12
+     3.2.  &lt;publish/&gt; Query, Overwriting Existing Object . . . . . .  12
+     3.3.  &lt;withdraw/&gt; Query . . . . . . . . . . . . . . . . . . . .  13
+     3.4.  &lt;success/&gt; Reply  . . . . . . . . . . . . . . . . . . . .  13
+     3.5.  &lt;report_error/&gt; with Optional Elements  . . . . . . . . .  13
+     3.6.  &lt;report_error/&gt; without Optional Elements . . . . . . . .  14
+     3.7.  Error Handling with Multi-Element Queries . . . . . . . .  14
+       3.7.1.  Multi-Element Query . . . . . . . . . . . . . . . . .  14
+       3.7.2.  Successful Multi-Element Response . . . . . . . . . .  15
+       3.7.3.  Failure Multi-Element Response, First Error Only  . .  15
+       3.7.4.  Failure Multi-Element Response, All Errors  . . . . .  16
+     3.8.  &lt;list/&gt; Query . . . . . . . . . . . . . . . . . . . . . .  16
+     3.9.  &lt;list/&gt; Reply . . . . . . . . . . . . . . . . . . . . . .  17
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  17
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .  18
+   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  19
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . .  19
+     6.2.  Informative References  . . . . . . . . . . . . . . . . .  20
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  21
+   Authors&#39; Addresses  . . . . . . . . . . . . . . . . . . . . . . .  21
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document assumes a working knowledge of the Resource Public Key Infrastructure (RPKI), which is intended to support improved routing security on the Internet. See [RFC6480] for an overview of the RPKI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档假定读者对资源公钥基础设施（RPKI）有所了解，该基础设施旨在支持改进互联网路由安全。有关 RPKI 的概述，请参阅 [RFC6480]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In order to make participation in the RPKI easier, it is helpful to have a few consolidated repositories for RPKI objects, thus saving every participant from the cost of maintaining a new service. Similarly, relying parties using the RPKI objects will find it faster and more reliable to retrieve the necessary set from a smaller number of repositories.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为了更方便地参与 RPKI，最好能有几个 RPKI 对象的综合资源库，从而使每个参与者都不必为维护新的服务而付出代价。同样，使用 RPKI 对象的依赖方也会发现，从数量较少的资源库中检索必要的数据集会更快、更可靠。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+These consolidated RPKI object repositories will in many cases be outside the administrative scope of the organization issuing a given RPKI object. In some cases, outsourcing operation of the repository will be an explicit goal: some resource holders who strongly wish to control their own RPKI private keys may lack the resources to operate a 24x7 repository or may simply not wish to do so.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这些合并的 RPKI 对象存储库在很多情况下都不属于发行特定 RPKI 对象的组织的管理范围。在某些情况下，将存储库的运行外包将是一个明确的目标：一些强烈希望控制自己的 RPKI 私钥的资源持有者可能缺乏全天候运行存储库的资源，或者根本不想这样做。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The operator of an RPKI publication repository may well be an Internet registry which issues certificates to its customers, but it need not be; conceptually, operation of an RPKI publication repository is separate from operation of an RPKI Certification Authority (CA).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 发布库的操作者很可能是一个向客户签发证书的互联网注册机构，但也不一定；从概念上讲，RPKI 发布库的操作与 RPKI 验证机构 (CA) 的操作是分开的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Even in cases where a resource holder operates both a certificate engine and a publication repository, it can be useful to separate the two functions, as they have somewhat different operational and security requirements.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+即使在资源持有者同时运营证书引擎和出版物存储库的情况下，将这两种功能分开也是有用的，因为它们对操作和安全的要求有所不同。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines an RPKI publication protocol which allows publication either within or across organizational boundaries and which makes fairly minimal demands on both the CA engine and the publication service.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件定义了一种 RPKI 发布协议，允许在组织内部或跨组织发布，对 CA 引擎和发布服务的要求都相当低。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authentication and message integrity architecture of the publication protocol is essentially identical to the architecture used in [RFC6492] because the participants in this protocol are the same CA engines as in RFC 6492; this allows reuse of the same &#34;Business PKI&#34; (BPKI) (see Section 1.2) infrastructure used to support RFC 6492. As in RFC 6492, authorization is a matter of external configuration: we assume that any given publication repository has some kind of policy controlling which certificate engines are allowed to publish, modify, or withdraw particular RPKI objects, most likely following the recommendation in [RFC6480], Section 4.4; the details of this policy are a private matter between the operator of a certificate engine and the operator of the chosen publication repository.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+发布协议的身份验证和信息完整性架构与 [RFC6492] 中使用的架构基本相同，因为本协议的参与者与 RFC 6492 中的 CA 引擎相同；这样就可以重复使用用于支持 RFC 6492 的相同的 &#34;业务 PKI&#34;（BPKI）（见第 1.2 节）基础架构。与 RFC 6492 一样，授权是一个外部配置问题：我们假定任何给定的发布库都有某种政策来控制哪些证书引擎可以发布、修改或撤回特定的 RPKI 对象，很可能是遵循 [RFC6480] 第 4.4 节中的建议；该政策的细节是证书引擎操作者和所选发布库操作者之间的私事。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following diagram attempts to convey where this publication protocol fits into the overall data flow between the certificate issuers and relying parties:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下图试图说明该发布协议在证书颁发者和依赖方之间的整体数据流中的位置：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+          +------+    +------+    +------+
+          |  CA  |    |  CA  |    |  CA  |
+          +------+    +------+    +------+
+              |           |           |    Publication protocol
+              |           |           |    business relationship
+              +-------+   |  +--------+      perhaps set up by
+                      |   |  |                    RFC 8183
+                 +----v---v--v-----+
+                 |                 |
+                 |   Publication   |
+                 |   Repository    |
+                 |                 |
+                 +-----------------+     Distribution protocols
+                          |                   rsync or RRDP
+           +--------------+----------------+
+           |              |                |
+   +-------v-----+ +------v------+  +------v------+
+   |   Relying   | |   Relying   |  |   Relying   |
+   |    Party    | |    Party    |  |    Party    |
+   +-------------+ +-------------+  +-------------+
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The publication protocol itself is not visible to relying parties: a relying party sees the public interface of the publication server, which is an rsync or RPKI Repository Delta Protocol (RRDP) [RFC8182] server.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+依赖方看不到发布协议本身：依赖方看到的是发布服务器的公共接口，即 rsync 或 RPKI 储藏库三角协议 (RRDP) [RFC8182] 服务器。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Operators of certificate engines and publication repositories may find [RFC8183] a useful tool in setting up the pairwise relationships between these servers, but they are not required to use it.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+证书引擎和发布库的操作者可能会发现 [RFC8183] 是建立这些服务器之间配对关系的有用工具，但他们并不需要使用它。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-1--Historical-Note">
+1.1. Historical Note
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.1. 历史说明
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This protocol started out as an informal collaboration between several of the early RPKI implementers, and while it was always the designers&#39; intention that the resulting protocol end up on the IETF Standards Track, it took a few years to get there because standardization of other pieces of the overall RPKI protocol space was more urgent. The Standards Track version of this publication protocol preserves the original XML namespace and protocol version scheme in order to maintain backwards compatibility with running code implemented against older versions of the specification.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该协议最初是几个早期 RPKI 实现者之间的非正式合作，虽然设计者一直希望最终形成的协议能进入 IETF 标准轨道，但由于整个 RPKI 协议空间中其他部分的标准化工作更为紧迫，因此花了几年时间才得以实现。该发布协议的标准轨版本保留了原始 XML 名称空间和协议版本方案，以便与根据旧版本规范执行的运行代码保持向后兼容性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-2--Terminology">
+1.2. Terminology
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.2. 用语
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;NOT RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, 以及 &#34;OPTIONAL&#34; 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&#34;Publication engine&#34; and &#34;publication server&#34; are used interchangeably to refer to the server providing the service described in this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&#34;出版引擎 &#34;和 &#34;出版服务器 &#34;可以互换使用，指提供本文档所述服务的服务器。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&#34;Business Public Key Infrastructure&#34; (&#34;Business PKI&#34; or &#34;BPKI&#34;) refers to a PKI, separate from the RPKI, used to authenticate clients to the publication engine. We use the term &#34;Business PKI&#34; here because an Internet registry might already have a PKI for authenticating its clients and might wish to reuse that PKI for this protocol. There is, however, no requirement to reuse such a PKI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&#34;业务公钥基础设施&#34;（&#34;Business PKI &#34;或 &#34;BPKI&#34;）指的是与 RPKI 不同的 PKI，用于验证客户端到发布引擎的身份。我们在此使用 &#34;业务 PKI &#34;一词，是因为互联网注册机构可能已经拥有一个用于验证其客户身份的 PKI，并且可能希望在本协议中重复使用该 PKI。不过，我们并不要求重复使用这种 PKI。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Protocol-Specification">
+2. Protocol Specification
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 协议规范
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The publication protocol uses XML [XML] messages wrapped in signed Cryptographic Message Syntax (CMS) messages, carried over HTTP transport [RFC7230]. The CMS encapsulation is identical to that used in Section 3.1 (and subsections) of RFC 6492 [RFC6492].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+发布协议使用 XML[XML]报文，用签名的加密报文语法（CMS）报文封装，通过 HTTP 传输[RFC7230]。CMS 封装与 RFC 6492 [RFC6492] 第 3.1 节（及各小节）中使用的封装相同。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The publication protocol uses a simple request/response interaction. The client passes a request to the server, and the server generates a corresponding response.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+发布协议采用简单的请求/响应交互方式。客户端向服务器发送请求，服务器则生成相应的响应。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A message exchange commences with the client initiating an HTTP POST with a content type of &#34;application/rpki-publication&#34;, with the message object as the body. The server&#39;s response will similarly be the body of the response with a content type of &#34;application/ rpki-publication&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+信息交换开始时，客户端启动 HTTP POST，内容类型为 &#34;application/rpki-publication&#34;，信息对象为正文。服务器的响应同样是内容类型为 &#34;application/ rpki-publication &#34;的响应正文。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The content of the POST and the server&#39;s response will be a well-formed CMS [RFC5652] object with OID = 1.2.840.113549.1.7.2 as described in Section 3.1 of [RFC6492].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如 [RFC6492] 第 3.1 节所述，POST 和服务器响应的内容将是格式良好的 CMS [RFC5652] 对象，OID = 1.2.840.113549.1.7.2。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The CMS signatures are used to protect the integrity of the protocol messages and to authenticate the client and server to each other. Authorization to perform particular operations is a local matter, perhaps determined by contractual agreements between the operators of any particular client-server pair, but in any case is beyond the scope of this specification.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CMS 签名用于保护协议信息的完整性，以及客户端和服务器之间的相互验证。执行特定操作的授权属于本地事务，可能由任何特定客户机-服务器对的运营商之间的合同协议决定，但无论如何都超出了本规范的范围。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-1--Common-XML-Message-Format">
+2.1. Common XML Message Format
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.1. 通用 XML 信息格式
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The XML schema for this protocol is below in Section 2.6. The basic XML message format looks like this:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该协议的 XML 模式见下文第 2.6 节。基本的 XML 信息格式如下
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;query&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;!-- Zero or more PDUs --&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;reply&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;!-- Zero or more PDUs --&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As noted above, the outermost XML element is encapsulated in a signed CMS message. Query messages are signed by the client, and reply messages are signed by the server.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如上所述，最外层的 XML 元素封装在已签名的 CMS 信息中。查询信息由客户端签名，回复信息由服务器签名。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Common attributes:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+共同属性：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+version: The value of this attribute is the version of this protocol. This document describes version 4.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版本：该属性的值是该协议的版本。本文件描述的是版本 4。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+type: The possible values of this attribute are &#34;reply&#34; and &#34;query&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+类型：该属性的可能值为 &#34;回复 &#34;和 &#34;查询&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A query PDU may be one of three types: &lt;publish/&gt;, &lt;withdraw/&gt;, or &lt;list/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+查询 PDU 有三种类型：&lt;发布/&gt;、&lt;撤回/&gt; 或 &lt;列表/&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A reply PDU may be one of three types: &lt;success/&gt;, &lt;list/&gt;, or &lt;report_error/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+回复 PDU 可以是三种类型之一：&lt;成功/&gt;、&lt;列表/&gt; 或 &lt;报告错误/&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &lt;publish/&gt; and &lt;withdraw/&gt; PDUs include a &#34;tag&#34; attribute to facilitate bulk operation. When performing bulk operations, a CA engine will probably find it useful to specify a distinct tag value for each &lt;publish/&gt; or &lt;withdraw/&gt; PDU, to simplify matching an error with the PDU which triggered it. The tag attribute is mandatory, to simplify parsing, but a CA engine which has no particular use for tagging MAY use any syntactically legal value, including simply using the empty string for all tag fields.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;publish/&gt; 和 &lt;withdraw/&gt; PDU 包括一个 &#34;tag &#34;属性，以方便批量操作。在执行批量操作时，CA 引擎可能会发现为每个 &lt;publish/&gt; 或 &lt;withdraw/&gt; PDU 指定一个不同的标记值很有用，这样可以简化错误与触发错误的 PDU 的匹配。标签属性是强制性的，以简化解析，但对标签没有特殊用途的 CA 引擎可以使用任何语法上合法的值，包括简单地对所有标签字段使用空字符串。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document describes version 4 of this protocol. An implementation which understands only this version of the protocol MUST reject messages with a different protocol version attribute, signaling the error as described in Section 2.4. Since &#34;4&#34; is currently the only value allowed for the version attribute in the schema (Section 2.6), an incorrect protocol version can be detected either by checking the version attribute directly or as a schema validation error. Any future update to this protocol which is either syntactically or semantically incompatible with the current version will need to increment the protocol version number.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件描述了该协议的第 4 版。只理解该版本协议的实现必须拒绝带有不同协议版本属性的报文，并发出第 2.4 节所述的错误信号。由于 &#34;4 &#34;是目前模式中版本属性唯一允许的值（第 2.6 节），因此可通过直接检查版本属性或模式验证错误来检测协议版本是否正确。本协议今后的任何更新，如果在语法或语义上与当前版本不兼容，都需要递增协议版本号。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-2--Publication-and-Withdrawal">
+2.2. Publication and Withdrawal
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.2. 公布和撤销
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The publication protocol uses a common message format to request publication of any RPKI object. This format was chosen specifically to allow this protocol to accommodate new types of RPKI objects without needing changes to this protocol.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+发布协议使用通用的消息格式来请求发布任何 RPKI 对象。之所以选择这种格式，是为了让本协议在无需修改本协议的情况下，也能容纳新类型的 RPKI 对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Both the &lt;publish/&gt; and &lt;withdraw/&gt; PDUs have a payload of a tag and an rsync URI [RFC3986] [RFC5781]. The &lt;publish/&gt; query also contains the DER object to be published, encoded in Base64 ([RFC4648], Section 4, with line breaks within the Base64 text permitted but not required).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;publish/&gt; 和 &lt;withdraw/&gt; PDU 的有效载荷都包括一个标记和一个 rsync URI [RFC3986] [RFC5781]。&lt;publish/&gt; 查询还包含要发布的 DER 对象，以 Base64 编码（[RFC4648]，第 4 节，允许但不要求在 Base64 文本中换行）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Both the &lt;publish/&gt; and &lt;withdraw/&gt; PDUs also have a &#34;hash&#34; attribute, which carries a hash of an existing object at the specified repository URI, encoded as a hexadecimal string. For &lt;withdraw/&gt; PDUs, the hash MUST be present, as this operation makes no sense if there is no existing object to withdraw. For &lt;publish/&gt; PDUs, the hash MUST be present if the publication operation is overwriting an existing object, and it MUST NOT be present if this publication operation is writing to a new URI where no prior object exists. Presence of an object when no &#34;hash&#34; attribute has been specified is an error, as is absence of an object or an incorrect hash value when a &#34;hash&#34; attribute has been specified. Any such errors MUST be reported using the &lt;report_error/&gt; PDU.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;publish/&gt; 和 &lt;withdraw/&gt; PDU 也都有一个 &#34;hash &#34;属性，它包含指定版本库 URI 中现有对象的哈希值，以十六进制字符串编码。对于 &lt;withdraw/&gt; PDU，哈希值必须存在，因为如果没有要撤回的现有对象，此操作就没有意义。对于 &lt;publish/&gt;（发布/&gt;）PDU，如果发布操作要覆盖现有对象，则必须存在哈希值；如果发布操作要写入一个新的 URI，而之前不存在对象，则必须不存在哈希值。如果没有指定 &#34;哈希 &#34;属性，则对象的存在就是错误；如果指定了 &#34;哈希 &#34;属性，则对象不存在或哈希值不正确也是错误。必须使用 &lt;report_error/&gt; PDU 报告任何此类错误。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The hash algorithm is SHA-256 [SHS], to simplify comparison of publication protocol hashes with RPKI manifest hashes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+哈希算法为 SHA-256 [SHS]，以简化发布协议哈希值与 RPKI 清单哈希值的比较。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The intent behind the &#34;hash&#34; attribute is to allow the client and server to detect any disagreements about the effect that a &lt;publish/&gt; or &lt;withdraw/&gt; PDU will have on the repository.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+哈希 &#34;属性背后的意图是让客户端和服务器能够检测出 &lt;publish/&gt; 或 &lt;withdraw/&gt; PDU 对版本库影响的任何分歧。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that every publish and withdraw action requires a new manifest, thus every publish or withdraw action will involve at least two objects.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，每个发布和撤回操作都需要一个新的清单，因此每个发布或撤回操作都至少涉及两个对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Processing of a query message is handled atomically: either the entire query succeeds or none of it does. When a query message contains multiple PDUs, failure of any PDU may require the server to roll back actions triggered by earlier PDUs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对查询报文的处理是原子式的：要么整个查询成功，要么没有一个查询成功。当查询信息包含多个 PDU 时，任何一个 PDU 的失败都可能要求服务器回滚之前 PDU 触发的操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When a query message containing &lt;publish/&gt; or &lt;withdraw/&gt; PDUs succeeds, the server returns a single &lt;success/&gt; reply.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当包含 &lt;publish/&gt; 或 &lt;withdraw/&gt; PDU 的查询消息成功时，服务器会返回一个 &lt;success/&gt; 回复。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When a query fails, the server returns one or more &lt;report_error/&gt; reply PDUs. Typically, a server will only generate one &lt;report_error/&gt; corresponding to the first query PDU that failed, but servers MAY return multiple &lt;report_error/&gt; PDUs at the implementer&#39;s discretion.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当查询失败时，服务器会返回一个或多个 &lt;report_error/&gt; 回复 PDU。通常，服务器只会生成一个 &lt;report_error/&gt; 与第一个查询失败的 PDU 相对应，但服务器可以根据实现者的判断返回多个 &lt;report_error/&gt; PDU。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-3--Listing-the-Repository">
+2.3. Listing the Repository
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.3. 列出存储库
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &lt;list/&gt; operation allows the client to ask the server for a complete listing of objects which the server believes the client has published. This is intended primarily to allow the client to recover upon detecting (probably via use of the &#34;hash&#34; attribute; see Section 2.2) that they have somehow lost synchronization.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;list/&gt; 操作允许客户端向服务器索取服务器认为客户端已发布的对象的完整列表。这样做的主要目的是让客户端在发现（可能是通过使用 &#34;哈希 &#34;属性；见第 2.2 节）自己丢失同步时能够恢复。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &lt;list/&gt; query consists of a single PDU. A &lt;list/&gt; query MUST be the only PDU in a query -- it may not be combined with any &lt;publish/&gt; or &lt;withdraw/&gt; queries.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;list/&gt; 查询由一个 PDU 组成。&lt;list/&gt; 查询必须是查询中唯一的 PDU，不得与任何 &lt;publish/&gt; 或 &lt;withdraw/&gt; 查询组合。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &lt;list/&gt; reply consists of zero or more PDUs, one per object published in this repository by this client, each PDU conveying the URI and hash of one published object.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;list/&gt; 回复由零个或多个 PDU 组成，该客户机在该版本库中发布的每个对象一个 PDU，每个 PDU 传达一个已发布对象的 URI 和哈希值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-4--Error-Handling">
+2.4. Error Handling
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.4. 错误处理
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Errors are handled at two levels.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+错误在两个层面上进行处理。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Errors that make it impossible to decode a query or encode a response are handled at the HTTP layer. 4xx and 5xx HTTP response codes indicate that something bad happened.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+无法解码查询或编码响应的错误由 HTTP 层处理。4xx 和 5xx HTTP 响应代码表示发生了错误。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In all other cases, errors result in an XML &lt;report_error/&gt; PDU. Like the rest of this protocol, &lt;report_error/&gt; PDUs are CMS-signed XML messages and thus can be archived to provide an audit trail.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在所有其他情况下，错误会产生一个 XML &lt;report_error/&gt; PDU。与本协议的其他部分一样，&lt;report_error/&gt; PDU 也是 CMS 签名的 XML 信息，因此可以存档以提供审计跟踪。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;report_error/&gt; PDUs only appear in replies, never in queries.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;report_error/&gt; PDU 只出现在回复中，从不出现在查询中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &#34;tag&#34; attribute of the &lt;report_error/&gt; PDU associated with a &lt;publish/&gt; or &lt;withdraw/&gt; PDU MUST be set to the same value as the &#34;tag&#34; attribute in the PDU which generated the error. A client can use the &#34;tag&#34; attribute to determine which PDU caused processing of an update to fail.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+与 &lt;publish/&gt; 或 &lt;withdraw/&gt; PDU 相关联的 &lt;report_error/&gt; PDU 的 &#34;tag &#34;属性必须设置为与产生错误的 PDU 中的 &#34;tag &#34;属性相同的值。客户机可使用 &#34;tag &#34;属性来确定是哪个 PDU 导致更新处理失败。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The error itself is conveyed in the &#34;error_code&#34; attribute. The value of this attribute is a token indicating the specific error that occurred.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+错误本身通过 &#34;error_code &#34;属性传达。该属性的值是一个标记，表示发生的具体错误。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The body of the &lt;report_error/&gt; element contains two sub-elements:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&lt;report_error/&gt; 元素的主体包含两个子元素：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. An optional text element &lt;error_text/&gt;, which, if present, contains a text string with debugging information intended for human consumption.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 一个可选的文本元素 &lt;error_text/&gt;，如果存在，则包含一个文本字符串，其中包含供人阅读的调试信息。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. An optional element &lt;failed_pdu/&gt;, which, if present, contains a verbatim copy of the query PDU whose failure triggered the &lt;report_error/&gt; PDU. The quoted element must be syntactically valid.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 可选元素 &lt;failed_pdu/&gt;，如果存在，它包含查询 PDU 的逐字副本，该 PDU 的失败触发了 &lt;report_error/&gt; PDU。引用的元素必须在语法上有效。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+See Section 3.7 for examples of a multi-element query and responses.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关多元素查询和响应的示例，请参见第 3.7 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-5--Error-Codes">
+2.5. Error Codes
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.5. 错误代码
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+These are the defined error codes as well as some discussion of each. Text similar to these descriptions may be sent in an &lt;error_text/&gt; element to help explain the error encountered.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这些是已定义的错误代码，以及对每个错误代码的一些讨论。可在 &lt;error_text/&gt; 元素中发送与这些描述类似的文本，以帮助解释所遇到的错误。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+xml_error: Encountered an XML problem. Note that some XML errors may be severe enough to require error reporting at the HTTP layer, instead. Implementations MAY choose to report any or all XML errors at the HTTP layer.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+xml_error：遇到 XML 问题。请注意，某些 XML 错误可能非常严重，需要在 HTTP 层进行错误报告。实现可以选择在 HTTP 层报告任何或所有 XML 错误。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+permission_failure: Client does not have permission to update this URI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+permission_failure：客户端没有更新此 URI 的权限。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+bad_cms_signature: Bad CMS signature.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+bad_cms_signature：不良 CMS 签名。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+object_already_present: An object is already present at this URI, yet a &#34;hash&#34; attribute was not specified. A &#34;hash&#34; attribute must be specified when overwriting or deleting an object. Perhaps client and server are out of sync?
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+object_already_present：该 URI 上已经存在一个对象，但没有指定 &#34;hash &#34;属性。覆盖或删除对象时必须指定 &#34;哈希 &#34;属性。也许客户端和服务器不同步？
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+no_object_present: There is no object present at this URI, yet a &#34;hash&#34; attribute was specified. Perhaps client and server are out of sync?
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+no_object_present：该 URI 上没有对象，但指定了 &#34;哈希 &#34;属性。也许客户端和服务器不同步？
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+no_object_matching_hash: The &#34;hash&#34; attribute supplied does not match the &#34;hash&#34; attribute of the object at this URI. Perhaps client and server are out of sync?
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+no_object_matching_hash：提供的 &#34;哈希 &#34;属性与此 URI 中对象的 &#34;哈希 &#34;属性不匹配。也许客户端和服务器不同步？
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+consistency_problem: Server detected an update that looks like it will cause a consistency problem (e.g., an object was deleted, but the manifest was not updated). Note that a server is not required to make such checks. Indeed, it may be unwise for a server to do so. This error code just provides a way for the server to explain its (in-)action.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+consistency_problem： 服务器检测到的更新看起来会导致一致性问题（例如，删除了一个对象，但清单没有更新）。请注意，服务器并不需要进行此类检查。事实上，服务器这样做可能是不明智的。该错误代码只是为服务器解释其（不）行为提供了一种方式。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+other_error: A meteor fell on the server.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+其他错误：一颗流星坠落在服务器上。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-6--XML-Schema">
+2.6. XML Schema
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.6. XML 模式
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following is a [RELAX-NG] compact form schema describing the publication protocol.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+以下是描述出版协议的[RELAX-NG]紧凑格式模式。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This schema is normative: in the event of a disagreement between this schema and the document text above, this schema is authoritative.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本模式具有规范性：如果本模式与上述文件文本之间存在分歧，则本模式具有权威性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# RELAX NG schema for RPKI publication protocol.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# RPKI 发布协议的 RELAX NG 模式。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+default namespace = &#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+默认命名空间 = &#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# This is version 4 of the protocol.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# 这是协议的第 4 版。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   version = &#34;4&#34;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# Top-level PDU is either a query or a reply.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# 顶层 PDU 要么是查询，要么是回复。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   start |= element msg {
+     attribute version { version },
+     attribute type    { &#34;query&#34; },
+     query_elt
+   }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   start |= element msg {
+     attribute version { version },
+     attribute type    { &#34;reply&#34; },
+     reply_elt
+   }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# Tag attributes for bulk operations.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# 批量操作的标签属性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   tag = attribute tag { xsd:token { maxLength=&#34;1024&#34; } }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# Base64-encoded DER stuff.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# Base64-encoded DER stuff.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+base64 = xsd:base64Binary
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+base64 = xsd:base64Binary
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# Publication URIs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# 出版物 URI。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   uri = attribute uri { xsd:anyURI { maxLength=&#34;4096&#34; } }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# Digest of an existing object (hexadecimal).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# 现有对象的摘要（十六进制）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   hash = attribute hash { xsd:string { pattern = &#34;[0-9a-fA-F]+&#34; } }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# Error codes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+# 错误代码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+error |= &#34;xml_error&#34; error |= &#34;permission_failure&#34; error |= &#34;bad_cms_signature&#34; error |= &#34;object_already_present&#34; error |= &#34;no_object_present&#34; error |= &#34;no_object_matching_hash&#34; error |= &#34;consistency_problem&#34; error |= &#34;other_error&#34;
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+error |= &#34;xml_error&#34; error |= &#34;permission_failure&#34; error |= &#34;bad_cms_signature&#34; error |= &#34;object_already_present&#34; error |= &#34;no_object_present&#34; error |= &#34;no_object_matching_hash&#34; error |= &#34;consistency_problem&#34; error |= &#34;other_error&#34;
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   # &lt;publish/&gt; and &lt;withdraw/&gt; query elements
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   query_elt |= (
+     element publish  { tag, uri, hash?, base64 } |
+     element withdraw { tag, uri, hash          }
+   )*
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   # &lt;success/&gt; reply
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   reply_elt |= element success { empty }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   # &lt;list/&gt; query and reply
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   query_elt |= element list { empty }
+   reply_elt |= element list { uri, hash }*
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   # &lt;report_error/&gt; reply
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   reply_elt |= element report_error {
+     tag?,
+     attribute error_code { error },
+     element   error_text { xsd:string { maxLength=&#34;512000&#34; }}?,
+     element   failed_pdu { query_elt }?
+   }*
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Examples">
+3. Examples
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 实例
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Following are examples of various queries and the corresponding replies for the RPKI publication protocol.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+以下是 RPKI 发布协议的各种查询和相应回复的示例。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that the authors have taken liberties with the Base64, hash, and URI text in these examples in the interest of making the examples fit nicely into RFC text format. Similarly, these examples do not show the CMS signature wrapper around the XML, just the XML payload.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，作者对这些示例中的 Base64、哈希值和 URI 文本进行了自由处理，以便使这些示例能很好地适应 RFC 文本格式。同样，这些示例也没有显示围绕 XML 的 CMS 签名封装，只是显示了 XML 有效载荷。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-1--publish-Query-No-Existing-Object">
+3.1. &lt;publish/&gt; Query, No Existing Object
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.1. &lt;publish/&gt; 查询，无现有对象
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;query&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;!-- body is base64(new-object) --&gt;
+     &lt;publish
+         tag=&#34;&#34;
+         uri=&#34;rsync://wombat.example/Alice/01a97a70ac477f06.cer&#34;&gt;
+         SGVsbG8sIG15IG5hbWUgaXMgQWxpY2U=
+       &lt;/publish&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-2--publish-Query-Overwriting-Existing-Object">
+3.2. &lt;publish/&gt; Query, Overwriting Existing Object
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.2. &lt;publish/&gt; 查询，覆盖现有对象
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;query&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;!-- hash is hex(SHA-256(old-object)) --&gt;
+     &lt;!-- body is base64(new-object) --&gt;
+     &lt;publish
+         hash=&#34;01a97a70ac477f06&#34;
+         tag=&#34;foo&#34;
+         uri=&#34;rsync://wombat.example/Alice/01a97a70ac477f06.cer&#34;&gt;
+         SGVsbG8sIG15IG5hbWUgaXMgQWxpY2U=
+       &lt;/publish&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-3--withdraw-Query">
+3.3. &lt;withdraw/&gt; Query
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.3. &lt;撤回/&gt; 查询
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;query&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;!-- hash is hex(SHA-256(old-object)) --&gt;
+     &lt;withdraw
+         hash=&#34;01a97a70ac477f06&#34;
+         tag=&#34;foo&#34;
+         uri=&#34;rsync://wombat.example/Alice/01a97a70ac477f06.cer&#34;/&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-4--success-Reply">
+3.4. &lt;success/&gt; Reply
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.4. &lt;success/&gt; 答复
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;reply&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;success/&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-5--reporterror-with-Optional-Elements">
+3.5. &lt;report_error/&gt; with Optional Elements
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.5. 带有可选元素的 &lt;report_error/&gt;
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;reply&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;report_error
+         error_code=&#34;no_object_matching_hash&#34;
+         tag=&#34;foo&#34;&gt;
+       &lt;error_text&gt;
+         Can&#39;t delete an object I don&#39;t have
+       &lt;/error_text&gt;
+       &lt;failed_pdu&gt;
+         &lt;publish
+             hash=&#34;01a97a70ac477f06&#34;
+             tag=&#34;foo&#34;
+             uri=&#34;rsync://wombat.example/Alice/01a97a70ac477f06.cer&#34;&gt;
+         SGVsbG8sIG15IG5hbWUgaXMgQWxpY2U=
+       &lt;/publish&gt;
+       &lt;/failed_pdu&gt;
+     &lt;/report_error&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-6--reporterror-without-Optional-Elements">
+3.6. &lt;report_error/&gt; without Optional Elements
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.6. &lt;report_error/&gt; 不含可选元素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;reply&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;report_error
+         error_code=&#34;object_already_present&#34;
+         tag=&#34;foo&#34;/&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-7--Error-Handling-with-Multi-Element-Queries">
+3.7. Error Handling with Multi-Element Queries
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.7. 多元素查询的错误处理
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-7-1--Multi-Element-Query">
+3.7.1. Multi-Element Query
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.7.1. 多元素查询
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;query&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;publish
+         tag=&#34;Alice&#34;
+         uri=&#34;rsync://wombat.example/Alice/01a97a70ac477f06.cer&#34;&gt;
+         SGVsbG8sIG15IG5hbWUgaXMgQWxpY2U=
+       &lt;/publish&gt;
+     &lt;withdraw
+         hash=&#34;f46a4198efa3070e&#34;
+         tag=&#34;Bob&#34;
+         uri=&#34;rsync://wombat.example/Bob/f46a4198efa3070e.cer&#34;/&gt;
+     &lt;publish
+         tag=&#34;Carol&#34;
+         uri=&#34;rsync://wombat.example/Carol/32e0544eeb510ec0.cer&#34;&gt;
+         SGVsbG8sIG15IG5hbWUgaXMgQ2Fyb2w=
+       &lt;/publish&gt;
+     &lt;withdraw
+         hash=&#34;421ee4ac65732d72&#34;
+         tag=&#34;Dave&#34;
+         uri=&#34;rsync://wombat.example/Dave/421ee4ac65732d72.cer&#34;/&gt;
+     &lt;publish
+         tag=&#34;Eve&#34;
+         uri=&#34;rsync://wombat.example/Eve/9dd859b01e5c2ebd.cer&#34;&gt;
+         SGVsbG8sIG15IG5hbWUgaXMgRXZl
+       &lt;/publish&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-7-2--Successful-Multi-Element-Response">
+3.7.2. Successful Multi-Element Response
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.7.2. 成功的多元素响应
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;reply&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;success/&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-7-3--Failure-Multi-Element-Response-First-Error-Only">
+3.7.3. Failure Multi-Element Response, First Error Only
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.7.3. 故障多元素响应，仅限第一次错误
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;reply&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;report_error
+         error_code=&#34;no_object_matching_hash&#34;
+         tag=&#34;Dave&#34;&gt;
+       &lt;failed_pdu&gt;
+         &lt;withdraw
+             hash=&#34;421ee4ac65732d72&#34;
+             tag=&#34;Dave&#34;
+             uri=&#34;rsync://wombat.example/Dave/421ee4ac65732d72.cer&#34;/&gt;
+       &lt;/failed_pdu&gt;
+     &lt;/report_error&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-7-4--Failure-Multi-Element-Response-All-Errors">
+3.7.4. Failure Multi-Element Response, All Errors
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.7.4. 故障多元素响应，所有错误
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;reply&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;report_error
+         error_code=&#34;no_object_matching_hash&#34;
+         tag=&#34;Dave&#34;&gt;
+       &lt;failed_pdu&gt;
+         &lt;withdraw
+             hash=&#34;421ee4ac65732d72&#34;
+             tag=&#34;Dave&#34;
+             uri=&#34;rsync://wombat.example/Dave/421ee4ac65732d72.cer&#34;/&gt;
+       &lt;/failed_pdu&gt;
+     &lt;/report_error&gt;
+     &lt;report_error
+         error_code=&#34;object_already_present&#34;
+         tag=&#34;Eve&#34;&gt;
+       &lt;failed_pdu&gt;
+         &lt;publish
+             tag=&#34;Eve&#34;
+             uri=&#34;rsync://wombat.example/Eve/9dd859b01e5c2ebd.cer&#34;&gt;
+         SGVsbG8sIG15IG5hbWUgaXMgRXZl
+       &lt;/publish&gt;
+       &lt;/failed_pdu&gt;
+     &lt;/report_error&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-8--list-Query">
+3.8. &lt;list/&gt; Query
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.8. &lt;list/&gt; 查询
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;query&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;list/&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-9--list-Reply">
+3.9. &lt;list/&gt; Reply
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.9. &lt;list/&gt; 回复
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   &lt;msg
+       type=&#34;reply&#34;
+       version=&#34;4&#34;
+       xmlns=&#34;http://www.hactrn.net/uris/rpki/publication-spec/&#34;&gt;
+     &lt;list
+         hash=&#34;eb719b72f0648cf4&#34;
+         uri=&#34;rsync://wombat.example/Fee/eb719b72f0648cf4.cer&#34;/&gt;
+     &lt;list
+         hash=&#34;c7c50a68b7aa50bf&#34;
+         uri=&#34;rsync://wombat.example/Fie/c7c50a68b7aa50bf.cer&#34;/&gt;
+     &lt;list
+         hash=&#34;f222481ded47445d&#34;
+         uri=&#34;rsync://wombat.example/Foe/f222481ded47445d.cer&#34;/&gt;
+     &lt;list
+         hash=&#34;15b94e08713275bc&#34;
+         uri=&#34;rsync://wombat.example/Fum/15b94e08713275bc.cer&#34;/&gt;
+   &lt;/msg&gt;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--IANA-Considerations">
+4. IANA Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. IANA考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+IANA has registered the &#34;application/rpki-publication&#34; media type as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+IANA 已将 &#34;application/rpki-publication &#34;媒体类型注册如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+      Type name:  application
+      Subtype name:  rpki-publication
+      Required parameters:  None
+      Optional parameters:  None
+      Encoding considerations:  binary
+      Security considerations:  Carries an RPKI publication protocol
+         message, as defined in RFC 8181.
+      Interoperability considerations:  None
+      Published specification:  RFC 8181
+      Applications which use this media type: HTTP
+      Additional information:
+         Magic number(s):  None
+         File extension(s):  None
+         Macintosh File Type Code(s):  None
+      Person &amp; email address to contact for further information:
+         Rob Austein &lt;sra@hactrn.net&gt;
+      Intended usage:  COMMON
+      Author/Change controller: IETF
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Security-Considerations">
+5. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RPKI publication protocol and the data it publishes use entirely separate PKIs for authentication. The published data is authenticated within the RPKI, and this protocol has nothing to do with that authentication, nor does it require that the published objects be valid in the RPKI. The publication protocol uses a separate BPKI to authenticate its messages.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 发布协议及其发布的数据使用完全独立的 PKI 进行身份验证。发布的数据在 RPKI 中进行验证，本协议与验证无关，也不要求发布的对象在 RPKI 中有效。发布协议使用单独的 BPKI 对其信息进行验证。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Each RPKI publication protocol message is wrapped in a signed CMS message, which provides message integrity protection and an auditable form of message authentication. Because of these protections at the application layer, and because all the data being published are intended to be public information in any case, this protocol does not, strictly speaking, require the use of HTTPS or other transport security mechanisms. There may, however, be circumstances in which a particular publication operator may prefer HTTPS over HTTP anyway, as a matter of (BPKI) CA policy. Use of HTTP versus HTTPS here is, essentially, a private matter between the repository operator and its clients. Note, however, that even if a client/server pair uses HTTPS for this protocol, message authentication for this protocol is still based on the CMS signatures, not HTTPS.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+每个 RPKI 发布协议报文都包裹在一个已签名的 CMS 报文中，它提供了报文完整性保护和一种可审计的报文验证形式。由于在应用层提供了这些保护，而且所有发布的数据在任何情况下都是公开信息，因此严格来说，本协议并不要求使用 HTTPS 或其他传输安全机制。不过，在某些情况下，作为（BPKI）CA 政策的一部分，特定的发布运营商可能更倾向于使用 HTTPS 而不是 HTTP。这里使用 HTTP 还是 HTTPS 基本上是存储库操作员与其客户之间的私事。但请注意，即使客户机/服务器对使用 HTTPS 协议，该协议的消息验证仍基于 CMS 签名，而非 HTTPS。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Although the hashes used in the &lt;publish/&gt; and &lt;withdraw/&gt; PDUs are cryptographically strong, the digest algorithm was selected for convenience in comparing these hashes with the hashes that appear in RPKI manifests. The hashes used in the &lt;publish/&gt; and &lt;withdraw/&gt; PDUs are not particularly security sensitive because these PDUs are protected by the CMS signatures. Because of this, the most likely reason for a change to this digest algorithm would be to track a corresponding change in the digest algorithm used in RPKI manifests. If and when such a change happens, it will require incrementing the version number of this publication protocol, but given that the most likely implementation of a publication server uses these hashes as lookup keys in a database, bumping the protocol version number would be a relatively minor portion of the effort of changing the algorithm.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+虽然 &lt;publish/&gt; 和 &lt;withdraw/&gt; PDU 中使用的哈希值在密码学上很强，但选择摘要算法是为了方便将这些哈希值与 RPKI 清单中出现的哈希值进行比较。&lt;publish/&gt; 和 &lt;withdraw/&gt; PDU 中使用的哈希值对安全并不特别敏感，因为这些 PDU 受到 CMS 签名的保护。因此，更改摘要算法的最可能原因是跟踪 RPKI 清单中使用的摘要算法的相应更改。如果出现这种变化，就需要增加该发布协议的版本号，但鉴于发布服务器最有可能使用这些哈希值作为数据库中的查找密钥，因此增加协议版本号只是更改算法中相对较小的一部分工作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Compromise of a publication server, perhaps through mismanagement of BPKI private keys, could lead to a denial-of-service attack on the RPKI. An attacker gaining access to BPKI private keys could use this protocol to delete (withdraw) RPKI objects, leading to routing changes or failures. Accordingly, as in most PKIs, good key management practices are important.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果 BPKI 私钥管理不善，导致发布服务器受损，就可能对 RPKI 发起拒绝服务攻击。获得 BPKI 私钥的攻击者可以使用该协议删除（撤回）RPKI 对象，从而导致路由更改或故障。因此，与大多数 PKI 一样，良好的密钥管理实践非常重要。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--References">
+6. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-1--Normative-References">
+6.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RELAX-NG] Clark, J., &#34;RELAX NG Compact Syntax&#34;, OASIS Committee Specification, November 2002, &lt;https://www.oasis-open.org/committees/relax-ng/ compact-20021121.html&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RELAX-NG] Clark, J., &#34;RELAX NG Compact Syntax&#34;, OASIS Committee Specification, November 2002, &lt;https://www.oasis-open.org/committees/relax-ng/ compact-20021121.html&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;http://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;http://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3986] Berners-Lee, T., Fielding, R., and L. Masinter, &#34;Uniform Resource Identifier (URI): Generic Syntax&#34;, STD 66, RFC 3986, DOI 10.17487/RFC3986, January 2005, &lt;http://www.rfc-editor.org/info/rfc3986&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3986] Berners-Lee, T., Fielding, R., and L. Masinter, &#34;Uniform Resource Identifier (URI): Generic Syntax&#34;, STD 66, RFC 3986, DOI 10.17487/RFC3986, January 2005, &lt;http://www.rfc-editor.org/info/rfc3986&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4648] Josefsson, S., &#34;The Base16, Base32, and Base64 Data Encodings&#34;, RFC 4648, DOI 10.17487/RFC4648, October 2006, &lt;http://www.rfc-editor.org/info/rfc4648&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4648] Josefsson, S., &#34;The Base16, Base32, and Base64 Data Encodings&#34;, RFC 4648, DOI 10.17487/RFC4648, October 2006, &lt;http://www.rfc-editor.org/info/rfc4648&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5652] Housley, R., &#34;Cryptographic Message Syntax (CMS)&#34;, STD 70, RFC 5652, DOI 10.17487/RFC5652, September 2009, &lt;http://www.rfc-editor.org/info/rfc5652&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5652] Housley, R., &#34;Cryptographic Message Syntax (CMS)&#34;, STD 70, RFC 5652, DOI 10.17487/RFC5652, September 2009, &lt;http://www.rfc-editor.org/info/rfc5652&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5781] Weiler, S., Ward, D., and R. Housley, &#34;The rsync URI Scheme&#34;, RFC 5781, DOI 10.17487/RFC5781, February 2010, &lt;http://www.rfc-editor.org/info/rfc5781&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5781] Weiler, S., Ward, D., and R. Housley, &#34;The rsync URI Scheme&#34;, RFC 5781, DOI 10.17487/RFC5781, February 2010, &lt;http://www.rfc-editor.org/info/rfc5781&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6492] Huston, G., Loomans, R., Ellacott, B., and R. Austein, &#34;A Protocol for Provisioning Resource Certificates&#34;, RFC 6492, DOI 10.17487/RFC6492, February 2012, &lt;http://www.rfc-editor.org/info/rfc6492&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6492] Huston, G., Loomans, R., Ellacott, B., and R. Austein, &#34;A Protocol for Provisioning Resource Certificates&#34;, RFC 6492, DOI 10.17487/RFC6492, February 2012, &lt;http://www.rfc-editor.org/info/rfc6492&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7230] Fielding, R., Ed. and J. Reschke, Ed., &#34;Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing&#34;, RFC 7230, DOI 10.17487/RFC7230, June 2014, &lt;http://www.rfc-editor.org/info/rfc7230&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7230] Fielding, R., Ed. 和 J. Reschke, Ed., &#34;超文本传输协议（HTTP/1.1）：消息语法和路由&#34;，RFC 7230，DOI 10.17487/RFC7230，2014 年 6 月，&lt;http://www.rfc-editor.org/info/rfc7230&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;http://www.rfc-editor.org/info/rfc8174&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;http://www.rfc-editor.org/info/rfc8174&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[SHS] National Institute of Standards and Technology, &#34;Secure Hash Standard (SHS)&#34;, FIPS PUB 180-4, DOI 10.6028/NIST.FIPS.180-4, August 2015, &lt;http://nvlpubs.nist.gov/nistpubs/FIPS/ NIST.FIPS.180-4.pdf&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[SHS] 美国国家标准与技术研究院，&#34;安全散列标准（SHS）&#34;，FIPS PUB 180-4，DOI 10.6028/NIST.FIPS.180-4，2015 年 8 月，&lt;http://nvlpubs.nist.gov/nistpubs/FIPS/ NIST.FIPS.180-4.pdf&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[XML] Cowan, J., &#34;Extensible Markup Language (XML) 1.1&#34;, W3C Consortium Recommendation REC-xml11-20060816, October 2002, &lt;http://www.w3.org/TR/2002/CR-xml11-20021015&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[XML] Cowan, J., &#34;Extensible Markup Language (XML) 1.1&#34;, W3C Consortium Recommendation REC-xml11-20060816, October 2002, &lt;http://www.w3.org/TR/2002/CR-xml11-20021015&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-2--Informative-References">
+6.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;http://www.rfc-editor.org/info/rfc6480&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;http://www.rfc-editor.org/info/rfc6480&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8182] Bruijnzeels, T., Muravskiy, O., Weber, B., and R. Austein, &#34;The RPKI Repository Delta Protocol (RRDP)&#34;, RFC 8182, DOI 10.17487/RFC8182, July 2017, &lt;http://www.rfc-editor.org/info/rfc8182&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8182] Bruijnzeels, T., Muravskiy, O., Weber, B., and R. Austein, &#34;The RPKI Repository Delta Protocol (RRDP)&#34;, RFC 8182, DOI 10.17487/RFC8182, July 2017, &lt;http://www.rfc-editor.org/info/rfc8182&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8183] Austein, R., &#34;An Out-of-Band Setup Protocol for Resource Public Key Infrastructure (RPKI) Production Services&#34;, RFC 8183, DOI 10.17487/RFC8183, July 2017, &lt;http://www.rfc-editor.org/info/rfc8183&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8183] Austein, R., &#34;An Out-of-Band Setup Protocol for Resource Public Key Infrastructure (RPKI) Production Services&#34;, RFC 8183, DOI 10.17487/RFC8183, July 2017, &lt;http://www.rfc-editor.org/info/rfc8183&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Acknowledgements
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+致谢
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors would like to thank: Geoff Huston, George Michaelson, Oleg Muravskiy, Paul Wouters, Randy Bush, Rob Loomans, Robert Kisteleki, Tim Bruijnzeels, Tom Petch, and anybody else who helped along the way but whose name(s) the authors have temporarily forgotten.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者在此表示感谢：Geoff Huston、George Michaelson、Oleg Muravskiy、Paul Wouters、Randy Bush、Rob Loomans、Robert Kisteleki、Tim Bruijnzeels、Tom Petch，以及其他曾经提供过帮助但作者暂时忘记其名字的人。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Samuel Weiler W3C / MIT
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+塞缪尔-韦勒 万维网联盟/麻省理工学院
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: weiler@csail.mit.edu
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Anuja Sonalker STEER Tech
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Anuja Sonalker STEER Tech
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: anuja@steer-tech.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Rob Austein Dragon Research Labs
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Rob Austein 龙研究实验室
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: sra@hactrn.net
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

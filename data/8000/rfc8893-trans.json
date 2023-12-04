@@ -1,0 +1,291 @@
+{
+  "title": {
+    "text": "RFC 8893 - Resource Public Key Infrastructure (RPKI) Origin Validation for BGP Export",
+    "zh": "RFC 8893 - 用于 BGP 出口的资源公钥基础架构 (RPKI) 起源验证"
+  },
+  "number": 8893,
+  "created_at": "2023-12-04 15:56:50.550891+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                           R. Bush\nRequest for Comments: 8893            Internet Initiative Japan & Arrcus\nUpdates: 6811                                                    R. Volk\nCategory: Standards Track                                               \nISSN: 2070-1721                                                 J. Heitz\n                                                                   Cisco\n                                                          September 2020",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 2,
+      "text": "Resource Public Key Infrastructure (RPKI) Origin Validation for BGP Export",
+      "zh": "用于 BGP 出口的资源公钥基础架构 (RPKI) 起源验证"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "A BGP speaker may perform Resource Public Key Infrastructure (RPKI) origin validation not only on routes received from BGP neighbors and routes that are redistributed from other routing protocols, but also on routes it sends to BGP neighbors. For egress policy, it is important that the classification use the 'effective origin AS' of the processed route, which may specifically be altered by the commonly available knobs, such as removing private ASes, confederation handling, and other modifications of the origin AS. This document updates RFC 6811.",
+      "zh": "BGP 说话者不仅可以对从 BGP 邻居收到的路由和从其他路由协议重新分配的路由执行资源公钥基础设施 (RPKI) 起源验证，还可以对它发送给 BGP 邻居的路由执行资源公钥基础设施 (RPKI) 起源验证。对于出口策略来说，重要的是分类要使用已处理路由的 \"有效起源 AS\"，这可以通过常用的旋钮进行具体修改，如删除私有 AS、邦联处理和对起源 AS 的其他修改。本文件更新了 RFC 6811。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc8893.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc8893。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2020 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "Copyright (c) 2020 IETF Trust 和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受BCP 78以及本文档发布之日有效的IETF信托基金关于IETF文档的法律规定（https://trustee.ietf.org/license-info）的约束。 请仔细阅读这些文档，因为它们描述了您对本文档的权利和限制。 从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中描述的简化 BSD 许可证文本，并且不提供简化 BSD 许可证中描述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction\n2.  Suggested Reading\n3.  Egress Processing\n4.  Operational Considerations\n5.  Security Considerations\n6.  IANA Considerations\n7.  References\n  7.1.  Normative References\n  7.2.  Informative References\nAcknowledgments\nAuthors' Addresses",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document does not change the protocol or semantics of [RFC6811], BGP prefix origin validation. It highlights an important use case of origin validation in external BGP (eBGP) egress policies, explaining specifics of correct implementation in this context.",
+      "zh": "本文档不改变 BGP 前缀起源验证 [RFC6811] 的协议或语义。它强调了外部 BGP (eBGP) 出口策略中起源验证的一个重要用例，并解释了在这种情况下正确实施的具体细节。"
+    },
+    {
+      "indent": 3,
+      "text": "The term 'effective origin AS' as used in this document refers to the Route Origin Autonomous System Number (ASN) [RFC6811] of the UPDATE to be sent to neighboring BGP speakers.",
+      "zh": "本文档中使用的术语 \"有效起源 AS \"是指要发送给相邻 BGP 发言者的 UPDATE 的路由起源自治系统编号 (ASN) [RFC6811]。"
+    },
+    {
+      "indent": 3,
+      "text": "The effective origin AS of a BGP UPDATE is decided by configuration and outbound policy of the BGP speaker. A validating BGP speaker MUST apply Route Origin Validation policy semantics (see Section 2 of [RFC6811] and Section 4 of [RFC8481]) after applying any egress configuration and policy.",
+      "zh": "BGP UPDATE 的有效起源 AS 由 BGP 说话者的配置和出站策略决定。验证 BGP 发言者在应用任何出口配置和策略后，必须应用路由起源验证策略语义（见 [RFC6811] 第 2 节和 [RFC8481] 第 4 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "This effective origin AS of the announcement might be affected by removal of private ASes, confederation [RFC5065], migration [RFC7705], etc. Any AS_PATH modifications resulting in effective origin AS change MUST be taken into account.",
+      "zh": "公告的有效起源 AS 可能会受到私有 AS 的删除、邦联 [RFC5065]、迁移 [RFC7705] 等的影响。任何 AS_PATH 的修改都会导致有效的源 AS 发生变化，这一点必须考虑在内。"
+    },
+    {
+      "indent": 3,
+      "text": "This document updates [RFC6811] by clarifying that implementations must use the effective origin AS to determine the Origin Validation state when applying egress policy.",
+      "zh": "本文档更新了 [RFC6811]，明确了在应用出口策略时，实施必须使用有效的起源 AS 来确定起源验证状态。"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Suggested Reading",
+      "section_title": true,
+      "zh": "2. 推荐阅读"
+    },
+    {
+      "indent": 3,
+      "text": "It is assumed that the reader understands BGP [RFC4271], the RPKI [RFC6480], Route Origin Authorizations (ROAs) [RFC6482], RPKI-based Prefix Validation [RFC6811], and Origin Validation Clarifications [RFC8481].",
+      "zh": "假定读者了解 BGP [RFC4271]、RPKI [RFC6480]、路由起源授权 (ROAs)[RFC6482]、基于 RPKI 的前缀验证 [RFC6811] 和起源验证澄清 [RFC8481]。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Egress Processing",
+      "section_title": true,
+      "zh": "3. 出口处理"
+    },
+    {
+      "indent": 3,
+      "text": "BGP implementations supporting RPKI-based origin validation MUST provide the same policy configuration primitives for decisions based on the validation state available for use in ingress, redistribution, and egress policies. When applied to egress policy, validation state MUST be determined using the effective origin AS of the route as it will (or would) be announced to the peer. The effective origin AS may differ from that of the route in the RIB due to commonly available knobs, such as removal of private ASes, AS path manipulation, confederation handling, etc.",
+      "zh": "支持基于 RPKI 的起源验证的 BGP 实现必须提供相同的策略配置基元，以便根据可用于入口、重分发和出口策略的验证状态做出决策。当应用于出口策略时，必须使用路由的有效起源 AS 来确定验证状态，因为路由将（或将）向对等方公布。由于常用的旋钮（如删除私有 AS、AS 路径操作、邦联处理等），有效起源 AS 可能与 RIB 中的路由不同。"
+    },
+    {
+      "indent": 3,
+      "text": "Egress policy handling can provide more robust protection for outbound eBGP than relying solely on ingress (iBGP, eBGP, connected, static, etc.) redistribution being configured and working correctly -- i.e., better support for the robustness principle.",
+      "zh": "与仅仅依赖入口（iBGP、eBGP、连接、静态等）重新分配的配置和正常工作相比，出口策略处理可以为出站 eBGP 提供更稳健的保护，即更好地支持稳健性原则。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Operational Considerations",
+      "section_title": true,
+      "zh": "4. 运行方面的考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "Configurations may have a complex policy where the effective origin AS may not be easily determined before the outbound policies have been run. It SHOULD be possible to specify a selective origin validation policy to be applied after any existing non-validating outbound policies.",
+      "zh": "配置可能具有复杂的策略，在运行出站策略之前，可能不容易确定有效的源 AS。应该可以指定选择性的源验证策略，在任何现有的非验证出站策略之后应用。"
+    },
+    {
+      "indent": 3,
+      "text": "An implementation SHOULD be able to list announcements that were not sent to a peer, e.g., because they were marked Invalid, as long as the router still has them in memory.",
+      "zh": "只要路由器内存中仍有未发送给对等方的公告（如被标记为无效），实施就应能列出这些公告。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Security Considerations",
+      "section_title": true,
+      "zh": "5. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This document does not create security considerations beyond those of [RFC6811] and [RFC8481]. By facilitating more correct validation, it attempts to improve BGP reliability.",
+      "zh": "除 [RFC6811] 和 [RFC8481] 的安全考虑因素外，本文件并不涉及其他安全考虑因素。通过促进更正确的验证，它试图提高 BGP 的可靠性。"
+    },
+    {
+      "indent": 0,
+      "text": "6. IANA Considerations",
+      "section_title": true,
+      "zh": "6. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This document has no IANA actions.",
+      "zh": "本文件没有 IANA 操作。"
+    },
+    {
+      "indent": 0,
+      "text": "7. References",
+      "section_title": true,
+      "zh": "7. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "7.1. Normative References",
+      "section_title": true,
+      "zh": "7.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, DOI 10.17487/RFC4271, January 2006, <https://www.rfc-editor.org/info/rfc4271>.",
+      "zh": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, DOI 10.17487/RFC4271, January 2006, <https://www.rfc-editor.org/info/rfc4271>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5065] Traina, P., McPherson, D., and J. Scudder, \"Autonomous System Confederations for BGP\", RFC 5065, DOI 10.17487/RFC5065, August 2007, <https://www.rfc-editor.org/info/rfc5065>.",
+      "zh": "[RFC5065] Traina, P., McPherson, D., and J. Scudder, \"Autonomous System Confederations for BGP\", RFC 5065, DOI 10.17487/RFC5065, August 2007, <https://www.rfc-editor.org/info/rfc5065>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, DOI 10.17487/RFC6482, February 2012, <https://www.rfc-editor.org/info/rfc6482>.",
+      "zh": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, DOI 10.17487/RFC6482, February 2012, <https://www.rfc-editor.org/info/rfc6482>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP Prefix Origin Validation\", RFC 6811, DOI 10.17487/RFC6811, January 2013, <https://www.rfc-editor.org/info/rfc6811>.",
+      "zh": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP Prefix Origin Validation\", RFC 6811, DOI 10.17487/RFC6811, January 2013, <https://www.rfc-editor.org/info/rfc6811>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7705] George, W. and S. Amante, \"Autonomous System Migration Mechanisms and Their Effects on the BGP AS_PATH Attribute\", RFC 7705, DOI 10.17487/RFC7705, November 2015, <https://www.rfc-editor.org/info/rfc7705>.",
+      "zh": "[RFC7705] George, W. and S. Amante, \"Autonomous System Migration Mechanisms and Their Effects on the BGP AS_PATH Attribute\", RFC 7705, DOI 10.17487/RFC7705, November 2015, <https://www.rfc-editor.org/info/rfc7705>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>.",
+      "zh": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8481] Bush, R., \"Clarifications to BGP Origin Validation Based on Resource Public Key Infrastructure (RPKI)\", RFC 8481, DOI 10.17487/RFC8481, September 2018, <https://www.rfc-editor.org/info/rfc8481>.",
+      "zh": "[RFC8481] Bush, R., \"Clarifications to BGP Origin Validation Based on Resource Public Key Infrastructure (RPKI)\", RFC 8481, DOI 10.17487/RFC8481, September 2018, <https://www.rfc-editor.org/info/rfc8481>。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2. Informative References",
+      "section_title": true,
+      "zh": "7.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>。"
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgments",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "Thanks to reviews and comments from Linda Dunbar, Nick Hilliard, Benjamin Kaduk, Chris Morrow, Keyur Patel, Alvaro Retana, Job Snijders, Robert Sparks, and Robert Wilton.",
+      "zh": "感谢 Linda Dunbar、Nick Hilliard、Benjamin Kaduk、Chris Morrow、Keyur Patel、Alvaro Retana、Job Snijders、Robert Sparks 和 Robert Wilton 的审阅和评论。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Randy Bush Internet Initiative Japan & Arrcus 5147 Crystal Springs Bainbridge Island, WA 98110 United States of America",
+      "zh": "Randy Bush Internet Initiative Japan & Arrcus 5147 Crystal Springs Bainbridge Island, WA 98110 美利坚合众国"
+    },
+    {
+      "indent": 3,
+      "text": "Email: randy@psg.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Rdiger Volk",
+      "zh": "沃尔克"
+    },
+    {
+      "indent": 3,
+      "text": "Email: ietf@rewvolk.de",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Jakob Heitz Cisco 170 West Tasman Drive San Jose, CA 95134 United States of America",
+      "zh": "Jakob Heitz 思科公司 加利福尼亚州圣何塞西塔斯曼大道 170 号 95134 美利坚合众国"
+    },
+    {
+      "indent": 3,
+      "text": "Email: jheitz@cisco.com",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

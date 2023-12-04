@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 6608 - Subcodes for BGP Finite State Machine Error 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">6608</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc6608">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 6608 - Subcodes for BGP Finite State Machine Error 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc6608">
+            https://datatracker.ietf.org/doc/html/rfc6608
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 6608 - BGP 有限状态机错误子代码</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                           J. Dong
+Request for Comments: 6608                                       M. Chen
+Updates: 4271                                        Huawei Technologies
+Category: Standards Track                               A. Suryanarayana
+ISSN: 2070-1721                                            Cisco Systems
+                                                                May 2012
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-14">
+Subcodes for BGP Finite State Machine Error
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-14">
+BGP 有限状态机错误子代码
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines several subcodes for the BGP Finite State Machine (FSM) Error that could provide more information to help network operators in diagnosing BGP FSM issues and correlating network events. This document updates RFC 4271.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档定义了 BGP 有限状态机 (FSM) 错误的几个子代码，可提供更多信息，帮助网络操作员诊断 BGP FSM 问题和关联网络事件。本文件更新了 RFC 4271。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This is an Internet Standards Track document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这是一份互联网标准跟踪文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 5741 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6608.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6608。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2012 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版权所有 (c) 2012 IETF 信托基金会和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1. Introduction ....................................................2
+   2. Requirements Language ...........................................2
+   3. Definition of Finite State Machine Error Subcodes ...............2
+   4. Usage of FSM Error Subcodes .....................................2
+   5. Security Considerations .........................................3
+   6. IANA Considerations .............................................3
+   7. Contributors ....................................................4
+   8. Acknowledgements ................................................4
+   9. References ......................................................4
+      9.1. Normative References .......................................4
+      9.2. Informative References .....................................4
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines several subcodes for the BGP [RFC4271] Finite State Machine (FSM) Error that could provide more information to help network operators in diagnosing BGP FSM issues and correlating network events. This information is also helpful to developers in lab situations. This document updates [RFC4271] by requiring that BGP implementations insert appropriate FSM Error subcodes in NOTIFICATION messages for BGP FSM errors.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档定义了 BGP [RFC4271] 有限状态机 (FSM) 错误的几个子代码，可提供更多信息，帮助网络操作员诊断 BGP FSM 问题和关联网络事件。这些信息也有助于开发人员在实验室环境中使用。本文档更新了 [RFC4271]，要求 BGP 实现在 BGP FSM 错误的通知消息中插入适当的 FSM 错误子代码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Requirements-Language">
+2. Requirements Language
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 要求语言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in RFC 2119 [RFC2119].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, 以及 &#34;OPTIONAL&#34; 应按照RFC 2119 [RFC2119]中的描述进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Definition-of-Finite-State-Machine-Error-Subcodes">
+3. Definition of Finite State Machine Error Subcodes
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 有限状态机错误子代码的定义
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines the following subcodes for the BGP Finite State Machine Error:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档为 BGP 有限状态机错误定义了以下子代码：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+0 - Unspecified Error
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+0 - 未指定错误
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1 - Receive Unexpected Message in OpenSent State
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1 - 在 OpenSent 状态下接收意外信息
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2 - Receive Unexpected Message in OpenConfirm State
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2 - 在 OpenConfirm 状态下收到意外信息
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3 - Receive Unexpected Message in Established State
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3 - 在已建立状态下接收意外信息
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Usage-of-FSM-Error-Subcodes">
+4. Usage of FSM Error Subcodes
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. FSM 错误子代码的使用
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If a BGP speaker receives an unexpected message (e.g., KEEPALIVE/ UPDATE/ROUTE-REFRESH message) on a session in OpenSent state, it MUST send to the neighbor a NOTIFICATION message with the Error Code Finite State Machine Error and the Error Subcode &#34;Receive Unexpected Message in OpenSent State&#34;. The Data field is a 1-octet, unsigned integer that indicates the type of the unexpected message.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果 BGP 发言者在处于 OpenSent 状态的会话上接收到意外消息（如 KEEPALIVE/ UPDATE/ROUTE-REFRESH 消息），它必须向邻居发送一条带有错误代码 &#34;有限状态机错误&#34;（Finite State Machine Error）和错误子代码 &#34;在 OpenSent 状态下接收意外消息&#34;（Receive Unexpected Message in OpenSent State）的通知消息。数据字段是一个 1 八位无符号整数，表示意外报文的类型。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If a BGP speaker receives an unexpected message (e.g., OPEN/UPDATE/ ROUTE-REFRESH message) on a session in OpenConfirm state, it MUST send a NOTIFICATION message with the Error Code Finite State Machine Error and the Error Subcode &#34;Receive Unexpected Message in OpenConfirm State&#34; to the neighbor. The Data field is a 1-octet, unsigned integer that indicates the type of the unexpected message.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果 BGP 发言者在处于 OpenConfirm 状态的会话上接收到意外消息（如 OPEN/UPDATE/ ROUTE-REFRESH 消息），它必须向邻居发送一条带有错误代码 &#34;Finite State Machine Error（有限状态机错误）&#34;和错误子代码 &#34;Receive Unexpected Message in OpenConfirm State（在 OpenConfirm 状态下接收意外消息）&#34;的通知消息。数据字段是一个 1 八位无符号整数，表示意外消息的类型。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If a BGP speaker receives an unexpected message (e.g., OPEN message) on a session in Established State, it MUST send to the neighbor a NOTIFICATION message with the Error Code Finite State Machine Error and the Error Subcode &#34;Receive Unexpected Message in Established State&#34;. The Data field is a 1-octet, unsigned integer that indicates the type of the unexpected message.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果 BGP 发言者在 &#34;已建立状态&#34;（Established State）会话中收到意外消息（如 OPEN 消息），它必须向邻居发送一条带有 &#34;错误代码有限状态机错误&#34;（Error Code Finite State Machine Error）和 &#34;错误子代码&#34;（Error Subcode &#34;Receive Unexpected Message in Established State&#34;）的通知消息。数据字段是一个 1 八位无符号整数，表示意外报文的类型。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Security-Considerations">
+5. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Specification, implementation, and deployment of the proposed BGP FSM Error subcodes could make BGP implementation fingerprinting easier and probably more accurate. Operators using BGP need to consider this as an operational security consideration of their BGP deployment decisions.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+建议的 BGP FSM 错误子代码的规范、实施和部署可使 BGP 实施指纹识别变得更容易，也可能更准确。使用 BGP 的运营商需要将此作为其 BGP 部署决策的操作安全考虑因素。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[BFMR2010] discusses a number of BGP security issues and potential solutions that might be relevant both to BGP implementers and BGP operators.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[BFMR2010]讨论了一些 BGP 安全问题以及可能与 BGP 实施者和 BGP 运营者相关的潜在解决方案。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--IANA-Considerations">
+6. IANA Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. IANA考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+IANA has created the registry &#34;BGP Finite State Machine Error Subcodes&#34;, within the &#34;BGP Error Subcodes&#34; registry, with a Registration Procedure of &#34;Standards Action&#34; as defined in [RFC5226] (early allocation of such subcodes is allowed, in accordance with [RFC4020]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+IANA 在 &#34;BGP 错误子代码 &#34;注册表中创建了 &#34;BGP 有限状态机错误子代码 &#34;注册表，注册程序为 [RFC5226] 中定义的 &#34;标准行动&#34;（根据 [RFC4020]，允许提前分配此类子代码）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The registry has been populated with the following values:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+注册表已填入以下值：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Value Name 0 Unspecified Error 1 Receive Unexpected Message in OpenSent State 2 Receive Unexpected Message in OpenConfirm State 3 Receive Unexpected Message in Established State
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+值 名称 0 未指定错误 1 在 OpenSent 状态下接收意外信息 2 在 OpenConfirm 状态下接收意外信息 3 在 Established 状态下接收意外信息
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--Contributors">
+7. Contributors
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 贡献者
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following individuals contributed to this document:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+以下人员为本文件的撰写做出了贡献：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Xiaoming Gu EMail: guxiaoming@huawei.com
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Xiaoming Gu EMail: guxiaoming@huawei.com
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Chong Wang EMail: chongwang@huawei.com
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Chong Wang EMail: chongwang@huawei.com
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8--Acknowledgements">
+8. Acknowledgements
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8. 致谢
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors would like to thank John Scudder, Jeffrey Haas, Susan Hares, Keyur Patel, Enke Chen, Ruediger Volk, and Ran Atkinson for their valuable suggestions and comments to this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢 John Scudder、Jeffrey Haas、Susan Hares、Keyur Patel、Enke Chen、Ruediger Volk 和 Ran Atkinson 对本文档提出的宝贵建议和意见。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9--References">
+9. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9-1--Normative-References">
+9.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4020] Kompella, K. and A. Zinin, &#34;Early IANA Allocation of Standards Track Code Points&#34;, BCP 100, RFC 4020, February 2005.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4020] Kompella, K. 和 A. Zinin，&#34;标准轨道代码点的早期 IANA 分配&#34;，BCP 100，RFC 4020，2005 年 2 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, January 2006.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, January 2006.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5226] Narten, T. and H. Alvestrand, &#34;Guidelines for Writing an IANA Considerations Section in RFCs&#34;, BCP 26, RFC 5226, May 2008.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5226] Narten, T. 和 H. Alvestrand，&#34;RFC 中 IANA 考虑部分的编写指南&#34;，BCP 26，RFC 5226，2008 年 5 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9-2--Informative-References">
+9.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[BFMR2010] Butler, K., Farley, T., Mcdaniel, P., and J. Rexford, &#34;A Survey of BGP Security Issues and Solutions&#34;, January 2010.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[BFMR2010] Butler, K., Farley, T., Mcdaniel, P., and J. Rexford, &#34;A Survey of BGP Security Issues and Solutions&#34;, January 2010.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Jie Dong Huawei Technologies Huawei Building, No.156 Beiqing Rd Beijing 100095 China
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Jie Dong Huawei Technologies Huawei Building, No.156 Beiqing Rd Beijing 100095 China
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: jie.dong@huawei.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Mach Chen Huawei Technologies Huawei Building, No.156 Beiqing Rd Beijing 100095 China
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Mach Chen 华为技术有限公司 北京北清路 156 号华为大厦 100095 中国
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: mach.chen@huawei.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Anantharamu Suryanarayana Cisco Systems USA
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Anantharamu Suryanarayana 美国思科系统公司
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: asuryana@cisco.com
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

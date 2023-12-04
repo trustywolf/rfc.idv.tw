@@ -1,0 +1,899 @@
+{
+  "title": {
+    "text": "RFC 9323 - A Profile for RPKI Signed Checklists (RSCs)",
+    "zh": "RFC 9323 - RPKI 签名核对表（RSC）简介"
+  },
+  "number": 9323,
+  "created_at": "2023-12-04 15:39:20.761002+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                       J. Snijders\nRequest for Comments: 9323                                        Fastly\nCategory: Standards Track                                    T. Harrison\nISSN: 2070-1721                                                    APNIC\n                                                             B. Maddison\n                                                              Workonline\n                                                           November 2022",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 14,
+      "text": "A Profile for RPKI Signed Checklists (RSCs)",
+      "zh": "RPKI 签名核对表（RSC）简介"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines a Cryptographic Message Syntax (CMS) protected content type for use with the Resource Public Key Infrastructure (RPKI) to carry a general-purpose listing of checksums (a 'checklist'). The objective is to allow for the creation of an attestation, termed an \"RPKI Signed Checklist (RSC)\", which contains one or more checksums of arbitrary digital objects (files) that are signed with a specific set of Internet Number Resources. When validated, an RSC confirms that the respective Internet resource holder produced the RSC.",
+      "zh": "本文件定义了一种受加密信息句法（CMS）保护的内容类型，可与资源公钥基础架构（RPKI）一起使用，以携带校验和的通用列表（\"核对表\"）。其目的是允许创建一个称为 \"RPKI 签名核对表 (RSC) \"的证明，其中包含一个或多个任意数字对象（文件）的校验和，这些数字对象（文件）已用一组特定的互联网数字资源签名。经验证后，RSC 可确认相关互联网资源持有者制作了该 RSC。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc9323.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc9323。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "Copyright (c) 2022 IETF Trust 和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (https://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节所述的修订版 BSD 许可文本，并且不提供修订版 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction\n  1.1.  Requirements Language\n2.  RSC Profile and Distribution\n  2.1.  RSC EE Certificates\n3.  The RSC eContentType\n4.  The RSC eContent\n  4.1.  Version\n  4.2.  Resources\n    4.2.1.  ConstrainedASIdentifiers Type\n    4.2.2.  ConstrainedIPAddrBlocks Type\n  4.3.  digestAlgorithm\n  4.4.  checkList\n    4.4.1.  FileNameAndHash\n5.  RSC Validation\n6.  Verifying Files or Data Using RSC\n7.  Operational Considerations\n8.  Security Considerations\n9.  IANA Considerations\n  9.1.  SMI Security for S/MIME CMS Content Type\n        (1.2.840.113549.1.9.16.1)\n  9.2.  RPKI Signed Objects\n  9.3.  RPKI Repository Name Schemes\n  9.4.  SMI Security for S/MIME Module Identifier\n        (1.2.840.113549.1.9.16.0)\n  9.5.  Media Types\n10. References\n  10.1.  Normative References\n  10.2.  Informative References\nAcknowledgements\nAuthors' Addresses",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines a Cryptographic Message Syntax (CMS) [RFC5652] [RFC6268] protected content type for a general-purpose listing of checksums (a 'checklist'), for use with the Resource Public Key Infrastructure (RPKI) [RFC6480]. The CMS protected content type is intended to provide for the creation and validation of an RPKI Signed Checklist (RSC), a checksum listing signed with a specific set of Internet Number Resources. The objective is to allow for the creation of an attestation that, when validated, provides a means to confirm a given Internet resource holder produced the RSC.",
+      "zh": "本文档定义了一种加密信息语法（CMS）[RFC5652] [RFC6268]受保护内容类型，用于通用的校验和列表（\"核对表\"），与资源公钥基础设施（RPKI）[RFC6480]一起使用。CMS 保护内容类型旨在创建和验证 RPKI 签名核对表 (RSC)，即与特定互联网号码资源集签名的校验和列表。其目的是允许创建一个证明，该证明经验证后，可用于确认特定互联网资源持有者制作了 RSC。"
+    },
+    {
+      "indent": 3,
+      "text": "RPKI Signed Checklists are expected to facilitate inter-domain business use cases that depend on an ability to verify resource holdership. RPKI-based validation processes are expected to become the industry norm for automated Bring Your Own IP (BYOIP) on-boarding or establishment of physical interconnections between Autonomous Systems (ASes).",
+      "zh": "RPKI 签名核对表有望促进依赖于资源所有权验证能力的域间业务用例。基于 RPKI 的验证流程有望成为自动自带 IP (BYOIP) 上载或建立自治系统 (AS) 之间物理互连的行业规范。"
+    },
+    {
+      "indent": 3,
+      "text": "The RSC concept borrows heavily from Resource Tagged Attestation (RTA) [RPKI-RTA], Manifests [RFC9286], and OpenBSD's signify utility [signify]. The main difference between an RSC and RTA is that the RTA profile allows multiple signers to attest a single digital object through a checksum of its content, while the RSC profile allows a single signer to attest the content of multiple digital objects. A single signer profile is considered a simplification for both implementers and operators.",
+      "zh": "RSC 概念在很大程度上借鉴了资源标记证明（RTA）[RPKI-RTA]、Manifests [RFC9286] 和 OpenBSD 的 signify 工具 [signify]。RSC 与 RTA 的主要区别在于，RTA 配置文件允许多个签名者通过对单个数字对象内容的校验和来证明该数字对象，而 RSC 配置文件则允许单个签名者证明多个数字对象的内容。对实施者和操作者来说，单个签名者配置文件被认为是一种简化。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Requirements Language",
+      "section_title": true,
+      "zh": "1.1. 要求语言"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. RSC Profile and Distribution",
+      "section_title": true,
+      "zh": "2. 区域服务中心简介和分布"
+    },
+    {
+      "indent": 3,
+      "text": "RSC follows the Signed Object Template for the RPKI [RFC6488] with one exception: because RSCs MUST NOT be distributed through the global RPKI repository system, the Subject Information Access (SIA) extension MUST be omitted from the RSC's X.509 End-Entity (EE) certificate.",
+      "zh": "RSC 遵循 RPKI 的签名对象模板 [RFC6488]，但有一个例外：由于 RSC 不得通过全球 RPKI 存储库系统分发，因此 RSC 的 X.509 终端实体 (EE) 证书中必须省略主体信息访问 (SIA) 扩展。"
+    },
+    {
+      "indent": 3,
+      "text": "What constitutes suitable transport for RSC files is deliberately unspecified. For example, it might be a USB stick, a web interface secured with HTTPS, an email signed with Pretty Good Privacy (PGP), a T-shirt printed with a QR code, or a carrier pigeon.",
+      "zh": "RSC 文件的合适传输方式特意未作说明。例如，可以是 U 盘、使用 HTTPS 加密的网络界面、使用 \"良好隐私\"（PGP）签名的电子邮件、印有二维码的 T 恤衫或信鸽。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1. RSC EE Certificates",
+      "section_title": true,
+      "zh": "2.1. RSC EE 证书"
+    },
+    {
+      "indent": 3,
+      "text": "The Certification Authority (CA) MUST only sign one RSC with each EE certificate and MUST generate a new key pair for each new RSC. This type of EE certificate is termed a \"one-time-use\" EE certificate (see Section 3 of [RFC6487]).",
+      "zh": "认证机构（CA）必须只用每份电子环境证书签署一份 RSC，并且必须为每份新的 RSC 生成新的密钥对。这类电子环境证书称为 \"一次性使用 \"电子环境证书（见 [RFC6487] 第 3 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "3. The RSC eContentType",
+      "section_title": true,
+      "zh": "3. RSC 电子内容类型"
+    },
+    {
+      "indent": 3,
+      "text": "The eContentType for an RSC is defined as id-ct-signedChecklist, with Object Identifier (OID) 1.2.840.113549.1.9.16.1.48.",
+      "zh": "RSC 的电子内容类型定义为 id-ct-signedChecklist，对象标识符 (OID) 为 1.2.840.113549.1.9.16.1.48。"
+    },
+    {
+      "indent": 3,
+      "text": "This OID MUST appear within both the eContentType in the encapContentInfo object and the ContentType signed attribute in the signerInfo object (see [RFC6488]).",
+      "zh": "该 OID 必须同时出现在 encapContentInfo 对象中的 eContentType 和 signerInfo 对象中的 ContentType signed 属性中（见 [RFC6488]）。"
+    },
+    {
+      "indent": 0,
+      "text": "4. The RSC eContent",
+      "section_title": true,
+      "zh": "4. 英国皇家科学委员会电子内容"
+    },
+    {
+      "indent": 3,
+      "text": "The content of an RSC indicates that a checklist for arbitrary digital objects has been signed with a specific set of Internet Number Resources. An RSC is formally defined as follows:",
+      "zh": "RSC 的内容表明，任意数字对象的核对表已用一组特定的因特网号码资源签名。RSC 的正式定义如下："
+    },
+    {
+      "indent": 3,
+      "text": "RpkiSignedChecklist-2022\n  { iso(1) member-body(2) us(840) rsadsi(113549)\n    pkcs(1) pkcs9(9) smime(16) mod(0)\n    id-mod-rpkiSignedChecklist-2022(73) }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "DEFINITIONS EXPLICIT TAGS ::=\nBEGIN",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "IMPORTS\n  CONTENT-TYPE, Digest, DigestAlgorithmIdentifier\n  FROM CryptographicMessageSyntax-2010 -- in [RFC6268]\n    { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)\n      pkcs-9(9) smime(16) modules(0) id-mod-cms-2009(58) }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 5,
+      "text": "IPAddressOrRange, ASIdOrRange\nFROM IPAddrAndASCertExtn -- in [RFC3779]\n  { iso(1) identified-organization(3) dod(6) internet(1)\n    security(5) mechanisms(5) pkix(7) mod(0)\n    id-mod-ip-addr-and-as-ident(30) } ;",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ct-rpkiSignedChecklist CONTENT-TYPE ::=\n  { TYPE RpkiSignedChecklist\n    IDENTIFIED BY id-ct-signedChecklist }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "id-ct-signedChecklist OBJECT IDENTIFIER ::=\n  { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)\n    pkcs-9(9) id-smime(16) id-ct(1) 48 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "RpkiSignedChecklist ::= SEQUENCE {\n  version [0]           INTEGER DEFAULT 0,\n  resources             ResourceBlock,\n  digestAlgorithm       DigestAlgorithmIdentifier,\n  checkList             SEQUENCE (SIZE(1..MAX)) OF FileNameAndHash }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "FileNameAndHash ::= SEQUENCE {\n  fileName              PortableFilename OPTIONAL,\n  hash                  Digest }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "PortableFilename ::=\n  IA5String (FROM(\"a\"..\"z\" | \"A\"..\"Z\" | \"0\"..\"9\" | \".\" | \"_\" | \"-\"))",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ResourceBlock ::= SEQUENCE {\n  asID         [0]      ConstrainedASIdentifiers OPTIONAL,\n  ipAddrBlocks [1]      ConstrainedIPAddrBlocks OPTIONAL }\n  -- at least one of asID or ipAddrBlocks MUST be present\n  ( WITH COMPONENTS { ..., asID PRESENT} |\n    WITH COMPONENTS { ..., ipAddrBlocks PRESENT } )",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ConstrainedIPAddrBlocks ::=\n  SEQUENCE (SIZE(1..MAX)) OF ConstrainedIPAddressFamily",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ConstrainedIPAddressFamily ::= SEQUENCE {\n  addressFamily         OCTET STRING (SIZE(2)),\n  addressesOrRanges     SEQUENCE (SIZE(1..MAX)) OF IPAddressOrRange }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ConstrainedASIdentifiers ::= SEQUENCE {\n  asnum [0]             SEQUENCE (SIZE(1..MAX)) OF ASIdOrRange }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "END",
+      "zh": "结束"
+    },
+    {
+      "indent": 0,
+      "text": "4.1. Version",
+      "section_title": true,
+      "zh": "4.1. 版本"
+    },
+    {
+      "indent": 3,
+      "text": "The version number of the RpkiSignedChecklist MUST be 0.",
+      "zh": "RpkiSignedChecklist 的版本号必须为 0。"
+    },
+    {
+      "indent": 0,
+      "text": "4.2. Resources",
+      "section_title": true,
+      "zh": "4.2. 资源"
+    },
+    {
+      "indent": 3,
+      "text": "The resources contained here are the resources used to mark the attestation and MUST be a subset of the set of resources listed by the EE certificate carried in the CMS certificates field.",
+      "zh": "此处包含的资源是用于标记证明的资源，必须是 CMS 证书字段中 EE 证书所列资源集的子集。"
+    },
+    {
+      "indent": 3,
+      "text": "If the asID field is present, it MUST contain an instance of ConstrainedASIdentifiers.",
+      "zh": "如果存在 asID 字段，它必须包含一个 ConstrainedASIdentifiers 的实例。"
+    },
+    {
+      "indent": 3,
+      "text": "If the ipAddrBlocks field is present, it MUST contain an instance of ConstrainedIPAddrBlocks.",
+      "zh": "如果存在 ipAddrBlocks 字段，则必须包含 ConstrainedIPAddrBlocks 的实例。"
+    },
+    {
+      "indent": 3,
+      "text": "At least one of asID or ipAddrBlocks MUST be present.",
+      "zh": "必须至少存在 asID 或 ipAddrBlocks 中的一个。"
+    },
+    {
+      "indent": 3,
+      "text": "ConstrainedASIdentifiers and ConstrainedIPAddrBlocks are specified such that the resulting DER-encoded data instances are binary compatible with ASIdentifiers and IPAddrBlocks (defined in [RFC3779]), respectively.",
+      "zh": "受约束的 ASIdentifiers 和受约束的 IPAddrBlocks 是这样指定的：生成的 DER 编码数据实例分别与 ASIdentifiers 和 IPAddrBlocks（在 [RFC3779] 中定义）二进制兼容。"
+    },
+    {
+      "indent": 3,
+      "text": "Implementations encountering decoding errors whilst attempting to read DER-encoded data using this specification should be aware of the possibility that the data may have been encoded using an implementation intended for use with [RFC3779]. Such data may contain elements prohibited by the current specification.",
+      "zh": "在尝试读取使用本规范的 DER 编码数据时，如果遇到解码错误，应注意数据可能是使用 [RFC3779] 的实现进行编码的。此类数据可能包含当前规范禁止的元素。"
+    },
+    {
+      "indent": 3,
+      "text": "Attempting to decode the errored data using the more permissive specification contained in [RFC3779] may enable implementors to gather additional context for use when reporting errors to the user.",
+      "zh": "尝试使用 [RFC3779] 中更宽松的规范对出错数据进行解码，可使实施者在向用户报告错误时收集更多上下文信息。"
+    },
+    {
+      "indent": 3,
+      "text": "However, implementations MUST NOT ignore errors resulting from the more restrictive definitions contained herein; in particular, such errors MUST cause the validation procedure described in Section 5 to fail.",
+      "zh": "但是，实现过程中不得忽略此处包含的限制性更强的定义所导致的错误；特别是，此类错误必须导致第 5 节中描述的验证程序失败。"
+    },
+    {
+      "indent": 0,
+      "text": "4.2.1. ConstrainedASIdentifiers Type",
+      "section_title": true,
+      "zh": "4.2.1. ConstrainedASIdentifiers 类型"
+    },
+    {
+      "indent": 3,
+      "text": "ConstrainedASIdentifiers is a SEQUENCE consisting of a single field, asnum, which in turn contains a SEQUENCE OF one or more ASIdOrRange instances as defined in [RFC3779].",
+      "zh": "ConstrainedASIdentifiers 是一个 SEQUENCE，由一个字段 asnum 组成，而 asnum 又包含 [RFC3779] 中定义的一个或多个 ASIdOrRange 实例的 SEQUENCE。"
+    },
+    {
+      "indent": 3,
+      "text": "ConstrainedASIdentifiers is defined such that the resulting DER-encoded data are binary compatible with ASIdentifiers defined in [RFC3779].",
+      "zh": "受限 ASIdentifiers 的定义是，生成的 DER 编码数据与 [RFC3779] 中定义的 ASIdentifiers 二进制兼容。"
+    },
+    {
+      "indent": 0,
+      "text": "4.2.2. ConstrainedIPAddrBlocks Type",
+      "section_title": true,
+      "zh": "4.2.2. 受限 IPAddrBlocks 类型"
+    },
+    {
+      "indent": 3,
+      "text": "ConstrainedIPAddrBlocks is a SEQUENCE OF one or more instances of ConstrainedIPAddressFamily.",
+      "zh": "ConstrainedIPAddrBlocks 是 ConstrainedIPAddressFamily 的一个或多个实例的序列。"
+    },
+    {
+      "indent": 3,
+      "text": "There MUST be only one instance of ConstrainedIPAddressFamily per unique Address Family Identifier (AFI).",
+      "zh": "每个唯一的地址族标识符 (AFI) 必须只有一个 ConstrainedIPAddressFamily 实例。"
+    },
+    {
+      "indent": 3,
+      "text": "The elements of ConstrainedIPAddressFamily MUST be ordered by ascending addressFamily values (treating the octets as unsigned numbers). Thus, when both IPv4 and IPv6 addresses are specified, the IPv4 addresses MUST precede the IPv6 addresses (since the IPv4 AFI of 0001 is less than the IPv6 AFI of 0002).",
+      "zh": "受限 IP 地址家族（ConstrainedIPAddressFamily）的元素必须按地址家族值升序排列（将八进制数视为无符号数字）。因此，当同时指定 IPv4 和 IPv6 地址时，IPv4 地址必须排在 IPv6 地址之前（因为 0001 的 IPv4 AFI 小于 0002 的 IPv6 AFI）。"
+    },
+    {
+      "indent": 3,
+      "text": "ConstrainedIPAddrBlocks is defined such that the resulting DER-encoded data are binary compatible with IPAddrBlocks defined in [RFC3779].",
+      "zh": "ConstrainedIPAddrBlocks 的定义是，生成的 DER 编码数据与 [RFC3779] 中定义的 IPAddrBlocks 二进制兼容。"
+    },
+    {
+      "indent": 0,
+      "text": "4.2.2.1. ConstrainedIPAddressFamily Type",
+      "section_title": true,
+      "zh": "4.2.2.1. 受限 IP 地址家族类型"
+    },
+    {
+      "indent": 0,
+      "text": "4.2.2.1.1. addressFamily Field",
+      "section_title": true,
+      "zh": "4.2.2.1.1. addressFamily 字段"
+    },
+    {
+      "indent": 3,
+      "text": "The addressFamily field is an OCTET STRING containing a 2-octet AFI, in network byte order. Unlike IPAddrBlocks [RFC3779], a third octet containing a Subsequent Address Family Identifier (SAFI) MUST NOT be present. AFIs are specified in the \"Address Family Numbers\" registry [IANA.ADDRESS-FAMILY-NUMBERS] maintained by IANA.",
+      "zh": "addressFamily 字段是一个 OCTET STRING，按网络字节顺序包含 2 个八位位组的 AFI。与 IPAddrBlocks [RFC3779] 不同的是，包含后续地址族标识符 (SAFI) 的第三个八位位组必须不存在。AFI 在 IANA 维护的 \"地址族编号 \"注册表 [IANA.ADDRESS-FAMILY-NUMBERS] 中指定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.2.2.1.2. addressesOrRanges Field",
+      "section_title": true,
+      "zh": "4.2.2.1.2. 地址或范围字段"
+    },
+    {
+      "indent": 3,
+      "text": "The addressesOrRanges element is a SEQUENCE OF one or more IPAddressOrRange values, as defined in [RFC3779]. The rules for canonicalization and encoding defined in Section 2.2.3.6 of [RFC3779] apply to the value of addressesOrRanges.",
+      "zh": "addressesOrRanges 元素是一个或多个 IPAddressOrRange 值的序列，如 [RFC3779] 所定义。[RFC3779] 第 2.2.3.6 节中定义的规范化和编码规则适用于 addressesOrRanges 的值。"
+    },
+    {
+      "indent": 0,
+      "text": "4.3. digestAlgorithm",
+      "section_title": true,
+      "zh": "4.3. 摘要算法"
+    },
+    {
+      "indent": 3,
+      "text": "The digest algorithm is used to create the message digest of the attested digital object(s). This algorithm MUST be a hashing algorithm defined in [RFC7935].",
+      "zh": "摘要算法用于创建已验证数字对象的信息摘要。该算法必须是 [RFC7935] 中定义的哈希算法。"
+    },
+    {
+      "indent": 0,
+      "text": "4.4. checkList",
+      "section_title": true,
+      "zh": "4.4. 检查列表"
+    },
+    {
+      "indent": 3,
+      "text": "This field is a SEQUENCE OF one or more FileNameAndHash values. There is one FileNameAndHash entry for each digital object referenced on the RSC.",
+      "zh": "该字段是一个或多个 FileNameAndHash 值的序列。RSC 上引用的每个数字对象都有一个 FileNameAndHash 条目。"
+    },
+    {
+      "indent": 0,
+      "text": "4.4.1. FileNameAndHash",
+      "section_title": true,
+      "zh": "4.4.1. 文件名和哈希值"
+    },
+    {
+      "indent": 3,
+      "text": "Each FileNameAndHash is an ordered pair of the name of the directory entry containing the digital object and the message digest of the digital object.",
+      "zh": "每个 FileNameAndHash 都是包含数字对象的目录条目的名称和数字对象的信息摘要的有序对。"
+    },
+    {
+      "indent": 3,
+      "text": "The hash field is mandatory. The value of the hash field is the calculated message digest of the digital object. The hashing algorithm is specified in the digestAlgorithm field.",
+      "zh": "哈希字段为必填字段。哈希字段的值是数字对象的计算信息摘要。散列算法在 digestAlgorithm 字段中指定。"
+    },
+    {
+      "indent": 3,
+      "text": "The fileName field is OPTIONAL. This is to allow RSCs to be used in a \"stand-alone\" fashion in which nameless digital objects are addressed directly through their respective message digest rather than through a file system abstraction.",
+      "zh": "文件名（fileName）字段是可选的。这是为了允许以 \"独立 \"的方式使用 RSC，无名数字对象直接通过各自的报文摘要而不是通过文件系统抽象来寻址。"
+    },
+    {
+      "indent": 3,
+      "text": "If the fileName field is present, then its value:",
+      "zh": "如果存在 fileName 字段，则会显示其值："
+    },
+    {
+      "indent": 3,
+      "text": "* MUST contain only characters specified in the Portable Filename Character Set as defined in [POSIX].",
+      "zh": "* 必须只包含 [POSIX] 中定义的便携式文件名字符集中指定的字符。"
+    },
+    {
+      "indent": 3,
+      "text": "* MUST be unique with respect to the other FileNameAndHash elements of checkList for which the fileName field is also present.",
+      "zh": "* 必须相对于 checkList 中也有 fileName 字段的其他 FileNameAndHash 元素是唯一的。"
+    },
+    {
+      "indent": 3,
+      "text": "Conversely, if the fileName field is omitted, then the value of the hash field MUST be unique with respect to the other FileNameAndHash elements of checkList for which the fileName field is also omitted.",
+      "zh": "反之，如果省略了 fileName 字段，那么哈希字段的值相对于 checkList 中也省略了 fileName 字段的其他 FileNameAndHash 元素必须是唯一的。"
+    },
+    {
+      "indent": 0,
+      "text": "5. RSC Validation",
+      "section_title": true,
+      "zh": "5. RSC 验证"
+    },
+    {
+      "indent": 3,
+      "text": "Before a Relying Party (RP) can use an RSC to validate a set of digital objects, the RP MUST first validate the RSC. To validate an RSC, the RP MUST perform all the validation checks specified in [RFC6488], except for checking for the presence of an SIA extension, which MUST NOT be present in the EE certificate (see Section 2). In addition, the RP MUST perform the following RSC-specific validation steps:",
+      "zh": "在依赖方（RP）使用 RSC 验证一组数字对象之前，依赖方必须首先验证 RSC。为验证 RSC，RP 必须执行 [RFC6488] 中规定的所有验证检查，但检查是否存在 SIA 扩展除外，因为 EE 证书中必须不存在 SIA 扩展（见第 2 节）。此外，RP 必须执行以下特定于 RSC 的验证步骤："
+    },
+    {
+      "indent": 3,
+      "text": "1. The contents of the CMS eContent field MUST conform to all of the constraints described in Section 4, including the constraints described in Section 4.4.1.",
+      "zh": "1. CMS 电子内容字段的内容必须符合第 4 节所述的所有限制条件，包括第 4.4.1 节所述的限制条件。"
+    },
+    {
+      "indent": 3,
+      "text": "2. If the asID field is present within the contents of the resources field, then the AS identifier delegation extension [RFC3779] MUST be present in the EE certificate contained in the CMS certificates field. The AS identifiers present in the eContent resources field MUST be a subset of those present in the certificate extension. The EE certificate's AS identifier delegation extension MUST NOT contain \"inherit\" elements.",
+      "zh": "2. 如果 asID 字段出现在资源字段的内容中，那么 AS 标识符授权扩展 [RFC3779] 必须出现在 CMS 证书字段中的 EE 证书中。电子内容资源字段中的 AS 识别符必须是证书扩展中的 AS 识别符的子集。EE 证书的 AS 标识符委托扩展名不得包含 \"继承 \"元素。"
+    },
+    {
+      "indent": 3,
+      "text": "3. If the ipAddrBlocks field is present within the contents of the resources field, then the IP address delegation extension [RFC3779] MUST be present in the EE certificate contained in the CMS certificates field. The IP addresses present in the eContent resources field MUST be a subset of those present in the certificate extension. The EE certificate's IP address delegation extension MUST NOT contain \"inherit\" elements.",
+      "zh": "3. 如果 ipAddrBlocks 字段出现在资源字段的内容中，那么 IP 地址授权扩展 [RFC3779] 必须出现在 CMS 证书字段中的 EE 证书中。电子内容资源字段中的 IP 地址必须是证书扩展中 IP 地址的子集。电子环境证书的 IP 地址授权扩展名不得包含 \"继承 \"元素。"
+    },
+    {
+      "indent": 0,
+      "text": "6. Verifying Files or Data Using RSC",
+      "section_title": true,
+      "zh": "6. 使用 RSC 验证文件或数据"
+    },
+    {
+      "indent": 3,
+      "text": "To verify a set of digital objects with an RSC:",
+      "zh": "用 RSC 验证一组数字对象："
+    },
+    {
+      "indent": 3,
+      "text": "* The RSC MUST be validated according to the procedure described in Section 5. If the RSC cannot be validated, verification MUST fail. This error SHOULD be reported to the user.",
+      "zh": "* 必须按照第 5 节所述程序验证 RSC。如果无法验证 RSC，则验证必须失败。应将此错误报告给用户。"
+    },
+    {
+      "indent": 3,
+      "text": "* For every digital object to be verified:",
+      "zh": "* 对于每个需要验证的数字对象："
+    },
+    {
+      "indent": 6,
+      "text": "1. If the verification procedure is provided with a filename for the object being verified (e.g., because the user has provided a file system path from which to read the object), then verification SHOULD proceed in \"filename-aware\" mode. Otherwise, verification SHOULD proceed in \"filename-unaware\" mode.",
+      "zh": "1. 如果为验证程序提供了被验证对象的文件名（例如，由于用户提供了读取对象的文件系统路径），则验证应在 \"文件名感知 \"模式下进行。否则，验证应在 \"文件名感知 \"模式下进行。"
+    },
+    {
+      "indent": 10,
+      "text": "Implementations MAY provide an option to override the verification mode, for example, to ignore the fact that the object is to be read from a file.",
+      "zh": "实施方案可以提供覆盖验证模式的选项，例如，忽略对象是从文件中读取的事实。"
+    },
+    {
+      "indent": 6,
+      "text": "2. The message digest MUST be computed from the file contents or data using the digest algorithm specified in the digestAlgorithm field of the RSC.",
+      "zh": "2. 必须使用 RSC 的 digestAlgorithm 字段中指定的摘要算法，根据文件内容或数据计算消息摘要。"
+    },
+    {
+      "indent": 6,
+      "text": "3. The digest computed in Step 2 MUST be compared to the value appearing in the hash field of all FileNameAndHash elements of the checkList field of the RSC.",
+      "zh": "3. 步骤 2 中计算出的摘要必须与 RSC 校验列表字段中所有 FileNameAndHash 元素的哈希字段中出现的值进行比较。"
+    },
+    {
+      "indent": 10,
+      "text": "One or more FileNameAndHash elements MUST be found with a matching hash value; otherwise, verification MUST fail, and the error SHOULD be reported to the user.",
+      "zh": "必须找到一个或多个具有匹配哈希值的 FileNameAndHash 元素；否则，验证必须失败，错误应报告给用户。"
+    },
+    {
+      "indent": 6,
+      "text": "4. If the mode selected in Step 1 is \"filename-aware\", then exactly one of the FileNameAndHash elements matched in Step 3 MUST contain a fileName field value exactly matching the filename of the object being verified.",
+      "zh": "4. 如果在步骤 1 中选择的模式是 \"文件名感知\"，那么在步骤 3 中匹配的 FileNameAndHash 元素中，必须有一个元素的 fileName 字段值与验证对象的文件名完全匹配。"
+    },
+    {
+      "indent": 10,
+      "text": "Alternatively, if the mode selected in Step 1 is \"filename-unaware\", then exactly one of the FileNameAndHash elements matched in Step 3 MUST have the fileName field omitted.",
+      "zh": "或者，如果在步骤 1 中选择的模式是 \"不识别文件名\"，那么在步骤 3 中匹配的 FileNameAndHash 元素中必须有一个省略了文件名字段。"
+    },
+    {
+      "indent": 10,
+      "text": "Otherwise, verification MUST fail, and the error SHOULD be reported to the user.",
+      "zh": "否则，验证必须失败，错误应报告给用户。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that in the above procedure, not all elements of checkList necessarily need be used. That is, it is not an error if the length of checkList is greater than the size of the set of digital objects to be verified. However, in this situation, implementations SHOULD issue a warning to the user, allowing for corrective action to be taken if necessary.",
+      "zh": "请注意，在上述程序中，并不一定要使用 checkList 中的所有元素。也就是说，如果 checkList 的长度大于要验证的数字对象集的大小，这并不是错误。然而，在这种情况下，实施程序应向用户发出警告，以便在必要时采取纠正措施。"
+    },
+    {
+      "indent": 0,
+      "text": "7. Operational Considerations",
+      "section_title": true,
+      "zh": "7. 运行方面的考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "When creating digital objects of a plain-text nature (such as ASCII, UTF-8, HTML, Javascript, and XML), converting such objects into a lossless compressed form is RECOMMENDED. Distributing plain-text objects within a compression envelope (such as GZIP [RFC1952]) might help avoid unexpected canonicalization at intermediate systems (which in turn would lead to checksum verification errors). Validator implementations are expected to treat a checksummed digital object as a string of arbitrary single octets.",
+      "zh": "在创建纯文本性质的数字对象（如 ASCII、UTF-8、HTML、Javascript 和 XML）时，建议将这些对象转换为无损压缩形式。在压缩封套（如 GZIP [RFC1952]）内分发纯文本对象可能有助于避免中间系统出现意外的规范化（这反过来会导致校验和验证错误）。校验器实现应将校验和数字对象视为由任意单个八进制数组成的字符串。"
+    },
+    {
+      "indent": 3,
+      "text": "If a fileName field is present, but no digital object within the set of to-be-verified digital objects has a filename that matches the content of that field, a validator implementation SHOULD compare the message digest of each digital object to the value from the hash field of the associated FileNameAndHash and report matches to the user for further consideration.",
+      "zh": "如果存在文件名（fileName）字段，但在待验证的数字对象集合中没有一个数字对象的文件名与该字段的内容相匹配，则验证器实施应将每个数字对象的信息摘要与相关 FileNameAndHash 的哈希字段的值进行比较，并向用户报告匹配情况，以供进一步考虑。"
+    },
+    {
+      "indent": 0,
+      "text": "8. Security Considerations",
+      "section_title": true,
+      "zh": "8. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "RPs are hereby warned that the data in an RSC is self-asserted. When determining the meaning of any data contained in an RSC, RPs MUST NOT make any assumptions about the signer beyond the fact that it had sufficient control of the issuing CA to create the object. These data have not been verified by the Certificate Authority (CA) that issued the CA certificate to the entity that issued the EE certificate used to validate the RSC.",
+      "zh": "在此警告 RP，RSC 中的数据是自断言的。在确定 RSC 中所含任何数据的含义时，RP 除了对签发 CA 有足够的控制权以创建对象这一事实外，不得对签名者作任何假设。这些数据未经签发 CA 证书的证书颁发机构 (CA) 向签发用于验证 RSC 的 EE 证书的实体验证。"
+    },
+    {
+      "indent": 3,
+      "text": "RPKI certificates are not bound to real-world identities; see [RFC9255] for an elaboration. RPs can only associate real-world entities to Internet Number Resources by additionally consulting an exogenous authority. RSCs are a tool to communicate assertions signed with Internet Number Resources and do not communicate any other aspect of the resource holder's business operations, such as the identity of the resource holder itself.",
+      "zh": "RPKI 证书不与现实世界的身份绑定；详见 [RFC9255]。RP 只能通过额外咨询外源机构，才能将现实世界的实体与互联网号码资源相关联。RSC 是与互联网号码资源签名的断言进行通信的工具，并不通信资源持有者业务运营的任何其他方面，例如资源持有者本身的身份。"
+    },
+    {
+      "indent": 3,
+      "text": "RSC objects are not distributed through the RPKI repository system. From this, it follows that third parties who do not have a copy of a given RSC may not be aware of the existence of that RSC. Since RSC objects use EE certificates but all other currently defined types of RPKI object profiles are published in public CA repositories, an observer may infer from discrepancies in the repository that RSC object(s) may exist. For example, if a CA does not use random serial numbers for certificates, an observer could detect gaps between the serial numbers of the published EE certificates. Similarly, if the CA includes a serial number on a Certificate Revocation List (CRL) that does not match any published object, an observer could postulate that an RSC EE certificate was revoked.",
+      "zh": "RSC 对象不通过 RPKI 存储库系统分发。由此可见，没有特定 RSC 副本的第三方可能不知道该 RSC 的存在。由于 RSC 对象使用的是 EE 证书，但目前定义的所有其他类型的 RPKI 对象配置文件都发布在公共 CA 资源库中，因此观察者可以从资源库中的差异推断出 RSC 对象可能存在。例如，如果 CA 不对证书使用随机序列号，观察者就可以发现所发布的 EE 证书序列号之间的差距。同样，如果 CA 在证书废止列表（CRL）中包含的序列号与任何已发布对象不匹配，观察者可推测 RSC 电子环境证书已被废止。"
+    },
+    {
+      "indent": 3,
+      "text": "Conversely, a gap in serial numbers does not imply that an RSC exists. Nor does the presence in a CRL of a serial number unknown to the RP imply an RSC object exists: the implicitly referenced object might not be an RSC, it might have never been published, or it may have been revoked before it was visible to RPs. In general, it is not possible to confidently infer the existence or non-existence of RSCs from the repository state without access to a given RSC.",
+      "zh": "相反，序列号中的空白并不意味着存在 RSC。在 CRL 中出现 RP 未知的序列号也不意味着存在 RSC 对象：隐含引用的对象可能不是 RSC，可能从未发布过，也可能在 RP 看到之前就被撤销了。一般来说，在无法访问给定的 RSC 的情况下，不可能有把握地从资源库状态推断 RSC 存在与否。"
+    },
+    {
+      "indent": 3,
+      "text": "While a one-time-use EE certificate must only be used to generate and sign a single RSC object, CAs technically are not restricted from generating and signing multiple different RSC objects with a single key pair. Any RSC objects sharing the same EE certificate cannot be revoked individually.",
+      "zh": "虽然一次性使用的电子环境证书只能用于生成和签署单个区域服务中心对象，但技术上并不限制 CA 使用单个密钥对生成和签署多个不同的区域服务中心对象。任何共享同一电子环境证书的区域服务中心对象都不能单独撤销。"
+    },
+    {
+      "indent": 0,
+      "text": "9. IANA Considerations",
+      "section_title": true,
+      "zh": "9. IANA考虑因素"
+    },
+    {
+      "indent": 0,
+      "text": "9.1. SMI Security for S/MIME CMS Content Type (1.2.840.113549.1.9.16.1)",
+      "section_title": true,
+      "zh": "9.1. S/MIME CMS 内容类型的 SMI 安全性 (1.2.840.113549.1.9.16.1)"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has allocated the following in the \"SMI Security for S/MIME CMS Content Type (1.2.840.113549.1.9.16.1)\" registry:",
+      "zh": "IANA 在 \"SMI Security for S/MIME CMS Content Type (1.2.840.113549.1.9.16.1) \"注册表中分配了以下内容："
+    },
+    {
+      "indent": 13,
+      "text": "+=========+=======================+============+\n| Decimal | Description           | References |\n+=========+=======================+============+\n| 48      | id-ct-signedChecklist | RFC 9323   |\n+---------+-----------------------+------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 33,
+      "text": "Table 1",
+      "zh": "表 1"
+    },
+    {
+      "indent": 0,
+      "text": "9.2. RPKI Signed Objects",
+      "section_title": true,
+      "zh": "9.2. RPKI 签名对象"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has registered the OID for the RSC in the \"RPKI Signed Objects\" registry [RFC6488] as follows:",
+      "zh": "IANA 已在 \"RPKI 签名对象 \"注册表 [RFC6488] 中为 RSC 注册了如下 OID："
+    },
+    {
+      "indent": 7,
+      "text": "+==================+============================+===========+\n| Name             | OID                        | Reference |\n+==================+============================+===========+\n| Signed Checklist | 1.2.840.113549.1.9.16.1.48 | RFC 9323  |\n+------------------+----------------------------+-----------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 34,
+      "text": "Table 2",
+      "zh": "表 2"
+    },
+    {
+      "indent": 0,
+      "text": "9.3. RPKI Repository Name Schemes",
+      "section_title": true,
+      "zh": "9.3. RPKI 资源库名称方案"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has added the Signed Checklist file extension to the \"RPKI Repository Name Schemes\" registry [RFC6481] as follows:",
+      "zh": "IANA 已将签名核对表文件扩展名添加到 \"RPKI 资源库名称方案 \"注册表 [RFC6481]，具体如下："
+    },
+    {
+      "indent": 11,
+      "text": "+====================+==================+===========+\n| Filename Extension | RPKI Object      | Reference |\n+====================+==================+===========+\n| .sig               | Signed Checklist | RFC 9323  |\n+--------------------+------------------+-----------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 34,
+      "text": "Table 3",
+      "zh": "表 3"
+    },
+    {
+      "indent": 0,
+      "text": "9.4. SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0)",
+      "zh": "9.4. S/MIME 模块标识符的 SMI 安全性 (1.2.840.113549.1.9.16.0)"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has allocated the following in the \"SMI Security for S/MIME Module Identifier (1.2.840.113549.1.9.16.0)\" registry:",
+      "zh": "IANA 在 \"S/MIME 模块标识符的 SMI 安全性（1.2.840.113549.1.9.16.0）\"注册表中分配了以下内容："
+    },
+    {
+      "indent": 8,
+      "text": "+=========+=================================+============+\n| Decimal | Description                     | References |\n+=========+=================================+============+\n| 73      | id-mod-rpkiSignedChecklist-2022 | RFC 9323   |\n+---------+---------------------------------+------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 33,
+      "text": "Table 4",
+      "zh": "表 4"
+    },
+    {
+      "indent": 0,
+      "text": "9.5. Media Types",
+      "section_title": true,
+      "zh": "9.5. 媒体类型"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has registered the media type \"application/rpki-checklist\" in the \"Media Types\" registry as follows:",
+      "zh": "IANA 已在 \"媒体类型 \"注册表中注册了媒体类型 \"application/rpki-checklist\"，具体如下："
+    },
+    {
+      "indent": 3,
+      "text": "Type name: application",
+      "zh": "类型名称：应用程序"
+    },
+    {
+      "indent": 3,
+      "text": "Subtype name: rpki-checklist",
+      "zh": "子类型名称： rpki-checklist"
+    },
+    {
+      "indent": 3,
+      "text": "Required parameters: N/A",
+      "zh": "所需参数：不适用"
+    },
+    {
+      "indent": 3,
+      "text": "Optional parameters: N/A",
+      "zh": "可选参数：不适用"
+    },
+    {
+      "indent": 3,
+      "text": "Encoding considerations: binary",
+      "zh": "编码考虑因素：二进制"
+    },
+    {
+      "indent": 3,
+      "text": "Security considerations: Carries an RPKI Signed Checklist. This media type contains no active content. See Section 5 of RFC 9323 for further information.",
+      "zh": "安全考虑：带有 RPKI 签名核对表。该媒体类型不包含活动内容。更多信息请参见 RFC 9323 第 5 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Interoperability considerations: N/A",
+      "zh": "互操作性考虑因素：不适用"
+    },
+    {
+      "indent": 3,
+      "text": "Published specification: RFC 9323",
+      "zh": "已发布规范：RFC 9323"
+    },
+    {
+      "indent": 3,
+      "text": "Applications that use this media type: RPKI operators",
+      "zh": "使用此媒体类型的应用程序：RPKI 操作员"
+    },
+    {
+      "indent": 3,
+      "text": "Fragment identifier considerations: N/A",
+      "zh": "考虑片段标识符：不适用"
+    },
+    {
+      "indent": 3,
+      "text": "Additional information:",
+      "zh": "其他信息："
+    },
+    {
+      "indent": 6,
+      "text": "Content: This media type is a signed object, as defined in [RFC6488], which contains a payload of a list of checksums as defined in RFC 9323. Magic number(s): N/A File extension(s): .sig Macintosh file type code(s): N/A",
+      "zh": "内容：该媒体类型是[RFC6488]中定义的签名对象，包含 RFC 9323 中定义的校验和列表有效载荷。文件扩展名：.sig Macintosh 文件类型代码：不适用"
+    },
+    {
+      "indent": 3,
+      "text": "Person & email address to contact for further information: Job Snijders (job@fastly.com)",
+      "zh": "联系人和电子邮件地址，以获取更多信息：Job Snijders (job@fastly.com)"
+    },
+    {
+      "indent": 3,
+      "text": "Intended usage: COMMON",
+      "zh": "预期用途：通用"
+    },
+    {
+      "indent": 3,
+      "text": "Restrictions on usage: N/A",
+      "zh": "使用限制：不适用"
+    },
+    {
+      "indent": 3,
+      "text": "Author: Job Snijders (job@fastly.com)",
+      "zh": "作者：Job Snijders ()Job Snijders (job@fastly.com)"
+    },
+    {
+      "indent": 3,
+      "text": "Change controller: IETF",
+      "zh": "变更控制者：IETF"
+    },
+    {
+      "indent": 0,
+      "text": "10. References",
+      "section_title": true,
+      "zh": "10. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "10.1. Normative References",
+      "section_title": true,
+      "zh": "10.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[POSIX] IEEE and The Open Group, \"Base Specifications\", Issue 7, DOI 10.1109/IEEESTD.2016.7582338, 2016, <https://publications.opengroup.org/standards/unix/c165>.",
+      "zh": "[POSIX] IEEE and The Open Group，\"Base Specifications\"，Issue 7，DOI 10.1109/IEEEESTD.2016.7582338，2016，<https://publications.opengroup.org/standards/unix/c165>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, DOI 10.17487/RFC3779, June 2004, <https://www.rfc-editor.org/info/rfc3779>.",
+      "zh": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, DOI 10.17487/RFC3779, June 2004, <https://www.rfc-editor.org/info/rfc3779>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5652] Housley, R., \"Cryptographic Message Syntax (CMS)\", STD 70, RFC 5652, DOI 10.17487/RFC5652, September 2009, <https://www.rfc-editor.org/info/rfc5652>.",
+      "zh": "[RFC5652] Housley, R., \"Cryptographic Message Syntax (CMS)\", STD 70, RFC 5652, DOI 10.17487/RFC5652, September 2009, <https://www.rfc-editor.org/info/rfc5652>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6481] Huston, G., Loomans, R., and G. Michaelson, \"A Profile for Resource Certificate Repository Structure\", RFC 6481, DOI 10.17487/RFC6481, February 2012, <https://www.rfc-editor.org/info/rfc6481>.",
+      "zh": "[RFC6481] Huston, G., Loomans, R., and G. Michaelson, \"A Profile for Resource Certificate Repository Structure\", RFC 6481, DOI 10.17487/RFC6481, February 2012, <https://www.rfc-editor.org/info/rfc6481>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, DOI 10.17487/RFC6487, February 2012, <https://www.rfc-editor.org/info/rfc6487>.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, DOI 10.17487/RFC6487, February 2012, <https://www.rfc-editor.org/info/rfc6487>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6488] Lepinski, M., Chi, A., and S. Kent, \"Signed Object Template for the Resource Public Key Infrastructure (RPKI)\", RFC 6488, DOI 10.17487/RFC6488, February 2012, <https://www.rfc-editor.org/info/rfc6488>.",
+      "zh": "[RFC6488] Lepinski, M., Chi, A., and S. Kent, \"Signed Object Template for the Resource Public Key Infrastructure (RPKI)\", RFC 6488, DOI 10.17487/RFC6488, February 2012, <https://www.rfc-editor.org/info/rfc6488>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7935] Huston, G. and G. Michaelson, Ed., \"The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure\", RFC 7935, DOI 10.17487/RFC7935, August 2016, <https://www.rfc-editor.org/info/rfc7935>.",
+      "zh": "[RFC7935] Huston, G. and G. Michaelson, Ed., \"The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure\", RFC 7935, DOI 10.17487/RFC7935, August 2016, <https://www.rfc-editor.org/info/rfc7935>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>.",
+      "zh": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC9286] Austein, R., Huston, G., Kent, S., and M. Lepinski, \"Manifests for the Resource Public Key Infrastructure (RPKI)\", RFC 9286, DOI 10.17487/RFC9286, June 2022, <https://www.rfc-editor.org/info/rfc9286>.",
+      "zh": "[RFC9286] Austein, R., Huston, G., Kent, S., and M. Lepinski, \"Manifests for the Resource Public Key Infrastructure (RPKI)\", RFC 9286, DOI 10.17487/RFC9286, June 2022, <https://www.rfc-editor.org/info/rfc9286>。"
+    },
+    {
+      "indent": 0,
+      "text": "10.2. Informative References",
+      "section_title": true,
+      "zh": "10.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[IANA.ADDRESS-FAMILY-NUMBERS] IANA, \"Address Family Numbers\", <https://www.iana.org/assignments/address-family-numbers>.",
+      "zh": "[IANA.ADDRESS-FAMILY-NUMBERS] IANA，\"地址族编号\"，<https://www.iana.org/assignments/address-family-numbers>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC1952] Deutsch, P., \"GZIP file format specification version 4.3\", RFC 1952, DOI 10.17487/RFC1952, May 1996, <https://www.rfc-editor.org/info/rfc1952>.",
+      "zh": "[RFC1952] Deutsch, P., \"GZIP 文件格式规范 4.3 版\"，RFC 1952，DOI 10.17487/RFC1952，1996 年 5 月，<https://www.rfc-editor.org/info/rfc1952>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6268] Schaad, J. and S. Turner, \"Additional New ASN.1 Modules for the Cryptographic Message Syntax (CMS) and the Public Key Infrastructure Using X.509 (PKIX)\", RFC 6268, DOI 10.17487/RFC6268, July 2011, <https://www.rfc-editor.org/info/rfc6268>.",
+      "zh": "[RFC6268] Schaad, J. and S. Turner, \"Additional New ASN.1 Modules for the Cryptographic Message Syntax (CMS) and the Public Key Infrastructure Using X.509 (PKIX)\", RFC 6268, DOI 10.17487/RFC6268, July 2011, <https://www.rfc-editor.org/info/rfc6268>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC9255] Bush, R. and R. Housley, \"The 'I' in RPKI Does Not Stand for Identity\", RFC 9255, DOI 10.17487/RFC9255, June 2022, <https://www.rfc-editor.org/info/rfc9255>.",
+      "zh": "[RFC9255] Bush, R. and R. Housley, \"The 'I' in RPKI Does Not Stand for Identity\", RFC 9255, DOI 10.17487/RFC9255, June 2022, <https://www.rfc-editor.org/info/rfc9255>."
+    },
+    {
+      "indent": 3,
+      "text": "[RPKI-RTA] Michaelson, G., Huston, G., Harrison, T., Bruijnzeels, T., and M. Hoffman, \"A profile for Resource Tagged Attestations (RTAs)\", Work in Progress, Internet-Draft, draft-ietf-sidrops-rpki-rta-00, 17 January 2021, <https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-rpki-rta-00>.",
+      "zh": "[RPKI-RTA] Michaelson, G., Huston, G., Harrison, T., Bruijnzeels, T., and M. Hoffman, \"A profile for Resource Tagged Attestations (RTAs)\", Work in Progress, Internet-Draft, draft-ietf-sidrops-rpkii-rta-00, 17 January 2021, <https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-rpki-rta-00>."
+    },
+    {
+      "indent": 3,
+      "text": "[signify] Unangst, T. and M. Espie, \"signify - cryptographically sign and verify files\", <https://man.openbsd.org/signify>.",
+      "zh": "[signify] Unangst, T. and M. Espie, \"signify - cryptographically sign and verify files\", <https://man.openbsd.org/signify>."
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgements",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors wish to thank George Michaelson, Geoff Huston, Randy Bush, Stephen Kent, Matt Lepinski, Rob Austein, Ted Unangst, and Marc Espie for prior art. The authors thank Russ Housley for reviewing the ASN.1 notation and providing suggestions. The authors would like to thank Nimrod Levy, Tim Bruijnzeels, Alberto Leiva, Ties de Kock, Peter Peele, Claudio Jeker, Theo Buehler, Donald Eastlake 3rd, Erik Kline, Robert Wilton, Roman Danyliw, ric Vyncke, Lars Eggert, Paul Wouters, and Murray S. Kucherawy for document review and suggestions.",
+      "zh": "作者感谢 George Michaelson、Geoff Huston、Randy Bush、Stephen Kent、Matt Lepinski、Rob Austein、Ted Unangst 和 Marc Espie 提供现有技术。作者感谢 Russ Housley 审查 ASN.1 符号并提出建议。作者感谢 Nimrod Levy、Tim Bruijnzeels、Alberto Leiva、Ties de Kock、Peter Peele、Claudio Jeker、Theo Buehler、Donald Eastlake 3rd、Erik Kline、Robert Wilton、Roman Danyliw、ric Vyncke、Lars Eggert、Paul Wouters 和 Murray S. Kucherawy 的文档审核和建议。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Job Snijders Fastly Amsterdam Netherlands Email: job@fastly.com",
+      "zh": "Job Snijders Fastly 阿姆斯特丹 荷兰 电子邮件：job@fastly.com"
+    },
+    {
+      "indent": 3,
+      "text": "Tom Harrison Asia Pacific Network Information Centre 6 Cordelia St South Brisbane QLD 4101 Australia Email: tomh@apnic.net",
+      "zh": "Tom Harrison 亚太网络信息中心 6 Cordelia St South Brisbane QLD 4101 澳大利亚 电子邮件：tomh@apnic.net"
+    },
+    {
+      "indent": 3,
+      "text": "Ben Maddison Workonline Communications Cape Town South Africa Email: benm@workonline.africa",
+      "zh": "Ben Maddison Workonline Communications 南非开普敦 电子邮箱：benm@workonline.africa"
+    }
+  ]
+}

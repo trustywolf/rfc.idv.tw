@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 7607 - Codification of AS 0 Processing 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">7607</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc7607">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 7607 - Codification of AS 0 Processing 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc7607">
+            https://datatracker.ietf.org/doc/html/rfc7607
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 7607 - 0 号行政令的编纂处理</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                         W. Kumari
+Request for Comments: 7607                                        Google
+Updates: 4271                                                    R. Bush
+Category: Standards Track                      Internet Initiative Japan
+ISSN: 2070-1721                                              H. Schiller
+                                                                  Google
+                                                                K. Patel
+                                                           Cisco Systems
+                                                             August 2015
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-20">
+Codification of AS 0 Processing
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-20">
+0 号行政令的编纂处理
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document updates RFC 4271 and proscribes the use of Autonomous System (AS) 0 in the Border Gateway Protocol (BGP) OPEN, AS_PATH, AS4_PATH, AGGREGATOR, and AS4_AGGREGATOR attributes in the BGP UPDATE message.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档更新了 RFC 4271，禁止在 BGP UPDATE 消息中的边界网关协议（BGP）OPEN、AS_PATH、AS4_PATH、AGGREGATOR 和 AS4_AGGREGATOR 属性中使用自治系统（AS）0。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This is an Internet Standards Track document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这是一份互联网标准跟踪文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 5741 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc7607.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc7607。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2015 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版权所有 (c) 2015 IETF 信托基金会和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+     1.1.  Requirements Notation . . . . . . . . . . . . . . . . . .   2
+   2.  Behavior  . . . . . . . . . . . . . . . . . . . . . . . . . .   3
+   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   3
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   3
+   5.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   4
+     5.1.  Normative References  . . . . . . . . . . . . . . . . . .   4
+     5.2.  Informative References  . . . . . . . . . . . . . . . . .   4
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .   4
+   Authors&#39; Addresses  . . . . . . . . . . . . . . . . . . . . . . .   5
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Autonomous System 0 was listed in the IANA Autonomous System Number Registry as &#34;Reserved - May be use [sic] to identify non-routed networks&#34; ([IANA.AS_Numbers]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+自治系统 0 在 IANA 自治系统编号注册表中被列为 &#34;保留--可用于[原文如此]标识非路由网络&#34;（[IANA.AS_Numbers]）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6491] specifies that AS 0 in a Route Origin Attestation (ROA) is used to mark a prefix and all its more specific prefixes as not to be used in a routing context. This allows a resource holder to signal that a prefix (and the more specifics) should not be routed by publishing a ROA listing AS 0 as the only origin. To respond to this signal requires that BGP implementations not accept or propagate routes containing AS 0.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6491]规定，路由起源声明（ROA）中的 AS 0 用于将一个前缀及其所有更具体的前缀标记为不在路由上下文中使用。这样，资源持有者就可以通过发布 ROA（将 AS 0 列为唯一来源）来表示某个前缀（及其更具体的前缀）不应被路由。为了响应这一信号，BGP 实现需要不接受或传播包含 AS 0 的路由。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+No clear statement that AS 0 was proscribed could be found in any BGP specification. This document corrects this omission, most importantly in the case of the AS_PATH. This represents an update to the error handling procedures given in Sections 6.2 and 6.3 of [RFC4271] by specifying the behavior in the presence of AS 0.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在任何 BGP 规范中都找不到禁止 AS 0 的明确声明。本文档纠正了这一遗漏，最重要的是在 AS_PATH 的情况下。这是对[RFC4271]第 6.2 和 6.3 节中给出的错误处理程序的更新，规定了 AS 0 存在时的行为。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+At least two implementations discard routes containing AS 0, and this document codifies this behavior.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+至少有两种实现方式丢弃了包含 AS 0 的路由，本文件对这种行为进行了编码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-1--Requirements-Notation">
+1.1. Requirements Notation
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.1. 要求符号
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in [RFC2119].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;、&#34;MUST NOT&#34;、&#34;REQUIRED&#34;、&#34;SHALL&#34;、&#34;SHALL NOT&#34;、&#34;SHOULD&#34;、&#34;SHOULD NOT&#34;、&#34;RECOMMENDED&#34;、&#34;MAY &#34;和 &#34;OPTIONAL &#34;应按照 [RFC2119] 中的描述进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Behavior">
+2. Behavior
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 行为
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A BGP speaker MUST NOT originate or propagate a route with an AS number of zero in the AS_PATH, AS4_PATH, AGGREGATOR, or AS4_AGGREGATOR attributes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+BGP 说话者不得发起或传播 AS_PATH、AS4_PATH、AGGREGATOR 或 AS4_AGGREGATOR 属性中 AS 号为零的路由。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An UPDATE message that contains the AS number of zero in the AS_PATH or AGGREGATOR attribute MUST be considered as malformed and be handled by the procedures specified in [RFC7606].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 AS_PATH 或 AGGREGATOR 属性中包含零 AS 编号的 UPDATE 消息必须视为畸形，并按照 [RFC7606] 中规定的程序处理。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An UPDATE message that contains the AS number of zero in the AS4_PATH or AS4_AGGREGATOR attribute MUST be considered as malformed and be handled by the procedures specified in [RFC6793].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 AS4_PATH 或 AS4_AGGREGATOR 属性中包含零 AS 编号的 UPDATE 消息必须视为畸形，并按照 [RFC6793] 中规定的程序处理。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If a BGP speaker receives zero as the peer AS in an OPEN message, it MUST abort the connection and send a NOTIFICATION with Error Code &#34;OPEN Message Error&#34; and subcode &#34;Bad Peer AS&#34; (see Section 6 of [RFC4271]). A router MUST NOT initiate a connection claiming to be AS 0.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果 BGP 发言者在 OPEN 消息中接收到对等 AS 为 0，它必须中止连接并发送带有错误代码 &#34;OPEN 消息错误 &#34;和子代码 &#34;Bad Peer AS &#34;的通知（参见 [RFC4271] 第 6 节）。路由器不得发起声称自己是 AS 0 的连接。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Authors of future protocol extensions that carry the Autonomous System number are encouraged to keep in mind that AS 0 is reserved and to provide clear direction on how to handle AS 0.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+我们鼓励未来携带自治系统编号的协议扩展的作者牢记 AS 0 是保留的，并就如何处理 AS 0 提供明确的指导。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--IANA-Considerations">
+3. IANA Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. IANA考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The IANA has updated the registry for &#34;16-bit Autonomous System Numbers&#34; so that the entry for AS 0 is simply &#34;Reserved&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+IANA 已更新了 &#34;16 位自治系统编号 &#34;注册表，因此 AS 0 的条目仅为 &#34;保留&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Security-Considerations">
+4. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+By allowing a Resource Public Key Infrastructure (RPKI) resource holder to issue a ROA saying that AS 0 is the only valid origin for a route, we allow them to state that a particular address resource is not in use. By ensuring that all implementations that see AS 0 in a route ignore that route, we prevent a malicious party from announcing routes containing AS 0 in an attempt to hijack those resources.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+通过允许资源公钥基础设施 (RPKI) 资源持有者发布 ROA，说明 AS 0 是路由的唯一有效来源，我们允许他们声明特定地址资源未被使用。通过确保所有在路由中看到 AS 0 的实现都会忽略该路由，我们可以防止恶意方宣布包含 AS 0 的路由以试图劫持这些资源。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In addition, by standardizing the behavior upon reception of an AS_PATH (or AS4_PATH) containing AS 0, this document makes the behavior better defined.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+此外，通过对接收到包含 AS 0 的 AS_PATH（或 AS4_PATH）时的行为进行标准化，本文件对行为进行了更好的定义。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--References">
+5. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-1--Normative-References">
+5.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[IANA.AS_Numbers] IANA, &#34;Autonomous System (AS) Numbers&#34;, &lt;http://www.iana.org/assignments/as-numbers&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[IANA.AS_Numbers] IANA，&#34;自治系统（AS）编号&#34;，&lt;http://www.iana.org/assignments/as-numbers&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;http://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;http://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, DOI 10.17487/RFC4271, January 2006, &lt;http://www.rfc-editor.org/info/rfc4271&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, DOI 10.17487/RFC4271, January 2006, &lt;http://www.rfc-editor.org/info/rfc4271&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6793] Vohra, Q. and E. Chen, &#34;BGP Support for Four-Octet Autonomous System (AS) Number Space&#34;, RFC 6793, DOI 10.17487/RFC6793, December 2012, &lt;http://www.rfc-editor.org/info/rfc6793&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6793] Vohra, Q. and E. Chen, &#34;BGP Support for Four-Octet Autonomous System (AS) Number Space&#34;, RFC 6793, DOI 10.17487/RFC6793, December 2012, &lt;http://www.rfc-editor.org/info/rfc6793&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7606] Chen, E., Ed., Scudder, J., Ed., Mohapatra, P., and K. Patel, &#34;Revised Error Handling for BGP UPDATE Messages&#34;, RFC 7606, DOI 10.17487/RFC7606, July 2015, &lt;http://www.rfc-editor.org/info/rfc7606&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7606] Chen, E., Ed., Scudder, J., Ed., Mohapatra, P., and K. Patel, &#34;Revised Error Handling for BGP UPDATE Messages&#34;, RFC 7606, DOI 10.17487/RFC7606, July 2015, &lt;http://www.rfc-editor.org/info/rfc7606&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-2--Informative-References">
+5.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6491] Manderson, T., Vegoda, L., and S. Kent, &#34;Resource Public Key Infrastructure (RPKI) Objects Issued by IANA&#34;, RFC 6491, DOI 10.17487/RFC6491, February 2012, &lt;http://www.rfc-editor.org/info/rfc6491&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6491] Manderson, T., Vegoda, L., and S. Kent, &#34;Resource Public Key Infrastructure (RPKI) Objects Issued by IANA&#34;, RFC 6491, DOI 10.17487/RFC6491, February 2012, &lt;http://www.rfc-editor.org/info/rfc6491&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Acknowledgements
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+致谢
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors wish to thank Elwyn Davies, Enke Chen, Brian Dickson, Bruno Decraene, Robert Raszuk, Jakob Heitz, Danny McPherson, Chris Morrow, iLya, John Scudder, Jeff Tantsura, Daniel Ginsburg, and Susan Hares. Apologies to those we may have missed; it was not intentional.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢 Elwyn Davies、Enke Chen、Brian Dickson、Bruno Decraene、Robert Raszuk、Jakob Heitz、Danny McPherson、Chris Morrow、iLya、John Scudder、Jeff Tantsura、Daniel Ginsburg 和 Susan Hares。向我们可能遗漏的人表示歉意；这并非有意为之。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Warren Kumari Google 1600 Amphitheatre Parkway Mountain View, CA 94043 United States
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Warren Kumari Google 1600 Amphitheatre Parkway Mountain View, CA 94043 美国
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: warren@kumari.net
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Randy Bush Internet Initiative Japan 5147 Crystal Springs Bainbridge Island, WA 98110 United States
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Randy Bush Internet Initiative Japan 5147 Crystal Springs Bainbridge Island, WA 98110 美国
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: randy@psg.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Heather Schiller Google 1600 Amphitheatre Parkway Mountain View, CA 94043 United States
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Heather Schiller Google 1600 Amphitheatre Parkway Mountain View, CA 94043 美国
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: has@google.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Keyur Patel Cisco Systems 170 W. Tasman Drive San Jose, CA 95134 United States
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Keyur Patel 思科系统 170 W. Tasman Drive San Jose, CA 95134 美国
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: keyupate@cisco.com
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

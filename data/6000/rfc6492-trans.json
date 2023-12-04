@@ -1,0 +1,1898 @@
+{
+  "title": {
+    "text": "RFC 6492 - A Protocol for Provisioning Resource Certificates",
+    "zh": "RFC 6492 - 提供资源证书的协议"
+  },
+  "number": 6492,
+  "created_at": "2023-12-04 17:11:45.409753+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                         G. Huston\nRequest for Comments: 6492                                    R. Loomans\nCategory: Standards Track                                    B. Ellacott\nISSN: 2070-1721                                                    APNIC\n                                                              R. Austein\n                                                                     ISC\n                                                           February 2012",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 11,
+      "text": "A Protocol for Provisioning Resource Certificates",
+      "zh": "提供资源证书的协议"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines a framework for certificate management interactions between an Internet Number Resource issuer (\"issuer\") and an Internet Number Resource recipient (\"subject\") through the specification of a protocol for interaction between the two parties. The protocol supports the transmission of requests from the subject, and corresponding responses from the issuer encompassing the actions of certificate issuance, certificate revocation, and certificate status information reports. This protocol is intended to be limited to the application of Internet Number Resource Certificate management and is not intended to be used as part of a more general certificate management framework.",
+      "zh": "本文件通过规范互联网号码资源签发者（\"签发者\"）和互联网号码资源接收者（\"主体\"） 之间的交互协议，定义了双方证书管理交互框架。该协议支持主体的请求传输和签发者的相应响应，包括证书签发、证书撤销和证书状态信息报告。该协议仅限于应用互联网号码资源证书管理，并不打算用作更通用的证书管理框架的一部分。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 5741 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6492.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6492。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2012 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "版权所有 (c) 2012 IETF 信托基金会和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1. Introduction ....................................................3\n   1.1. Terminology ................................................3\n2. Scope ...........................................................4\n3. Protocol Specification ..........................................4\n   3.1. CMS Profile ................................................5\n        3.1.1. SignedData Content Type .............................5\n        3.1.2. CMS Object Validation ..............................10\n        3.1.3. ASN.1 Specification of the CMS Signed Object .......12\n   3.2. Common Message Format .....................................14\n   3.3. Control - Resource Class Query ............................16\n        3.3.1. Resource Class List Query ..........................16\n        3.3.2. Resource Class List Response .......................17\n   3.4. CA - Certificate Issuance .................................21\n        3.4.1. Certificate Issuance Request .......................21\n        3.4.2. Certificate Issuance Response ......................24\n   3.5. Certificate Revocation ....................................24\n        3.5.1. Certificate Revocation Request .....................25\n        3.5.2. Certificate Revocation Response ....................26\n   3.6. Request-Not-Performed Response ............................26\n   3.7. XML Schema ................................................27\n4. Security Considerations ........................................29\n5. IANA Considerations ............................................30\n   5.1. application/rpki-updown ...................................30\n6. Acknowledgements ...............................................30\n7. References .....................................................31\n   7.1. Normative References ......................................31\n   7.2. Informative References ....................................32",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines a framework for certificate management interactions between an Internet Number Resource issuer (\"issuer\") and an Internet Number Resource recipient (\"subject\") through the specification of a protocol for interaction between the two parties. The protocol supports the transmission of requests from the subject, and corresponding responses from the issuer encompassing the actions of certificate issuance, certificate revocation, and certificate status information reports. This protocol is intended to be limited to the application of Internet Number Resource certificate management and is not intended to be used as part of a more general certificate management framework.",
+      "zh": "本文件通过规范互联网号码资源签发者（\"签发者\"）和互联网号码资源接收者（\"主体\"） 之间的交互协议，定义了双方证书管理交互框架。该协议支持主体的请求传输和签发者的相应响应，包括证书签发、证书撤销和证书状态信息报告。该协议仅限于应用互联网号码资源证书管理，并不打算用作更通用的证书管理框架的一部分。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Terminology",
+      "section_title": true,
+      "zh": "1.1. 用语"
+    },
+    {
+      "indent": 3,
+      "text": "Terms used in this document are:",
+      "zh": "本文件中使用的术语是"
+    },
+    {
+      "indent": 3,
+      "text": "\"Internet Number Resource\" (or \"resource\") used in the context of this document to refer to Autonomous System (AS) numbers, IP version 4 addresses, and IP version 6 addresses.",
+      "zh": "本文件中使用的 \"互联网号码资源\"（或 \"资源\"）指自治系统（AS）号码、IP 版本 4 地址和 IP 版本 6 地址。"
+    },
+    {
+      "indent": 3,
+      "text": "\"issuer\" used in the context of this document as an entity undertaking the role of resource issuer. An \"issuer\" is a Certification Authority (CA), and can issue resource certificates.",
+      "zh": "在本文件中，\"签发人 \"指承担资源签发人角色的实体。签发者 \"是认证机构（CA），可以签发资源证书。"
+    },
+    {
+      "indent": 3,
+      "text": "\"subject\" used in the context of this document as an entity undertaking the role of resource recipient who is the subject of a resource certificate. A \"subject\" may be issued with a CA-enabled certificate, allowing the entity to also assume the role of an \"issuer\".",
+      "zh": "本文件中使用的 \"主体 \"是指承担资源接受者角色的实体，是资源证书的主体。主体 \"可由 CA 签发证书，使该实体也能扮演 \"签发者 \"的角色。"
+    },
+    {
+      "indent": 3,
+      "text": "\"resource class\" a resource class refers to a collection of resources that can be certified in a single resource certificate by an issuer.",
+      "zh": "\"资源类别 \"资源类别是指可由签发人在单个资源证书中认证的资源集合。"
+    },
+    {
+      "indent": 3,
+      "text": "\"server\" in the context of this client/server protocol specification, the issuer assumes the role of the \"server\".",
+      "zh": "\"在本客户机/服务器协议规范中，\"服务器 \"指的是签发人。"
+    },
+    {
+      "indent": 3,
+      "text": "\"client\" in the context of this client/server protocol specification, the subject assumes the role of the \"client\".",
+      "zh": "\"在本客户机/服务器协议规范中，\"客户机 \"的角色由主体承担。"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in [RFC2119].",
+      "zh": "本文档中的关键词 \"MUST\"、\"MUST NOT\"、\"REQUIRED\"、\"SHALL\"、\"SHALL NOT\"、\"SHOULD\"、\"SHOULD NOT\"、\"RECOMMENDED\"、\"MAY \"和 \"OPTIONAL \"应按照 [RFC2119] 中的描述进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Scope",
+      "section_title": true,
+      "zh": "2. 范围"
+    },
+    {
+      "indent": 3,
+      "text": "This Resource Public Key Infrastructure (RPKI) certificate provisioning protocol defines a basic set of interactions that allow a subject to request certificate issuance, revocation, and status information from the issuer, and for an issuer to maintain an issued certificate set that is aligned to the allocation records relating to each subject. The issuer's resource allocation database is the authoritative source of what resource allocations the issuer may certify for a subject.",
+      "zh": "本资源公钥基础架构 (RPKI) 证书供应协议定义了一套基本的交互，允许主体向签发人请求证书签发、废止和状态信息，并允许签发人维护已签发的证书集，该证书集与每个主体的相关分配记录保持一致。签发者的资源分配数据库是签发者可为主体认证哪些资源分配的权威来源。"
+    },
+    {
+      "indent": 3,
+      "text": "A resource recipient (subject) may also undertake the role of a resource issuer (issuer).",
+      "zh": "资源接受者（主体）也可以扮演资源发布者（发布者）的角色。"
+    },
+    {
+      "indent": 3,
+      "text": "This protocol specification does not encompass:",
+      "zh": "本协议规范不包括"
+    },
+    {
+      "indent": 3,
+      "text": "o signing of objects with keys that are certified by resource certificates, nor the issuance of end-entity certificates.",
+      "zh": "o 使用资源证书认证的密钥签署对象，也不签发终端实体证书。"
+    },
+    {
+      "indent": 3,
+      "text": "o the specification of interaction with the issuer's resource allocation database, nor the specification of a protocol to manage the publication repository.",
+      "zh": "o 与发行者资源分配数据库的交互规范，也没有管理出版物存储库的协议规范。"
+    },
+    {
+      "indent": 3,
+      "text": "o the interactions between client and server that establish identities, or the exchange of the certificates and validation Public Key Infrastructure (PKI) contexts used in the Cryptographic Message Syntax (CMS) [RFC5652] message exchange.",
+      "zh": "o 客户端和服务器之间建立身份的交互，或交换证书和验证密码信息语法（CMS）[RFC5652] 信息交换中使用的公钥基础设施（PKI）上下文。"
+    },
+    {
+      "indent": 3,
+      "text": "o the interactions between client and server that allow respective local CMS signing time values to be reset to mutually recognized values.",
+      "zh": "o 客户端和服务器之间的交互，允许各自的本地 CMS 签名时间值重置为相互认可的值。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Protocol Specification",
+      "section_title": true,
+      "zh": "3. 协议规范"
+    },
+    {
+      "indent": 3,
+      "text": "This RPKI certificate provisioning protocol is expressed as a simple request/response interaction, where the client passes a request to the server, and the server generates a corresponding response.",
+      "zh": "这种 RPKI 证书供应协议表现为简单的请求/响应交互，即客户端向服务器发送请求，服务器生成相应的响应。"
+    },
+    {
+      "indent": 3,
+      "text": "The protocol is implemented as an exchange of messages.",
+      "zh": "该协议是通过信息交换实现的。"
+    },
+    {
+      "indent": 3,
+      "text": "Messages are passed over an HTTP [RFC2616] end-to-end connection. A message exchange commences with the client initiating an HTTP POST with content type of \"application/rpki-updown\" and the message object as the body. The server's response is similarly an HTTP response, with the message object carried as the body of the response and with a response content type of \"application/rpki-updown\". The content of the POST and the server's response are \"well-formed\" CMS [RFC5652] objects, encoded using the Distinguished Encoding Rules (DER) for ASN.1 [X.509-88], formatted in accordance with the CMS profile specified in the following section. CMS is used as the signing format to sign the message object. The CMS message includes an end-entity (EE) certificate that is to be used to validate the CMS digital signature (see Section 3.1.1.4); the certificate chain that is used to validate the EE certificate MAY be included in the CMS message, and if it is not present it is assumed to have been communicated between the two entities, through mechanisms not defined in this specification.",
+      "zh": "信息通过 HTTP [RFC2616] 端到端连接传递。信息交换开始时，客户端启动 HTTP POST，内容类型为 \"application/rpki-updown\"，信息对象为主体。服务器的响应同样是 HTTP 响应，以消息对象作为响应主体，响应内容类型为 \"application/rpki-updown\"。POST 和服务器响应的内容都是 \"格式良好 \"的 CMS [RFC5652]对象，使用 ASN.1 [X.509-88] 的区分编码规则（DER）进行编码，并按照下一节指定的 CMS 配置文件进行格式化。CMS 用作签署格式，以签署信息对象。CMS 报文包括用于验证 CMS 数字签名的终端实体（EE）证书（见第 3.1.1.4 节）；用于验证 EE 证书的证书链可能包含在 CMS 报文中，如果不包含，则假定两个实体之间已通过本规范未定义的机制进行了通信。"
+    },
+    {
+      "indent": 3,
+      "text": "The protocol's request/response interaction is assumed to be reliable, in that all requests MUST generate a matching response. The protocol requires sequential operation for each distinct client, where the server MUST NOT accept a client's request unless it has generated and sent a response to the client's previous request. Attempts by the client to initiate multiple requests in parallel (i.e., multiple concurrent requests with a common sender attribute (see Section 3.2) in the request) MUST be detected by the server and rejected with an error response (i.e., an error code 1101 response).",
+      "zh": "该协议的请求/响应交互被假定为可靠的，因为所有请求都必须生成匹配的响应。该协议要求对每个不同的客户端进行顺序操作，即服务器必须在生成并发送了对客户端上一个请求的响应后，才能接受客户端的请求。客户机试图并行发起多个请求（即请求中带有共同发送者属性（见第 3.2 节）的多个并发请求）时服务器必须检测到并以错误回应（即错误代码 1101 回应）予以拒绝。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1. CMS Profile",
+      "section_title": true,
+      "zh": "3.1. 内容管理系统简介"
+    },
+    {
+      "indent": 3,
+      "text": "The format of the CMS object is:",
+      "zh": "内容管理系统对象的格式为"
+    },
+    {
+      "indent": 9,
+      "text": "ContentInfo ::= SEQUENCE {\n  contentType ContentType,\n  content [0] EXPLICIT ANY DEFINED BY contentType }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 9,
+      "text": "ContentType ::= OBJECT IDENTIFIER",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The content-type is the signed-data type of id-data, namely id-signedData, OID = 1.2.840.113549.1.7.2. [RFC5652]",
+      "zh": "内容类型是 id-data 的签名数据类型，即 id-signedData，OID = 1.2.840.113549.1.7.2。[RFC5652］"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1. SignedData Content Type",
+      "section_title": true,
+      "zh": "3.1.1. 签名数据内容类型"
+    },
+    {
+      "indent": 3,
+      "text": "According to the CMS standard [RFC5652], signed-data content types are the ASN.1 type SignedData:",
+      "zh": "根据 CMS 标准 [RFC5652]，签名数据内容类型是 ASN.1 类型 SignedData："
+    },
+    {
+      "indent": 4,
+      "text": "SignedData ::= SEQUENCE {\n    version CMSVersion,\n    digestAlgorithms DigestAlgorithmIdentifiers,\n    encapContentInfo EncapsulatedContentInfo,\n    certificates [0] IMPLICIT CertificateSet OPTIONAL,\n    crls [1] IMPLICIT RevocationInfoChoices OPTIONAL,\n    signerInfos SignerInfos }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "DigestAlgorithmIdentifiers ::= SET OF DigestAlgorithmIdentifier\nSignerInfos ::= SET OF SignerInfo",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Additionally, the SignerInfos set MUST contain only a single SignerInfo object.",
+      "zh": "此外，SignerInfos 集必须只包含一个 SignerInfo 对象。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.1. version",
+      "section_title": true,
+      "zh": "3.1.1.1. 版本"
+    },
+    {
+      "indent": 3,
+      "text": "The version is the syntax version number. It MUST be 3, corresponding to the signerInfo structure having version number 3.",
+      "zh": "版本是语法的版本号。它必须是 3，与版本号为 3 的 signerInfo 结构相对应。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.2. digestAlgorithms",
+      "section_title": true,
+      "zh": "3.1.1.2. 摘要算法"
+    },
+    {
+      "indent": 3,
+      "text": "The digestAlgorithms set contains the Object Identifiers (OID)s of the digest algorithm(s) used in signing the encapsulated content. This set MUST contain exactly one digest algorithm OID, and the OID MUST be selected from those specified in [RFC6485].",
+      "zh": "digestAlgorithms 集包含用于签名封装内容的摘要算法的对象标识符（OID）。该集必须包含一个摘要算法 OID，且该 OID 必须从 [RFC6485] 中指定的 OID 中选择。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.3. encapContentInfo",
+      "section_title": true,
+      "zh": "3.1.1.3. encapContentInfo"
+    },
+    {
+      "indent": 3,
+      "text": "encapContentInfo is the signed content, consisting of a content type identifier and the content itself. The encapContentInfo represents the payload of the RPKI certificate provisioning protocol.",
+      "zh": "encapContentInfo 是签名内容，由内容类型标识符和内容本身组成。encapContentInfo 代表 RPKI 证书供应协议的有效载荷。"
+    },
+    {
+      "indent": 3,
+      "text": "EncapsulatedContentInfo ::= SEQUENCE {\n   eContentType ContentType,\n   eContent [0] EXPLICIT OCTET STRING OPTIONAL }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ContentType ::= OBJECT IDENTIFIER",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.3.1. eContentType",
+      "section_title": true,
+      "zh": "3.1.1.3.1. 电子内容类型"
+    },
+    {
+      "indent": 3,
+      "text": "The eContentType for the RPKI Protocol Message object is defined as id-ct-xml, and has the numerical value of 1.2.840.113549.1.9.16.1.28.",
+      "zh": "RPKI 协议报文对象的 eContentType 定义为 id-ct-xml，数值为 1.2.840.113549.1.9.16.1.28。"
+    },
+    {
+      "indent": 6,
+      "text": "id-smime OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)\n                          rsadsi(113549) pkcs(1) pkcs9(9) 16 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "id-ct OBJECT IDENTIFIER ::= { id-smime 1 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "id-ct-xml OBJECT IDENTIFIER ::= { id-ct 28 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.3.2. eContent",
+      "section_title": true,
+      "zh": "3.1.1.3.2. 电子内容"
+    },
+    {
+      "indent": 3,
+      "text": "The content of an RPKI XML Protocol Object consists of a single protocol message, structured according to a defined XML schema, as defined in subsequent sections of this document. The eContent field of the CMS object is formally defined using ASN.1 as:",
+      "zh": "RPKI XML 协议对象的内容由单个协议信息组成，其结构遵循本文档后续章节定义的 XML 模式。CMS 对象的 eContent 字段用 ASN.1 正式定义如下："
+    },
+    {
+      "indent": 6,
+      "text": "RPKIXMLProtocolObject ::= OCTET STRING -- XML encoded message",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.4. certificates",
+      "section_title": true,
+      "zh": "3.1.1.4. 证书"
+    },
+    {
+      "indent": 3,
+      "text": "This field MUST be present and MUST contain the single EE certificate of the key pair whose private key value was used to sign the CMS. This MUST NOT be an RPKI certificate, and SHOULD be a certificate that is recognized to attest to the identity of the party that created the CMS object.",
+      "zh": "该字段必须存在，且必须包含私钥值用于签署 CMS 的配对密钥的单个 EE 证书。该证书不得是 RPKI 证书，而应是可证明 CMS 对象创建方身份的证书。"
+    },
+    {
+      "indent": 3,
+      "text": "This field MAY contain CA certificates that a relying party MAY use to validate the EE certificate.",
+      "zh": "此字段可包含依赖方用来验证 EE 证书的 CA 证书。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.5. crls",
+      "section_title": true,
+      "zh": "3.1.1.5. crls"
+    },
+    {
+      "indent": 3,
+      "text": "This field MUST be present. The contents of the field are specified in [RFC5652]. The current Certificate Revocation List (CRL) issued by the same CA that issued the EE certificate of the key pair whose private key value was used to sign the CMS MUST be present in this field. This field MAY contain CRLs issued by other CAs covering CA certificates included in the certificates field of the CMS object (see Section 3.1.1.4). This field MUST NOT contain any other CRLs.",
+      "zh": "该字段必须存在。该字段的内容在 [RFC5652] 中规定。该字段中必须包含由签发密钥对 EE 证书（其私钥值被用来签署 CMS）的同一 CA 签发的当前证书吊销列表（CRL）。此字段可能包含其他 CA 签发的证书吊销列表，涵盖 CMS 对象证书字段中的 CA 证书（见第 3.1.1.4 节）。此字段不得包含任何其他 CRL。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.6. SignerInfo",
+      "section_title": true,
+      "zh": "3.1.1.6. 签名者信息"
+    },
+    {
+      "indent": 3,
+      "text": "SignerInfo is defined in CMS as:",
+      "zh": "在 CMS 中，SignerInfo 被定义为"
+    },
+    {
+      "indent": 3,
+      "text": "SignerInfo ::= SEQUENCE {\n  version CMSVersion,\n  sid SignerIdentifier,\n  digestAlgorithm DigestAlgorithmIdentifier,\n  signedAttrs [0] IMPLICIT SignedAttributes OPTIONAL,\n  signatureAlgorithm SignatureAlgorithmIdentifier,\n  signature SignatureValue,\n  unsignedAttrs [1] IMPLICIT UnsignedAttributes OPTIONAL }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.6.1. version",
+      "section_title": true,
+      "zh": "3.1.1.6.1. 版本"
+    },
+    {
+      "indent": 3,
+      "text": "The version number MUST be 3, corresponding with the choice of SubjectKeyIdentifier for the sid.",
+      "zh": "版本号必须是 3，与 sid 的 SubjectKeyIdentifier 选择相对应。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.6.2. sid",
+      "section_title": true,
+      "zh": "3.1.1.6.2. 侧"
+    },
+    {
+      "indent": 3,
+      "text": "The sid is defined as:",
+      "zh": "Sid 的定义是"
+    },
+    {
+      "indent": 3,
+      "text": "SignerIdentifier ::= CHOICE {\n  issuerAndSerialNumber IssuerAndSerialNumber,\n  subjectKeyIdentifier [0] SubjectKeyIdentifier }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "In this profile, the sid MUST be the SubjectKeyIdentifier that appears in the EE certificate carried in the CMS certificates field.",
+      "zh": "在此配置文件中，sid 必须是出现在 CMS 证书字段中 EE 证书的 SubjectKeyIdentifier。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.6.3. digestAlgorithm",
+      "section_title": true,
+      "zh": "3.1.1.6.3. 摘要算法"
+    },
+    {
+      "indent": 3,
+      "text": "The digestAlgorithm MUST consist of the OID of a digest algorithm that conforms to the RPKI Algorithms and Key Size Profile specification [RFC6485].",
+      "zh": "digestAlgorithm 必须由符合 RPKI 算法和密钥大小配置文件规范 [RFC6485] 的摘要算法的 OID 组成。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.6.4. signedAttrs",
+      "section_title": true,
+      "zh": "3.1.1.6.4. signedAttrs"
+    },
+    {
+      "indent": 3,
+      "text": "The signedAttrs field is defined as:",
+      "zh": "signedAttrs 字段的定义为"
+    },
+    {
+      "indent": 6,
+      "text": "SignedAttributes ::= SET SIZE (1..MAX) OF Attribute",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "UnsignedAttributes ::= SET SIZE (1..MAX) OF Attribute",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Attribute ::= SEQUENCE {\n  attrType OBJECT IDENTIFIER,\n  attrValues SET OF AttributeValue }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "AttributeValue ::= ANY",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The signedAttr element MUST be present and MUST include the content-type and message-digest attributes [RFC5652]. If either the signing-time [RFC5652] attribute or the binary-signing-time attribute [RFC6019], or both attributes, are present, they MUST also be included as the SignedAttributes. Other signed attributes MUST NOT be included.",
+      "zh": "signedAttr 元素必须存在，并且必须包括内容类型和消息-摘要属性 [RFC5652]。如果存在签名时间[RFC5652]属性或二进制签名时间[RFC6019]属性，或同时存在这两个属性，也必须作为签名属性包含在内。其他签名属性不得包含在内。"
+    },
+    {
+      "indent": 3,
+      "text": "The signedAttr MUST include only a single instance of any particular attribute. Additionally, even though the syntax allows for a SET OF AttributeValue, in this profile, the attrValues MUST consist of only a single AttributeValue.",
+      "zh": "signedAttr 必须只包含任何特定属性的一个实例。此外，尽管语法允许使用属性值集合，但在本规范中，attrValues 必须只包含一个属性值。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.6.4.1. Content-Type Attribute",
+      "section_title": true,
+      "zh": "3.1.1.6.4.1. 内容类型属性"
+    },
+    {
+      "indent": 3,
+      "text": "The content-type attribute MUST be present. The attrType OID for the content-type attribute is 1.2.840.113549.1.9.3.",
+      "zh": "content-type 属性必须存在。content-type 属性的 attrType OID 是 1.2.840.113549.1.9.3。"
+    },
+    {
+      "indent": 6,
+      "text": "id-contentType OBJECT IDENTIFIER ::= { iso(1) member-body(2)\n    us(840) rsadsi(113549) pkcs(1) pkcs9(9) 3 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "ContentType ::= OBJECT IDENTIFIER",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The attrValues for the content-type attribute MUST match the eContentType in the EncapsulatedContentInfo. This OID value is defined as id-ct-xml and has the numerical value of 1.2.840.113549.1.9.16.1.28.",
+      "zh": "content-type 属性的 attrValues 必须与 EncapsulatedContentInfo 中的 eContentType 匹配。该 OID 值定义为 id-ct-xml，数值为 1.2.840.113549.1.9.16.1.28。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.6.4.2. Message-Digest Attribute",
+      "section_title": true,
+      "zh": "3.1.1.6.4.2. 消息加密属性"
+    },
+    {
+      "indent": 3,
+      "text": "The message-digest attribute MUST be present. The attrType OID for the message-digest attribute is 1.2.840.113549.1.9.4.",
+      "zh": "必须存在 message-digest 属性。message-digest 属性的 attrType OID 是 1.2.840.113549.1.9.4。"
+    },
+    {
+      "indent": 6,
+      "text": "id-messageDigest OBJECT IDENTIFIER ::= { iso(1) member-body(2)\n    us(840) rsadsi(113549) pkcs(1) pkcs9(9) 4 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "MessageDigest ::= OCTET STRING",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The attrValues for the message-digest attribute contains the output of the digest algorithm applied to the content being signed, as specified in Section 5.4 of [RFC5652].",
+      "zh": "根据 [RFC5652] 第 5.4 节的规定，message-digest 属性的 attrValues 包含应用于被签名内容的摘要算法输出。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.6.4.3. Signing-Time Attribute",
+      "section_title": true,
+      "zh": "3.1.1.6.4.3. 签署时间属性"
+    },
+    {
+      "indent": 3,
+      "text": "The signing-time attribute MAY be present. The attrType OID for the signing-time attribute is 1.2.840.113549.1.9.5.",
+      "zh": "签名时间属性可以存在。签名时间属性的 attrType OID 是 1.2.840.113549.1.9.5。"
+    },
+    {
+      "indent": 6,
+      "text": "id-signingTime OBJECT IDENTIFIER ::= { iso(1) member-body(2)\n    us(840) rsadsi(113549) pkcs(1) pkcs9(9) 5 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "SigningTime ::= Time",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Time ::= CHOICE {\n  utcTime UTCTime,\n  generalizedTime GeneralizedTime }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The signing-time attribute specifies the time, based on the local system clock, when the digital signature was applied to the content.",
+      "zh": "签名时间（signing-time）属性以本地系统时钟为基础，指定数字签名应用于内容的时间。"
+    },
+    {
+      "indent": 3,
+      "text": "Guidelines regarding the use of UTCTime and GeneralizedTime in the signing-time attribute can be found in Section 11.3 of [RFC5652].",
+      "zh": "关于在签名时间属性中使用 UTCTime 和 GeneralizedTime 的指导原则，请参阅 [RFC5652] 第 11.3 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Either one of the signing-time attribute or the binary-signing-time attribute, or both attributes, MUST be present. If both the signing-time and binary-signing-time attributes are present, they MUST both represent the same underlying time value.",
+      "zh": "签名-时间属性或二进制-签名-时间属性之一或两个属性都必须存在。如果签名时间属性和二进制签名时间属性都存在，它们必须代表相同的基础时间值。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.6.4.4. Binary-Signing-Time Attribute",
+      "section_title": true,
+      "zh": "3.1.1.6.4.4. 二进制签署时间属性"
+    },
+    {
+      "indent": 3,
+      "text": "The binary-signing-time attribute MAY be present. The attrType OID for the binary-signing-time attribute is 1.2.840.113549.1.9.16.2.46.",
+      "zh": "二进制签名时间属性可以存在。二进制签名时间属性的 attrType OID 是 1.2.840.113549.1.9.16.2.46。"
+    },
+    {
+      "indent": 6,
+      "text": "id-aa-binarySigningTime OBJECT IDENTIFIER ::= { iso(1)\n    member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs9(9)\n    smime(16) aa(2) 46 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "BinarySigningTime ::= BinaryTime",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "BinaryTime ::= INTEGER (0..MAX)",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The binary-signing-time attribute specifies the time, based on the local system clock, when the digital signature was applied to the content. The precise definition of the binary-signing-time attribute can be found at [RFC6019].",
+      "zh": "二进制签名时间（binary-signing-time）属性以本地系统时钟为基础，指定了数字签名应用于内容的时间。二进制签名时间属性的精确定义见 [RFC6019]。"
+    },
+    {
+      "indent": 3,
+      "text": "Either one of the signing-time or the binary-signing-time attributes, or both attributes, MUST be present. If both the signing-time and binary-signing-time attributes are present, they MUST both represent the same underlying time value.",
+      "zh": "签名时间或二进制签名时间属性之一或两个属性都必须存在。如果同时存在签名时间和二进制签名时间属性，它们必须代表相同的基础时间值。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.6.5. signatureAlgorithm Attribute",
+      "section_title": true,
+      "zh": "3.1.1.6.5. 签名算法属性"
+    },
+    {
+      "indent": 3,
+      "text": "The signatureAlgorithm MUST conform to the RPKI Algorithms and Key Size Profile specification [RFC6485].",
+      "zh": "签名算法必须符合 RPKI 算法和密钥大小简介规范 [RFC6485]。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.6.6. signature Attribute",
+      "section_title": true,
+      "zh": "3.1.1.6.6. 签名属性"
+    },
+    {
+      "indent": 3,
+      "text": "The signature value is defined as:",
+      "zh": "签名值定义如下"
+    },
+    {
+      "indent": 7,
+      "text": "SignatureValue ::= OCTET STRING",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The signature characteristics are defined by the digest and signature algorithms.",
+      "zh": "签名特征由摘要和签名算法定义。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1.6.7. UnsignedAttributes Attribute",
+      "section_title": true,
+      "zh": "3.1.1.6.7. 无符号属性 属性"
+    },
+    {
+      "indent": 3,
+      "text": "unsignedAttrs MUST be omitted.",
+      "zh": "unsignedAttrs 必须省略。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.2. CMS Object Validation",
+      "section_title": true,
+      "zh": "3.1.2. 内容管理系统对象验证"
+    },
+    {
+      "indent": 3,
+      "text": "Before a recipient of a CMS signed object can use the content of the object, the recipient MUST validate the signed object by verifying that all of the following conditions hold. A recipient may perform these checks in any order.",
+      "zh": "在 CMS 签名对象的接收方使用该对象的内容之前，接收方必须通过验证以下所有条件是否成立来验证签名对象。接收方可以任何顺序执行这些检查。"
+    },
+    {
+      "indent": 3,
+      "text": "1. The CMS object is well formed, such that the signed object syntax complies with this specification. In particular, that each of the following is true:",
+      "zh": "1. CMS 服务对象结构合理，签名对象语法符合本规范。特别是，以下各项必须为真："
+    },
+    {
+      "indent": 7,
+      "text": "a. The content-type of the CMS object is SignedData (OID 1.2.840.113549.1.7.2)",
+      "zh": "a. CMS 对象的内容类型为 SignedData（OID 1.2.840.113549.1.7.2）"
+    },
+    {
+      "indent": 7,
+      "text": "b. The version of the SignedData object is 3.",
+      "zh": "b. SignedData 对象的版本为 3。"
+    },
+    {
+      "indent": 7,
+      "text": "c. The certificates field in the SignedData object is present and contains one EE certificate, the SubjectKeyIdentifier field of which matches the sid field of the SignerInfo object.",
+      "zh": "c. SignedData 对象中的证书字段包含一个 EE 证书，其 SubjectKeyIdentifier 字段与 SignerInfo 对象的 sid 字段相匹配。"
+    },
+    {
+      "indent": 7,
+      "text": "d. The crls field in the SignedData object is present.",
+      "zh": "d. 存在 SignedData 对象中的 crls 字段。"
+    },
+    {
+      "indent": 7,
+      "text": "e. The version of the SignerInfo is 3.",
+      "zh": "e. SignerInfo 的版本为 3。"
+    },
+    {
+      "indent": 7,
+      "text": "f. The signedAttrs field in the SignerInfo object is present and contains one each of the content-type attribute (OID 1.2.840.113549.1.9.3), the message-digest attribute (OID 1.2.840.113549.1.9.4), and either or both of a single instance of the signing-time attribute (OID 1.2.840.113549.1.9.5) and the binary-signing-time attribute (OID 1.2.840.113549.1.9.16.2.46), and no other attributes.",
+      "zh": "f. SignerInfo 对象中的 signedAttrs 字段包含内容类型属性（OID 1.2.840.113549.1.9.3）、报文密 码属性（OID 1.2.840.113549.1.9.4）、签名时间属性（OID 1.2.840.113549.1.9.5）和二进制签名时间属性（OID 1.2.840.113549.1.9.5）的任一实例。4）、签名时间属性（OID 1.2.840.113549.1.9.5）和二进制签名时间属性（OID 1.2.840.113549.1.9.16.2.46）的单个实例中的一个或两个，以及无其他属性。"
+    },
+    {
+      "indent": 7,
+      "text": "g. The eContentType in the EncapsulatedContentInfo is an OID that matches the attrValue in the content-type attribute and has the attrValue of id-ct-xml.",
+      "zh": "g. EncapsulatedContentInfo 中的 eContentType 是一个 OID，它与 content-type 属性中的 attrValue 相匹配，且 attrValue 为 id-ct-xml。"
+    },
+    {
+      "indent": 7,
+      "text": "h. The unsignedAttrs field in the SignerInfo object is omitted.",
+      "zh": "h. SignerInfo 对象中的 unsignedAttrs 字段被省略。"
+    },
+    {
+      "indent": 7,
+      "text": "i. If both the signing-time attribute and the binary-signing-time attribute are present, then their values represent the same time.",
+      "zh": "i. 如果签名时间属性和二进制签名时间属性都存在，则它们的值代表相同的时间。"
+    },
+    {
+      "indent": 7,
+      "text": "j. The digestAlgorithm in the SignedData and SignerInfo objects conforms to the RPKI Algorithms and Key Size Profile specification [RFC6485].",
+      "zh": "j. SignedData 和 SignerInfo 对象中的 digestAlgorithm 算法符合 RPKI 算法和密钥大小配置文件规范 [RFC6485]。"
+    },
+    {
+      "indent": 7,
+      "text": "k. The signatureAlgorithm in the SignerInfo object conforms to the RPKI Algorithms and Key Size Profile specification [RFC6485].",
+      "zh": "k. SignerInfo 对象中的签名算法（signatureAlgorithm）符合 RPKI 算法和密钥大小规范[RFC6485]。"
+    },
+    {
+      "indent": 7,
+      "text": "l. The signed object is DER encoded.",
+      "zh": "l. 签名对象采用 DER 编码。"
+    },
+    {
+      "indent": 3,
+      "text": "2. The public key of the EE certificate (contained within the CMS signed-data object) can be used to successfully verify the signature on the signed object.",
+      "zh": "2. EE 证书的公钥（包含在 CMS 已签名数据对象中）可用于成功验证已签名对象上的签名。"
+    },
+    {
+      "indent": 3,
+      "text": "3. The EE certificate (contained within the CMS signed-data object) is a valid EE certificate. In particular, there exists a valid certification path from a trust anchor selected by the recipient to this EE certificate.",
+      "zh": "3. EE 证书（包含在 CMS 签名数据对象中）是有效的 EE 证书。特别是，从接收方选择的信任锚到该电子环境证书之间存在有效的认证路径。"
+    },
+    {
+      "indent": 3,
+      "text": "4. At the current time, the EE certificate is not revoked. This can be determined by confirming that the CRL contained in the crls field of the CMS signed data object is a current valid CRL, issued by the same CA that issued the EE certificate, and the CRL does not list the serial number of the EE certificate.",
+      "zh": "4. 目前，EE 证书未被撤销。要确定这一点，可确认 CMS 签名数据对象的 crls 字段中包含的 CRL 是当前有效的 CRL，由签发 EE 证书的同一 CA 签发，且 CRL 未列出 EE 证书的序列号。"
+    },
+    {
+      "indent": 3,
+      "text": "5. The time represented by the signing-time attribute or the binary-signing-time attribute is greater than or equal to the time value passed in previously valid CMS objects that were passed from the same originator to this recipient. This signing time value MAY lie within the Validity Time of the EE certificate, but the EE certificate SHOULD NOT be considered invalid if this is not the case when all other checks listed here are passed.",
+      "zh": "5. 签署时间（signing-time）属性或二进制签署时间（binary-signing-time）属性所代表的时间大于或等于以前从同一发起者传递给该接收者的有效 CMS 对象中传递的时间值。此签名时间值可能在 EE 证书的有效时间内，但在通过此处列出的所有其它检查时，如果情况并非如此，则不应认为 EE 证书无效。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.3. ASN.1 Specification of the CMS Signed Object",
+      "section_title": true,
+      "zh": "3.1.3. CMS 签名对象的 ASN.1 规范"
+    },
+    {
+      "indent": 3,
+      "text": "The following is the ASN.1 specification of the CMS signed object used by the RPKI provisioning protocol.",
+      "zh": "以下是 RPKI 供应协议使用的 CMS 签名对象的 ASN.1 规范。"
+    },
+    {
+      "indent": 6,
+      "text": "ContentInfo ::= SEQUENCE {\n  contentType ContentType,\n  content [0] EXPLICIT ANY DEFINED BY contentType }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "ContentType ::= OBJECT IDENTIFIER",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "id-smime OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840)\n                          rsadsi(113549) pkcs(1) pkcs9(9) 16 }\nid-ct OBJECT IDENTIFIER ::= { id-smime 1 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "id-ct-xml OBJECT IDENTIFIER ::= { id-ct 28 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "RPKIXMLProtocolObject ::= OCTET STRING -- XML encoded message",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "id-signedData OBJECT IDENTIFIER ::= { iso(1) member-body(2)\n                   us(840) rsadsi(113549) pkcs(1) pkcs7(7) 2 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "SignedData ::= SEQUENCE {\n  version CMSVersion,\n  digestAlgorithms DigestAlgorithmIdentifiers,\n  encapContentInfo EncapsulatedContentInfo,\n  certificates [0] IMPLICIT CertificateSet OPTIONAL,\n  crls [1] IMPLICIT RevocationInfoChoices OPTIONAL,\n  signerInfos SignerInfos }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "DigestAlgorithmIdentifiers ::= SET OF DigestAlgorithmIdentifier",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "SignerInfos ::= SET OF SignerInfo",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "SignerInfo ::= SEQUENCE {\n  version CMSVersion,\n  sid SignerIdentifier,\n  digestAlgorithm DigestAlgorithmIdentifier,\n  signedAttrs [0] IMPLICIT SignedAttributes OPTIONAL,\n  signatureAlgorithm SignatureAlgorithmIdentifier,\n  signature SignatureValue,\n  unsignedAttrs [1] IMPLICIT UnsignedAttributes OPTIONAL }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "SignerIdentifier ::= CHOICE {\n  issuerAndSerialNumber IssuerAndSerialNumber,\n  subjectKeyIdentifier [0] SubjectKeyIdentifier }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "SignedAttributes ::= SET SIZE (1..MAX) OF Attribute",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Attribute ::= SEQUENCE {\nattrType OBJECT IDENTIFIER,\nattrValues SET OF AttributeValue }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "AttributeValue ::= ANY",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "SignatureValue ::= OCTET STRING",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "id-contentType OBJECT IDENTIFIER ::= { iso(1) member-body(2)\n    us(840) rsadsi(113549) pkcs(1) pkcs9(9) 3 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "ContentType ::= OBJECT IDENTIFIER",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "id-messageDigest OBJECT IDENTIFIER ::= { iso(1) member-body(2)\n    us(840) rsadsi(113549) pkcs(1) pkcs9(9) 4 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "MessageDigest ::= OCTET STRING",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "id-signingTime OBJECT IDENTIFIER ::= { iso(1) member-body(2)\n    us(840) rsadsi(113549) pkcs(1) pkcs9(9) 5 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "SigningTime ::= Time",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Time ::= CHOICE {\n  utcTime UTCTime,\n  generalizedTime GeneralizedTime }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "id-aa-binarySigningTime OBJECT IDENTIFIER ::= { iso(1)\n    member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs9(9)\n    smime(16) aa(2) 46 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "BinarySigningTime ::= BinaryTime",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "BinaryTime ::= INTEGER (0..MAX)",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.2. Common Message Format",
+      "section_title": true,
+      "zh": "3.2. 通用信息格式"
+    },
+    {
+      "indent": 3,
+      "text": "The XML template for all messages is informally described as follows (the RELAX NG compact form schema that formally describes the protocol message objects is contained in Section 3.7):",
+      "zh": "所有报文的 XML 模板非正式描述如下（正式描述协议报文对象的 RELAX NG 简洁格式模式见第 3.7 节）："
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<message xmlns=\"http://www.apnic.net/specs/rescerts/up-down/\"",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 12,
+      "text": "version=\"1\" sender=\"sender name\" recipient=\"recipient name\" type=\"message type\">",
+      "zh": "版本=\"1\" 发件人=\"发件人姓名\" 收件人=\"收件人姓名\" 类型=\"信息类型\">"
+    },
+    {
+      "indent": 3,
+      "text": "[payload]",
+      "zh": "[有效载荷]"
+    },
+    {
+      "indent": 3,
+      "text": "</message>",
+      "zh": "</message>"
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "version: the value of this attribute is the version of this protocol. This document describes version 1.",
+      "zh": "version：该属性的值是本协议的版本。本文件描述的是版本 1。"
+    },
+    {
+      "indent": 3,
+      "text": "sender: the value of this attribute is the agreed name of the message sender, as determined between the client and the server by prior arrangement.",
+      "zh": "发送者：该属性的值是客户机和服务器事先约定的信息发送者名称。"
+    },
+    {
+      "indent": 3,
+      "text": "recipient: the value of this attribute is the agreed name of the message recipient, as determined between the client and the server by prior arrangement.",
+      "zh": "收件人：该属性的值是客户机和服务器事先商定的信息收件人名称。"
+    },
+    {
+      "indent": 3,
+      "text": "type: the possible values of this attribute are \"list\", \"list_response\", \"issue\", \"issue_response\", \"revoke\", \"revoke_response\", and \"error_response\".",
+      "zh": "type：该属性的可能值为 \"list\"、\"list_response\"、\"issue\"、\"issue_response\"、\"revoke\"、\"revoke_response \"和 \"error_response\"。"
+    },
+    {
+      "indent": 3,
+      "text": "Conforming parsers MUST reject any document with a version number they do not understand or with any elements or attributes they do not understand. Servers must generate an error response when receiving such a request. Clients should generate an error when receiving such a response.",
+      "zh": "符合要求的解析器必须拒绝任何不理解版本号或不理解任何元素或属性的文档。服务器收到此类请求时必须生成错误响应。客户端在收到此类响应时应生成错误。"
+    },
+    {
+      "indent": 3,
+      "text": "The encapsulated content of the CMS wrapping is an XML document. The remainder of this protocol specification omits this CMS wrapper and only discusses the XML document.",
+      "zh": "CMS 包装的封装内容是一个 XML 文档。本协议规范的其余部分省略了 CMS 封装，只讨论 XML 文档。"
+    },
+    {
+      "indent": 3,
+      "text": "Messages are checked using the following tests:",
+      "zh": "使用以下测试对信息进行检查："
+    },
+    {
+      "indent": 3,
+      "text": "1. Check that the CMS is well-formed (see test 1 of Section 3.1.2).",
+      "zh": "1. 检查 CMS 是否格式正确（见第 3.1.2 节的测试 1）。"
+    },
+    {
+      "indent": 3,
+      "text": "2. Check that the XML is well-formed.",
+      "zh": "2. 检查 XML 是否格式正确。"
+    },
+    {
+      "indent": 3,
+      "text": "3. Check that the XML sender and recipient attributes reference a known client and this server's system respectively for a query, and the previously addressed server and this client for a response.",
+      "zh": "3. 检查 XML 发送方和接收方属性是否在查询时分别引用了已知客户机和本服务器的系统，在响应时分别引用了先前被寻址的服务器和本客户机。"
+    },
+    {
+      "indent": 3,
+      "text": "4. Verify the digital signature using the public key provided in the certificate carried in the CMS wrapper (see test 2 of Section 3.1.2).",
+      "zh": "4. 使用 CMS 封装程序中证书提供的公钥验证数字签名（见第 3.1.2 节测试 2）。"
+    },
+    {
+      "indent": 3,
+      "text": "5. Validate the CMS-provided certificate using the PKI that has been determined by prior arrangement between the client and server (see test 3 of Section 3.1.2).",
+      "zh": "5. 使用客户机和服务器事先确定的 PKI 验证内容管理系统提供的证书（见第 3.1.2 节的测试 3）。"
+    },
+    {
+      "indent": 3,
+      "text": "6. Check that the signing time of the CMS is equal to or greater than the signing time provided in the most recent previous message that this recipient has received from this sender (see test 4 of Section 3.1.2).",
+      "zh": "6. 检查 CMS 的签名时间是否等于或大于该收件人从该发件人处收到的上一条最新信息中提供的签名时间（见第 3.1.2 节中的测试 4）。"
+    },
+    {
+      "indent": 3,
+      "text": "7. Check that the value of the version number of the message is 1.",
+      "zh": "7. 检查报文版本号的值是否为 1。"
+    },
+    {
+      "indent": 3,
+      "text": "These checks SHOULD be applied in the order specified here.",
+      "zh": "这些检查应按此处指定的顺序进行。"
+    },
+    {
+      "indent": 3,
+      "text": "Any errors encountered while checking items 1 through 7 MUST cause a server to generate an \"HTTP 400 Bad Request\" response to the HTTP POST operation. An error in step 7 MUST cause the server to generate a \"Request-Not-Performed\" error response. Any errors encountered in these tests by a client SHOULD cause the client to generate an error.",
+      "zh": "在检查第 1 到第 7 项时遇到的任何错误都必须导致服务器对 HTTP POST 操作生成 \"HTTP 400 Bad Request（HTTP 400 坏请求）\"响应。步骤 7 中的错误必须导致服务器生成 \"Request-Not-Performed（请求未执行）\"错误响应。客户端在这些测试中遇到的任何错误都应导致客户端生成错误。"
+    },
+    {
+      "indent": 3,
+      "text": "A server MAY perform flow control on the rate of processed requests. Requests not processed due to such a flow control constraint MAY cause the server to generate an \"HTTP 503 Service Unavailable\" response. An HTTP 503 response MAY include an HTTP Retry-After: header as a hint to the client.",
+      "zh": "服务器可对已处理请求的速率进行流量控制。由于这种流量控制限制而未处理的请求可能会导致服务器生成 \"HTTP 503 Service Unavailable（HTTP 503 服务不可用）\"响应。HTTP 503 响应可能包含一个 HTTP 重试后：标头，作为对客户端的提示。"
+    },
+    {
+      "indent": 0,
+      "text": "3.3. Control - Resource Class Query",
+      "section_title": true,
+      "zh": "3.3. 控制 - 资源类别查询"
+    },
+    {
+      "indent": 3,
+      "text": "This query is used for a client to query a server for a list of all resources that have been allocated or assigned by the server to the client. In addition, the server's response will contain a copy of the current certificates issued by the server's CA where this client is the certificate's subject.",
+      "zh": "该查询用于客户端向服务器查询服务器已分配或指派给客户端的所有资源列表。此外，服务器的响应还将包含一份由服务器 CA 签发的当前证书副本，其中该客户端是证书的主体。"
+    },
+    {
+      "indent": 0,
+      "text": "3.3.1. Resource Class List Query",
+      "section_title": true,
+      "zh": "3.3.1. 资源类别列表查询"
+    },
+    {
+      "indent": 3,
+      "text": "The value of the message \"type\" message attribute for this query is:",
+      "zh": "该查询的信息 \"类型 \"属性值为"
+    },
+    {
+      "indent": 4,
+      "text": "type=\"list\"",
+      "zh": "type=\"list\""
+    },
+    {
+      "indent": 4,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 4,
+      "text": "Payload:",
+      "zh": "有效载荷"
+    },
+    {
+      "indent": 4,
+      "text": "[No message payload is defined for this query]",
+      "zh": "[未为此查询定义报文有效载荷]"
+    },
+    {
+      "indent": 4,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.3.2. Resource Class List Response",
+      "section_title": true,
+      "zh": "3.3.2. 资源类别列表回复"
+    },
+    {
+      "indent": 3,
+      "text": "The value of the message \"type\" element for this response is:",
+      "zh": "该回复的信息 \"类型 \"元素值为"
+    },
+    {
+      "indent": 6,
+      "text": "type=\"list_response\"",
+      "zh": "type=\"list_response\""
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Payload:",
+      "zh": "有效载荷"
+    },
+    {
+      "indent": 4,
+      "text": "<class class_name=\"class name\"\n    cert_url=\"url\"\n    resource_set_as=\"as resource set\"\n    resource_set_ipv4=\"ipv4 resource set\"\n    resource_set_ipv6=\"ipv6 resource set\"\n    resource_set_notafter=\"datetime\"\n    suggested_sia_head=\"[directory uri]\" >\n    <certificate cert_url=\"url\"\n        req_resource_set_as=\"as resource set\"\n        req_resource_set_ipv4=\"ipv4 resource set\"\n        req_resource_set_ipv6=\"ipv6 resource set\" >\n    [certificate]\n    </certificate>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 8,
+      "text": "...",
+      "zh": "..."
+    },
+    {
+      "indent": 8,
+      "text": "(repeated for each current certificate where the client is the certificate's subject)",
+      "zh": "(对客户是证书主体的每个当前证书重复）。"
+    },
+    {
+      "indent": 8,
+      "text": "<issuer>[issuer's certificate]</issuer>\n</class>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 4,
+      "text": "...",
+      "zh": "..."
+    },
+    {
+      "indent": 4,
+      "text": "(repeated for each of the issuer's resource class where the client has been allocated resources)",
+      "zh": "(对客户已分配资源的每个签发人资源类别重复）。"
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Where the client has been allocated resources from multiple resource classes, the response MUST contain multiple class elements that correspond to the complete set of the issuer's resource classes where the client holds allocated resources. Those issuer's resource classes where the client holds no allocated resources MUST NOT be included in the response.",
+      "zh": "如果客户已从多个资源类别分配了资源，则响应必须包含多个类别元素，这些元素应与客户持有已分配资源的整套发行人资源类别相对应。客户未持有已分配资源的发行方资源类别不得包含在响应中。"
+    },
+    {
+      "indent": 3,
+      "text": "Where the issuer has issued multiple certificates in a resource class signed with different keys (as may occur during a staged issuer-key rollover), only the most recent certificate issued with the currently \"active\" issuer's key is to be listed in the response.",
+      "zh": "如果签发者在一个资源类别中签发了多张证书，并用不同的密钥签名（如在分阶段签发者密钥延期时可能出现的情况），则只需在响应中列出用当前 \"有效 \"签发者密钥签发的最新证书。"
+    },
+    {
+      "indent": 3,
+      "text": "Each \"class\" element describes a set of resources that are certified within the scope of a single certificate, referring to a single resource class with a common validation path.",
+      "zh": "每个 \"类 \"元素描述一组在单个证书范围内认证的资源，指的是具有共同验证路径的单个资源类。"
+    },
+    {
+      "indent": 3,
+      "text": "class_name: the value of this attribute is the issuer-assigned name of the issuer's resource class.",
+      "zh": "class_name：该属性的值是签发人指定的签发人资源类别名称。"
+    },
+    {
+      "indent": 3,
+      "text": "cert_url: in the context of a class element, the value of this attribute is a pointer to the issuer's CA certificate (i.e., a reference to the immediate superior certificate, being the CA-enabled certificate where the issuer is the certificate's subject). Its value is a comma-separated list of URIs, of which at least one MUST be an rsync URI [RFC5781]. Any comma values within a URI MUST be escaped (\"%2C\"). The ordering of the list may be interpreted by the client as a relative preference for access methods as expressed by the publisher of this certificate.",
+      "zh": "cert_url：在类元素的上下文中，该属性的值是指向签发者 CA 证书的指针（即直接上级证书的引用，即签发者是证书主体的 CA 启用证书）。其值是一个以逗号分隔的 URI 列表，其中至少有一个必须是 rsync URI [RFC5781]。URI 中的任何逗号值都必须转义（\"%2C\"）。客户端可将列表的排序理解为证书发布者对访问方法的相对偏好。"
+    },
+    {
+      "indent": 3,
+      "text": "resource_set_as: in the context of a class element, the value of this attribute is the set of AS numbers and AS number ranges that the issuer has allocated to the client within the scope of this resource class, presented in ASCII as a comma-separated list. The list elements are decimal integer values and ranges of decimal integers specified by the lowest and highest values of the range with a hyphen delimiter, using the canonical order as described in [RFC3779], without leading zeros, and with no white space or punctuation other than the comma and the hyphen range designator (e.g., resource_set_as=\"123,456-789,123456\"). If there are no AS numbers in this resource class, then the empty AS set is represented by a null string value (\"\") for this attribute.",
+      "zh": "resource_set_as：在类元素的上下文中，该属性的值是发行方在该资源类范围内分配给客户机的 AS 号码和 AS 号码范围的集合，以 ASCII 格式的逗号分隔列表显示。列表元素是十进制整数值和十进制整数范围，由范围内的最低值和最高值用连字符分隔符指定，使用 [RFC3779] 中描述的规范顺序，不含前导零，除逗号和连字符范围代号外没有空白或标点符号（例如 resource_set_as=\"123,456-789,123456\"）。如果该资源类别中没有 AS 编号，则空 AS 集由该属性的空字符串值（\"\"）表示。"
+    },
+    {
+      "indent": 3,
+      "text": "resource_set_ipv4: in the context of a class element, the value of this attribute is the set of IPv4 addresses that the issuer has allocated to the client within the scope of this resource class. The value is presented in ASCII as a comma-separated list of elements. Each element is either an address prefix using the notation of <dotted quad>/mask length, or a range specified as the lowest and highest values of the range in dotted quad notation with a hyphen delimiter. The list is presented in canonical order, as described in [RFC3779]. The dotted quad notation is without leading zeros, and the list contains no white space or punctuation other than the period, forward slash, hyphen, and comma (e.g., resource_set_ipv4=\"192.0.2.0/26,192.0.2.66-192.0.2.76\"). If there are no IPv4 addresses in this resource class, the empty IPv4 address set is represented by a null string value (\"\") for this attribute.",
+      "zh": "resource_set_ipv4：在类元素的上下文中，此属性的值是签发人在此资源类范围内分配给客户端的 IPv4 地址集。该值以 ASCII 格式显示，是一个以逗号分隔的元素列表。每个元素既可以是使用 < 点四等分>/掩码长度符号表示的地址前缀，也可以是使用带连字符分隔符的点四等分符号表示的地址范围的最低值和最高值。如 [RFC3779] 所述，列表按规范顺序排列。点四角符号不含前导零，列表中除句号、正斜线、连字符和逗号外，不含空白或标点符号（例如，resource_set_ipv4=\"192.0.2.0/26,192.0.2.66-192.0.2.76\"）。如果该资源类别中没有 IPv4 地址，则该属性的空字符串值（\"\"）表示空 IPv4 地址集。"
+    },
+    {
+      "indent": 3,
+      "text": "resource_set_ipv6: in the context of a class element, the value of this attribute is the set of IPv6 addresses that the issuer has allocated to the client within the scope of this resource class. The value is presented in ASCII as a comma-separated list of elements. Each element is either an address prefix using the notation of <hex nibble sequence>/mask length, or a range specified as lowest and highest values of the range in hex nibble notation with a hyphen delimiter. Trailing zero nibbles are truncated and represented by '::'. The list is presented in canonical order, as described in [RFC3779]. The hex nibble sequence notation is without leading zeros, and the list contains no white space or punctuation other than the colon, forward slash, hyphen, and comma, and conforms to the canonical format of [RFC5952] (e.g., resource_set_ipv6=\"2001:db8::/48,2001:db8:2::-2001:db8:5::\"). The XML Schema data type is \"http://www.w3.org/TR/xmlschema-2/#hexBinary\" and the value is case insensitive, with the canonical form being lower case. If there are no IPv6 addresses in this resource class, the empty IPv6 address set is represented by a null string value (\"\") for this attribute.",
+      "zh": "resource_set_ipv6：在类元素的上下文中，此属性的值是签发者在此资源类范围内分配给客户端的 IPv6 地址集。该值以 ASCII 格式显示，是一个以逗号分隔的元素列表。每个元素既可以是使用 < 十六进制小数序列>/掩码长度符号表示的地址前缀，也可以是以十六进制小数符号表示的范围的最低值和最高值以及连字符分隔符指定的范围。尾部为零的小数点会被截断，用\":: \"表示。如 [RFC3779] 所述，列表按规范顺序排列。十六进制小数点序列符号不含前导零，列表中除冒号、正斜线、连字符和逗号外不包含空白或标点符号，并符合 [RFC5952] 的规范格式（例如 resource_set_ipv6=\"2001:db8::/48,2001:db8:2::-2001:db8:5::\"）。XML Schema 数据类型为 \"http://www.w3.org/TR/xmlschema-2/#hexBinary\"，其值不区分大小写，规范形式为小写。如果该资源类别中没有 IPv6 地址，则该属性的空字符串值（\"\"）表示空 IPv6 地址集。"
+    },
+    {
+      "indent": 3,
+      "text": "resource_set_notafter: The value of this attribute specifies the date/time that would be set in the Validity notAfter field in any new certificate issued for this particular client within the scope of this resource class, should the client request a new certificate. The time format used for the value of this attribute is specified as defined in ISO 8601 [ISO.8601:2004], and MUST use UTC time represented as YYYY-MM-DDThh:mm:ssZ (e.g., 2007-11-29T04:40:00Z). If the client's certificate has a validity notAfter time that is different from this time, then the client SHOULD request a new certificate to be issued for this resource class.",
+      "zh": "resource_set_notafter：此属性的值用于指定在客户申请新证书时，在此资源类别范围内为该客户签发的任何新证书的有效期 notAfter 字段中设置的日期/时间。该属性值使用的时间格式由 ISO 8601 [ISO.8601:2004] 规定，必须使用以 YYYY-MM-DDThh:mm:ssZ 表示的 UTC 时间（如 2007-11-29T04:40:00Z）。如果客户证书的有效期 notAfter 时间与此时间不同，则客户应要求为该资源类别签发新证书。"
+    },
+    {
+      "indent": 3,
+      "text": "suggested_sia_head: (OPTIONAL) If this field is present, then its value is a directory URI that indicates a repository publication point that the server has made available to the client to use for the client's collection of published products. This specification does not encompass the protocols that the client may use with the operator of the repository publication point in order to publish objects at this publication point.",
+      "zh": "supposed_sia_head：（可选）如果存在此字段，则其值为一个目录 URI，表示服务器已提供给客户机用于客户机发布产品集合的存储库发布点。本规范不包括客户端为在该发布点发布对象而可能与存储库发布点操作员使用的协议。"
+    },
+    {
+      "indent": 3,
+      "text": "[issuer's certificate] value is the Base64 encoding of the DER-encoded issuer's CA certificate (the CA-enabled certificate where the issuer is the certificate's subject).",
+      "zh": "[签发人证书]值是 DER 编码的签发人 CA 证书（签发人是证书主体的 CA 启用证书）的 Base64 编码。"
+    },
+    {
+      "indent": 6,
+      "text": "Each certificate element describes the most recently issued current certificate where the certificate's subject refers to the client for each active client key pair. A \"current\" certificate is a non-expired, non-revoked certificate. If no current certificate has been issued, then no certificate element is to be included in the response.",
+      "zh": "每个证书元素都描述了最近签发的当前证书，其中证书主题指的是每个有效客户机密钥对的客户机。当前 \"证书是指未过期、未撤销的证书。如果没有签发当前证书，则响应中不包含任何证书元素。"
+    },
+    {
+      "indent": 3,
+      "text": "cert_url: in the context of a certificate element, this is a pointer to the location where the certificate issuer has published this certificate. This field is the issuer's suggestion for the Authority Information Access (AIA) field for the subject to use in subordinate certificates that are issued by the subject. According to the Resource Certificate Profile [RFC6487], the AIA field is a non-empty (contains a minimum of 1 element) list of URI's, one of which MUST be an rsync URI [RFC5781]. The order of URI's in the AIA field may be interpreted as the publisher's relative preference for access methods for this certificate. The cert_url conforms to this AIA specification. Its value is a comma-separated list of URIs, one of which MUST be an rsync URI. Any comma values within a URI MUST be escaped (\"%2C\").",
+      "zh": "cert_url：在证书元素的上下文中，这是一个指向证书签发者发布该证书的位置的指针。该字段是签发者为主体建议的机构信息访问（AIA）字段，用于主体签发的下级证书。根据资源证书配置文件 [RFC6487]，AIA 字段是一个非空（至少包含 1 个元素）的 URI 列表，其中一个必须是 rsync URI [RFC5781]。AIA 字段中 URI 的顺序可解释为发布者对该证书访问方法的相对偏好。cert_url 符合 AIA 规范。其值是一个以逗号分隔的 URI 列表，其中一个必须是 rsync URI。URI 中的任何逗号值都必须转义（\"%2C\"）。"
+    },
+    {
+      "indent": 3,
+      "text": "req_resource_set_as: the set of AS numbers that were specified in the corresponding original certificate request that defined the maximal requested span of the certified AS number set, following the syntax described above. If this attribute was present in the certificate request, then the attribute MUST be present in this response; otherwise, it MUST NOT be present.",
+      "zh": "req_resource_set_as：相应的原始证书请求中指定的 AS 号码集，该请求定义了认证 AS 号码集的最大请求跨度，语法如上所述。如果证书请求中有此属性，则此响应中必须有此属性；否则，必须没有此属性。"
+    },
+    {
+      "indent": 3,
+      "text": "req_resource_set_ipv4: the set of IPv4 addresses that were specified in the corresponding original certificate request that defined the maximal requested span of the certified IPv4 address set, following the syntax described above. If this attribute was present in the certificate request, then the attribute MUST be present in this response; otherwise, it MUST NOT be present.",
+      "zh": "req_resource_set_ipv4： 在相应的原始证书请求中指定的 IPv4 地址集，该请求定义了认证 IPv4 地址集的最大请求跨度，语法如上所述。如果证书请求中有此属性，则此响应中必须有此属性；否则，必须没有此属性。"
+    },
+    {
+      "indent": 3,
+      "text": "req_resource_set_ipv6: the set of IPv6 addresses that were specified in the corresponding original certificate request that defined the maximal requested span of the certified IPv6 address set, following the syntax described above. If this attribute was present in the certificate request, then the attribute MUST be present in this response; otherwise, it MUST NOT be present.",
+      "zh": "req_resource_set_ipv6：相应原始证书请求中指定的 IPv6 地址集，该请求定义了认证 IPv6 地址集的最大请求跨度，语法如上所述。如果证书请求中包含此属性，则此响应中必须包含此属性；否则，必须不包含此属性。"
+    },
+    {
+      "indent": 3,
+      "text": "[certificate] value is the Base64 encoding of the DER-encoded certificate.",
+      "zh": "[证书]值是 DER 编码证书的 Base64 编码。"
+    },
+    {
+      "indent": 0,
+      "text": "3.4. CA - Certificate Issuance",
+      "section_title": true,
+      "zh": "3.4. CA - 证书签发"
+    },
+    {
+      "indent": 3,
+      "text": "This query is used by the client to request the server's CA to issue a resource certificate for the resources that have been allocated or assigned to the client. If the request can be successfully processed, then the server's response includes the issued certificate.",
+      "zh": "客户端使用此查询请求服务器的 CA 为已分配或指派给客户端的资源签发资源证书。如果能成功处理该请求，则服务器的响应将包括签发的证书。"
+    },
+    {
+      "indent": 0,
+      "text": "3.4.1. Certificate Issuance Request",
+      "section_title": true,
+      "zh": "3.4.1. 证书发放申请"
+    },
+    {
+      "indent": 3,
+      "text": "The value of the message \"type\" element for this request is:",
+      "zh": "该请求的信息 \"类型 \"元素值为"
+    },
+    {
+      "indent": 6,
+      "text": "type=\"issue\"",
+      "zh": "type=\"issue\""
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Payload:",
+      "zh": "有效载荷"
+    },
+    {
+      "indent": 3,
+      "text": "<request class_name=\"class name\" req_resource_set_as=\"as resource set\" req_resource_set_ipv4=\"ipv4 resource set\" req_resource_set_ipv6=\"ipv6 resource set\"> [Certificate request] </request>",
+      "zh": "<request class_name=\"类名\" req_resource_set_as=\"as 资源集\" req_resource_set_ipv4=\"ipv4 资源集\" req_resource_set_ipv6=\"ipv6 资源集\">[证书请求] </request>"
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The client MUST use different key pairs for each distinct resource class.",
+      "zh": "客户端必须为每个不同的资源类别使用不同的密钥对。"
+    },
+    {
+      "indent": 3,
+      "text": "The req_resource_set attributes are optional in the request.",
+      "zh": "请求中的 req_resource_set 属性是可选的。"
+    },
+    {
+      "indent": 3,
+      "text": "If none of the req_resource_set attributes are specified, then the request signifies that the complete set of all resources that match the client's current resource allocation is to be included in the issued certificate.",
+      "zh": "如果未指定任何 req_resource_set 属性，则该请求表示与客户机当前资源分配相匹配的所有资源的完整集合将包含在签发的证书中。"
+    },
+    {
+      "indent": 3,
+      "text": "If any of the req_resource_set attributes are specified in the request, then any missing req_resource_set attributes are to be interpreted as specifying the complete set of the corresponding resource type that match the client's current resource allocation are to be included in the issued certificate.",
+      "zh": "如果在请求中指定了任何 req_resource_set 属性，那么任何缺失的 req_resource_set 属性都将被解释为指定了相应资源类型的完整集合，这些资源类型与客户当前的资源分配相匹配，并将包含在签发的证书中。"
+    },
+    {
+      "indent": 3,
+      "text": "If the value of any included req_resource_set attributes is the null value (\"\"), then this indicates that no resources of that resource type are to be included in the issued certificate.",
+      "zh": "如果包含的任何 req_resource_set 属性的值为空值（\"\"），则表示签发的证书中不包含该资源类型的资源。"
+    },
+    {
+      "indent": 3,
+      "text": "The requested resource set values are held as a local record by the issuer against the resource class and the client's public key. Any subsequent Certificate Issuance Requests that specify the same resource class and the same client's public key will (re)set the issuer's local record of the requested resource sets to the most recently specified values.",
+      "zh": "所请求的资源组值将由签发机构根据资源类别和客户公开密钥作为本地记录保存。任何指定相同资源类别和相同客户公开密钥的后续证书签发请求都将把签发者对所请求资源集的本地记录（重新）设置为最近指定的值。"
+    },
+    {
+      "indent": 3,
+      "text": "class_name: value is the server's identifier of a resource class.",
+      "zh": "class_name：值是资源类别的服务器标识符。"
+    },
+    {
+      "indent": 3,
+      "text": "req_resource_set_as: (OPTIONAL) the set of AS numbers that define the maximal requested span of the certified AS number set, formatted as per the resource_set_as attribute of the resource class list response.",
+      "zh": "req_resource_set_as：（可选）定义认证 AS 号码集最大请求跨度的 AS 号码集，格式与资源类别列表响应的 resource_set_as 属性一致。"
+    },
+    {
+      "indent": 3,
+      "text": "req_resource_set_ipv4: (OPTIONAL) the set of IPv4 addresses that define the maximal requested span of the certified IPv4 address set, formatted as per the resource_set_ipv4 attribute of the resource class list response.",
+      "zh": "req_resource_set_ipv4：（可选）定义认证 IPv4 地址集最大请求跨度的 IPv4 地址集，格式与资源类别列表响应的 resource_set_ipv4 属性相同。"
+    },
+    {
+      "indent": 3,
+      "text": "req_resource_set_ipv6: (OPTIONAL) the set of IPv6 addresses that define the maximal requested span of the certified IPv6 address set, formatted as per the resource_set_ipv6 attribute of the resource class list response.",
+      "zh": "req_resource_set_ipv6：（可选）定义认证 IPv6 地址集最大请求跨度的 IPv6 地址集，格式与资源类别列表响应的 resource_set_ipv6 属性一致。"
+    },
+    {
+      "indent": 3,
+      "text": "[Certificate request] value is the certificate request. This is a Base64 encoded DER version of a request formatted using PKCS#10 [RFC2986]. The certificate request is signed using the private key part of the key pair whose public part is the subject key value in the certification request. The signing algorithm is specified in [RFC6485]. (This signature component is intended to demonstrate proof of possession of the private key.)",
+      "zh": "[证书请求]值是证书请求。这是用 PKCS#10 [RFC2986] 格式化的请求的 Base64 编码 DER 版本。证书请求使用密钥对的私钥部分签署，该密钥对的公钥部分是认证请求中的主题密钥值。签名算法在 [RFC6485] 中规定。(该签名部分旨在证明拥有私钥）。"
+    },
+    {
+      "indent": 3,
+      "text": "The response to this request is a Certificate Issuance Response if the request can be processed online. If the request cannot be undertaken immediately, then the server MUST respond with a \"Request-Not-Performed\" message, using the appropriate error code:",
+      "zh": "如果该请求可在线处理，则对该请求的响应为 \"证书颁发响应\"。如果不能立即处理请求，服务器必须使用相应的错误代码，以 \"Request-Not-Performed\"（请求未执行）信息作出响应："
+    },
+    {
+      "indent": 3,
+      "text": "o If the resource class is not defined by the server, then the server MUST return error code 1201.",
+      "zh": "o 如果服务器未定义资源类，则服务器必须返回错误代码 1201。"
+    },
+    {
+      "indent": 3,
+      "text": "o If the client holds no resources in a defined resource class, then the server MUST return error code 1202 and not proceed with the request.",
+      "zh": "o 如果客户端在定义的资源类中不持有任何资源，则服务器必须返回错误代码 1202，并且不继续处理请求。"
+    },
+    {
+      "indent": 3,
+      "text": "o If the certificate request payload is badly formed, then the server MUST return error code 1203.",
+      "zh": "o 如果证书请求有效载荷格式错误，服务器必须返回错误代码 1203。"
+    },
+    {
+      "indent": 3,
+      "text": "o If the public key used in the certificate request implies that the client is attempting to use identical key pairs for multiple resource classes, then the server MUST respond with a 1204 error code.",
+      "zh": "o 如果证书请求中使用的公钥暗示客户端试图对多个资源类别使用相同的密钥对，则服务器必须以 1204 错误代码作出响应。"
+    },
+    {
+      "indent": 3,
+      "text": "o If the certificate issuer uses an off-line process to undertake certificate issuance, and the server cannot directly respond to the certificate issuance request with an issued certificate, then the certificate issuer MUST respond to the first instance of this request with an error code 1104 to indicate that the request is being processed asynchronously. Subsequent repetitions of this request while the off-line actions are being undertaken SHOULD cause a response with error code 1101. In this context, where off-line processes are invoked for certificate issuance, if the certificate issuer determines in processing the request that the issued certificate would be identical in all respects to the most recently issued certificate for this client, other than the certificate's serial number, were the certificate to be issued, the issuer may choose to respond with the most recently issued certificate and not initiate an off-line certificate issuance request.",
+      "zh": "o 如果证书签发者使用离线程序签发证书，而服务器又不能直接用签发的证书回应证书签发请求，则证书签发者必须用错误代码 1104 回应该请求的第一个实例，以表明该请求正在被异步处理。在离线处理过程中再重复此请求时，应导致错误代码 1101 的响应。在這情況下，當離線程序被調用以簽發證書時，如證書簽發機構在處理該項請 求時確定，所簽發的證書除證書編號外，在各方面均與最近為該客戶簽發的證書 相同，則簽發機構可選擇以最近簽發的證書作回應，而不啟動離線簽發證書的請 求。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that a client, when receiving a 1104 response to a certificate issuance request, MAY periodically resubmit the request, in which case the client MUST receive an error code 1101 response while the request is being processed, and a Certificate Issuance Response when the certificate issuance process has completed. In such circumstances, a client SHOULD limit the frequency of such repeated requests to no more than 1 request in each 24-hour interval.",
+      "zh": "请注意，客户端在收到证书签发请求的 1104 响应后，可定期重新提交请求，在这种情况下，客户端必须在请求处理过程中收到错误代码 1101 响应，并在证书签发过程完成后收到证书签发响应。在这种情况下，客户机应限制此类重复请求的频率，每 24 小时内请求次数不得超过 1 次。"
+    },
+    {
+      "indent": 0,
+      "text": "3.4.2. Certificate Issuance Response",
+      "section_title": true,
+      "zh": "3.4.2. 证书发放回复"
+    },
+    {
+      "indent": 3,
+      "text": "The value of the message \"type\" element for this response is:",
+      "zh": "该回复的信息 \"类型 \"元素值为"
+    },
+    {
+      "indent": 6,
+      "text": "type=\"issue_response\"",
+      "zh": "type=\"issue_response\""
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Payload:",
+      "zh": "有效载荷"
+    },
+    {
+      "indent": 7,
+      "text": "<class class_name=\"class name\"\n       cert_url=\"url\"\n       resource_set_as=\"as resource set\"\n       resource_set_ipv4=\"ipv4 resource set\"\n       resource_set_ipv6=\"ipv6 resource set\" >\n        <certificate cert_url=\"url\"\n              req_resource_set_as=\"as resource set\"\n              req_resource_set_ipv4=\"ipv4 resource set\"\n              req_resource_set_ipv6=\"ipv6 resource set\" >\n        [certificate]\n        </certificate>\n        <issuer>[issuer's certificate]</issuer>\n      </class>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "If the certificate issuer determines that the issued certificate would be identical in all respects to the most recently issued certificate for this client, other than the certificate's serial number, were the certificate to be issued, the issuer may choose to respond with the most recently issued certificate and not issue a new certificate for this request.",
+      "zh": "如果证书签发者确定，如果签发证书，除证书序列号外，所签发的证书在所有方面都与最近为该客户签发的证书相同，则证书签发者可选择用最近签发的证书作为回应，而不为该请求签发新的证书。"
+    },
+    {
+      "indent": 3,
+      "text": "The definition of the attributes and syntax of the values is the same as the resource class list response, but the response only references the (single) named resource class, and the (single) certificate issued against the client's public key as provided in the corresponding certificate request.",
+      "zh": "属性的定义和值的语法与资源类别列表响应相同，但响应仅引用（单一）已命名的资源类别，以及根据相应证书请求中提供的客户公钥签发的（单一）证书。"
+    },
+    {
+      "indent": 0,
+      "text": "3.5. Certificate Revocation",
+      "section_title": true,
+      "zh": "3.5. 证书撤销"
+    },
+    {
+      "indent": 3,
+      "text": "This request 'retires' a client's key pair by requesting that the server's CA revoke all certificates for this client (i.e., where this client is the subject) that contain the matching public key, within the scope of a named resource class. Individual certificates cannot be revoked within the scope of this protocol.",
+      "zh": "该请求通过请求服务器 CA 在指定资源类别范围内撤销该客户（即该客户为主体）的所有包含匹配公钥的证书，从而 \"废止 \"客户的配对密钥。单个证书不能在本协议范围内撤销。"
+    },
+    {
+      "indent": 0,
+      "text": "3.5.1. Certificate Revocation Request",
+      "section_title": true,
+      "zh": "3.5.1. 证书撤销申请"
+    },
+    {
+      "indent": 3,
+      "text": "The value of the message \"type\" element for this request is:",
+      "zh": "该请求的信息 \"类型 \"元素值为"
+    },
+    {
+      "indent": 6,
+      "text": "type=\"revoke\"",
+      "zh": "type=\"revoke\""
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 5,
+      "text": "Payload:",
+      "zh": "有效载荷"
+    },
+    {
+      "indent": 5,
+      "text": "<key class_name=\"class name\"\n     ski=\"[encoded hash of the subject public key]\" />",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "This command directs the server's CA to immediately mark all issued valid certificates issued by this issuer within the named resource class with this client's subject name and the provided SKI value to be marked as revoked, causing the issued certificates to be withdrawn from the publication repository and to be listed in the server's subsequent CRLs within this resource class. The issuer MUST ensure that all certificates to be revoked were issued with the requesting client as the certificate's subject.",
+      "zh": "该命令指示服务器的 CA 立即将该签发机构在指定资源类别中签发的所有已签发有效证书标记为已撤销，这些证书带有该客户机的主题名和所提供的 SKI 值，导致已签发的证书从发布库中撤销，并被列入服务器在该资源类别中的后续 CRL 中。签发者必须确保所有要撤销的证书都是以请求客户作为证书主体签发的。"
+    },
+    {
+      "indent": 3,
+      "text": "class_name: value is the issuer-assigned name of the issuer's resource class.",
+      "zh": "class_name：值是签发人指定的签发人资源类别名称。"
+    },
+    {
+      "indent": 6,
+      "text": "ski: value is the encoded hash of the client's public key that is to be revoked. The algorithm for the encoding is to generate the 160-bit SHA-1 hash of the client's public key, as defined in method (1) of Section 4.2.1.2 of [RFC5280], and encode this value using the Base 64 encoding with URL and Filename Safe Alphabet, as defined in Section 5 of [RFC4648].",
+      "zh": "ski：值是要撤销的客户公开密钥的编码哈希值。编码算法是按照 [RFC5280] 第 4.2.1.2 节方法 (1) 的定义，生成客户公钥的 160 位 SHA-1 哈希值，并按照 [RFC4648] 第 5 节的定义，使用带有 URL 和文件名安全字母的 Base 64 编码对该值进行编码。"
+    },
+    {
+      "indent": 0,
+      "text": "3.5.2. Certificate Revocation Response",
+      "section_title": true,
+      "zh": "3.5.2. 证书撤销回复"
+    },
+    {
+      "indent": 3,
+      "text": "The value of the message \"type\" element for this response is:",
+      "zh": "该回复的信息 \"类型 \"元素值为"
+    },
+    {
+      "indent": 6,
+      "text": "type=\"revoke_response\"",
+      "zh": "type=\"revoke_response\""
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Payload:",
+      "zh": "有效载荷"
+    },
+    {
+      "indent": 6,
+      "text": "<key class_name=\"class name\"\n  ski=\"[encoded hash of the subject public key]\" />",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "class_name: value is the issuer-assigned name of the server's resource class.",
+      "zh": "class_name：值是签发人指定的服务器资源类别名称。"
+    },
+    {
+      "indent": 3,
+      "text": "ski: value is the encoded hash of the client's public key that is to be revoked. The algorithm for the encoding is to generate the 160-bit SHA-1 hash of the client's public key, as defined in method (1) of Section 4.2.1.2 of [RFC5280], and encode this value using the Base 64 encoding with URL and Filename Safe Alphabet, as defined in Section 5 of [RFC4648].",
+      "zh": "ski：值是要撤销的客户公开密钥的编码哈希值。编码算法是按照 [RFC5280] 第 4.2.1.2 节方法 (1) 的定义，生成客户公钥的 160 位 SHA-1 哈希值，并按照 [RFC4648] 第 5 节的定义，使用带有 URL 和文件名安全字母的 Base 64 编码对该值进行编码。"
+    },
+    {
+      "indent": 0,
+      "text": "3.6. Request-Not-Performed Response",
+      "section_title": true,
+      "zh": "3.6. 请求未执行响应"
+    },
+    {
+      "indent": 3,
+      "text": "The value of the message \"type\" element for this response is:",
+      "zh": "该回复的信息 \"类型 \"元素值为"
+    },
+    {
+      "indent": 6,
+      "text": "type=\"error_response\"",
+      "zh": "type=\"error_response\""
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Payload:",
+      "zh": "有效载荷"
+    },
+    {
+      "indent": 6,
+      "text": "<status>[Code]</status>\n<description xml:lang=\"en-US\">[Readable text]</description>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "---------------------------------------------------------------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "All states where an error response if to be generated, either due to detected errors or inconsistencies in the content of the request or server-side states that prevent the request being performed, generate a Request-Not-Performed response.",
+      "zh": "由于检测到的错误、请求内容中的不一致或服务器端状态导致请求无法执行，所有需要生成错误响应的状态都会生成 Request-Not-Performed 响应。"
+    },
+    {
+      "indent": 3,
+      "text": "description: value is a text field. This element MAY be present. It's value has no defined meaning within the scope of this protocol, and implementations may assume that some form of human-readable text may be used here. If the HTTP request that triggered this error response includes an Accept-Language header as defined in Section 14.4 of the HTTP/1.1 specification [RFC2616], then the server MAY include a second description element using the highest ranked preferred language of the client. The en-US description MUST always be included if the element is present.",
+      "zh": "description：值是一个文本字段。该元素可以存在。在本协议的范围内，它的值没有定义的含义，实现者可以假定这里可以使用某种形式的人类可读文本。如果触发此错误响应的 HTTP 请求包含 HTTP/1.1 规范 [RFC2616] 第 14.4 节中定义的接受语言（Accept-Language）标头，那么服务器就可以使用排名最高的客户端首选语言包含第二个描述元素。如果存在 en-US 描述元素，则必须始终包含该元素。"
+    },
+    {
+      "indent": 3,
+      "text": "The error code set is:",
+      "zh": "错误代码设置为"
+    },
+    {
+      "indent": 9,
+      "text": "Code Value Description 1101 already processing request 1102 version number error 1103 unrecognized request type 1104 request scheduled for processing 1201 request - no such resource class 1202 request - no resources allocated in resource class 1203 request - badly formed certificate request 1204 request - already used key in request 1301 revoke - no such resource class 1302 revoke - no such key 2001 Internal Server Error - Request not performed",
+      "zh": "代码 值 描述 1101 已在处理请求 1102 版本号错误 1103 未识别的请求类型 1104 计划处理的请求 1201 请求 - 无此类资源类别 1202 请求 - 资源类别中未分配资源 1203 请求 - 证书请求格式不佳 1204 请求 - 请求中已使用密钥 1301 撤销 - 无此类资源类别 1302 撤销 - 无此类密钥 2001 服务器内部错误 - 请求未执行"
+    },
+    {
+      "indent": 0,
+      "text": "3.7. XML Schema",
+      "section_title": true,
+      "zh": "3.7. XML 模式"
+    },
+    {
+      "indent": 3,
+      "text": "The following is a RELAX NG compact form schema describing version 1 of this protocol.",
+      "zh": "以下是描述本协议第 1 版的 RELAX NG 简洁格式模式。"
+    },
+    {
+      "indent": 6,
+      "text": "Note: As discussed in [XML], \"the namespace name, to serve its intended purpose, SHOULD have the characteristics of uniqueness and persistence. It is not a goal that it be directly usable for retrieval of a schema (if any exists)\".",
+      "zh": "注：正如[XML]中所讨论的，\"命名空间名称要达到预期目的，应具有唯一性和持久性。其目的并不在于直接用于检索模式（如果存在的话）\"。"
+    },
+    {
+      "indent": 3,
+      "text": "default namespace = \"http://www.apnic.net/specs/rescerts/up-down/\"",
+      "zh": "默认命名空间 = \"http://www.apnic.net/specs/rescerts/up-down/\""
+    },
+    {
+      "indent": 3,
+      "text": "grammar {\n   resource_set_as = xsd:string {  maxLength=\"512000\"\n                                   pattern=\"[\\-,0-9]*\" }\n   resource_set_ip4 = xsd:string { maxLength=\"512000\"\n                                   pattern=\"[\\-,/.0-9]*\" }\n   resource_set_ip6 = xsd:string { maxLength=\"512000\"\n                                   pattern=\"[\\-,/:0-9a-fA-F]*\" }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "class_name = xsd:token { minLength=\"1\" maxLength=\"1024\" }\nski = xsd:token { minLength=\"27\" maxLength=\"1024\" }\n      label = xsd:token { minLength=\"1\" maxLength=\"1024\" }\ncert_url = xsd:string { minLength=\"10\" maxLength=\"4096\" }\nbase64_binary = xsd:base64Binary { minLength=\"4\"\n                                   maxLength=\"512000\" }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "start = element message {\n  attribute version { xsd:positiveInteger {\n                                       maxInclusive=\"1\" } },\n  attribute sender { label },\n  attribute recipient { label },\n  payload\n}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "payload |= attribute type { \"list\" }, list_request\npayload |= attribute type { \"list_response\"}, list_response\npayload |= attribute type { \"issue\" }, issue_request\npayload |= attribute type { \"issue_response\"}, issue_response\npayload |= attribute type { \"revoke\" }, revoke_request\npayload |= attribute type { \"revoke_response\"}, revoke_response\npayload |= attribute type { \"error_response\"}, error_response",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "list_request = empty list_response = class*",
+      "zh": "list_request = empty list_response = class*"
+    },
+    {
+      "indent": 6,
+      "text": "class = element class {\n  attribute class_name { class_name },\n  attribute cert_url { cert_url },\n  attribute resource_set_as { resource_set_as },\n  attribute resource_set_ipv4 { resource_set_ip4 },\n  attribute resource_set_ipv6 { resource_set_ip6 },\n  attribute resource_set_notafter { xsd:dateTime },\n  attribute suggested_sia_head { xsd:anyURI { maxLength=\"1024\"\n                                        pattern=\"rsync://.+\"} }?,\n  element certificate {\n    attribute cert_url { cert_url },\n    attribute req_resource_set_as { resource_set_as }?,\n    attribute req_resource_set_ipv4 { resource_set_ip4 }?,\n    attribute req_resource_set_ipv6 { resource_set_ip6 }?,\n    base64_binary\n  }*,\n  element issuer { base64_binary }\n}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "issue_request = element request {\n  attribute class_name { class_name },\n  attribute req_resource_set_as { resource_set_as }?,\n  attribute req_resource_set_ipv4 { resource_set_ip4 }?,\n  attribute req_resource_set_ipv6 { resource_set_ip6 }?,\n        base64_binary\n}\nissue_response = class",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "revoke_request = revocation revoke_response = revocation",
+      "zh": "revoke_request = 撤销 revoke_response = 撤销"
+    },
+    {
+      "indent": 6,
+      "text": "revocation = element key {\n  attribute class_name { class_name },\n  attribute ski { ski }\n}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "error_response =\n  element status { xsd:positiveInteger { maxInclusive=\"9999\" } },\n  element description { attribute xml:lang { xsd:language },\n                            xsd:string { maxLength=\"1024\" } }*\n}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "4. Security Considerations",
+      "section_title": true,
+      "zh": "4. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This protocol supports the maintenance of resource certificates that the issuer issues for a subject in certifying resources that have been allocated or assigned by the issuer to the subject [RFC6480]. This protocol assumes that the issuer and subject are known to each other and have exchanged credentials so as to support the mutual recognition of the digital signatures used to sign the CMS messages. The mechanisms used to perform the associated credential exchange are not described in this specification.",
+      "zh": "本协议支持维护签发人为主体签发的资源证书，以证明签发人已分配或指派给主体的资源 [RFC6480]。本协议假定签发者和主体互为已知，并已交换凭证，以支持用于签署 CMS 信息的数字签名的互认。用于执行相关凭证交换的机制未在本规范中描述。"
+    },
+    {
+      "indent": 3,
+      "text": "The protocol is a minimal query/response protocol that imposes strict serialization on each query/response transaction, reducing the potential for the subject and the issuer to lose synchronization over the issued certificate state.",
+      "zh": "该协议是一个最小的查询/响应协议，对每个查询/响应事务都进行了严格的序列化处理，从而降低了主体和签发者在已签发证书状态上失去同步的可能性。"
+    },
+    {
+      "indent": 3,
+      "text": "Validation of protocol objects (Section 3.1.2) requires that the CMS signing-time value be greater than or equal to the time value passed in the previously valid protocol objects that were passed from the same originator to the same recipient. If a party inadvertently sends a valid message (protocol object) with a signing time in the future, then subsequent messages from the party in the same client/server context can use signing-time value consistent with this validation constraint, such that the signing times contained in subsequent messages are greater than or equal to the signing-time value of the previous valid message. (Note that it is not a normative requirement that the signing time be precisely aligned to a time of day clock, thus permitting arbitrarily large clock skew values in the context of this protocol message exchange.) If the client and server wish to reset the signing time to a mutually agreed value, then, (as noted in Section 2) the interactions between the client and the server to achieve this outcome are not encompassed in this protocol.",
+      "zh": "协议对象的验证（第 3.1.2 节）要求 CMS 签名时间值必须大于或等于先前从同一发端向同一收件人发送的有效协议对象中传递的时间值。如果一方无意中发送的有效报文（协议对象）的签署时间在未来，那么该方在同一客户机/服务器上下文中发送的后续报文可以使用与此验证约束一致的签署时间值，这样后续报文中包含的签署时间就会大于或等于前一个有效报文的签署时间值。(请注意，签署时间必须精确对准一天中的某个时间，这并非规范要求，因此在本协议报文交换的上下文中，允许使用任意大的时钟偏差值）。如果客户机和服务器希望将签署时间重置为双方同意的值，则（如第 2 节所述）本协议不包括客户机和服务器之间为实现这一结果而进行的交互。"
+    },
+    {
+      "indent": 0,
+      "text": "5. IANA Considerations",
+      "section_title": true,
+      "zh": "5. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has registered the following media type:",
+      "zh": "IANA 已注册了以下媒体类型："
+    },
+    {
+      "indent": 3,
+      "text": "application/rpki-updown",
+      "zh": "应用程序/rpki-updown"
+    },
+    {
+      "indent": 0,
+      "text": "5.1. application/rpki-updown",
+      "section_title": true,
+      "zh": "5.1. 应用程序/rpki-updown"
+    },
+    {
+      "indent": 3,
+      "text": "Type name:  application\nSubtype name:  rpki-updown\nRequired parameters:  None\nOptional parameters:  None\nEncoding considerations:  binary\nSecurity considerations:  Carries an RPKI Provisioning Protocol\n   Message, as defined in this document.\nInteroperability considerations:  None\nPublished specification:  This document\nApplications that use this media type:  HTTP [RFC5652]\nAdditional information:\n   Magic number(s):  None\n   File extension(s):\n   Macintosh File Type Code(s):\nPerson & email address to contact for further information:\n   Geoff Huston <gih@apnic.net>\nIntended usage:  COMMON\nRestrictions on usage:  Only to be used as an RPKI Provisioning\n   Protocol message object type, as defined in this document.\nAuthor:  Geoff Huston <gih@apnic.net>\nChange controller:  Geoff Huston <gih@apnic.net>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "6. Acknowledgements",
+      "section_title": true,
+      "zh": "6. 致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors would like to acknowledge the valued contributions from Russ Housley, Steve Kent, Randy Bush, George Michaelson, Robert Kisteleki, Tim Bruijnzeels, and Carsten Bormann in the preparation of the protocol described in this document.",
+      "zh": "作者感谢拉斯-豪斯利（Russ Housley）、史蒂夫-肯特（Steve Kent）、兰迪-布什（Randy Bush）、乔治-迈克尔逊（George Michaelson）、罗伯特-基斯特莱基（Robert Kisteleki）、蒂姆-布鲁因泽斯（Tim Bruijnzeels）和卡斯滕-博尔曼（Carsten Bormann）在编写本文件所述协议过程中做出的宝贵贡献。"
+    },
+    {
+      "indent": 0,
+      "text": "7. References",
+      "section_title": true,
+      "zh": "7. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "7.1. Normative References",
+      "section_title": true,
+      "zh": "7.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[ISO.8601:2004] ISO, \"ISO 8601:2004 Representation of dates and Times\", 2004.",
+      "zh": "[ISO.8601:2004]国际标准化组织，\"ISO 8601:2004 日期和时间的表示法\"，2004 年。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2616] Fielding, R., Gettys, J., Mogul, J., Frystyk, H., Masinter, L., Leach, P., and T. Berners-Lee, \"Hypertext Transfer Protocol -- HTTP/1.1\", RFC 2616, June 1999.",
+      "zh": "[RFC2616] Fielding, R., Gettys, J., Mogul, J., Frystyk, H., Masinter, L., Leach, P., and T. Berners-Lee, \"Hypertext Transfer Protocol -- HTTP/1.1\", RFC 2616, June 1999."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2986] Nystrom, M. and B. Kaliski, \"PKCS #10: Certification Request Syntax Specification Version 1.7\", RFC 2986, November 2000.",
+      "zh": "[RFC2986] Nystrom, M. 和 B. Kaliski，\"PKCS #10：认证请求语法规范 1.7 版\"，RFC 2986，2000 年 11 月。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, June 2004.",
+      "zh": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, June 2004."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4648] Josefsson, S., \"The Base16, Base32, and Base64 Data Encodings\", RFC 4648, October 2006.",
+      "zh": "[RFC4648] Josefsson, S., \"The Base16, Base32, and Base64 Data Encodings\", RFC 4648, October 2006."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, May 2008.",
+      "zh": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, May 2008."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5652] Housley, R., \"Cryptographic Message Syntax (CMS)\", STD 70, RFC 5652, September 2009.",
+      "zh": "[RFC5652] Housley, R.，\"加密信息语法（CMS）\"，STD 70，RFC 5652，2009 年 9 月。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"The rsync URI Scheme\", RFC 5781, February 2010.",
+      "zh": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"rsync URI Scheme\", RFC 5781, February 2010."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5952] Kawamura, S. and M. Kawashima, \"A Recommendation for IPv6 Address Text Representation\", RFC 5952, August 2010.",
+      "zh": "[RFC5952] Kawamura, S. and M. Kawashima, \"A Recommendation for IPv6 Address Text Representation\", RFC 5952, August 2010."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6019] Housley, R., \"BinaryTime: An Alternate Format for Representing Date and Time in ASN.1\", RFC 6019, September 2010.",
+      "zh": "[RFC6019] Housley, R., \"BinaryTime: An Alternate Format for Representing Date and Time in ASN.1\", RFC 6019, September 2010."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6485] Huston, G., \"The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)\", RFC 6485, February 2012.",
+      "zh": "[RFC6485] Huston, G., \"The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)\", RFC 6485, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[X.509-88] CCITT, \"Recommendation X.509: The Directory-Authentication Framework\", 1988.",
+      "zh": "[X.509-88] CCITT，\"X.509 建议：目录认证框架\"，1988 年。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2. Informative References",
+      "section_title": true,
+      "zh": "7.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, February 2012.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[XML] Bray, T., Hollander, D., Layman, A., Tobin, R., and H. Thompson, \"Namespaces in XML 1.0 (Third Edition)\", World Wide Web Consortium Recommendation REC-xml-names-20091208, December 2009, <http://www.w3.org/TR/2009/REC-xml-names-20091208/>.",
+      "zh": "[XML] Bray, T., Hollander, D., Layman, A., Tobin, R., and H. Thompson, \"Namespaces in XML 1.0 (Third Edition)\", World Wide Web Consortium Recommendation REC-xml-names-20091208, December 2009, <http://www.w3.org/TR/2009/REC-xml-names-20091208/>."
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Geoff Huston APNIC",
+      "zh": "Geoff Huston APNIC"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: gih@apnic.net\nURI:   http://www.apnic.net",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Robert Loomans APNIC",
+      "zh": "罗伯特-卢曼斯 APNIC"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: robertl@apnic.net\nURI:   http://www.apnic.net",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Byron Ellacott APNIC",
+      "zh": "拜伦-埃拉考特 APNIC"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: bje@apnic.net\nURI:   http://www.apnic.net",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Rob Austein Internet Systems Consortium",
+      "zh": "Rob Austein 互联网系统联盟"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: sra@hactrn.net",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

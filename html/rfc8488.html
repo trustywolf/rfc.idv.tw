@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 8488 - RIPE NCC&#39;s Implementation of Resource Public Key Infrastructure (RPKI) Certificate Tree Validation 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">8488</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc8488">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 8488 - RIPE NCC's Implementation of Resource Public Key Infrastructure (RPKI) Certificate Tree Validation 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc8488">
+            https://datatracker.ietf.org/doc/html/rfc8488
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 8488 - RIPE NCC 实施资源公钥基础设施 (RPKI) 证书树验证</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                      O. Muravskiy
+Request for Comments: 8488                                      RIPE NCC
+Category: Informational                                   T. Bruijnzeels
+ISSN: 2070-1721                                               NLnet Labs
+                                                           December 2018
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-1">
+RIPE NCC&#39;s Implementation of Resource Public Key Infrastructure (RPKI) Certificate Tree Validation
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-1">
+RIPE NCC 实施资源公钥基础设施 (RPKI) 证书树验证
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document describes an approach to validating the content of the Resource Public Key Infrastructure (RPKI) certificate tree, as it is implemented in the RIPE NCC RPKI Validator. This approach is independent of a particular object retrieval mechanism, which allows it to be used with repositories available over the rsync protocol, the RPKI Repository Delta Protocol (RRDP), and repositories that use a mix of both.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档描述了一种验证资源公钥基础设施 (RPKI) 证书树内容的方法，它是在 RIPE NCC RPKI 验证器中实现的。这种方法与特定的对象检索机制无关，因此可用于通过 rsync 协议、RPKI 资源库三角协议 (RRDP) 提供的资源库，以及混合使用这两种协议的资源库。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is not an Internet Standards Track specification; it is published for informational purposes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件不是互联网标准轨道规范，仅为提供信息而发布。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Not all documents approved by the IESG are candidates for any level of Internet Standard; see Section 2 of RFC 7841.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。并非所有经 IESG 批准的文件都可成为任何级别的互联网标准；请参阅 RFC 7841 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc8488.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc8488。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2018 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2018 IETF Trust 和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受BCP 78以及本文档发布之日有效的IETF信托基金关于IETF文档的法律规定（https://trustee.ietf.org/license-info）的约束。 请仔细阅读这些文档，因为它们描述了您对本文档的权利和限制。 从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中描述的简化 BSD 许可证文本，并且不提供简化 BSD 许可证中描述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   4
+   2.  General Considerations  . . . . . . . . . . . . . . . . . . .   4
+     2.1.  Hash Comparisons  . . . . . . . . . . . . . . . . . . . .   4
+     2.2.  Discovery of RPKI Objects Issued by a CA  . . . . . . . .   5
+     2.3.  Manifest Entries versus Repository Content  . . . . . . .   5
+   3.  Top-Down Validation of a Single Trust Anchor Certificate Tree   6
+     3.1.  Fetching the Trust Anchor Certificate Using the Trust
+           Anchor Locator  . . . . . . . . . . . . . . . . . . . . .   6
+     3.2.  CA Certificate Validation . . . . . . . . . . . . . . . .   7
+       3.2.1.  Finding the Most Recent Valid Manifest and CRL  . . .   8
+       3.2.2.  Validating Manifest Entries . . . . . . . . . . . . .   9
+     3.3.  Object Store Cleanup  . . . . . . . . . . . . . . . . . .  10
+   4.  Remote Objects Fetcher  . . . . . . . . . . . . . . . . . . .  11
+     4.1.  Fetcher Operations  . . . . . . . . . . . . . . . . . . .  11
+       4.1.1.  Fetch Repository Objects  . . . . . . . . . . . . . .  12
+       4.1.2.  Fetch Single Repository Object  . . . . . . . . . . .  12
+   5.  Local Object Store  . . . . . . . . . . . . . . . . . . . . .  12
+     5.1.  Store Operations  . . . . . . . . . . . . . . . . . . . .  12
+       5.1.1.  Store Repository Object . . . . . . . . . . . . . . .  12
+       5.1.2.  Get Objects by Hash . . . . . . . . . . . . . . . . .  12
+       5.1.3.  Get Certificate Objects by URI  . . . . . . . . . . .  13
+       5.1.4.  Get Manifest Objects by AKI . . . . . . . . . . . . .  13
+       5.1.5.  Delete Objects for a URI  . . . . . . . . . . . . . .  13
+       5.1.6.  Delete Outdated Objects . . . . . . . . . . . . . . .  13
+       5.1.7.  Update Object&#39;s Validation Time . . . . . . . . . . .  13
+   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  13
+   7.  Security Considerations . . . . . . . . . . . . . . . . . . .  13
+     7.1.  Hash Collisions . . . . . . . . . . . . . . . . . . . . .  13
+     7.2.  Algorithm Agility . . . . . . . . . . . . . . . . . . . .  13
+     7.3.  Mismatch between the Expected and Actual Location of an
+           Object in the Repository  . . . . . . . . . . . . . . . .  14
+     7.4.  Manifest Content versus Publication Point Content . . . .  14
+     7.5.  Possible Denial of Service  . . . . . . . . . . . . . . .  15
+   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  15
+     8.1.  Normative References  . . . . . . . . . . . . . . . . . .  15
+     8.2.  Informative References  . . . . . . . . . . . . . . . . .  16
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  16
+   Authors&#39; Addresses  . . . . . . . . . . . . . . . . . . . . . . .  17
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document describes how the RIPE NCC RPKI Validator version 2.25 has been implemented. Source code for this software can be found at [rpki-validator]. The purpose of this document is to provide transparency to users of (and contributors to) this software tool.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档介绍了 RIPE NCC RPKI Validator 2.25 版的实现过程。该软件的源代码见 [rpki-validator]。本文件的目的是为该软件工具的用户（和贡献者）提供透明度。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In order to use information published in RPKI repositories, Relying Parties (RPs) need to retrieve and validate the content of certificates, Certificate Revocation Lists (CRLs), and other RPKI signed objects. To validate a particular object, one must ensure that all certificates in the certificate chain up to the Trust Anchor (TA) are valid. Therefore, the validation of a certificate tree is performed top-down, starting from the TA certificate and descending the certificate chain, validating every encountered certificate and its products. The result of this process is a list of all encountered RPKI objects with a validity status attached to each of them. These results may later be used by an RP in making routing decisions, etc.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为了使用 RPKI 资源库中发布的信息，依赖方 (RP) 需要检索和验证证书、证书吊销列表 (CRL) 和其他 RPKI 签名对象的内容。要验证特定对象，必须确保证书链中直到信任锚（TA）的所有证书都是有效的。因此，证书树的验证是自上而下进行的，从 TA 证书开始，沿着证书链向下，验证遇到的每个证书及其产品。这一过程的结果是所有遇到的 RPKI 对象的列表，其中每个对象都附有有效性状态。随后，RP 在作出路由选择等决定时可使用这些结果。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Traditionally, RPKI data is made available to RPs through the repositories [RFC6481] accessible over the rsync protocol [rsync]. RPs are advised to keep a local copy of repository data and perform regular updates of this copy from the repository (see Section 5 of [RFC6481]). The RRDP [RFC8182] introduces another method to fetch repository data and keep the local copy up to date with the repository.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+传统上，RPKI 数据通过可通过 rsync 协议 [rsync] 访问的资源库 [RFC6481] 提供给 RP。建议 RP 保留一份存储库数据的本地副本，并定期从存储库更新该副本（见 [RFC6481] 第 5 节）。RRDP [RFC8182] 引入了另一种方法来获取版本库数据，并使本地副本与版本库保持同步。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document describes how the RIPE NCC RPKI Validator discovers RPKI objects to download, builds certificate paths, and validates RPKI objects, independently of what repository access protocol is used. To achieve this, it puts downloaded RPKI objects in an object store, where each RPKI object can be found by its URI, the hash of its content, the value of its Authority Key Identifier (AKI) extension, or a combination of these. It also keeps track of the download and validation time for every object, to decide which locally stored objects are not used in the RPKI tree validation and could be removed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档介绍 RIPE NCC RPKI 验证器如何发现要下载的 RPKI 对象、构建证书路径并验证 RPKI 对象，而与使用何种存储库访问协议无关。为此，它将下载的 RPKI 对象放入对象存储区，每个 RPKI 对象可通过其 URI、其内容的哈希值、其权威密钥标识符 (AKI) 扩展的值或这些值的组合找到。它还会跟踪每个对象的下载和验证时间，以决定哪些本地存储的对象不用于 RPKI 树验证，可以删除。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--General-Considerations">
+2. General Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 一般考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-1--Hash-Comparisons">
+2.1. Hash Comparisons
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.1. 哈希值比较
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This algorithm relies on the collision resistance properties of the hash algorithm (defined in [RFC7935]) to compute the hash of repository objects. It assumes that any two objects for which the hash value is the same are identical.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该算法依靠哈希算法（在 [RFC7935] 中定义）的抗碰撞特性来计算存储库对象的哈希值。它假定哈希值相同的任何两个对象都是相同的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The hash comparison is used when matching objects in the repository with entries on the manifest (Section 3.2.2) and when looking up objects in the object store (Section 5).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+哈希比较法用于将存储库中的对象与清单上的条目进行匹配（第 3.2.2 节），以及在对象存储空间中查找对象（第 5 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-2--Discovery-of-RPKI-Objects-Issued-by-a-CA">
+2.2. Discovery of RPKI Objects Issued by a CA
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.2. 发现 CA 签发的 RPKI 对象
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+There are several possible ways of discovering potential products of a Certification Authority (CA) certificate: one could 1) use all objects located in a repository directory designated as a publication point for a CA, 2) only use objects mentioned on the manifest located at that publication point (see Section 6 of [RFC6486]), or 3) use all known repository objects whose AKI extension matches the Subject Key Identifier (SKI) extension (Section 4.2.1 of [RFC5280]) of a CA certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+发现认证机构（CA）证书的潜在产品有几种可能的方法：1）使用位于指定为 CA 发布点的存储库目录中的所有对象；2）只使用位于该发布点的清单上提到的对象（见 [RFC6486] 第 6 节）；或 3）使用其 AKI 扩展名与 CA 证书的主题密钥标识符（SKI）扩展名（[RFC5280] 第 4.2.1 节）相匹配的所有已知存储库对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For publication points whose content is consistent with the manifest and issuing certificate, all of these approaches should produce the same result. For inconsistent publication points, the results might be different. Section 6 of [RFC6486] leaves the decision on how to deal with inconsistencies to a local policy.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于内容与清单和签发证书一致的公布点，所有这些方法都会产生相同的结果。对于内容不一致的发布点，结果可能不同。[RFC6486]第 6 节规定，由本地策略决定如何处理不一致。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The implementation described here does not rely on content of repository directories but uses the Authority Key Identifier (AKI) extension of a manifest and a CRL to find in an object store (Section 5) a manifest and a CRL issued by a particular CA (see Section 3.2.1). It further uses the hashes of the manifest&#39;s fileList entries (Section 4.2.1 of [RFC6486]) to find other objects issued by the CA, as described in Section 3.2.2.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这里描述的实现并不依赖于存储库目录的内容，而是使用清单和 CRL 的授权密钥标识符（AKI）扩展来查找对象存储库（第 5 节）中由特定 CA 签发的清单和 CRL（见第 3.2.1 节）。如第 3.2.2 节所述，它还使用清单的 fileList 条目的哈希值（[RFC6486] 第 4.2.1 节）来查找 CA 签发的其他对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-3--Manifest-Entries-versus-Repository-Content">
+2.3. Manifest Entries versus Repository Content
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.3. 清单条目与资源库内容
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Since the current set of RPKI standards (see [RFC6481], [RFC6486], and [RFC6487]) requires use of the manifest [RFC6486] to describe the content of a publication point, this implementation requires strict consistency between the publication point content and manifest content. (This is a more stringent requirement than established in [RFC6486].) Therefore, it will not process objects that are found in the publication point but do not match any of the entries of that publication point&#39;s manifest (see Section 3.2.2). It will also issue warnings for all found mismatches, so that the responsible operators could be made aware of inconsistencies and fix them.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于当前的 RPKI 标准（见 [RFC6481]、[RFC6486] 和 [RFC6487]）要求使用清单 [RFC6486] 来描述发布点的内容，因此本实现要求发布点内容与清单内容严格保持一致（这比 [RFC6486] 中的要求更严格）。(这比 [RFC6486] 中的要求更为严格。）因此，如果在发布点中发现的对象与该发布点的清单中的任何条目不匹配（参见第 3.2.2 节），它将不予处理。它还会对所有发现的不匹配情况发出警告，以便让负责的操作员意识到不一致之处并加以修复。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Top-Down-Validation-of-a-Single-Trust-Anchor-Certificate-Tree">
+3. Top-Down Validation of a Single Trust Anchor Certificate Tree
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 单一信任锚证书树的自顶向下验证
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When several Trust Anchors are configured, validation of their corresponding certificate trees is performed concurrently and independently from each other. For every configured Trust Anchor, the following steps are performed:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当配置了多个信任锚点时，其相应证书树的验证会同时进行，且相互独立。对于每个已配置的信任锚点，都要执行以下步骤：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. The validation of a TA certificate tree starts from its TA certificate. To retrieve the TA certificate, a Trust Anchor Locator (TAL) object is used, as described in Section 3.1.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. TA 证书树的验证从 TA 证书开始。如第 3.1 节所述，要检索 TA 证书，需要使用信任锚定位器（TAL）对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. If the TA certificate is retrieved, it is validated according to Section 7 of [RFC6487] and Section 2.2 of [RFC7730]. Otherwise, the validation of the certificate tree is aborted and an error is issued.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 如果 TA 证书被检索到，则根据 [RFC6487] 第 7 节和 [RFC7730] 第 2.2 节进行验证。否则，将中止证书树的验证并发出错误信息。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. If the TA certificate is valid, then all its subordinate objects are validated as described in Section 3.2. Otherwise, the validation of the certificate tree is aborted and an error is issued.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 如果 TA 证书有效，则按照第 3.2 节所述验证其所有下级对象。否则，证书树的验证将中止并发出错误信息。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. For each repository object that was validated during this validation run, the validation timestamp is updated in the object store (see Section 5.1.7).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. 对于在本次验证运行期间验证过的每个资源库对象，对象存储中的验证时间戳都会被更新（见第 5.1.7 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5. Outdated objects are removed from the store as described in Section 3.3. This completes the validation of the TA certificate tree.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5. 如第 3.3 节所述，过时对象将从存储中删除。至此，TA 证书树的验证工作完成。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-1--Fetching-the-Trust-Anchor-Certificate-Using-the-Trust-Anchor-Locator">
+3.1. Fetching the Trust Anchor Certificate Using the Trust Anchor Locator
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.1. 使用信任锚定位器获取信任锚证书
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following steps are performed in order to fetch a Trust Anchor certificate:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+获取信任锚点证书的步骤如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. (Optional) If the TAL contains a prefetch.uris field, pass the URIs contained in that field to the fetcher (see Section 4.1.1). (This field is a non-standard addition to the TAL format. It helps with fetching non-hierarchical rsync repositories more efficiently.)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. (可选）如果 TAL 包含 prefetch.uris 字段，则将该字段中包含的 URI 传递给获取器（参见第 4.1.1 节）。(该字段是对 TAL 格式的非标准补充。它有助于更高效地获取非层次结构的 rsync 资源库）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. Extract the first TA certificate URI from the TAL&#39;s URI section (see Section 2.1 of [RFC7730]) and pass it to the object fetcher (Section 4.1.2). If the fetcher returns an error, repeat this step for every URI in the URI section until no error is encountered or no more URIs are left.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 从 TAL 的 URI 部分（见 [RFC7730] 第 2.1 节）提取第一个 TA 证书 URI，并将其传递给对象获取器（第 4.1.2 节）。如果取回器返回错误，则对 URI 部分中的每个 URI 重复此步骤，直到不出错或不再剩下 URI。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. From the object store (see Section 5.1.3), retrieve all certificate objects for which the URI matches the URI extracted from the TAL in the previous step and the public key matches the subjectPublicKeyInfo extension of the TAL (see Section 2.1 of [RFC7730]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 从对象存储区（见第 5.1.3 节）检索所有证书对象，这些对象的 URI 与上一步从 TAL 提取的 URI 一致，且公钥与 TAL 的 subjectPublicKeyInfo 扩展名一致（见 [RFC7730] 第 2.1 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. If no such objects are found or if more than one such objects are found, issue an error and abort the certificate tree validation process with an error. Otherwise, use the single found object as the TA certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. 如果没有发现此类对象或发现多个此类对象，则发出错误信息，并以错误信息中止证书树验证过程。否则，使用找到的单个对象作为 TA 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-2--CA-Certificate-Validation">
+3.2. CA Certificate Validation
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.2. CA 证书验证
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following steps describe the validation of a single CA resource certificate:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+以下步骤描述了单个 CA 资源证书的验证：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. If both the caRepository (Section 4.8.8.1 of [RFC6487]) and the id-ad-rpkiNotify (Section 3.2 of [RFC8182]) instances of an accessMethod are present in the Subject Information Access extension of the CA certificate, use a local policy to determine which pointer to use. Extract the URI from the selected pointer and pass it to the object fetcher (that will then fetch all objects available from that repository; see Section 4.1.1).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 如果 CA 证书的主题信息访问扩展中同时存在 accessMethod 的 caRepository（[RFC6487]第 4.8.8.1 节）和 id-ad-rpkiNotify（[RFC8182]第 3.2 节）实例，则应使用本地策略来决定使用哪个指针。从选定的指针中提取 URI 并将其传递给对象获取器（然后获取该资源库中的所有可用对象；见第 4.1.1 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. For the CA certificate, find the current manifest and certificate revocation list (CRL) using the procedure described in Section 3.2.1. If no such manifest and CRL could be found, stop validation of this certificate, consider it invalid, and issue an error.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 使用第 3.2.1 节所述程序查找 CA 证书的当前清单和证书吊销列表（CRL）。如果找不到清单和证书废止列表，则停止验证该证书，认为其无效，并发出错误信息。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. Compare the URI found in the id-ad-rpkiManifest field (Section 4.8.8.1 of [RFC6487]) of the SIA extension of the certificate with the URI of the manifest found in the previous step. If they are different, issue a warning but continue the validation process using the manifest found in the previous step. (This warning indicates that there is a mismatch between the expected and the actual location of an object in a repository. See Section 7.3 for the explanation of this mismatch and the decision made.)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 将证书的 SIA 扩展名 id-ad-rpkiManifest 字段（[RFC6487] 第 4.8.8.1 节）中的 URI 与上一步发现的清单 URI 进行比较。如果两者不同，则发出警告，但使用上一步发现的清单继续验证过程。(此警告表示存储库中对象的预期位置和实际位置不匹配。有关这种不匹配的解释和做出的决定，请参见第 7.3 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. Perform discovery and validation of manifest entries as described in Section 3.2.2.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. 如第 3.2.2 节所述，发现并验证清单条目。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5. Validate all resource certificate objects found on the manifest using the CRL object:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5. 使用 CRL 对象验证清单上的所有资源证书对象：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* If the strict validation option is enabled by the operator, the validation is performed according to Section 7 of [RFC6487].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* 如果操作员启用了严格验证选项，则根据 [RFC6487] 第 7 节进行验证。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* Otherwise, the validation is performed according to Section 7 of [RFC6487] but with the exception of the resource certification path validation, which is performed according to Section 4.2.4.4 of [RFC8360].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* 否则，将根据 [RFC6487] 第 7 节进行验证，但资源认证路径验证除外，该验证根据 [RFC8360] 第 4.2.4.4 节进行。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+(Note that this implementation uses the operator configuration to decide which algorithm to use for path validation. It applies the selected algorithm to all resource certificates, rather than applying an appropriate algorithm per resource certificate based on the object identifier (OID) for the Certificate Policy found in that certificate, as specified in [RFC8360].)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+(请注意，本实现使用操作员配置来决定使用哪种算法进行路径验证。它将所选算法应用于所有资源证书，而不是按照 [RFC8360] 中的规定，根据证书中的证书策略对象标识符 (OID) 为每个资源证书应用适当的算法）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+6. Validate all Route Origin Authorization (ROA) objects found on the manifest using the CRL object found on the manifest, according to Section 4 of [RFC6482].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+6. 根据 [RFC6482] 第 4 节，使用清单上的 CRL 对象验证清单上的所有路由原点授权 (ROA) 对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+7. Validate all Ghostbusters Record objects found on the manifest using the CRL object found on the manifest, according to Section 7 of [RFC6493].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+7. 根据 [RFC6493] 第 7 节，使用清单上的 CRL 对象验证清单上的所有幽灵记录对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+8. For every valid CA certificate object found on the manifest, apply the procedure described in this section, recursively, provided that this CA certificate (identified by its SKI) has not yet been validated during current tree validation run.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+8. 对于在清单上发现的每个有效 CA 证书对象，只要该 CA 证书（由其 SKI 标识）尚未在当前树验证运行中验证过，就递归地应用本节描述的程序。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-2-1--Finding-the-Most-Recent-Valid-Manifest-and-CRL">
+3.2.1. Finding the Most Recent Valid Manifest and CRL
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.2.1. 查找最新有效的清单和 CRL
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+To find the most recent issued manifest and CRL objects of a particular CA certificate, the following steps are performed:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+要查找特定 CA 证书的最新签发清单和 CRL 对象，需要执行以下步骤：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. From the store (see Section 5.1.4), fetch all objects of type manifest whose certificate&#39;s AKI extension matches the SKI of the current CA certificate. If no such objects are found, stop processing the current CA certificate and issue an error.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 从存储区（见第 5.1.4 节）获取所有证书的 AKI 扩展名与当前 CA 证书的 SKI 一致的清单类型对象。如果未找到此类对象，则停止处理当前 CA 证书并发出错误信息。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. Among found objects, find the manifest object with the highest manifestNumber field (Section 4.2.1 of [RFC6486]) for which all following conditions are met:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 在找到的对象中，找出具有最高 manifestNumber 字段（[RFC6486] 第 4.2.1 节）且满足以下所有条件的清单对象：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* There is only one entry in the manifest for which the store contains exactly one object of type CRL, the hash of which matches the hash of the entry.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* 清单中只有一个条目，其存储空间正好包含一个 CRL 类型的对象，该对象的哈希值与条目的哈希值相匹配。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* The manifest&#39;s certificate AKI equals the above CRL&#39;s AKI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* 清单的证书 AKI 等于上述 CRL 的 AKI。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* The above CRL is a valid object according to Section 6.3 of [RFC5280].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* 根据 [RFC5280] 第 6.3 节，上述 CRL 是一个有效对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* The manifest is a valid object according to Section 4.4 of [RFC6486], and its EE certificate is not in the CRL found above.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* 根据 [RFC6486] 第 4.4 节，清单是有效对象，其 EE 证书不在上述 CRL 中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. If there is an object that matches the above criteria, consider this object to be the valid manifest, and consider the CRL found at the previous step to be the valid CRL for the current CA certificate&#39;s publication point.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 如果有符合上述条件的对象，则将该对象视为有效清单，并将上一步找到的证书废止列表视为当前 CA 证书发布点的有效证书废止列表。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. Report an error for every other manifest with a number higher than the number of the valid manifest.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. 每当其他清单的编号高于有效清单的编号时，就会报错。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-2-2--Validating-Manifest-Entries">
+3.2.2. Validating Manifest Entries
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.2.2. 验证舱单条目
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For every entry in the manifest object:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+清单对象中的每个条目：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. Construct an entry&#39;s URI by appending the entry name to the current CA&#39;s publication point URI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 将条目名称附加到当前 CA 的发布点 URI 上，从而构建条目 URI。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. Get all objects from the store whose hash attribute equals the entry&#39;s hash (see Section 5.1.2).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 从存储空间中获取哈希属性等于条目哈希值的所有对象（参见第 5.1.2 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. If no such objects are found, issue an error for this manifest entry and progress to the next entry. This case indicates that the repository does not have an object at the location listed in the manifest or that the object&#39;s hash does not match the hash listed in the manifest.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 如果未找到此类对象，则对该清单条目发出错误信息，然后转到下一个条目。这种情况表明，存储库在清单所列位置没有对象，或者对象的哈希值与清单所列哈希值不匹配。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. For every found object, compare its URI with the URI of the manifest entry.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. 对于每个找到的对象，将其 URI 与清单条目的 URI 进行比较。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* For every object with a non-matching URI, issue a warning. This case indicates that the object from the manifest entry is (also) found at a different location in a (possibly different) repository.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* 对于每个URI 不匹配的对象，都会发出警告。这种情况表明，清单条目中的对象（也）存在于（可能不同的）存储库中的不同位置。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* If no objects with a matching URI are found, issue a warning. This case indicates that there is no object found in the repository at the location listed in the manifest entry (but there is at least one matching object found at a different location).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+* 如果没有找到与 URI 匹配的对象，则发出警告。这种情况表明，在清单条目中所列位置的版本库中没有找到对象（但在不同位置至少找到了一个匹配对象）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5. Use all found objects for further validation as per Section 3.2.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5. 根据第 3.2 节，使用所有找到的对象进行进一步验证。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Please note that the above steps will not reject objects whose hash matches the hash listed in the manifest but whose URI does not. See Section 7.3 for additional information.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，如果对象的哈希值与清单中列出的哈希值一致，但 URI 不一致，则上述步骤不会拒绝该对象。更多信息请参见第 7.3 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-3--Object-Store-Cleanup">
+3.3. Object Store Cleanup
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.3. 对象存储清理
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+At the end of every TA tree validation, some objects are removed from the store using the following rules:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+每次 TA 树验证结束后，都会根据以下规则从存储中删除一些对象：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. Given all objects that were encountered during the current validation run, remove from the store (Section 5.1.6) all objects whose URI attribute matches the URI of one of the encountered objects but whose content&#39;s hash does not match the hash of any of the encountered objects. This removes from the store objects that were replaced in the repository by their newer versions with the same URIs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 给定当前验证运行期间遇到的所有对象，从存储库中删除（第 5.1.6 节）所有 URI 属性与遇到对象的 URI 匹配，但内容哈希值与遇到对象的哈希值不匹配的对象。这将从存储库中删除那些在存储库中被具有相同 URI 的较新版本所取代的对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. Remove from the store all objects that were last encountered during validation a long time ago (as specified by the local policy). This removes objects that do not appear on any valid manifest anymore (but possibly are still published in a repository).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 从存储中删除很久以前（由本地策略指定）在验证过程中最后一次遇到的所有对象。这将删除不再出现在任何有效清单上的对象（但可能仍在存储库中发布）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. Remove from the store all objects that were downloaded recently (as specified by the local policy) but that have never been used in the validation process. This removes objects that have never appeared on any valid manifest.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 从存储中删除最近下载过（由本地策略指定）但从未在验证过程中使用过的所有对象。这将删除从未在任何有效清单上出现过的对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Shortening the time interval used in step 2 will free more disk space used by the store, at the expense of downloading removed objects again if they are still published in the repository.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缩短步骤 2 中使用的时间间隔将释放存储空间所使用的更多磁盘空间，但如果删除的对象仍在版本库中发布，则需要再次下载这些对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Extending the time interval used in step 3 will prevent repeated downloads of unused repository objects. However, it will also extend the interval at which unused objects are removed. This creates a risk that such objects will fill up all available disk space if a large enough amount of such objects is published in the repository (either by mistake or with a malicious intent).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+延长步骤 3 中使用的时间间隔可以防止重复下载未使用的资源库对象。不过，这也会延长删除未使用对象的时间间隔。如果在版本库中发布了足够多的此类对象（可能是错误发布，也可能是恶意发布），就会产生此类对象占满所有可用磁盘空间的风险。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Remote-Objects-Fetcher">
+4. Remote Objects Fetcher
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 远程对象捕获器
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The fetcher is responsible for downloading objects from remote repositories (described in Section 3 of [RFC6481]) using the rsync protocol [rsync] or RRDP [RFC8182].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+取回器负责使用 rsync 协议 [rsync] 或 RRDP [RFC8182] 从远程存储库下载对象（详见 [RFC6481] 第 3 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-1--Fetcher-Operations">
+4.1. Fetcher Operations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.1. Fetcher 操作
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For every visited URI, the fetcher keeps track of the last time a successful fetch occurred.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于每个访问过的 URI，取回器都会记录上一次成功取回的时间。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-1-1--Fetch-Repository-Objects">
+4.1.1. Fetch Repository Objects
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.1.1. 获取存储库对象
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This operation receives one parameter -- a URI. For an rsync repository, this URI points to a directory. For an RRDP repository, it points to the repository&#39;s notification file.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该操作接收一个参数--URI。对于 rsync 版本库，该 URI 指向一个目录。对于 RRDP 资源库，该 URI 指向资源库的通知文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The fetcher follows these steps:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+取件程序遵循以下步骤
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. If data associated with the URI has been downloaded recently (as specified by the local policy), skip the following steps.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 如果与 URI 相关的数据最近已被下载（如本地策略所指定），则跳过以下步骤。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. Download remote objects using the URI provided (for an rsync repository, use recursive mode). If the URI contains the &#34;https&#34; schema and download has failed, issue a warning, replace the &#34;https&#34; schema in the URI with &#34;http&#34;, and try to download objects again using the resulting URI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 使用提供的 URI 下载远程对象（对于 rsync 资源库，使用递归模式）。如果 URI 包含 &#34;https &#34;模式，且下载失败，则发出警告，将 URI 中的 &#34;https &#34;模式替换为 &#34;http&#34;，然后尝试使用生成的 URI 重新下载对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. If remote objects cannot be downloaded, issue an error and skip the following steps.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 如果无法下载远程对象，则发出错误信息并跳过以下步骤。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. Perform syntactic verification of fetched objects. The type of every object (certificate, manifest, CRL, ROA, or Ghostbusters Record) is determined based on the object&#39;s filename extension (.cer, .mft, .crl, .roa, and .gbr, respectively). The syntax of the object is described in Section 4 of [RFC6487] for resource certificates, step 1 of Section 3 of [RFC6488] for signed objects, Section 4 of [RFC6486] for manifests, [RFC5280] for CRLs, Section 3 of [RFC6482] for ROAs, and Section 5 of [RFC6493] for Ghostbusters Records.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. 对获取的对象进行语法验证。每个对象的类型（证书、清单、CRL、ROA 或 Ghostbusters Record）根据对象的文件扩展名（分别为.cer、.mft、.crl、.roa 和 .gbr）确定。对象的语法在资源证书的 [RFC6487] 第 4 节、签名对象的 [RFC6488] 第 3 节第 1 步、清单的 [RFC6486] 第 4 节、CRL 的 [RFC5280] 第 3 节、ROA 的 [RFC6482] 第 3 节和 Ghostbusters Record 的 [RFC6493] 第 5 节中有描述。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5. Put every downloaded and syntactically correct object in the object store (Section 5.1.1).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5. 将每个下载的、语法正确的对象放入对象存储区（第 5.1.1 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The time interval used in step 1 should be chosen based on the acceptable delay in receiving repository updates.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+步骤 1 中使用的时间间隔应根据接收资源库更新的可接受延迟来选择。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-1-2--Fetch-Single-Repository-Object">
+4.1.2. Fetch Single Repository Object
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.1.2. 获取单个存储库对象
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This operation receives one parameter -- a URI that points to an object in a repository.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该操作接收一个参数，即指向资源库中一个对象的 URI。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The fetcher follows these steps:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+取件程序遵循以下步骤
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. Download a remote object using the URI provided. If the URI contains the &#34;https&#34; schema and download failed, issue a warning, replace the &#34;https&#34; schema in the URI with &#34;http&#34;, and try to download the object using the resulting URI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 使用提供的 URI 下载远程对象。如果 URI 包含 &#34;https &#34;模式且下载失败，则发出警告，将 URI 中的 &#34;https &#34;模式替换为 &#34;http&#34;，然后尝试使用生成的 URI 下载对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. If the remote object cannot be downloaded, issue an error and skip the following steps.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 如果无法下载远程对象，则发出错误信息并跳过以下步骤。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. Perform syntactic verification of the fetched object. The type of object (certificate, manifest, CRL, ROA, or Ghostbusters Record) is determined based on the object&#39;s filename extension (.cer, .mft, .crl, .roa, and .gbr, respectively). The syntax of the object is described in Section 4 of [RFC6487] for resource certificates, step 1 of Section 3 of [RFC6488] for signed objects, Section 4 of [RFC6486] for manifests, [RFC5280] for CRLs, Section 3 of [RFC6482] for ROAs, and Section 5 of [RFC6493] for Ghostbusters Records.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 对获取的对象进行语法验证。对象类型（证书、清单、CRL、ROA 或 Ghostbusters Record）根据对象的文件扩展名（分别为.cer、.mft、.crl、.roa 和 .gbr）确定。对象的语法在资源证书的 [RFC6487] 第 4 节、签名对象的 [RFC6488] 第 3 节第 1 步、清单的 [RFC6486] 第 4 节、CRL 的 [RFC5280] 第 3 节、ROA 的 [RFC6482] 第 3 节和 Ghostbusters Record 的 [RFC6493] 第 5 节中有描述。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. If the downloaded object is not syntactically correct, issue an error and skip further steps.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. 如果下载的对象语法不正确，则发出错误信息并跳过后续步骤。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5. Delete all objects from the object store (Section 5.1.5) whose URI matches the URI given.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5. 删除对象存储空间（第 5.1.5 节）中 URI 与给定 URI 一致的所有对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+6. Put the downloaded object in the object store (Section 5.1.1).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+6. 将下载的对象放入对象存储区（第 5.1.1 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Local-Object-Store">
+5. Local Object Store
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 本地对象存储
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-1--Store-Operations">
+5.1. Store Operations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.1. 商店运营
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-1-1--Store-Repository-Object">
+5.1.1. Store Repository Object
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.1.1. 存储存储库对象
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Put the given object in the store if there is no record with the same hash and URI fields. Note that in the (unlikely) event of hash collision, the given object will not replace the object in the store.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果没有与哈希值和 URI 字段相同的记录，则将给定对象放入存储空间。请注意，在哈希值碰撞的情况下（可能性不大），给定对象不会替换存储中的对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-1-2--Get-Objects-by-Hash">
+5.1.2. Get Objects by Hash
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.1.2. 通过哈希值获取对象
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Retrieve all objects from the store whose hash attribute matches the given hash.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+从存储空间中读取哈希属性与给定哈希值匹配的所有对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-1-3--Get-Certificate-Objects-by-URI">
+5.1.3. Get Certificate Objects by URI
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.1.3. 通过 URI 获取证书对象
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Retrieve from the store all objects of type certificate whose URI attribute matches the given URI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+从存储空间中读取 URI 属性与给定 URI 一致的所有证书类型对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-1-4--Get-Manifest-Objects-by-AKI">
+5.1.4. Get Manifest Objects by AKI
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.1.4. 通过 AKI 获取 Manifest Objects
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Retrieve from the store all objects of type manifest whose AKI attribute matches the given AKI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+从存储空间中读取所有 AKI 属性与给定 AKI 匹配的清单类型对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-1-5--Delete-Objects-for-a-URI">
+5.1.5. Delete Objects for a URI
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.1.5. 删除 URI 的对象
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For a given URI, delete all objects in the store with a matching URI attribute.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于给定的 URI，删除存储区中所有具有匹配 URI 属性的对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-1-6--Delete-Outdated-Objects">
+5.1.6. Delete Outdated Objects
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.1.6. 删除过时对象
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For a given URI and a list of hashes, delete all objects in the store with a matching URI whose hash attribute is not in the given list of hashes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于给定的 URI 和哈希值列表，删除存储区中所有与 URI 匹配且哈希属性不在给定哈希值列表中的对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-1-7--Update-Objects-Validation-Time">
+5.1.7. Update Object&#39;s Validation Time
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.1.7. 更新对象的验证时间
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For all objects in the store whose hash attribute matches the given hash, set the last validation time attribute to the given timestamp.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于哈希属性与给定哈希值匹配的所有存储对象，将最后验证时间属性设置为给定的时间戳。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--IANA-Considerations">
+6. IANA Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. IANA考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document has no IANA actions.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件没有 IANA 操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--Security-Considerations">
+7. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7-1--Hash-Collisions">
+7.1. Hash Collisions
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7.1. 哈希碰撞
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This implementation will not detect possible hash collisions in the hashes of repository objects (calculated using the file hash algorithm specified in [RFC7935]). It considers objects with same hash values to be identical.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本实现不会检测存储库对象哈希值（使用 [RFC7935] 中指定的文件哈希算法计算）中可能出现的哈希碰撞。它认为具有相同哈希值的对象是相同的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7-2--Algorithm-Agility">
+7.2. Algorithm Agility
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7.2. 算法敏捷性
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This implementation only supports hash algorithms and key sizes specified in [RFC7935]. Algorithm agility described in [RFC6916] is not supported.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本实现仅支持 [RFC7935] 中指定的哈希算法和密钥大小。不支持 [RFC6916] 中描述的算法灵活性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7-3--Mismatch-between-the-Expected-and-Actual-Location-of-an-Object-in-the-Repository">
+7.3. Mismatch between the Expected and Actual Location of an Object in the Repository
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7.3. 对象在资源库中的预期位置与实际位置不匹配
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+According to Section 2 of [RFC6481], all objects issued by a particular CA certificate are expected to be located in one repository publication point, specified in the SIA extension of that CA certificate. The manifest object issued by that CA certificate enumerates all other issued objects, listing their filenames and content hashes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+根据 [RFC6481] 第 2 节，由特定 CA 证书签发的所有对象都应位于一个存储库发布点，该存储库发布点在该 CA 证书的 SIA 扩展中指定。该 CA 证书签发的清单对象列举了所有其他签发的对象，列出了它们的文件名和内容哈希值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+However, it is possible that an object whose content hash matches the hash listed in the manifest either has a different filename or is located at a different publication point in a repository.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+不过，内容哈希值与清单中列出的哈希值相匹配的对象有可能有不同的文件名，或者位于存储库中不同的发布点。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+On the other hand, all RPKI objects, either explicitly or within their embedded EE certificate, have an AKI extension that contains the key identifier of their issuing CA certificate. Therefore, it is always possible to perform an RPKI validation of the object whose expected location does not match its actual location, provided that the certificate that matches the AKI of the object in question is known to the system that performs validation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+另一方面，所有 RPKI 对象，无论是明示的还是在其嵌入的 EE 证书中，都有一个 AKI 扩展，其中包含签发 CA 证书的密钥标识符。因此，对于预期位置与其实际位置不符的对象，只要执行验证的系统知道与该对象 AKI 相匹配的证书，就始终可以对其执行 RPKI 验证。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the case of a mismatch as described above, this implementation will not exclude an object from further validation merely because its actual location or filename does not match the expected location or filename. This decision was made because the actual location of a file in a repository is taken from the repository retrieval mechanism, which, in the case of an rsync repository, does not provide any cryptographic security, and in the case of an RRDP repository, provides only a transport-layer security with the fallback to unsecured transport. On the other hand, the manifest is an RPKI signed object, and its content could be verified in the context of the RPKI validation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在出现上述不匹配的情况下，本实现不会仅仅因为对象的实际位置或文件名与预期位置或文件名不匹配，就将其排除在进一步验证之外。做出这一决定的原因是，文件在版本库中的实际位置取自版本库检索机制，对于 rsync 版本库，该机制不提供任何加密安全性，而对于 RRDP 版本库，该机制只提供传输层安全性和不安全传输的回退。另一方面，清单是经 RPKI 签名的对象，其内容可在 RPKI 验证中进行验证。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7-4--Manifest-Content-versus-Publication-Point-Content">
+7.4. Manifest Content versus Publication Point Content
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7.4. 表单内容与发布点内容
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This algorithm uses the content of a manifest object to determine other objects issued by a CA certificate. It verifies that the manifest is located in the publication point designated in the CA certificate&#39;s SIA extension. However, if there are other (not listed in the manifest) objects located in the same publication point directory, they are ignored even if they might be valid and issued by the same CA as the manifest. (This RP behavior is allowed, but not required, by [RFC6486].)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该算法使用清单对象的内容来确定 CA 证书签发的其他对象。它验证清单是否位于 CA 证书 SIA 扩展名中指定的发布点。但是，如果在同一发布点目录中还有其他对象（未在清单中列出），则这些对象将被忽略，即使它们可能是有效的，而且是由与清单相同的 CA 签发的。(这种 RP 行为是允许的，但不是 [RFC6486] 所要求的）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7-5--Possible-Denial-of-Service">
+7.5. Possible Denial of Service
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7.5. 可能的拒绝服务
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The store cleanup procedure described in Section 3.3 tries to minimize removal and subsequent re-fetch of objects that are published in a repository but not used in the validation. Once such objects are removed from the remote repository, they will be discarded from the local object store after a period of time specified by a local policy. By generating an excessive amount of syntactically valid RPKI objects, a man-in-the-middle attack between a validating tool and a repository could force an implementation to fetch and store those objects in the object store (see Section 4.1.1) before they are validated and discarded, leading to out-of-memory or out-of-disk-space conditions and, subsequently, a denial of service.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+第 3.3 节所述的存储清理程序会尽量减少删除和随后重新获取已在存储库中发布但未在验证中使用的对象。这些对象一旦从远程资源库中删除，就会在本地策略规定的一段时间后从本地对象存储中丢弃。通过生成过量语法上有效的 RPKI 对象，验证工具和资源库之间的中间人攻击可迫使实现在对象存储区（见第 4.1.1 节）中获取和存储这些对象，然后再对其进行验证和丢弃，从而导致内存不足或磁盘空间不足，进而导致拒绝服务。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8--References">
+8. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8-1--Normative-References">
+8.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, DOI 10.17487/RFC5280, May 2008, &lt;https://www.rfc-editor.org/info/rfc5280&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, DOI 10.17487/RFC5280, May 2008, &lt;https://www.rfc-editor.org/info/rfc5280&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, DOI 10.17487/RFC6481, February 2012, &lt;https://www.rfc-editor.org/info/rfc6481&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, DOI 10.17487/RFC6481, February 2012, &lt;https://www.rfc-editor.org/info/rfc6481&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, &#34;Manifests for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6486, DOI 10.17487/RFC6486, February 2012, &lt;https://www.rfc-editor.org/info/rfc6486&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, &#34;Manifests for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6486, DOI 10.17487/RFC6486, February 2012, &lt;https://www.rfc-editor.org/info/rfc6486&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Huston, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, DOI 10.17487/RFC6487, February 2012, &lt;https://www.rfc-editor.org/info/rfc6487&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Huston, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, DOI 10.17487/RFC6487, February 2012, &lt;https://www.rfc-editor.org/info/rfc6487&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6488] Lepinski, M., Chi, A., and S. Kent, &#34;Signed Object Template for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6488, DOI 10.17487/RFC6488, February 2012, &lt;https://www.rfc-editor.org/info/rfc6488&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6488] Lepinski, M., Chi, A., and S. Kent, &#34;Signed Object Template for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6488, DOI 10.17487/RFC6488, February 2012, &lt;https://www.rfc-editor.org/info/rfc6488&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6493] Bush, R., &#34;The Resource Public Key Infrastructure (RPKI) Ghostbusters Record&#34;, RFC 6493, DOI 10.17487/RFC6493, February 2012, &lt;https://www.rfc-editor.org/info/rfc6493&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6493] Bush, R., &#34;The Resource Public Key Infrastructure (RPKI) Ghostbusters Record&#34;, RFC 6493, DOI 10.17487/RFC6493, February 2012, &lt;https://www.rfc-editor.org/info/rfc6493&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6916] Gagliano, R., Kent, S., and S. Turner, &#34;Algorithm Agility Procedure for the Resource Public Key Infrastructure (RPKI)&#34;, BCP 182, RFC 6916, DOI 10.17487/RFC6916, April 2013, &lt;https://www.rfc-editor.org/info/rfc6916&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6916] Gagliano, R., Kent, S., and S. Turner, &#34;Algorithm Agility Procedure for the Resource Public Key Infrastructure (RPKI)&#34;, BCP 182, RFC 6916, DOI 10.17487/RFC6916, April 2013, &lt;https://www.rfc-editor.org/info/rfc6916&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7730] Huston, G., Weiler, S., Michaelson, G., and S. Kent, &#34;Resource Public Key Infrastructure (RPKI) Trust Anchor Locator&#34;, RFC 7730, DOI 10.17487/RFC7730, January 2016, &lt;https://www.rfc-editor.org/info/rfc7730&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7730] Huston, G., Weiler, S., Michaelson, G., and S. Kent, &#34;Resource Public Key Infrastructure (RPKI) Trust Anchor Locator&#34;, RFC 7730, DOI 10.17487/RFC7730, January 2016, &lt;https://www.rfc-editor.org/info/rfc7730&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7935] Huston, G. and G. Michaelson, Ed., &#34;The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure&#34;, RFC 7935, DOI 10.17487/RFC7935, August 2016, &lt;https://www.rfc-editor.org/info/rfc7935&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7935] Huston, G. and G. Michaelson, Ed., &#34;The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure&#34;, RFC 7935, DOI 10.17487/RFC7935, August 2016, &lt;https://www.rfc-editor.org/info/rfc7935&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8182] Bruijnzeels, T., Muravskiy, O., Weber, B., and R. Austein, &#34;The RPKI Repository Delta Protocol (RRDP)&#34;, RFC 8182, DOI 10.17487/RFC8182, July 2017, &lt;https://www.rfc-editor.org/info/rfc8182&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8182] Bruijnzeels, T., Muravskiy, O., Weber, B., and R. Austein, &#34;The RPKI Repository Delta Protocol (RRDP)&#34;, RFC 8182, DOI 10.17487/RFC8182, July 2017, &lt;https://www.rfc-editor.org/info/rfc8182&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8360] Huston, G., Michaelson, G., Martinez, C., Bruijnzeels, T., Newton, A., and D. Shaw, &#34;Resource Public Key Infrastructure (RPKI) Validation Reconsidered&#34;, RFC 8360, DOI 10.17487/RFC8360, April 2018, &lt;https://www.rfc-editor.org/info/rfc8360&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8360] Huston, G., Michaelson, G., Martinez, C., Bruijnzeels, T., Newton, A., and D. Shaw, &#34;Resource Public Key Infrastructure (RPKI) Validation Reconsidered&#34;, RFC 8360, DOI 10.17487/RFC8360, April 2018, &lt;https://www.rfc-editor.org/info/rfc8360&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8-2--Informative-References">
+8.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[rpki-validator] &#34;RIPE-NCC/rpki-validator source code&#34;, &lt;https://github.com/RIPE-NCC/rpki-validator&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[rpkii-validator] &#34;RIPE-NCC/rpkii-validator 源代码&#34;，&lt;https://github.com/RIPE-NCC/rpki-validator&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[rsync] &#34;rsync&#34;, October 2018, &lt;https://rsync.samba.org&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[rsync] &#34;rsync&#34;，2018 年 10 月，&lt;https://rsync.samba.org&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Acknowledgements
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+致谢
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document describes the algorithm as it is implemented by the software development team at the RIPE NCC, which, over time, included Mikhail Puzanov, Erik Rozendaal, Miklos Juhasz, Misja Alma, Thiago da Cruz Pereira, Yannis Gonianakis, Andrew Snare, Varesh Tapadia, Paolo Milani, Thies Edeling, Hans Westerbeek, Rudi Angela, and Constantijn Visinescu. The authors would also like to acknowledge contributions by Carlos Martinez, Andy Newton, Rob Austein, and Stephen Kent.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+随着时间的推移，该团队成员包括 Mikhail Puzanov、Erik Rozendaal、Miklos Juhasz、Misja Alma、Thiago da Cruz Pereira、Yannis Gonianakis、Andrew Snare、Varesh Tapadia、Paolo Milani、Thies Edeling、Hans Westerbeek、Rudi Angela 和 Constantijn Visinescu。作者还要感谢卡洛斯-马丁内斯（Carlos Martinez）、安迪-牛顿（Andy Newton）、罗布-奥斯汀（Rob Austein）和斯蒂芬-肯特（Stephen Kent）的贡献。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Oleg Muravskiy RIPE NCC
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+奥列格-穆拉夫斯基 RIPE NCC
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: oleg@ripe.net
+   URI:   https://www.ripe.net/
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Tim Bruijnzeels NLnet Labs
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Tim Bruijnzeels NLnet 实验室
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: tim@nlnetlabs.nl
+   URI:   https://www.nlnetlabs.nl/
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

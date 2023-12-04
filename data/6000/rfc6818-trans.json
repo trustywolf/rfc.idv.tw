@@ -1,0 +1,372 @@
+{
+  "title": {
+    "text": "RFC 6818 - Updates to the Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile",
+    "zh": "RFC 6818 - 更新互联网 X.509 公钥基础设施证书和证书吊销列表 (CRL) 简介"
+  },
+  "number": 6818,
+  "created_at": "2023-12-04 21:36:14.419701+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                            P. Yee\nRequest for Comments: 6818                                        AKAYLA\nUpdates: 5280                                               January 2013\nCategory: Standards Track\nISSN: 2070-1721",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 7,
+      "text": " Updates to the Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile",
+      "zh": "更新互联网 X.509 公钥基础设施证书和证书吊销列表 (CRL) 简介"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document updates RFC 5280, the \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\". This document changes the set of acceptable encoding methods for the explicitText field of the user notice policy qualifier and clarifies the rules for converting internationalized domain name labels to ASCII. This document also provides some clarifications on the use of self-signed certificates, trust anchors, and some updated security considerations.",
+      "zh": "本文件更新了 RFC 5280，即 \"互联网 X.509 公钥基础设施证书和证书废止列表 (CRL) 简介\"。本文件更改了用户通知策略限定符 explicitText 字段的可接受编码方法集，并明确了将国际化域名标签转换为 ASCII 的规则。本文件还对自签名证书的使用、信任锚和一些更新的安全注意事项进行了说明。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 5741 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6818.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6818。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2013 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "版权所有 (c) 2013 IETF 信托基金会和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 2,
+      "text": " 1. Introduction ....................................................2\n    1.1. Terminology ................................................3\n 2. Update to RFC 5280, Section 3.2: \"Certification Paths and Trust\" 3\n 3. Update to RFC 5280, Section 4.2.1.4: \"Certificate Policies\" .....3\n 4. Update to RFC 5280, Section 6.2: \"Using the Path Validation\n    Algorithm\" ......................................................4\n 5. Update to RFC 5280, Section 7.3: \"Internationalized\n    Domain Names in Distinguished Names\" ............................5\n 6. Security Considerations .........................................5\n 7. Update to RFC 5280, Section 11.1: \"Normative References\" ........7\n 8. Update to RFC 5280, Section 11.2: \"Informative References\" ......7\n 9. References ......................................................7\n    9.1. Normative References .......................................7\n    9.2. Informative References .....................................7\n10. Acknowledgements ................................................8",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document updates the \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\" [RFC5280].",
+      "zh": "本文件更新了 \"互联网 X.509 公钥基础设施证书和证书废止列表 (CRL) 简介\" [RFC5280]。"
+    },
+    {
+      "indent": 3,
+      "text": "This document makes a recommendation that self-signed certificates used to convey trust anchor data be marked as certificate authority (CA) certificates, which is not always current practice.",
+      "zh": "本文件建议，用于传递信任锚数据的自签名证书应标记为证书颁发机构（CA）证书，但目前的做法并非总是如此。"
+    },
+    {
+      "indent": 3,
+      "text": "The use of self-signed certificates as trust anchors in Section 6.2 of [RFC5280] is clarified. While it is optional to use additional information in these certificates in the path validation process, [RFC5937] is noted as providing guidance in that regard.",
+      "zh": "对 [RFC5280] 第 6.2 节中自签名证书作为信任锚的使用进行了说明。虽然在路径验证过程中使用这些证书中的附加信息是可选的，但 [RFC5937] 提供了这方面的指导。"
+    },
+    {
+      "indent": 3,
+      "text": "The acceptable and unacceptable encodings for the explicitText field of the user notice policy qualifier are updated to bring them in line with existing practice.",
+      "zh": "更新了用户通知策略限定符 explicitText 字段的可接受和不可接受编码，使其符合现行做法。"
+    },
+    {
+      "indent": 3,
+      "text": "The rules in Section 7.3 of [RFC5280] for ASCII encoding of Internationalized Domain Names (IDNs) as Distinguished Names are aligned with the rules in Section 7.2 of that document that govern IDN encoding as GeneralNames.",
+      "zh": "RFC5280] 第 7.3 节中关于将国际化域名 (IDN) 作为区别名称进行 ASCII 编码的规则与该文件第 7.2 节中关于将 IDN 编码作为普通名称的规则保持一致。"
+    },
+    {
+      "indent": 3,
+      "text": "In light of some observed attacks [Prins], the Security Considerations section now gives added depth to the consequences of CA key compromise. This section additionally notes that collision resistance is not a required property of one-way hash functions when used to generate key identifiers.",
+      "zh": "鉴于观察到的一些攻击[Prins]，\"安全考虑 \"部分现在对 CA 密钥泄露的后果作了更深入的阐述。本节还指出，当单向散列函数用于生成密钥标识符时，抗碰撞性并不是它的必要属性。"
+    },
+    {
+      "indent": 3,
+      "text": "This document also adds normative and informative references for Trust Anchor formats and how they may be used to initialize the path validation inputs. These are needed as a result of the changes made in Section 4 of this document.",
+      "zh": "本文档还为信任锚格式以及如何使用这些格式来初始化路径验证输入添加了规范性和信息性参考。由于本文档第 4 节中所做的更改，这些内容是必要的。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Terminology",
+      "section_title": true,
+      "zh": "1.1. 用语"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in RFC 2119 [RFC2119].",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照RFC 2119 [RFC2119]中的描述进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Update to RFC 5280, Section 3.2: \"Certification Paths and Trust\"",
+      "section_title": true,
+      "zh": "2. 对 RFC 5280 第 3.2 节：\"认证路径和信任 \"的更新"
+    },
+    {
+      "indent": 3,
+      "text": "Add the following paragraph to the end of RFC 5280, Section 3.2:",
+      "zh": "在 RFC 5280 第 3.2 节末尾添加以下段落："
+    },
+    {
+      "indent": 0,
+      "text": "| Consistent with Section 3.4.61 of X.509 (11/2008) [X.509], we note\n| that use of self-issued certificates and self-signed certificates\n| issued by entities other than CAs are outside the scope of this\n| specification.  Thus, for example, a web server or client might\n| generate a self-signed certificate to identify itself.  These\n| certificates and how a relying party uses them to authenticate\n| asserted identities are both outside the scope of RFC 5280.",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3. Update to RFC 5280, Section 4.2.1.4: \"Certificate Policies\"",
+      "section_title": true,
+      "zh": "3. 更新 RFC 5280 第 4.2.1.4 节：\"证书政策\""
+    },
+    {
+      "indent": 3,
+      "text": "RFC 5280, Section 4.2.1.4, the tenth paragraph says:",
+      "zh": "RFC 5280 第 4.2.1.4 节第 10 段说"
+    },
+    {
+      "indent": 0,
+      "text": "  An explicitText field includes the textual statement directly in\n  the certificate.  The explicitText field is a string with a\n  maximum size of 200 characters.  Conforming CAs SHOULD use the\n| UTF8String encoding for explicitText, but MAY use IA5String.\n| Conforming CAs MUST NOT encode explicitText as VisibleString or\n| BMPString.  The explicitText string SHOULD NOT include any control",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "| characters (e.g., U+0000 to U+001F and U+007F to U+009F). When | the UTF8String encoding is used, all character sequences SHOULD be normalized according to Unicode normalization form C (NFC) [NFC].",
+      "zh": "| 字符（如 U+0000 至 U+001F 和 U+007F 至 U+009F）。当使用 | UTF8String 编码时，所有字符序列都应根据 Unicode 规范化形式 C (NFC) [NFC] 进行规范化。"
+    },
+    {
+      "indent": 3,
+      "text": "This paragraph is replaced with:",
+      "zh": "本段改为"
+    },
+    {
+      "indent": 0,
+      "text": "  An explicitText field includes the textual statement directly in\n  the certificate.  The explicitText field is a string with a\n  maximum size of 200 characters.  Conforming CAs SHOULD use the\n| UTF8String encoding for explicitText.  VisibleString or BMPString\n| are acceptable but less preferred alternatives.  Conforming CAs\n| MUST NOT encode explicitText as IA5String.  The explicitText string\n| SHOULD NOT include any control characters (e.g., U+0000 to U+001F\n| and U+007F to U+009F).  When the UTF8String or BMPString encoding\n  is used, all character sequences SHOULD be normalized according\n  to Unicode normalization form C (NFC) [NFC].",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "4. Update to RFC 5280, Section 6.2: \"Using the Path Validation Algorithm\"",
+      "section_title": true,
+      "zh": "4. 对 RFC 5280 第 6.2 节 \"使用路径验证算法 \"的更新"
+    },
+    {
+      "indent": 3,
+      "text": "RFC 5280, Section 6.2, the third paragraph says:",
+      "zh": "RFC 5280 第 6.2 节第三段说"
+    },
+    {
+      "indent": 0,
+      "text": "  Where a CA distributes self-signed certificates to specify trust\n  anchor information, certificate extensions can be used to specify\n  recommended inputs to path validation.  For example, a policy\n  constraints extension could be included in the self-signed\n  certificate to indicate that paths beginning with this trust anchor\n  should be trusted only for the specified policies.  Similarly, a name\n  constraints extension could be included to indicate that paths\n  beginning with this trust anchor should be trusted only for the\n  specified name spaces.  The path validation algorithm presented in\n  Section 6.1 does not assume that trust anchor information is provided\n  in self-signed certificates and does not specify processing rules for\n| additional information included in such certificates.\n| Implementations that use self-signed certificates to specify trust\n| anchor information are free to process or ignore such information.",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "This paragraph is replaced with:",
+      "zh": "本段改为"
+    },
+    {
+      "indent": 0,
+      "text": "  Where a CA distributes self-signed certificates to specify trust\n  anchor information, certificate extensions can be used to specify\n  recommended inputs to path validation.  For example, a policy\n  constraints extension could be included in the self-signed\n  certificate to indicate that paths beginning with this trust anchor\n  should be trusted only for the specified policies.  Similarly, a name\n  constraints extension could be included to indicate that paths\n  beginning with this trust anchor should be trusted only for the\n  specified name spaces.  The path validation algorithm presented in\n  Section 6.1 does not assume that trust anchor information is provided\n| in self-signed certificates and does not specify processing rules for\n| additional information included in such certificates.\n| However, [RFC5914] defines several formats for representing trust\n| anchor information, including self-signed certificates, and [RFC5937]\n| provides an example of how such information may be used to initialize\n| the path validation inputs.  Implementations are free to make use of\n| any additional information that is included in a trust anchor\n| representation, or to ignore such information.",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "5. Update to RFC 5280, Section 7.3: \"Internationalized Domain Names in Distinguished Names\"",
+      "section_title": true,
+      "zh": "5. 对 RFC 5280 第 7.3 节 \"区分名称中的国际化域名 \"的更新"
+    },
+    {
+      "indent": 3,
+      "text": "RFC 5280, Section 7.3, the first paragraph says:",
+      "zh": "RFC 5280 第 7.3 节第一段说"
+    },
+    {
+      "indent": 0,
+      "text": "  Domain Names may also be represented as distinguished names using\n  domain components in the subject field, the issuer field, the\n  subjectAltName extension, or the issuerAltName extension.  As with\n  the dNSName in the GeneralName type, the value of this attribute is\n  defined as an IA5String.  Each domainComponent attribute represents a\n  single label.  To represent a label from an IDN in the distinguished\n  name, the implementation MUST perform the \"ToASCII\" label conversion\n| specified in Section 4.1 of RFC 3490.  The label SHALL be considered\n| a \"stored string\".  That is, the AllowUnassigned flag SHALL NOT be\n| set.",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "This paragraph is replaced with:",
+      "zh": "本段改为"
+    },
+    {
+      "indent": 0,
+      "text": "  Domain Names may also be represented as distinguished names using\n  domain components in the subject field, the issuer field, the\n  subjectAltName extension, or the issuerAltName extension.  As with\n  the dNSName in the GeneralName type, the value of this attribute is\n  defined as an IA5String.  Each domainComponent attribute represents a\n  single label.  To represent a label from an IDN in the distinguished\n  name, the implementation MUST perform the \"ToASCII\" label conversion\n| specified in Section 4.1 of RFC 3490 with the UseSTD3ASCIIRules flag\n| set.  The label SHALL be considered a \"stored string\".  That is, the\n| AllowUnassigned flag SHALL NOT be set.  The conversion process is the\n| same as is performed in step 4 in Section 7.2.",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "6. Security Considerations",
+      "section_title": true,
+      "zh": "6. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This document modifies the Security Considerations section of RFC 5280 as follows. The fifth paragraph of the Security Considerations section of RFC 5280 says:",
+      "zh": "本文件对 RFC 5280 的 \"安全注意事项 \"部分作了如下修改。RFC 5280 的 \"安全注意事项 \"部分第五段写道"
+    },
+    {
+      "indent": 0,
+      "text": "  The protection afforded private keys is a critical security factor.\n  On a small scale, failure of users to protect their private keys will\n  permit an attacker to masquerade as them or decrypt their personal\n  information.  On a larger scale, compromise of a CA's private signing\n| key may have a catastrophic effect.  If an attacker obtains the\n| private key unnoticed, the attacker may issue bogus certificates and\n| CRLs.  Existence of bogus certificates and CRLs will undermine\n| confidence in the system.  If such a compromise is detected, all\n| certificates issued to the compromised CA MUST be revoked, preventing\n| services between its users and users of other CAs.  Rebuilding after\n| such a compromise will be problematic, so CAs are advised to\n| implement a combination of strong technical measures (e.g., tamper-\n| resistant cryptographic modules) and appropriate management\n| procedures (e.g., separation of duties) to avoid such an incident.",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "This paragraph is replaced with:",
+      "zh": "本段改为"
+    },
+    {
+      "indent": 0,
+      "text": "  The protection afforded private keys is a critical security factor.\n  On a small scale, failure of users to protect their private keys will\n  permit an attacker to masquerade as them or decrypt their personal\n  information.  On a larger scale, compromise of a CA's private signing\n  key may have a catastrophic effect.\n|\n| If an attacker obtains the private key of a CA unnoticed, the\n| attacker may issue bogus certificates and CRLs.  Even if an attacker\n| is unable to obtain a copy of a CA's private key, the attacker may be\n| able to issue bogus certificates and CRLs by making unauthorized use\n| of the CA's workstation or of an RA's workstation.  Such an attack\n| may be the result of an attacker obtaining unauthorized access to the\n| workstation, either locally or remotely, or may be the result of\n| inappropriate activity by an insider.  Existence of bogus\n| certificates and CRLs will undermine confidence in the system.  Among\n| many other possible attacks, the attacker may issue bogus\n| certificates that have the same subject names as legitimate\n| certificates in order impersonate legitimate certificate subjects.\n| This could include bogus CA certificates in which the subject names\n| in the bogus certificates match the names under which legitimate CAs\n| issue certificates and CRLs.  This would allow the attacker to issue\n| bogus certificates and CRLs that have the same issuer names, and\n| possibly the same serial numbers, as certificates and CRLs issued by\n| legitimate CAs.",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The following text is added to the end of the Security Considerations section of 5280:",
+      "zh": "在 5280 安全注意事项部分末尾添加以下文字："
+    },
+    {
+      "indent": 0,
+      "text": "| One-way hash functions are commonly used to generate key identifier\n| values (AKI and SKI), e.g., as described in Sections 4.1.1 and 4.1.2.\n| However, none of the security properties of such functions are\n| required for this context.",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "7. Update to RFC 5280, Section 11.1: \"Normative References\"",
+      "section_title": true,
+      "zh": "7. 更新 RFC 5280 第 11.1 节：\"规范性参考文件\""
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5914] Housley, R., Ashmore, S., and C. Wallace, \"Trust Anchor Format\", RFC 5914, June 2010.",
+      "zh": "[RFC5914] Housley, R., Ashmore, S., and C. Wallace, \"Trust Anchor Format\", RFC 5914, June 2010."
+    },
+    {
+      "indent": 0,
+      "text": "8. Update to RFC 5280, Section 11.2: \"Informative References\"",
+      "section_title": true,
+      "zh": "8. 更新 RFC 5280 第 11.2 节：\"参考信息\""
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5937] Ashmore, S. and C. Wallace, \"Using Trust Anchor Constraints during Certification Path Processing\", RFC 5937, August 2010.",
+      "zh": "[RFC5937] Ashmore, S. 和 C. Wallace，\"在认证路径处理过程中使用信任锚约束\"，RFC 5937，2010 年 8 月。"
+    },
+    {
+      "indent": 0,
+      "text": "9. References",
+      "section_title": true,
+      "zh": "9. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "9.1. Normative References",
+      "section_title": true,
+      "zh": "9.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, May 2008.",
+      "zh": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, May 2008."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5914] Housley, R., Ashmore, S., and C. Wallace, \"Trust Anchor Format\", RFC 5914, June 2010.",
+      "zh": "[RFC5914] Housley, R., Ashmore, S., and C. Wallace, \"Trust Anchor Format\", RFC 5914, June 2010."
+    },
+    {
+      "indent": 3,
+      "text": "[X.509] ITU-T Recommendation X.509 (2008) | ISO/IEC 9594-8:2008, Information Technology - Open Systems Interconnection - The Directory: Public-key and attribute certificate frameworks.",
+      "zh": "[X.509] ITU-T Recommendation X.509 (2008) | ISO/IEC 9594-8:2008，信息技术--开放系统互连--目录：公钥和属性证书框架。"
+    },
+    {
+      "indent": 0,
+      "text": "9.2. Informative References",
+      "section_title": true,
+      "zh": "9.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5937] Ashmore, S. and C. Wallace, \"Using Trust Anchor Constraints during Certification Path Processing\", RFC 5937, August 2010.",
+      "zh": "[RFC5937] Ashmore, S. 和 C. Wallace，\"在认证路径处理过程中使用信任锚约束\"，RFC 5937，2010 年 8 月。"
+    },
+    {
+      "indent": 3,
+      "text": "[Prins] Prins, J. R., \"DigiNotar Certificate Authority breach 'Operation Black Tulip'\", September 2011, <http://www.rijksoverheid.nl/bestanden/ documenten-en-publicaties/rapporten/2011/ 09/05/diginotar-public-report-version-1/ rapport-fox-it-operation-black-tulip-v1-0.pdf>.",
+      "zh": "[Prins] Prins, J. R., \"DigiNotar Certificate Authority breach 'Operation Black Tulip'\", September 2011, <http://www.rijksoverheid.nl/bestanden/ documenten-en-publicaties/rapporten/2011/ 09/05/diginotar-public-report-version-1/ rapport-fox-it-operation-black-tulip-v1-0.pdf>."
+    },
+    {
+      "indent": 3,
+      "text": "[NFC] Davis, M. and M. Duerst, \"Unicode Standard Annex #15: Unicode Normalization Forms\", October 2006, <http://www.unicode.org/reports/tr15/>.",
+      "zh": "[NFC] Davis, M. and M. Duerst, \"Unicode Standard Annex #15: Unicode Normalization Forms\", October 2006, <http://www.unicode.org/reports/tr15/>."
+    },
+    {
+      "indent": 0,
+      "text": "10. Acknowledgements",
+      "section_title": true,
+      "zh": "10. 致谢"
+    },
+    {
+      "indent": 3,
+      "text": "David Cooper is acknowledged for his fine work in editing previous versions of this document.",
+      "zh": "戴维-库珀（David Cooper）为编辑本文件以前的版本做出了出色的工作，特此致谢。"
+    },
+    {
+      "indent": 0,
+      "text": "Author's Address",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Peter E. Yee AKAYLA 7150 Moorland Drive Clarksville, MD 21029 USA EMail: peter@akayla.com",
+      "zh": "Peter E. Yee AKAYLA 7150 Moorland Drive Clarksville, MD 21029 USA EMail: peter@akayla.com"
+    }
+  ]
+}

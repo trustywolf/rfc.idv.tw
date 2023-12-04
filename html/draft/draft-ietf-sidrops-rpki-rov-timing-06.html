@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>draft-ietf-sidrops-rpki-rov-timing-06 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="../master.css">
+  <script type="text/javascript" src="../index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="../index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="index.html">Draft</a>
+        <a class="nav-item nav-link" href="../contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">draft-ietf-sidrops-rpki-rov-timing-06</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-rpki-rov-timing-06">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-secondary" role="alert">
+        <h4 class="alert-heading">draft-ietf-sidrops-rpki-rov-timing-06 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-rpki-rov-timing-06">
+            https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-rpki-rov-timing-06
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC draft-ietf-sidrops-rpki-rov-timing-06</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+      <div id="rfc_alert" class="" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_draft">当前显示的 RFC 是 Draft 版本。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Network Working Group                                            R. Bush
+Internet-Draft                  Internet Initiative Japan &amp; Arrcus, Inc.
+Intended status: Informational                            J. Borkenhagen
+Expires: 11 August 2022                                             AT&amp;T
+                                                          T. Bruijnzeels
+                                                              NLnet Labs
+                                                             J. Snijders
+                                                                  Fastly
+                                                         7 February 2022
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Timing Parameters in the RPKI based Route Origin Validation Supply Chain draft-ietf-sidrops-rpki-rov-timing-06
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+基于 RPKI 的路由原点验证供应链中的定时参数 draft-ietf-sidrops-rpkii-rov-timing-06
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document explores, and makes recommendations for, timing of Resource Public Key Infrastructure publication of ROV data, their propagation, and their use in Relying Parties, caches, and routers.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件探讨了 ROV 数据的资源公钥基础架构发布时间、传播以及在依赖方、缓存和路由器中的使用，并就此提出了建议。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Requirements Language
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+要求语言
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;NOT RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, 以及 &#34;OPTIONAL&#34; 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本互联网草案完全按照 BCP 78 和 BCP 79 的规定提交。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Internet-Drafts are working documents of the Internet Engineering Task Force (IETF). Note that other groups may also distribute working documents as Internet-Drafts. The list of current Internet-Drafts is at https://datatracker.ietf.org/drafts/current/.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+互联网草案是互联网工程任务组（IETF）的工作文件。请注意，其他团体也可能将工作文件作为互联网草案分发。当前互联网草案的列表见 https://datatracker.ietf.org/drafts/current/。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time. It is inappropriate to use Internet-Drafts as reference material or to cite them other than as &#34;work in progress.&#34;
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+互联网草案为草稿文件，有效期最长为六个月，可随时更新、替换或被其他文件取代。除作为 &#34;进行中的工作 &#34;外，不宜将互联网草案用作参考资料或引用。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This Internet-Draft will expire on 11 August 2022.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本互联网草案将于 2022 年 8 月 11 日到期。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2022 IETF Trust 和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/ license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和 IETF Trust 的《与 IETF 文档有关的法律规定》（https://trustee.ietf.org/ license-info）的约束，在本文档发布之日有效。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节所述的修订版 BSD 许可文本，并且不提供修订版 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Related Work  . . . . . . . . . . . . . . . . . . . . . . . .   4
+   3.  Certification Authority Publishing  . . . . . . . . . . . . .   4
+   4.  Relying Party Fetching  . . . . . . . . . . . . . . . . . . .   5
+   5.  Router Updating . . . . . . . . . . . . . . . . . . . . . . .   6
+   6.  Effect on Routing . . . . . . . . . . . . . . . . . . . . . .   6
+   7.  Alternative Technologies  . . . . . . . . . . . . . . . . . .   6
+   8.  Operational Expectations  . . . . . . . . . . . . . . . . . .   6
+   9.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+   10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
+   11. References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
+     11.1.  Normative References . . . . . . . . . . . . . . . . . .   7
+     11.2.  Informative References . . . . . . . . . . . . . . . . .   9
+   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .   9
+   Authors&#39; Addresses  . . . . . . . . . . . . . . . . . . . . . . .   9
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document explores, and makes recommendations for, timing of Resource Public Key Infrastructure (RPKI) publication of ROV data, their propagation, and their use in Relying Parties (RP), caches, and routers.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件探讨了资源公钥基础架构 (RPKI) 发布 ROV 数据的时机、其传播以及在依赖方 (RP)、缓存和路由器中的使用，并就此提出了建议。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RPKI ROA supply chain from CAs to when they reach routers has the following structure:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+从 CA 到路由器的 RPKI ROA 供应链结构如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Cerification Authorities: The authoritative data of the RPKI are meant to be published by a distributed set of Certification Authorities (CAs) at the IANA, RIRs, NIRs, and ISPs (see [RFC6481]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+认证机构：RPKI 的权威数据将由 IANA、RIR、NIR 和 ISP 的一组分布式认证机构 (CA) 发布（见 [RFC6481]）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Publication Points: The CAs publish their authoritative data in
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+公布点：CA 在
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+publicly accessible repositories which have a Publication Point (PP) for each CA. A CA may publish directly at a PP or may use the RPKI Publication Protocol [RFC8181].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+公开访问的存储库，每个 CA 都有一个发布点 (PP)。CA 可以直接在 PP 上发布，也可以使用 RPKI 发布协议 [RFC8181]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Relying Parties: Relying Parties are a local (to the routers) set of one or more collected and verified caches of RPKI data which the RPs collect from the PPs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+依赖方：依赖方是 RP 从 PP 处收集的 RPKI 数据的一个或多个已收集和验证缓存的本地（路由器）集合。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Currently RPs can pull from other RPs, thereby allowing a somewhat complex topology.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+目前，RP 可以从其他 RP 拉取数据，因此拓扑结构比较复杂。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Routers: Validating routers fetch data from local RP caches using the RPKI to Router Protocol, [RFC8210] and [I-D.ietf-sidrops-8210bis]. Routers are clients of the caches. Validating routers MUST have a trust relationship with, and a trusted transport channel to, any RP(s) they use. [I-D.ietf-sidrops-8210bis] specifies mechanisms for a router to assure itself of the authenticity of the cache(s) and to authenticate itself to cache(s).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器：验证路由器使用 RPKI 到路由器协议 [RFC8210] 和 [I-D.ietf-sidrops-8210bis] 从本地 RP 缓存中获取数据。路由器是缓存的客户。验证路由器必须与它们使用的任何 RP 建立信任关系和信任传输通道。[I-D.ietf-sidrops-8210bis]规定了路由器保证高速缓存的真实性和向高速缓存验证自身的机制。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As Resource Public Key Infrastructure based Route Origin Validation (ROV) becomes deployed in the Internet, the quality of the routing control plane, and hence timely and accurate delivery of packets in the data plane, increasingly depend on prompt and accurate propagation of the RPKI data from the originating Certification Authorities (CAs), to Relying Parties (RPs), to Border Gateway Protocol (BGP) speaking routers.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+随着基于资源公钥基础架构的路由起源验证（ROV）在互联网上的部署，路由控制平面的质量，以及数据平面上数据包的及时准确传输，越来越依赖于 RPKI 数据从源头认证机构（CA）到依赖方（RP）再到边界网关协议（BGP）路由器的及时准确传播。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Origin Validation based on stale ROAs allows accidental or intentional mis-origination; announcement of a prefix by an AS which does not have the authority to do so. Delays in ROA propagation to ROV in routers might cause loss of good traffic. Therefore minimizing propagation time of data from CAs to routers is important.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+基于过期 ROA 的起源验证允许意外或故意的错误起源；由无权这样做的 AS 宣布前缀。ROA 传播到路由器中 ROV 的延迟可能会导致良好流量的丢失。因此，尽量缩短从 CA 到路由器的数据传播时间非常重要。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Before the data can start on the CA to router supply chain, the resource holder (operator) MUST create, modify, or delete the relevant ROA(s) through the CA&#39;s operational interface(s). The operator is responsible for anticipating their future needs for ROAs, be aware of the propagation time from creating ROAs to effect on routing, and SHOULD create, delete, or modify ROAs sufficiently in advance of any needs in the routing system.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 CA 到路由器供应链的数据开始之前，资源持有者（操作员）必须通过 CA 的操作界面创建、修改或删除相关的 ROA。操作员有责任预测其未来对 ROA 的需求，了解从创建 ROA 到对路由产生影响的传播时间，并应在路由系统有任何需求之前充分提前地创建、删除或修改 ROA。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+There are questions of how frewwww3quently a CA publishes, how often an RP pulls, and how often routers pull from their RP(s). Overall, the router(s) SHOULD react within an hour of ROA publication. In pessimistic circumstances, it could be two hours.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CA 发布的频率、RP 拉取的频率以及路由器从其 RP 拉取的频率都存在问题。总的来说，路由器应在 ROA 发布后一小时内做出反应。在悲观的情况下，可能需要两个小时。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For CAs publishing to PPs, a few seconds to a minute seems easily achieved with reasonable software. See Section 3.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于向参与方发布信息的 CA 来说，使用合理的软件，几秒到一分钟的时间似乎很容易达到。见第 3 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Relying Party validating caches periodically retrieve data from CA publication points. RPs using rsync to poll publication points every ten minutes would be a burden today, given the load it would put on publication services, cf. one notorious repository which was structured against specification. RPs using RRDP impose less load. As the infrastructure moves from rsync to RRDP [I-D.ietf-sidrops-prefer-rrdp], RRDP is designed for quite frequent polling as long as Relying Parties use the If-Modified-Since (see [RFC7232]) header and there is a caching infrastructure. For rsync, an hour would be the longest acceptable window and half an hour the shortest. See Section 4.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+依赖方验证缓存会定期从 CA 发布点检索数据。使用 rsync 每十分钟对发布点进行轮询的 RP 在今天看来是一种负担，因为这将给发布服务带来很大的负荷。使用 RRDP 的 RP 带来的负荷较小。随着基础架构从 rsync 转向 RRDP [I-D.ietf-sidrops-prefer-rrdp]，只要依赖方使用 If-Modified-Since（见 [RFC7232]）标头并有缓存基础架构，RRDP 就能实现相当频繁的轮询。对于 rsync 来说，一小时是最长的可接受窗口，半小时是最短的可接受窗口。参见第 4 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For BGP speaking router(s) pulling from the RP(s), five minutes to an hour is a wide window. But, the RPKI-Rtr protocol does have the Serial Notify PDU, the equivalent of DNS Notify [RFC1996], where the cache tells the router that it has new data. See Section 5.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于从 RP 提取数据的 BGP 说话路由器来说，5 分钟到 1 小时是一个很大的窗口。但是，RPKI-Rtr 协议确实有串行通知 PDU，相当于 DNS 通知 [RFC1996]，缓存会告诉路由器它有新数据。参见第 5 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+We discuss each of these in more detail below.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+我们将在下文逐一详细讨论。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Related-Work">
+2. Related Work
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 相关工作
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is assumed that the reader understands BGP, [RFC4271], the RPKI [RFC6480], RPKI Manifests [RFC6486], Route Origin Authorizations (ROAs), [RFC6482], the RPKI Repository Delta Protocol (RRDP) [RFC8182], The Resource Public Key Infrastructure (RPKI) to Router Protocol [I-D.ietf-sidrops-8210bis], RPKI-based Prefix Validation, [RFC6811], and Origin Validation Clarifications, [RFC8481].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+假定读者了解 BGP、[RFC4271]、RPKI [RFC6480]、RPKI 文件 [RFC6486]、路由起源授权 (ROAs)、[RFC6482]、RPKI 资源库三角协议 (RRDP) [RFC8182]、资源公钥基础设施 (RPKI) 到路由器协议 [I-D.ietf-sidrops-8210bis]、基于 RPKI 的前缀验证 [RFC6811] 和起源验证澄清 [RFC8481]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Certification-Authority-Publishing">
+3. Certification Authority Publishing
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 认证机构发布
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+One constraint on publication timing can be ensuring the CRL and Manifest ([RFC6486]) are consistent with each other and with respect to the other repository data. With both rsync and RRDP protocols, the publication point MUST be consistent before it becomes current and is published.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对发布时间的一种限制是确保 CRL 和 Manifest（[RFC6486]）相互一致，并与其他版本库数据保持一致。在 rsync 和 RRDP 协议中，发布点在成为当前数据并发布之前必须保持一致。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Operators should beware that there may be implementation dependent delays between instructing their CAs to create and/or update ROAs and the publication of these changes in the PPs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+运营商应注意，在指示其核证机构创建和/或更新 ROA 与在 PP 中公布这些变更之间，可能会出现执行上的延迟。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Relying-Party-Fetching">
+4. Relying Party Fetching
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 依赖方获取
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+rsync puts a load on RPKI publication point servers. Therefore relying party caches have been discouraged from fetching more frequently than on the order of a half hour. Times as long as a day were even suggested. We specify that RPs using rsync SHOULD pull from CA publication points every 30 to 60 minutes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+rsync 会给 RPKI 发布点服务器带来负担。因此，我们不鼓励依赖方缓存的获取频率超过半小时。有人甚至建议一天取一次。我们规定，使用 rsync 的 RP 应当每 30 到 60 分钟从 CA 发布点提取一次数据。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+With RRDP ([RFC8182]), such constraints can be less relevant. [RFC8182] makes clear that polling as frequently as once a minute is acceptable if and only if Relying Parties use the If-Modified-Since header and there is caching. Absent use of the If-Modified-Since header, the RRDP polling interval MUST NOT be more frequent than ten minutes. Use of the If-Modified-Since header is strongly RECOMMENDED.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于 RRDP（[RFC8182]），这种限制可能不那么重要。[RFC8182]明确指出，只有在依赖方使用 If-Modified-Since 标头并且有缓存的情况下，才可以接受一分钟一次的轮询频率。如果不使用 If-Modified-Since 标头，RRDP 轮询间隔的频率不得超过十分钟。强烈建议使用 If-Modified-Since 标头。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Migration from rsync to RRDP in [I-D.ietf-sidrops-prefer-rrdp] is recommended. During dual RRDP/rsync operation, should an RP need to fall over from RRDP to rsync, a uniformly distributed jittered delay with a mean of half the rsync interval SHOULD be used; so clients falling over to rsync are as spread out as they would be if they used rsync initallly.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+建议从 rsync 迁移到 [I-D.ietf-sidrops-prefer-rrdp] 中的 RRDP。在 RRDP/rsync 双重运行期间，如果 RP 需要从 RRDP 切换到 rsync，则应使用平均值为 rsync 间隔一半的均匀分布抖动延迟；这样，切换到 rsync 的客户端就会像最初使用 rsync 时一样分散。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A number of timers are embedded in the X.509 RPKI data which should also be considered. E.g., CRL publication commitments, expiration of EE certificates pointing to Manifests, and the Manifests themselves. Some CA operators commonly indicate new CRL information should be available in the next 24 hours. These 24 hour sliding timers, when combined with fetching RPKI data once a day, would expose failure windows, especially in the face of transient network issues between the CA and RP. To ameliorate this, RPs SHOULD update from CAs at least as frequently as once an hour.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+X.509 RPKI 数据中嵌入了许多计时器，也应加以考虑。例如，CRL 发布承诺、指向 Manifests 的 EE 证书到期以及 Manifests 本身。一些 CA 操作员通常会指出新的 CRL 信息应在未来 24 小时内提供。这些 24 小时滑动计时器与每天一次的 RPKI 数据获取相结合，会暴露出故障窗口，尤其是在 CA 和 RP 之间存在瞬时网络问题的情况下。为改善这种情况，RP 应至少每小时一次从 CA 更新。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In summary, the following timing constraints SHOULD be applied to data update: RPs SHOULD update from CAs at least once an hour. To avoid excess load, RPs SHOULD NOT update via rsync more frequently than every 30 minutes. RPs using RRDP SHOULD NOT need to update more frequently than every 10 minutes. Some form of timing jitter MUST be applied to ensure load distribution across the community. RPs SHOULD NOT force data fetch to be on the hour or similar times. Publication Points SHOULD deploy RRDP services which honor If-Modified-Since.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+总之，数据更新应适用以下时间限制：RP 应至少每小时从 CA 更新一次。为避免负载过重，RP 通过 rsync 更新的频率不应超过每 30 分钟一次。使用 RRDP 的 RP 更新频率不应超过每 10 分钟一次。必须采用某种形式的定时抖动来确保整个社区的负载分布。RP 不应强制要求在每小时或类似时间获取数据。发布点应部署支持 If-Modified-Since 的 RRDP 服务。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In general, CAs should have Manifest, CRL, ... timers of a few days to allow relying party operators to go away for the weekend and not fear for their control plane.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+一般来说，CA 应有几天的 Manifest、CRL......计时器，以便依赖方操作员周末外出时不必担心他们的控制平面。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Router-Updating">
+5. Router Updating
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 路由器更新
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The rate of change of ROA data is estimated to remain small, on the order of a few ROAs a minute, but with bursts. Therefore, the routers may update from the (presumed local) relying party cache(s) quite frequently. Note that [I-D.ietf-sidrops-8210bis] recommends a polling interval of one hour. This polling timing is conservative because caches can send a Serial Notify PDU to tell routers when there are new data to be fetched. As the RP cache and the router belong to the same operator, routers are free to hammer the RPs as frequently as they wish.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+据估计，ROA 数据的变化率仍然很小，大约为每分钟几个 ROA，但会有突发情况。因此，路由器可能会频繁地从（假定的本地）依赖方缓存中进行更新。请注意，[I-D.ietf-sidrops-8210bis] 建议轮询间隔为一小时。这种轮询时间是保守的，因为缓存可以发送串行通知 PDU，告诉路由器何时有新数据需要获取。由于 RP 缓存和路由器属于同一个运营商，因此路由器可以随意频繁地敲击 RP。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A router SHOULD respond with a Serial Query when it receives a Serial Notify from a cache. If a router can not respond appropriately to a Serial Notify, then it MUST send a periodic Serial Query no less frequently than once an hour.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器收到高速缓存发出的串行通知后，应通过串行查询做出响应。如果路由器无法对串行通知做出适当响应，则必须定期发送串行查询，频率不得低于每小时一次。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Effect-on-Routing">
+6. Effect on Routing
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 对路由的影响
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Once a router has received an End of Data PDU from a cache, the effect on Route Origin Validation MUST be a matter of seconds to a minute. The router MAY allow incoming VRPs to affect Origin Validation as they arrive instead of waiting for the End of Data PDU. See [I-D.ietf-sidrops-8210bis] for some cautions regarding the arrival and processing sequence of VRPs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器从高速缓存接收到 &#34;数据结束 PDU &#34;后，对 &#34;路由起源验证 &#34;的影响必须在几秒到一分钟之间。路由器可以允许传入的 VRP 在到达时影响起源验证，而不是等待数据结束 PDU。有关 VRP 到达和处理顺序的注意事项，请参阅 [I-D.ietf-sidrops-8210bis]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--Alternative-Technologies">
+7. Alternative Technologies
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 替代技术
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Should the supply chain include components or technologies other than those in IETF documents, the end effect SHOULD be the same; the router(s) SHOULD react to invalid AS origins within the same overall time constraint, one hour, two at most, from ROA creation at the CA publication point to effect in the router.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果供应链包括 IETF 文档以外的组件或技术，最终效果应该是相同的；路由器应该在从 CA 发布点创建 ROA 到路由器生效的相同总体时间限制（一小时，最多两小时）内对无效 AS 起源做出反应。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8--Operational-Expectations">
+8. Operational Expectations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8. 业务预期
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Assuming the above recommendations, in worst conditions such as an RPKI-rtr Notify PDU being ignored, it may take up to two hours for a new ROA to propagate from creation at the CA to BGP speaking routers. Therefore it is RECOMMENDED that planned changes in ROAs take this propagation time into consideration. E.g. if a new route is to be announced in BGP, the operators SHOULD create the ROA around three hours before BGP announcement, or it may not propagate globally.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+根据上述建议，在最坏的情况下（如 RPKI-rtr 通知 PDU 被忽略），新 ROA 从 CA 创建到传播到 BGP 说话路由器可能需要两个小时。因此，建议在计划更改 ROA 时考虑到这一传播时间。例如，如果要在 BGP 中公布一条新路由，运营商应在 BGP 公布前三小时左右创建 ROA，否则它可能无法在全球范围内传播。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9--Security-Considerations">
+9. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Despite common misconceptions and marketing, Route Origin Validation is not a magic security protocol. It is intended to catch operational errors, and is easily gamed and attacked through, for example, AS Path manipulation. It is one tool in the prudent operator&#39;s kit, and a good one.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由起源验证并不是一个神奇的安全协议，尽管存在一些常见的误解和宣传。它的目的是捕捉操作失误，而且很容易通过 AS 路径操纵等手段进行操纵和攻击。它只是谨慎的运营商工具包中的一个工具，而且是一个很好的工具。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If an attacker can add, delete, or modify RPKI data, either in repositories or in flight, they can affect routing and thereby steer or damage traffic. The RPKI system design does much to deter these attacks. But the &#39;last mile&#39; from the cache to the router uses transport, as opposed to object, security and is vulnerable. This is discussed in [I-D.ietf-sidrops-8210bis].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果攻击者能在存储库或飞行中添加、删除或修改 RPKI 数据，他们就能影响路由，从而引导或破坏流量。RPKI 系统的设计在很大程度上阻止了这些攻击。但是，从缓存到路由器的 &#34;最后一英里 &#34;使用的是传输安全，而不是对象安全，因此容易受到攻击。I-D.ietf-sidrops-8210bis] 对此进行了讨论。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Similarly, if an attacker can delay prompt propagation of RPKI data on the supply chain described in this document, they can affect routing, and therefore traffic flow, to their advantage.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+同样，如果攻击者能延迟 RPKI 数据在本文所述供应链上的迅速传播，他们就能影响路由，从而影响流量，为自己谋利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="10--IANA-Considerations">
+10. IANA Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+10. IANA考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+None
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+无
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="11--References">
+11. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+11. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="11-1--Normative-References">
+11.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+11.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[I-D.ietf-sidrops-8210bis] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 2&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-8210bis-05, 22 December 2021, &lt;https://www.ietf.org/archive/id/ draft-ietf-sidrops-8210bis-05.txt&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[I-D.ietf-sidrops-8210bis] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 2&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-8210bis-05, 22 December 2021, &lt;https://www.ietf.org/archive/id/ draft-ietf-sidrops-8210bis-05.txt&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC1996] Vixie, P., &#34;A Mechanism for Prompt Notification of Zone Changes (DNS NOTIFY)&#34;, RFC 1996, DOI 10.17487/RFC1996, August 1996, &lt;https://www.rfc-editor.org/info/rfc1996&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC1996] Vixie, P., &#34;A Mechanism for Prompt Notification of Zone Changes (DNS NOTIFY)&#34;, RFC 1996, DOI 10.17487/RFC1996, August 1996, &lt;https://www.rfc-editor.org/info/rfc1996&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, DOI 10.17487/RFC4271, January 2006, &lt;https://www.rfc-editor.org/info/rfc4271&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, DOI 10.17487/RFC4271, January 2006, &lt;https://www.rfc-editor.org/info/rfc4271&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, DOI 10.17487/RFC6481, February 2012, &lt;https://www.rfc-editor.org/info/rfc6481&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, DOI 10.17487/RFC6481, February 2012, &lt;https://www.rfc-editor.org/info/rfc6481&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, &#34;Manifests for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6486, DOI 10.17487/RFC6486, February 2012, &lt;https://www.rfc-editor.org/info/rfc6486&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, &#34;Manifests for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6486, DOI 10.17487/RFC6486, February 2012, &lt;https://www.rfc-editor.org/info/rfc6486&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, &#34;BGP Prefix Origin Validation&#34;, RFC 6811, DOI 10.17487/RFC6811, January 2013, &lt;https://www.rfc-editor.org/info/rfc6811&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, &#34;BGP Prefix Origin Validation&#34;, RFC 6811, DOI 10.17487/RFC6811, January 2013, &lt;https://www.rfc-editor.org/info/rfc6811&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7232] Fielding, R., Ed. and J. Reschke, Ed., &#34;Hypertext Transfer Protocol (HTTP/1.1): Conditional Requests&#34;, RFC 7232, DOI 10.17487/RFC7232, June 2014, &lt;https://www.rfc-editor.org/info/rfc7232&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7232] Fielding, R., Ed. 和 J. Reschke, Ed., &#34;超文本传输协议（HTTP/1.1）：条件请求&#34;，RFC 7232，DOI 10.17487/RFC7232，2014 年 6 月，&lt;https://www.rfc-editor.org/info/rfc7232&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8181] Weiler, S., Sonalker, A., and R. Austein, &#34;A Publication Protocol for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 8181, DOI 10.17487/RFC8181, July 2017, &lt;https://www.rfc-editor.org/info/rfc8181&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8181] Weiler, S., Sonalker, A., and R. Austein, &#34;A Publication Protocol for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 8181, DOI 10.17487/RFC8181, July 2017, &lt;https://www.rfc-editor.org/info/rfc8181&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8182] Bruijnzeels, T., Muravskiy, O., Weber, B., and R. Austein, &#34;The RPKI Repository Delta Protocol (RRDP)&#34;, RFC 8182, DOI 10.17487/RFC8182, July 2017, &lt;https://www.rfc-editor.org/info/rfc8182&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8182] Bruijnzeels, T., Muravskiy, O., Weber, B., and R. Austein, &#34;The RPKI Repository Delta Protocol (RRDP)&#34;, RFC 8182, DOI 10.17487/RFC8182, July 2017, &lt;https://www.rfc-editor.org/info/rfc8182&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8210] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1&#34;, RFC 8210, DOI 10.17487/RFC8210, September 2017, &lt;https://www.rfc-editor.org/info/rfc8210&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8210] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1&#34;, RFC 8210, DOI 10.17487/RFC8210, September 2017, &lt;https://www.rfc-editor.org/info/rfc8210&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8481] Bush, R., &#34;Clarifications to BGP Origin Validation Based on Resource Public Key Infrastructure (RPKI)&#34;, RFC 8481, DOI 10.17487/RFC8481, September 2018, &lt;https://www.rfc-editor.org/info/rfc8481&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8481] Bush, R., &#34;Clarifications to BGP Origin Validation Based on Resource Public Key Infrastructure (RPKI)&#34;, RFC 8481, DOI 10.17487/RFC8481, September 2018, &lt;https://www.rfc-editor.org/info/rfc8481&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="11-2--Informative-References">
+11.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+11.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[I-D.ietf-sidrops-prefer-rrdp] Bruijnzeels, T., Bush, R., and G. Michaelson, &#34;Resource Public Key Infrastructure (RPKI) Repository Requirements&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-prefer-rrdp-01, 22 October 2021, &lt;https://www.ietf.org/archive/id/draft-ietf-sidrops-prefer-rrdp-01.txt&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[I-D.ietf-sidrops-prefer-rrdp] Bruijnzeels, T., Bush, R., and G. Michaelson, &#34;Resource Public Key Infrastructure (RPKI) Repository Requirements&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-prefer-rrdp-01, 22 October 2021, &lt;https://www.ietf.org/archive/id/draft-ietf-sidrops-prefer-rrdp-01.txt&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;https://www.rfc-editor.org/info/rfc6480&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;https://www.rfc-editor.org/info/rfc6480&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="Appendix-A--Acknowledgements">
+Appendix A. Acknowledgements
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+附录A. 致谢
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors wish to thank George Michaelson, Massimiliano Stucchi and Ties de Kock.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢 George Michaelson、Massimiliano Stucchi 和 Ties de Kock。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Randy Bush Internet Initiative Japan &amp; Arrcus, Inc. 5147 Crystal Springs Bainbridge Island, Washington 98110 United States of America
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Randy Bush Internet Initiative Japan &amp; Arrcus, Inc.5147 Crystal Springs Bainbridge Island, Washington 98110 美国
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: randy@psg.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Jay Borkenhagen AT&amp;T 200 Laurel Avenue South Middletown, NJ 07748 United States of America
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Jay Borkenhagen AT&amp;T 200 Laurel Avenue South Middletown, NJ 07748 美利坚合众国
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: jayb@att.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Tim Bruijnzeels NLnet Labs
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Tim Bruijnzeels NLnet 实验室
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: tim@nlnetlabs.nl
+   URI:   https://www.nlnetlabs.nl/
+      Job Snijders
+   Fastly
+   Amsterdam
+   Netherlands
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: job@fastly.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Bush, et al. Expires 11 August 2022 [Page 10]
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Bush, et al. Expires 11 August 2022 [Page 10]
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

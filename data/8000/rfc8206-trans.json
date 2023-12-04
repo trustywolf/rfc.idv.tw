@@ -1,0 +1,565 @@
+{
+  "title": {
+    "text": "RFC 8206 - BGPsec Considerations for Autonomous System (AS) Migration",
+    "zh": "RFC 8206 - 自治系统 (AS) 迁移中的 BGPsec 注意事项"
+  },
+  "number": 8206,
+  "created_at": "2023-12-04 16:07:33.383685+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                         W. George\nRequest for Comments: 8206                                       Neustar\nUpdates: 8205                                                  S. Murphy\nCategory: Standards Track                                  PARSONS, Inc.\nISSN: 2070-1721                                           September 2017",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 7,
+      "text": "BGPsec Considerations for Autonomous System (AS) Migration",
+      "zh": "自治系统 (AS) 迁移中的 BGPsec 注意事项"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document discusses considerations and methods for supporting and securing a common method for Autonomous System (AS) migration within the BGPsec protocol.",
+      "zh": "本文件讨论了在 BGPsec 协议内支持和确保自治系统 (AS) 迁移的通用方法的注意事项和方法。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc8206.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc8206。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2017 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "版权所有 (c) 2017 IETF 信托基金会和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受BCP 78以及本文档发布之日有效的IETF信托基金关于IETF文档的法律规定（https://trustee.ietf.org/license-info）的约束。 请仔细阅读这些文档，因为它们描述了您对本文档的权利和限制。 从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中描述的简化 BSD 许可证文本，并且不提供简化 BSD 许可证中描述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2\n  1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   2\n  1.2.  Documentation Note  . . . . . . . . . . . . . . . . . . .   3\n2.  General Scenario  . . . . . . . . . . . . . . . . . . . . . .   3\n3.  RPKI Considerations . . . . . . . . . . . . . . . . . . . . .   3\n  3.1.  Origin Validation . . . . . . . . . . . . . . . . . . . .   4\n  3.2.  Path Validation . . . . . . . . . . . . . . . . . . . . .   5\n    3.2.1.  Outbound Announcements (PE-->CE)  . . . . . . . . . .   5\n    3.2.2.  Inbound Announcements (CE-->PE) . . . . . . . . . . .   6\n4.  Requirements  . . . . . . . . . . . . . . . . . . . . . . . .   6\n5.  Solution  . . . . . . . . . . . . . . . . . . . . . . . . . .   6\n  5.1.  Outbound (PE-->CE)  . . . . . . . . . . . . . . . . . . .   8\n  5.2.  Inbound (CE-->PE) . . . . . . . . . . . . . . . . . . . .   8\n  5.3.  Other Considerations  . . . . . . . . . . . . . . . . . .   9\n  5.4.  Example . . . . . . . . . . . . . . . . . . . . . . . . .   9\n6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  13\n7.  Security Considerations . . . . . . . . . . . . . . . . . . .  14\n8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  14\n  8.1.  Normative References  . . . . . . . . . . . . . . . . . .  14\n  8.2.  Informative References  . . . . . . . . . . . . . . . . .  15\nAcknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  16\nAuthors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  17",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "A method of managing a BGP Autonomous System Number (ASN) migration is described in RFC 7705 [RFC7705]. Since it concerns the handling of AS_PATH attributes, it is necessary to ensure that the process and features are properly supported in BGPsec [RFC8205] because BGPsec is explicitly designed to protect against changes in the BGP AS_PATH, whether by choice, by misconfiguration, or by malicious intent. It is critical that the BGPsec protocol framework be able to support this operationally necessary tool without creating an unacceptable security risk or exploit in the process.",
+      "zh": "RFC 7705 [RFC7705] 中描述了管理 BGP 自治系统号 (ASN) 迁移的方法。由于该方法涉及 AS_PATH 属性的处理，因此有必要确保 BGPsec [RFC8205] 正确支持该过程和功能，因为 BGPsec 的明确设计目的是防止 BGP AS_PATH 发生变化，无论是出于选择、错误配置还是恶意。BGPsec 协议框架必须能够支持这一操作上必要的工具，而不会在此过程中产生不可接受的安全风险或漏洞。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Requirements Language",
+      "section_title": true,
+      "zh": "1.1. 要求语言"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "1.2. Documentation Note",
+      "section_title": true,
+      "zh": "1.2. 文件说明"
+    },
+    {
+      "indent": 3,
+      "text": "This document uses ASNs from the range reserved for documentation as described in RFC 5398 [RFC5398]. In the examples used here, they are intended to represent Globally Unique ASNs, not ASNs reserved for private use as documented in Section 10 of RFC 1930 [RFC1930].",
+      "zh": "本文档使用的 ASN 属于 RFC 5398 [RFC5398] 中所述的文档专用 ASN 范围。在这里使用的示例中，它们旨在表示全球唯一的 ASN，而不是 RFC 1930 [RFC1930] 第 10 节中记录的保留给私人使用的 ASN。"
+    },
+    {
+      "indent": 0,
+      "text": "2. General Scenario",
+      "section_title": true,
+      "zh": "2. 一般情况"
+    },
+    {
+      "indent": 3,
+      "text": "This document assumes that the reader has read and understood the ASN migration method discussed in RFC 7705 [RFC7705] including its examples (see Section 2 of the referenced document), as they will be heavily referenced here. The use case being discussed in RFC 7705 [RFC7705] is as follows: For whatever the reason, a provider is in the process of merging two or more ASes, where eventually one subsumes the other(s). BGP AS confederations [RFC5065] are not enabled between the ASes, but a mechanism is being used to modify BGP's default behavior and allow the migrating Provider Edge (PE) router to masquerade as the old ASN for the Provider-Edge-to-Customer-Edge (PE-CE) eBGP (external BGP) session, or to manipulate the AS_PATH, or both. While BGPsec [RFC8205] does have a method to handle standard confederation implementations, it is not applicable in this exact case. This migration requires a slightly different solution in BGPsec than for a standard confederation because unlike in a confederation, eBGP peers may not be peering with the \"correct\" external ASN, and the forward-signed updates are for a public ASN, rather than a private one; so, there is no expectation that the BGP speaker would strip the affected signatures before propagating the route to its eBGP neighbors.",
+      "zh": "本文档假定读者已阅读并理解 RFC 7705 [RFC7705] 中讨论的 ASN 移植方法，包括其示例（见参考文档第 2 节），因为本文档将大量引用这些示例。RFC 7705 [RFC7705] 中讨论的用例如下：无论出于何种原因，提供商正在合并两个或多个 AS，最终一个 AS 将取代另一个 AS。AS 之间未启用 BGP AS 联盟 [RFC5065]，但使用了一种机制来修改 BGP 的默认行为，允许迁移的提供商边缘（PE）路由器伪装成提供商边缘到客户边缘（PE-CE）eBGP（外部 BGP）会话的旧 ASN，或操纵 AS_PATH，或两者兼而有之。虽然 BGPsec [RFC8205] 确实有一种处理标准联盟实现的方法，但它不适用于这种确切的情况。这种迁移所需的 BGPsec 解决方案与标准联盟略有不同，因为与联盟不同的是，eBGP 对等方可能不是与 \"正确的 \"外部 ASN 对等，而且转发签名的更新是针对公共 ASN 而非私有 ASN；因此，我们无法期望 BGP 发言者在向其 eBGP 邻居传播路由之前会删除受影响的签名。"
+    },
+    {
+      "indent": 3,
+      "text": "In the examples in Section 5.4, AS64510 is being subsumed by AS64500, and both ASNs represent a Service Provider (SP) network (see Figures 1 and 2 in RFC 7705 [RFC7705]). AS64496 and 64499 represent end-customer networks. References to PE, CE, and P routers mirror the diagrams and references in RFC 7705.",
+      "zh": "在第 5.4 节的例子中，AS64510 被 AS64500 取代，两个 ASN 都代表服务提供商 (SP) 网络（见 RFC 7705 [RFC7705] 中的图 1 和图 2）。AS64496 和 64499 代表终端客户网络。对 PE、CE 和 P 路由器的引用反映了 RFC 7705 中的图表和引用。"
+    },
+    {
+      "indent": 0,
+      "text": "3. RPKI Considerations",
+      "section_title": true,
+      "zh": "3. RPKI 注意事项"
+    },
+    {
+      "indent": 3,
+      "text": "The methods and implementation discussed in RFC 7705 [RFC7705] are widely used during network integrations resulting from mergers and acquisitions, as well as network redesigns; therefore, it is necessary to support this capability on any BGPsec-enabled routers/ ASNs. What follows is a discussion of the potential issues to be considered regarding how ASN migration and BGPsec [RFC8205] validation might interact.",
+      "zh": "RFC 7705 [RFC7705]中讨论的方法和实施在因并购和网络重新设计而产生的网络整合过程中被广泛使用；因此，有必要在任何支持 BGPsec 的路由器/ASN 上支持这一功能。下面将讨论在 ASN 迁移和 BGPsec [RFC8205] 验证如何交互方面需要考虑的潜在问题。"
+    },
+    {
+      "indent": 3,
+      "text": "One of the primary considerations for this document and migration is that service providers (SPs) rarely stop after one merger/acquisition/divestiture; they end up accumulating several legacy ASNs over time. Since SPs are using migration methods that are transparent to customers and therefore do not require coordination with customers, they do not have as much control over the length of the transition period as they might with something completely under their administrative control (e.g., a key roll). Because they are not forcing a simultaneous migration (i.e., both ends switch to the new ASN at an agreed-upon time), there is no incentive for a given customer to complete the move from the old ASN to the new one. This leaves many SPs with multiple legacy ASNs that don't go away very quickly, if at all. As solutions were being proposed for Resource Public Key Infrastructure (RPKI) implementations to solve this transition case, the WG carefully considered operational complexity and hardware scaling issues associated with maintaining multiple legacy ASN keys on routers throughout the combined network. While SPs who choose to remain in this transition phase indefinitely invite added risks because of the operational complexity and scaling considerations associated with maintaining multiple legacy ASN keys on routers throughout the combined network, saying \"don't do this\" is of limited utility as a solution. As a result, this solution attempts to minimize the additional complexity during the transition period, on the assumption that it will likely be protracted. Note that while this document primarily discusses service provider considerations, it is not solely applicable to SPs, as enterprises often migrate between ASNs using the same functionality. What follows is a discussion of origin and path validation functions and how they interact with ASN migrations.",
+      "zh": "本文件和迁移的主要考虑因素之一是，服务提供商（SP）很少会在一次合并/收购/剥离后就停止迁移；它们最终会随着时间的推移积累多个遗留 ASN。由于服务提供商使用的迁移方法对客户是透明的，因此不需要与客户协调，因此他们对过渡期长短的控制不像完全由其行政控制（如密钥卷）那样严格。由于不强制同步迁移（即两端都在约定的时间切换到新的 ASN），因此没有激励措施促使特定客户完成从旧 ASN 到新 ASN 的迁移。这样一来，许多 SP 即使有多个 ASN，也不会很快消失。在提出资源公钥基础设施 (RPKI) 实施方案以解决这种过渡情况时，工作组仔细考虑了在整个联合网络的路由器上维护多个传统 ASN 密钥所带来的操作复杂性和硬件扩展问题。由于在整个联合网络的路由器上维护多个传统 ASN 密钥会带来操作复杂性和扩展方面的考虑，因此选择无限期停留在这一过渡阶段的 SP 会面临更多风险。因此，本解决方案试图在过渡期间最大限度地减少额外的复杂性，前提是过渡可能会旷日持久。请注意，虽然本文档主要讨论服务提供商的注意事项，但并不只适用于服务提供商，因为企业经常会在使用相同功能的 ASN 之间迁移。下面将讨论起源和路径验证功能及其与 ASN 迁移的交互方式。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1. Origin Validation",
+      "section_title": true,
+      "zh": "3.1. 原产地验证"
+    },
+    {
+      "indent": 3,
+      "text": "Route Origin Validation as defined by RFC 6480 [RFC6480] does not require modification to enable AS migration, as the existing protocol and procedure allow for a solution. In the scenario discussed in RFC 7705 [RFC7705], AS64510 is being replaced by AS64500. If there are any existing routes originated by AS64510 on the router being moved into the new ASN, new Route Origination Authorizations (ROAs) for the routes with the new ASN should be generated, and they should be treated as new routes to be added to AS64500. However, we also need to consider the situation where one or more other PEs are still in AS64510 and are originating one or more routes that may be distinct from any that the router under migration is originating. PE1 (which is now a part of AS64500 and instructed to use \"Replace Old AS\" as defined in [RFC7705] to remove AS64510 from the path) needs to be able to properly handle routes originated from AS64510. If the route now shows up as originating from AS64500, any downstream peers' validation check will fail unless a ROA is *also* available for AS64500 as the origin ASN. In addition to generating a ROA for 65400 for any prefixes originated by the router being moved, it may be necessary to generate ROAs for 65400 for prefixes that are originating on routers still in 65410, since the AS replacement function will change the origin AS in some cases. This means that there will be multiple ROAs showing different ASes authorized to originate the same prefixes until all routers originating prefixes from AS64510 are migrated to AS64500. Multiple ROAs of this type are permissible per Section 3.2 of RFC 6480 [RFC6480] so managing origin validation during a migration like this is merely applying the defined case where a set of prefixes are originated from more than one ASN. Therefore, for each ROA that authorizes the old ASN (e.g., AS64510) to originate a prefix, a new ROA MUST also be created that authorizes the replacing ASN (e.g., AS64500) to originate the same prefix.",
+      "zh": "RFC 6480 [RFC6480] 所定义的路由起源验证不需要修改就能实现 AS 迁移，因为现有的协议和程序都能提供解决方案。在 RFC 7705 [RFC7705] 讨论的情况中，AS64510 被 AS64500 取代。如果被移入新 ASN 的路由器上有任何由 AS64510 发起的现有路由，则应为新 ASN 的路由生成新的路由发起授权（ROA），并将其视为要添加到 AS64500 的新路由。但是，我们还需要考虑这样一种情况，即一个或多个其他 PE 仍在 AS64510 中，并且正在生成一条或多条路由，这些路由可能与正在迁移的路由器所生成的路由不同。PE1（现在是 AS64500 的一部分，并被指示使用 [RFC7705] 中定义的 \"替换旧 AS \"将 AS64510 从路径中移除）需要能够正确处理源自 AS64510 的路由。如果路由现在显示为源于 AS64500，那么任何下游对等方的验证检查都将失败，除非 AS64500 作为源 ASN 的 ROA 也**可用。 除了为由被移动路由器产生的任何前缀生成 65400 的 ROA 外，可能还需要为源于仍在 65410 中的路由器的前缀生成 65400 的 ROA，因为在某些情况下，AS 替换功能会更改源 AS。这意味着，在所有从 AS64510 发起前缀的路由器迁移到 AS64500 之前，会有多个 ROA 显示授权发起相同前缀的不同 AS。根据 RFC 6480 [RFC6480] 第 3.2 节的规定，这种类型的多个 ROA 是允许的，因此在这种迁移过程中管理起源验证只是应用已定义的情况，即一组前缀起源于一个以上的 ASN。因此，对于授权旧 ASN（如 AS64510）发起前缀的每个 ROA，都必须创建一个新的 ROA，授权替换的 ASN（如 AS64500）发起相同的前缀。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2. Path Validation",
+      "section_title": true,
+      "zh": "3.2. 路径验证"
+    },
+    {
+      "indent": 3,
+      "text": "BGPsec path validation requires that each router in the AS path cryptographically sign its update to assert that \"every Autonomous System (AS) on the path of ASes listed in the UPDATE message has explicitly authorized the advertisement of the route to the subsequent AS in the path\" (see Section 1 of RFC 8205 [RFC8205]). Since the referenced AS-migration technique explicitly modifies the AS_PATH between two eBGP peers who are not coordinating with one another (are not in the same administrative domain), no level of trust can be assumed; therefore, it may be difficult to identify legitimate manipulation of the AS_PATH for migration activities when compared to manipulation due to misconfiguration or malicious intent.",
+      "zh": "BGPsec 路径验证要求 AS 路径中的每个路由器对其更新进行加密签名，以证明 \"UPDATE 消息中列出的 AS 路径上的每个自治系统 (AS) 都已明确授权向路径中的后续 AS 发布路由\"（参见 RFC 8205 [RFC8205] 第 1 节）。由于所引用的 AS 迁移技术明确修改了两个 eBGP 对等体之间的 AS_PATH，而这两个 eBGP 对等体并不相互协调（不在同一管理域中），因此不能假定任何信任级别；因此，与错误配置或恶意意图造成的操纵相比，可能很难识别合法操纵 AS_PATH 进行的迁移活动。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.1. Outbound Announcements (PE-->CE)",
+      "section_title": true,
+      "zh": "3.2.1. 对外公告（PE-->CE）"
+    },
+    {
+      "indent": 3,
+      "text": "When PE1 is moved from AS64510 to AS64500, it will be provisioned with the appropriate keys for AS64500 to allow it to forward-sign routes using AS64500. However, there is no guidance in the BGPsec protocol specification [RFC8205] on whether or not the forward-signed ASN value is required to match the configured remote AS to validate properly. That is, if CE1's BGP session is configured as \"remote AS 64510\", the presence of \"local AS 64510\" on PE1 will ensure that there is no ASN mismatch on the BGP session itself, but if CE1 receives updates from its remote neighbor (PE1) forward-signed from AS64500, there is no guidance as to whether the BGPsec validator on CE1 still considers those valid by default. Section 6.3 of RFC 4271 [RFC4271] mentions this match between the ASN of the peer and the AS_PATH data, but it is listed as an optional validation, rather than a requirement. We cannot assume that this mismatch will be allowed by vendor implementations, so using it as a means to solve this migration case is likely to be problematic.",
+      "zh": "当 PE1 从 AS64510 移至 AS64500 时，将为其配置 AS64500 的适当密钥，使其能够使用 AS64500 转发签署路由。但是，BGPsec 协议规范 [RFC8205] 中没有关于转发签署的 ASN 值是否需要与配置的远程 AS 匹配才能正确验证的指导。也就是说，如果 CE1 的 BGP 会话配置为 \"远程 AS 64510\"，PE1 上的 \"本地 AS 64510 \"将确保 BGP 会话本身不存在 ASN 不匹配问题，但如果 CE1 从其远程邻居（PE1）接收来自 AS64500 的转签更新，CE1 上的 BGPsec 验证器是否仍默认认为这些更新有效，则没有任何指导。RFC 4271 [RFC4271] 第 6.3 节提到了对等体的 ASN 与 AS_PATH 数据之间的匹配，但它被列为可选验证，而不是要求。我们不能假定供应商的实现会允许这种不匹配，因此用它来解决这种迁移情况很可能会有问题。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.2. Inbound Announcements (CE-->PE)",
+      "section_title": true,
+      "zh": "3.2.2. 传入公告（CE-->PE）"
+    },
+    {
+      "indent": 3,
+      "text": "Inbound is more complicated, because the CE doesn't know that PE1 has changed ASNs, so it is forward-signing all of its routes with AS64510, not AS64500. The BGPsec speaker cannot manipulate previous signatures and therefore cannot manipulate the previous AS path without causing a mismatch that will invalidate the route. If the updates are simply left intact, the ISP would still need to publish and maintain valid and active public keys for AS 64510 if it is to appear in the BGPsec_PATH signature so that receivers can validate that the BGPsec_PATH signature arrived intact/whole. However, if the updates are left intact, this will cause the AS path length to be increased, which is unacceptable as discussed in RFC 7705 [RFC7705].",
+      "zh": "入站情况更为复杂，因为 CE 不知道 PE1 已更改 ASN，所以它的所有路由都是与 AS64510 而不是 AS64500 进行前向签名。BGPsec 说话者不能操作以前的签名，因此也就不能操作以前的 AS 路径，否则就会导致不匹配，从而使路由失效。如果只是保持更新不变，ISP 仍需公布并维护 AS 64510 的有效和活动公钥（如果它要出现在 BGPsec_PATH 签名中），以便接收者可以验证 BGPsec_PATH 签名是否完好/完整地到达。但是，如果更新保持不变，就会导致 AS 路径长度增加，正如 RFC 7705 [RFC7705] 中所讨论的那样，这是不可接受的。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Requirements",
+      "section_title": true,
+      "zh": "4. 要求"
+    },
+    {
+      "indent": 3,
+      "text": "In order to be deployable, any solution to the described problem needs to consider the following requirements, listed in no particular order. BGPsec:",
+      "zh": "为了便于部署，针对所述问题的任何解决方案都需要考虑以下要求（排名不分先后）。BGPsec："
+    },
+    {
+      "indent": 3,
+      "text": "o MUST support AS migration for both inbound and outbound route announcements (see Sections 3.2.1 and 3.2.2), without reducing BGPsec's protections for route path.",
+      "zh": "o 必须支持入站和出站路由通告的 AS 迁移（见第 3.2.1 和 3.2.2 节），同时不减少 BGPsec 对路由路径的保护。"
+    },
+    {
+      "indent": 3,
+      "text": "o MUST NOT require any reconfiguration on the remote eBGP neighbor (CE).",
+      "zh": "o 不得要求远程 eBGP 邻居（CE）进行任何重新配置。"
+    },
+    {
+      "indent": 3,
+      "text": "o SHOULD NOT require global (i.e., network-wide) configuration changes to support migration. The goal is to limit required configuration changes to the devices (PEs) being migrated.",
+      "zh": "o 不应要求为支持迁移而进行全局（即全网）配置更改。目标是将所需的配置更改限制在被迁移的设备（PE）上。"
+    },
+    {
+      "indent": 3,
+      "text": "o MUST NOT lengthen the AS path during migration.",
+      "zh": "o 不得在迁移过程中延长 AS 路径。"
+    },
+    {
+      "indent": 3,
+      "text": "o MUST operate within existing trust boundaries, e.g., can't expect remote side to accept pCount=0 (see Section 4.2 of RFC 8205 [RFC8205]) from untrusted/non-confederation neighbor.",
+      "zh": "o 必须在现有信任边界内运行，例如，不能指望远端接受来自不受信任/非联盟邻居的 pCount=0（见 RFC 8205 [RFC8205] 第 4.2 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Solution",
+      "section_title": true,
+      "zh": "5. 解决方案"
+    },
+    {
+      "indent": 3,
+      "text": "As noted in Section 4.2 of RFC 8205 [RFC8205], BGPsec already has a solution for hiding ASNs where increasing the AS path length is undesirable. So a simple solution would be to retain the keys for AS64510 on PE1 and forward-sign towards CE1 with AS64510 and pCount=0. However, this would mean passing a pCount=0 between two ASNs that are in different administrative and trust domains such that it could represent a significant attack vector to manipulate BGPsec-signed paths. The expectation for legitimate instances of pCount=0 (to make a route server that is not part of the transit path invisible) is that there is some sort of existing trust relationship between the operators of the route server and the downstream peers such that the peers could be explicitly configured by policy to accept pCount=0 announcements only on the sessions where they are expected. For the same reason that things like \"Local AS\" [RFC7705] are used for ASN migration without end-customer coordination, it is unrealistic to assume any sort of coordination between the SP and the administrators of CE1 to ensure that they will by policy accept pCount=0 signatures during the transition period; therefore, this is not a workable solution.",
+      "zh": "如 RFC 8205 [RFC8205] 第 4.2 节所述，BGPsec 已经有了一种在不希望增加 AS 路径长度的情况下隐藏 ASN 的解决方案。因此，一个简单的解决方案是在 PE1 上保留 AS64510 的密钥，并以 AS64510 和 pCount=0 向 CE1 进行前向签名。然而，这意味着在两个处于不同管理域和信任域的 ASN 之间传递 pCount=0，因此它可能成为操纵 BGPsec 签名路径的重要攻击向量。对于 pCount=0 的合法实例（使不属于中转路径的路由服务器隐形）的期望是，路由服务器的操作者与下游对等方之间存在某种现有的信任关系，这样对等方就可以通过策略明确配置为只在期望接受 pCount=0 公告的会话上接受 pCount=0 公告。与 \"本地 AS\"[RFC7705]用于 ASN 迁移而无需终端客户协调的原因相同，假设 SP 与 CE1 的管理员之间存在某种协调关系，以确保他们在过渡期间根据策略接受 pCount=0 签名是不现实的；因此，这不是一个可行的解决方案。"
+    },
+    {
+      "indent": 3,
+      "text": "A better solution presents itself when considering how to handle routes coming from the CE toward the PE, where the routes are forward-signed to AS64510, but will eventually need to show AS64500 in the outbound route announcement. Because both AS64500 and AS64510 are in the same administrative domain, a signature from AS64510 forward-signed to AS64500 with pCount=0 would be acceptable as it would be within the appropriate trust boundary so that each BGP speaker could be explicitly configured to accept pCount=0 where appropriate between the two ASNs. At the very simplest, this could potentially be used at the eBGP boundary between the two ASNs during migration. Since the AS_PATH manipulation described above usually happens at the PE router on a per-session basis and does not happen network-wide simultaneously, it is not generally appropriate to apply this AS-hiding technique across all routes exchanged between the two ASNs, as it may result in routing loops and other undesirable behavior. Therefore, the most appropriate place to implement this is on the local PE that still has eBGP sessions with peers expecting to peer with AS64510 (using the transition mechanisms detailed in RFC 7705 [RFC7705]). Since that PE has been moved to AS64500, it is not possible for it to forward-sign AS64510 with pCount=0 without some minor changes to the BGPsec behavior to address this use case.",
+      "zh": "当考虑如何处理从 CE 向 PE 发送的路由时，一个更好的解决方案出现了，在这种情况下，路由被转发到 AS64510，但最终需要在出站路由公告中显示 AS64500。由于 AS64500 和 AS64510 位于同一管理域，因此可以接受从 AS64510 转发签署到 AS64500 且 pCount=0 的签名，因为它位于适当的信任边界内，这样每个 BGP 说话者都可以明确配置为接受两个 ASN 之间适当的 pCount=0。最简单的方法是，在迁移过程中，在两个 ASN 之间的 eBGP 边界使用这种方法。由于上述 AS_PATH 操作通常是在 PE 路由器上按会话进行的，不会同时发生在整个网络上，因此在两个 ASN 之间交换的所有路由上应用这种 AS 隐藏技术通常并不合适，因为它可能会导致路由循环和其他不良行为。因此，最合适的实施地点是仍与期望与 AS64510 对等的对等者有 eBGP 会话的本地 PE（使用 RFC 7705 [RFC7705]中详述的过渡机制）。由于该 PE 已转移到 AS64500，如果不对 BGPsec 行为稍作修改以解决此用例，它就不可能在 pCount=0 的情况下转发签署 AS64510。"
+    },
+    {
+      "indent": 3,
+      "text": "AS migration is using AS_PATH and remote AS manipulation to act as if a PE under migration exists simultaneously in both ASNs even though it is only configured with one global ASN. This document describes applying a similar technique to the BGPsec signatures generated for routing updates processed through this migration machinery. Each routing update that is received from or destined to an eBGP neighbor that is still using the old ASN (64510) will be signed twice, once with the ASN to be hidden and once with the ASN that will remain visible. In essence, we are treating the update as if the PE had an internal BGP hop and the update was passed across an eBGP session between AS64500 and AS64510, configured to use and accept pCount=0, while eliminating the processing and storage overhead of creating an actual eBGP session between the two ASNs within the PE router. This will result in a properly secured AS path in the affected route updates, because the PE router will be provisioned with valid keys for both AS64500 and AS64510. An important distinction here is that while AS migration under standard BGP4 is manipulating the AS_PATH attribute, BGPsec uses an attribute called the \"Secure_Path\" (see Section 3.1 of RFC 8205 [RFC8205]) and BGPsec-capable neighbors do not exchange AS_PATH information in their route announcements. However, a BGPsec neighbor peering with a non-BGPsec-capable neighbor will use the information found in the Secure_Path to reconstruct a standard AS_PATH for updates sent to that neighbor. Unlike in the Secure_Path where the ASN to be hidden is still present but ignored when considering the AS path (due to pCount=0), when reconstructing an AS_PATH for a non-BGPsec neighbor, the pCount=0 ASNs will not appear in the AS_PATH at all (see Section 4.4 of RFC 8205 [RFC8205]). This document is not changing existing AS_PATH reconstruction behavior, merely highlighting it for clarity.",
+      "zh": "AS 迁移是利用 AS_PATH 和远程 AS 操作，将正在迁移的 PE 当作同时存在于两个 ASN 中，尽管它只配置了一个全局 ASN。本文档介绍了对通过迁移机制处理的路由更新生成的 BGPsec 签名应用类似技术的情况。从仍在使用旧 ASN (64510)的 eBGP 邻居收到的或以其为目的地的每个路由更新都将被签署两次，一次是要隐藏的 ASN，另一次是将保持可见的 ASN。从本质上讲，我们将更新视为 PE 有一个内部 BGP 跳，更新通过 AS64500 和 AS64510 之间的 eBGP 会话传递，配置为使用和接受 pCount=0，同时消除了在 PE 路由器内的两个 ASN 之间创建实际 eBGP 会话的处理和存储开销。这将在受影响的路由更新中产生正确安全的 AS 路径，因为 PE 路由器将获得 AS64500 和 AS64510 的有效密钥。这里的一个重要区别是，标准 BGP4 下的 AS 迁移是操作 AS_PATH 属性，而 BGPsec 使用的属性称为 \"Secure_Path\"（见 RFC 8205 [RFC8205] 第 3.1 节），支持 BGPsec 的邻居不会在路由公告中交换 AS_PATH 信息。但是，与不支持 BGPsec 的邻居对等的 BGPsec 邻居将使用 Secure_Path 中的信息为发送到该邻居的更新重建标准 AS_PATH。在 Secure_Path 中，要隐藏的 ASN 仍然存在，但在考虑 AS 路径时会被忽略（由于 pCount=0），而在为非 BGPsec 邻居重建 AS_PATH 时，pCount=0 的 ASN 根本不会出现在 AS_PATH 中（参见 RFC 8205 [RFC8205] 第 4.4 节）。本文档并不改变现有的 AS_PATH 重构行为，只是强调其清晰性。"
+    },
+    {
+      "indent": 3,
+      "text": "The procedure to support AS migration in BGPsec is slightly different depending on whether the PE under migration is receiving the routes from one of its eBGP peers (\"inbound\" as in Section 3.2.2) or destined toward the eBGP peers (\"outbound\" as in Section 3.2.1).",
+      "zh": "在 BGPsec 中支持 AS 迁移的程序略有不同，这取决于被迁移的 PE 是接收来自其某个 eBGP 对等体的路由（第 3.2.2 节中的 \"入站\"），还是以 eBGP 对等体为目的地（第 3.2.1 节中的 \"出站\"）。"
+    },
+    {
+      "indent": 0,
+      "text": "5.1. Outbound (PE-->CE)",
+      "section_title": true,
+      "zh": "5.1. 出站（PE-->CE）"
+    },
+    {
+      "indent": 3,
+      "text": "When a PE router receives an update destined for an eBGP neighbor that is locally configured with AS-migration mechanisms as discussed in RFC 7705 [RFC7705], it MUST generate a valid BGPsec signature as defined in RFC 8205 [RFC8205] for _both_ configured ASNs. It MUST generate a signature from the new (global) ASN forward-signing to the old (local) ASN with pCount=0, and then it MUST generate a forward signature from the old (local) ASN to the target eBGP ASN with pCount=1 as normal.",
+      "zh": "当 PE 路由器接收到指向本地配置了 AS 迁移机制（如 RFC 7705 [RFC7705] 所述）的 eBGP 邻居的更新时，它必须为_两个_配置的 ASN 生成 RFC 8205 [RFC8205] 中定义的有效 BGPsec 签名。它必须从新的（全局）ASN 前向签名到旧的（本地）ASN 生成一个 pCount=0 的签名，然后它必须从旧的（本地）ASN 生成一个 pCount=1 的前向签名到目标 eBGP ASN。"
+    },
+    {
+      "indent": 0,
+      "text": "5.2. Inbound (CE-->PE)",
+      "section_title": true,
+      "zh": "5.2. 入境（CE-->PE）"
+    },
+    {
+      "indent": 3,
+      "text": "When a PE router receives an update from an eBGP neighbor that is locally configured with AS-migration mechanisms (i.e., the opposite direction of the previous route flow), it MUST generate a signature from the old (local) ASN forward-signing to the new (global) ASN with pCount=0. It is not necessary to generate the second signature from the new (global) ASN because the Autonomous System Border Router (ASBR) will generate that when it forward-signs towards its eBGP peers as defined in normal BGPsec operation. Note that a signature is not normally added when a routing update is sent across an iBGP (internal BGP) session. The requirement to sign updates in iBGP represents a change to the normal behavior for this specific AS-migration scenario only.",
+      "zh": "当 PE 路由器从本地配置了 AS 迁移机制（即与先前路由流方向相反）的 eBGP 邻居接收更新时，它必须从旧的（本地）ASN 生成一个签名，并以 pCount=0 的值转发给新的（全局）ASN。 没有必要从新的（全局）ASN 生成第二个签名，因为自治系统边界路由器（ASBR）在向其 eBGP 对等体转发签名时会生成该签名，正如正常 BGPsec 操作中所定义的那样。请注意，在 iBGP（内部 BGP）会话中发送路由更新时，通常不会添加签名。在 iBGP 中签署更新的要求是对正常行为的改变，仅适用于这种特定的 AS 迁移情况。"
+    },
+    {
+      "indent": 0,
+      "text": "5.3. Other Considerations",
+      "section_title": true,
+      "zh": "5.3. 其他考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "In the inbound case discussed in Section 5.2, the PE is adding BGPsec attributes to routes received from or destined to an iBGP neighbor and using pCount=0 to mask them. While this is not prohibited by BGPsec [RFC8205], BGPsec-capable routers that receive updates from BGPsec-enabled iBGP neighbors MUST accept updates with new (properly formed) BGPsec attributes, including the presence of pCount=0 on a previous signature, or they will interfere with this method. In a similar fashion, any BGPsec-capable route-reflectors in the path of these updates MUST reflect them transparently to their BGPsec-capable clients.",
+      "zh": "在第 5.2 节讨论的入站案例中，PE 将 BGPsec 属性添加到从 iBGP 邻居接收到的路由或目的地路由，并使用 pCount=0 对其进行屏蔽。虽然 BGPsec [RFC8205] 并不禁止这种做法，但从支持 BGPsec 的 iBGP 邻居接收更新的支持 BGPsec 的路由器必须接受带有新的（正确形成的）BGPsec 属性的更新，包括前一个签名上 pCount=0 的存在，否则就会干扰这种方法。同样，在这些更新路径上的任何支持 BGPsec 的路由反射器必须将这些更新透明地反射给其支持 BGPsec 的客户端。"
+    },
+    {
+      "indent": 3,
+      "text": "In order to secure this set of signatures, the PE router MUST be provisioned with valid keys for _both_ configured ASNs (old and new), and the key for the old ASN MUST be kept valid until all eBGP sessions are migrated to the new ASN. Downstream neighbors will see this as a valid BGPsec path, as they will simply trust that their upstream neighbor accepted pCount=0 because it was explicitly configured to do so based on a trust relationship and business relationship between the upstream and its neighbor (the old and new ASNs).",
+      "zh": "为了确保这组签名的安全，PE 路由器必须为_两个_配置的 ASN（新旧 ASN）提供有效密钥，并且旧 ASN 的密钥必须保持有效，直到所有 eBGP 会话都迁移到新 ASN。下游邻居会将此视为有效的 BGPsec 路径，因为他们只需相信其上游邻居接受了 pCount=0，因为它是根据上游与其邻居（新旧 ASN）之间的信任关系和业务关系明确配置的。"
+    },
+    {
+      "indent": 3,
+      "text": "Additionally, Section 4 of RFC 7705 [RFC7705] discusses methods in which AS migrations can be completed for iBGP peers such that a session between two routers will be treated as iBGP even if the neighbor ASN is not the same ASN on each peer's global configuration. As far as BGPsec is concerned, this requires the same procedure as when the routers migrating are applying AS-migration mechanisms to eBGP peers, but the router functioning as the \"ASBR\" between old and new ASN is different. In eBGP, the router being migrated has direct eBGP sessions to the old ASN and signs from old ASN to new with pCount=0 before passing the update along to additional routers in its global (new) ASN. In iBGP, the router being migrated is receiving updates (that may have originated either from eBGP neighbors or other iBGP neighbors) from its downstream neighbors in the old ASN and MUST sign those updates from old ASN to new with pCount=0 before sending them on to other peers.",
+      "zh": "此外，RFC 7705 [RFC7705] 第 4 节讨论了 iBGP 对等体完成 AS 迁移的方法，这样即使邻居 ASN 与每个对等体全局配置中的 ASN 不同，两个路由器之间的会话也会被视为 iBGP。就 BGPsec 而言，这与迁移路由器将 AS 迁移机制应用于 eBGP 对等体时所需的程序相同，但在新旧 ASN 之间充当 \"ASBR \"的路由器不同。在 eBGP 中，被迁移的路由器直接与旧 ASN 进行 eBGP 会话，并在将更新传递给全局（新）ASN 中的其他路由器之前，用 pCount=0 将更新从旧 ASN 签发到新 ASN。 在 iBGP 中，被迁移的路由器从旧 ASN 中的下游邻居接收更新（可能来自 eBGP 邻居或其他 iBGP 邻居），并必须在将更新从旧 ASN 发送到新 ASN 之前，用 pCount=0 将更新从旧 ASN 签发到新 ASN。"
+    },
+    {
+      "indent": 0,
+      "text": "5.4. Example",
+      "section_title": true,
+      "zh": "5.4. 示例"
+    },
+    {
+      "indent": 3,
+      "text": "The following example will illustrate the method being used above. As with previous examples, PE1 is the router being migrated, AS64510 is the old ASN, which is being subsumed by AS64500, the ASN to be permanently retained. 64505 is another external peer, used to demonstrate what the announcements will look like to a third-party peer that is not part of the migration. Some additional notation is used to delineate the details of each signature as follows: The origin BGPsec Signature Segment takes the form: sig(Target ASN, (pCount,...,Origin ASN), NLRI) key.",
+      "zh": "下面的示例将说明上述方法。与前面的示例一样，PE1 是正在迁移的路由器，AS64510 是旧的 ASN，它将被 AS64500（永久保留的 ASN）取代。64505 是另一个外部对等点，用于演示向不在迁移范围内的第三方对等点发布的公告。下面使用了一些附加符号来描述每个签名的细节：起源 BGPsec 签名段的形式为：sig(Target ASN, (pCount,...,Origin ASN), NLRI) key。"
+    },
+    {
+      "indent": 3,
+      "text": "Intermediate BGPsec Signature Segments take the form: sig(Target ASN,...,(pCount,...,Signer ASN),...,NLRI) key.",
+      "zh": "中间 BGPsec 签名段的形式为：sig(Target ASN,...,(pCount,...,Signer ASN),...,NLRI) key。"
+    },
+    {
+      "indent": 3,
+      "text": "(pCount,...,ASN) refers to the new Secure_Path Segment added to the BGPsec_PATH attribute by the ASN (Origin ASN or Signer ASN).",
+      "zh": "(pCount,...,ASN)指由 ASN（起源 ASN 或签名者 ASN）添加到 BGPsec_PATH 属性中的新 Secure_Path 段。"
+    },
+    {
+      "indent": 3,
+      "text": "\"Equivalent AS_PATH\" refers to what the AS_PATH would look like if it was reconstructed to be sent to a non-BGPsec peer, while the Securedpath shows the AS path as represented between BGPsec peers.",
+      "zh": "\"等效 AS_PATH \"指的是 AS_PATH 重建后发送给非 BGPsec 对等方时的样子，而 Securedpath 显示的是 BGPsec 对等方之间的 AS 路径。"
+    },
+    {
+      "indent": 3,
+      "text": "Note: The representation of Signature Segment generation is being simplified here somewhat for the sake of brevity; the actual details of the signing process are as described in Sections 4.1 and 4.2 of [RFC8205]. For example, what is covered by the signature also includes Flags, Algorithm Suite Identifier, NLRI length, etc. Also, the key is not carried in the update; instead, the Subject Key Identifier (SKI) is carried.",
+      "zh": "注：为简洁起见，此处对签名段生成的表述略作简化；签名过程的实际细节见 [RFC8205] 第 4.1 和 4.2 节。例如，签名涵盖的内容还包括标志（Flags）、算法套件标识符（Algorithm Suite Identifier）、NLRI 长度等。此外，更新中不携带密钥，而是携带主题密钥标识符（SKI）。"
+    },
+    {
+      "indent": 3,
+      "text": "Before Merger",
+      "zh": "合并前"
+    },
+    {
+      "indent": 3,
+      "text": "                                    64505\n                                    |\n          ISP B                     ISP A\nCE-1 <--- PE-1 <------------------- PE-2 <--- CE-2\n64496     Old_ASN: 64510   Old_ASN: 64500     64499",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "CE-2 to PE-2:  sig(64500, (pCount=1,...,64499), N)K_64499-CE2\n               Equivalent AS_PATH=(64499)\n               Securedpath=(64499)\n               length=sum(pCount)=1",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "PE-2 to 64505: sig(64505,...,(pCount=1,...,64500),...,N)K_64500-PE2\n               sig(64500, (pCount=1,...,64499), N)K_64499-CE2\n               Equivalent AS_PATH=(64500,64499)\n               Securedpath=(64500,64499)\n               length=sum(pCount)=2",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "PE-2 to PE-1:  sig(64510,...,(pCount=1,...,64500),...,N)K_64500-PE2\n               sig(64500, (pCount=1,...,64499), N)K_64499-CE2\n               Equivalent AS_PATH=(64500,64499)\n               Securedpath=(64500,64499)\n               length=sum(pCount)=2",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "PE-1 to CE-1:  sig(64496,...,(pCount=1,...,64510),...,N)K_64510-PE1\n               sig(64510,...,(pCount=1,...,64500),...,N)K_64500-PE2\n               sig(64500, (pCount=1,...,64499), N)K_64499-CE2\n               Equivalent AS_PATH= (64510,64500,64499)\n               Securedpath=(64510,64500,64499)\n               length=sum(pCount)=3",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Migrating, route flow outbound PE-1 to CE-1",
+      "zh": "迁移，路由流出站 PE-1 至 CE-1"
+    },
+    {
+      "indent": 1,
+      "text": "                                    64505\n                                    |\n          ISP A'                    ISP A'\nCE-1 <--- PE-1 <------------------- PE-2 <--- CE-2\n64496     Old_ASN: 64510   Old_ASN: 64500     64499\n          New_ASN: 64500   New_ASN: 64500",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 1,
+      "text": "CE-2 to PE-2:  sig(64500, (pCount=1,...,64499), N)K_64499-CE2\n               Equivalent AS_PATH=(64499)\n               Securedpath=(64499)\n               length=sum(pCount)=1",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 1,
+      "text": "PE-2 to 64505: sig(64505,...,(pCount=1,...,64500),...,N)K_64500-PE2\n               sig(64500, (pCount=1,...,64499), N)K_64499-CE2\n               Equivalent AS_PATH=(64500,64499)\n               Securedpath=(64500,64499)\n               length=sum(pCount)=2",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 1,
+      "text": "PE-2 to PE-1: sig(64500, (pCount=1,...,64499), N)K_64499-CE2 Equivalent AS_PATH=(64499) Securedpath=(64499) length=sum(pCount)=1 #PE-2 sends to PE-1 (in iBGP) the exact same update #as it received from AS64499.",
+      "zh": "PE-2 至 PE-1：sig(64500, (pCount=1,...,64499), N)K_64499-CE2 Equivalent AS_PATH=(64499) Securedpath=(64499) length=sum(pCount)=1 #PE-2 向 PE-1（在 iBGP 中）发送与它从 AS64499 收到的#完全相同的更新。"
+    },
+    {
+      "indent": 1,
+      "text": "PE-1 to CE-1:  sig(64496,...,(pCount=1,...,64510),...,N)K_64510-PE1\n               sig(64510,...,(pCount=0,...,64500),...,N)K_64500-PE2 (*)\n               sig(64500, (pCount=1,...,64499), N)K_64499-CE2\n               Equivalent AS_PATH=(64510,64499)\n               Securedpath=(64510, 64500 (pCount=0),64499)\n               length=sum(pCount)=2 (length is NOT 3)\n#PE-1 adds the Secure_Path Segment in (*) acting as AS64500\n#PE-1 accepts (*) with pCount=0 acting as AS64510,\n#as it would if it received (*) from an eBGP peer",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Migrating, route flow inbound CE-1 to PE-1",
+      "zh": "迁移，CE-1 至 PE-1 的入站路由流"
+    },
+    {
+      "indent": 0,
+      "text": "                                    64505\n                                    |\n          ISP A'                    ISP A'\nCE-1 ---> PE-1 -------------------> PE-2 ---> CE-2\n64496     Old_ASN: 64510   Old_ASN: 64500     64499\n          New_ASN: 64500   New_ASN: 64500",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "CE-1 to PE-1:  sig(64510, (pCount=1,...,64496), N)K_64496-CE1\n               Equivalent AS_PATH=(64496)\n               Securedpath=(64496)\n               length=sum(pCount)=1",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "PE-1 to PE-2:  sig(64500,...,(pCount=0,...,64510),...,N)K_64510-PE1 (**)\n               sig(64510, (pCount=1,...,64496), N)K_64496-CE1\n               Equivalent AS_PATH=(64496)\n               Securedpath=(64510 (pCount=0),64496)\n               length=sum(pCount)=1 (length is NOT 2)\n#PE-1 adds the Secure_Path Segment in (**) acting as AS64510\n#PE-1 accepts (**) with pCount=0 acting as AS64500,\n#as it would if it received (**) from an eBGP peer\n#PE-1, as AS64500, sends the update including (**) to PE-2 (in iBGP)",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "PE-2 to 64505: sig(64505,...,(pCount=1,...,64500),...,N)K_64500-PE2\n               sig(64500,...,(pCount=0,...,64510),...,N)K_64510-PE1\n               sig(64510, (pCount=1,...,64496), N)K_64496-CE1\n               Equivalent AS_PATH=(64500,64496)\n               Securedpath=(64500,64510 (pCount=0), 64496)\n               length=sum(pCount)=2 (length is NOT 3)",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "PE-2 to CE-2:  sig(64499,...,(pCount=1,...,64500),...,N)K_64500-PE2\n               sig(64500,...,(pCount=0,...,64510),...,N)K_64510-PE1\n               sig(64510, (pCount=1,...,64496), N)K_64496-CE1\n               Equivalent AS_PATH=(64500,64496)\n               Securedpath=(64500, 64510 (pCount=0), 64496)\n               length=sum(pCount)=2 (length is NOT 3)",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "6. IANA Considerations",
+      "section_title": true,
+      "zh": "6. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This document does not require any IANA actions.",
+      "zh": "本文件无需 IANA 采取任何行动。"
+    },
+    {
+      "indent": 0,
+      "text": "7. Security Considerations",
+      "section_title": true,
+      "zh": "7. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "RFC 7705 [RFC7705] discusses a process by which one ASN is migrated into and subsumed by another. Because this process involves manipulating the AS_Path in a BGP route to make it deviate from the actual path that it took through the network, this migration process is attempting to do exactly what BGPsec is working to prevent. BGPsec MUST be able to manage this legitimate use of AS_Path manipulation without generating a vulnerability in the RPKI route security infrastructure, and this document was written to define the method by which the protocol can meet this need.",
+      "zh": "RFC 7705 [RFC7705] 讨论了将一个 ASN 迁移到另一个 ASN 并将其归入另一个 ASN 的过程。由于这一过程涉及操纵 BGP 路由中的 AS_Path，使其偏离通过网络的实际路径，因此这一迁移过程试图做的正是 BGPsec 要努力防止的事情。BGPsec 必须能够管理这种合法使用 AS_Path 的操作，而不会在 RPKI 路由安全基础架构中产生漏洞，编写本文档就是为了定义协议满足这一需求的方法。"
+    },
+    {
+      "indent": 3,
+      "text": "The solution discussed above is considered to be reasonably secure from exploitation by a malicious actor because it requires both signatures to be secured as if they were forward-signed between two eBGP neighbors. This requires any router using this solution to be provisioned with valid keys for both the migrated and subsumed ASN so that it can generate valid signatures for each of the two ASNs it is adding to the path. If the AS's keys are compromised, or zero-length keys are permitted, this does potentially enable an AS_PATH shortening attack, but these are existing security risks for BGPsec.",
+      "zh": "上文讨论的解决方案被认为是合理安全的，不会被恶意行为者利用，因为它要求两个签名都要安全，就像在两个 eBGP 邻居之间转发签名一样。这就要求任何使用此解决方案的路由器都必须为迁移和归并的 ASN 提供有效的密钥，以便为路径中添加的两个 ASN 生成有效的签名。如果 AS 的密钥被泄露，或允许使用零长度密钥，就有可能导致 AS_PATH 缩短攻击，但这些都是 BGPsec 现有的安全风险。"
+    },
+    {
+      "indent": 0,
+      "text": "8. References",
+      "section_title": true,
+      "zh": "8. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "8.1. Normative References",
+      "section_title": true,
+      "zh": "8.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7705] George, W. and S. Amante, \"Autonomous System Migration Mechanisms and Their Effects on the BGP AS_PATH Attribute\", RFC 7705, DOI 10.17487/RFC7705, November 2015, <https://www.rfc-editor.org/info/rfc7705>.",
+      "zh": "[RFC7705] George, W. and S. Amante, \"Autonomous System Migration Mechanisms and Their Effects on the BGP AS_PATH Attribute\", RFC 7705, DOI 10.17487/RFC7705, November 2015, <https://www.rfc-editor.org/info/rfc7705>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>.",
+      "zh": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8205] Lepinski, M., Ed. and K. Sriram, Ed., \"BGPsec Protocol Specification\", RFC 8205, DOI 10.17487/RFC8205, September 2017, <https://www.rfc-editor.org/info/rfc8105>.",
+      "zh": "[RFC8205] Lepinski, M., Ed. and K. Sriram, Ed., \"BGPsec Protocol Specification\", RFC 8205, DOI 10.17487/RFC8205, September 2017, <https://www.rfc-editor.org/info/rfc8105>。"
+    },
+    {
+      "indent": 0,
+      "text": "8.2. Informative References",
+      "section_title": true,
+      "zh": "8.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC1930] Hawkinson, J. and T. Bates, \"Guidelines for creation, selection, and registration of an Autonomous System (AS)\", BCP 6, RFC 1930, DOI 10.17487/RFC1930, March 1996, <https://www.rfc-editor.org/info/rfc1930>.",
+      "zh": "[RFC1930] Hawkinson, J. and T. Bates, \"Guidelines for creation, selection, and registration of an Autonomous System (AS)\", BCP 6, RFC 1930, DOI 10.17487/RFC1930, March 1996, <https://www.rfc-editor.org/info/rfc1930>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, DOI 10.17487/RFC4271, January 2006, <https://www.rfc-editor.org/info/rfc4271>.",
+      "zh": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, DOI 10.17487/RFC4271, January 2006, <https://www.rfc-editor.org/info/rfc4271>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5065] Traina, P., McPherson, D., and J. Scudder, \"Autonomous System Confederations for BGP\", RFC 5065, DOI 10.17487/RFC5065, August 2007, <https://www.rfc-editor.org/info/rfc5065>.",
+      "zh": "[RFC5065] Traina, P., McPherson, D., and J. Scudder, \"Autonomous System Confederations for BGP\", RFC 5065, DOI 10.17487/RFC5065, August 2007, <https://www.rfc-editor.org/info/rfc5065>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5398] Huston, G., \"Autonomous System (AS) Number Reservation for Documentation Use\", RFC 5398, DOI 10.17487/RFC5398, December 2008, <https://www.rfc-editor.org/info/rfc5398>.",
+      "zh": "[RFC5398] Huston, G., \"Autonomous System (AS) Number Reservation for Documentation Use\", RFC 5398, DOI 10.17487/RFC5398, December 2008, <https://www.rfc-editor.org/info/rfc5398>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>。"
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgements",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "Thanks to Kotikalapudi Sriram, Shane Amante, Warren Kumari, Terry Manderson, Keyur Patel, Alia Atlas, and Alvaro Retana for their review comments.",
+      "zh": "感谢 Kotikalapudi Sriram、Shane Amante、Warren Kumari、Terry Manderson、Keyur Patel、Alia Atlas 和 Alvaro Retana 的审阅意见。"
+    },
+    {
+      "indent": 3,
+      "text": "The authors particularly wish to acknowledge Kotikalapudi Sriram, Oliver Borchert, and Michael Baer for their review and suggestions for the examples in Section 5.4, which made an important contribution to the quality of the text.",
+      "zh": "作者特别感谢 Kotikalapudi Sriram、Oliver Borchert 和 Michael Baer 对第 5.4 节中的示例所做的审阅和提出的建议，这些建议对提高文本质量做出了重要贡献。"
+    },
+    {
+      "indent": 3,
+      "text": "Additionally, the solution presented in this document is an amalgam of several Secure Inter-Domain Routing (SIDR) interim meeting discussions plus a discussion at IETF 85, collected and articulated thanks to Sandy Murphy.",
+      "zh": "此外，本文档中提出的解决方案综合了几次安全域间路由（SIDR）临时会议的讨论和 IETF 85 的讨论，这些讨论的收集和阐述要感谢 Sandy Murphy。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Wesley George Neustar 45980 Center Oak Plaza Sterling, VA 20166 United States of America",
+      "zh": "Wesley George Neustar 45980 Center Oak Plaza Sterling, VA 20166 United States of America"
+    },
+    {
+      "indent": 3,
+      "text": "Email: wesgeorge@puck.nether.net",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Sandy Murphy PARSONS, Inc. 7110 Samuel Morse Drive Columbia, MD 21046 United States of America",
+      "zh": "Sandy Murphy PARSONS, Inc.美国马里兰州哥伦比亚市塞缪尔-莫尔斯大道 7110 号 邮编 21046"
+    },
+    {
+      "indent": 3,
+      "text": "Phone: +1 443-430-8000\nEmail: sandy@tislabs.com",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

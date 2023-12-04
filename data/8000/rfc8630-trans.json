@@ -1,0 +1,610 @@
+{
+  "title": {
+    "text": "RFC 8630 - Resource Public Key Infrastructure (RPKI) Trust Anchor Locator",
+    "zh": "RFC 8630 - 资源公钥基础设施 (RPKI) 信任锚定位器"
+  },
+  "number": 8630,
+  "created_at": "2023-12-04 15:55:37.797357+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                         G. Huston\nRequest for Comments: 8630                                         APNIC\nObsoletes: 7730                                                S. Weiler\nCategory: Standards Track                                        W3C/MIT\nISSN: 2070-1721                                            G. Michaelson\n                                                                   APNIC\n                                                                 S. Kent\n                                                            Unaffiliated\n                                                          T. Bruijnzeels\n                                                              NLnet Labs\n                                                             August 2019",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 5,
+      "text": "Resource Public Key Infrastructure (RPKI) Trust Anchor Locator",
+      "zh": "资源公钥基础设施 (RPKI) 信任锚定位器"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines a Trust Anchor Locator (TAL) for the Resource Public Key Infrastructure (RPKI). The TAL allows Relying Parties in the RPKI to download the current Trust Anchor (TA) Certification Authority (CA) certificate from one or more locations and verify that the key of this self-signed certificate matches the key on the TAL. Thus, Relying Parties can be configured with TA keys but can allow these TAs to change the content of their CA certificate. In particular, it allows TAs to change the set of IP Address Delegations and/or Autonomous System Identifier Delegations included in the extension(s) (RFC 3779) of their certificate.",
+      "zh": "本文件定义了资源公钥基础设施（RPKI）的信任锚定位器（TAL）。TAL 允许 RPKI 中的依赖方从一个或多个位置下载当前的信任锚（TA）认证机构（CA）证书，并验证该自签名证书的密钥与 TAL 上的密钥是否匹配。因此，依赖方可以配置 TA 密钥，但允许这些 TA 更改其 CA 证书的内容。特别是，它允许 TA 更改其证书扩展名（RFC 3779）中包含的 IP 地址授权和/或自治系统标识符授权集。"
+    },
+    {
+      "indent": 3,
+      "text": "This document obsoletes the previous definition of the TAL as provided in RFC 7730 by adding support for Uniform Resource Identifiers (URIs) (RFC 3986) that use HTTP over TLS (HTTPS) (RFC 7230) as the scheme.",
+      "zh": "本文件通过添加对使用 HTTP over TLS (HTTPS) (RFC 7230) 作为方案的统一资源标识符 (URI) (RFC 3986) 的支持，废除了之前 RFC 7730 中提供的 TAL 定义。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc8630.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc8630。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2019 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "Copyright (c) 2019 IETF Trust 和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受BCP 78以及本文档发布之日有效的IETF信托基金关于IETF文档的法律规定（https://trustee.ietf.org/license-info）的约束。 请仔细阅读这些文档，因为它们描述了您对本文档的权利和限制。 从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中描述的简化 BSD 许可证文本，并且不提供简化 BSD 许可证中描述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1. Introduction ....................................................2\n   1.1. Terminology ................................................3\n   1.2. Changes from RFC 7730 ......................................3\n2. Trust Anchor Locator ............................................3\n   2.1. Trust Anchor Locator Motivation ............................3\n   2.2. Trust Anchor Locator File Format ...........................4\n   2.3. TAL and TA Certificate Considerations ......................4\n   2.4. Example ....................................................6\n3. Relying Party Use ...............................................6\n4. URI Scheme Considerations .......................................7\n5. Security Considerations .........................................8\n6. IANA Considerations .............................................8\n7. References ......................................................8\n   7.1. Normative References .......................................8\n   7.2. Informative References ....................................10\nAcknowledgements ..................................................10\nAuthors' Addresses ................................................11",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines a Trust Anchor Locator (TAL) for the Resource Public Key Infrastructure (RPKI) [RFC6480]. This format may be used to distribute Trust Anchor (TA) material using a mix of out-of-band and online means. Procedures used by Relying Parties (RPs) to verify RPKI signed objects SHOULD support this format to facilitate interoperability between creators of TA material and RPs. This document obsoletes [RFC7730] by adding support for Uniform Resource Identifiers (URIs) [RFC3986] that use HTTP over TLS (HTTPS) [RFC7230] as the scheme.",
+      "zh": "本文件定义了资源公钥基础设施 (RPKI) [RFC6480] 的信任锚定位器 (TAL)。该格式可用于混合使用带外和在线方式分发信任锚（TA）材料。依赖方（RP）用于验证 RPKI 签名对象的程序应支持该格式，以促进 TA 资料创建者与 RP 之间的互操作性。本文件删除了 [RFC7730]，增加了对使用 HTTP over TLS (HTTPS) [RFC7230] 作为方案的统一资源标识符 (URI) [RFC3986] 的支持。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Terminology",
+      "section_title": true,
+      "zh": "1.1. 用语"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "1.2. Changes from RFC 7730",
+      "section_title": true,
+      "zh": "1.2. 与 RFC 7730 相比的变化"
+    },
+    {
+      "indent": 3,
+      "text": "The TAL format defined in this document differs from the definition in [RFC7730] in that:",
+      "zh": "本文档定义的 TAL 格式与 [RFC7730] 中的定义不同："
+    },
+    {
+      "indent": 3,
+      "text": "o it allows for the use of the HTTPS scheme in URIs [RFC7230], and",
+      "zh": "o 允许在 URI 中使用 HTTPS 方案 [RFC7230]，以及"
+    },
+    {
+      "indent": 3,
+      "text": "o it allows for the inclusion of an optional comment section.",
+      "zh": "o 它允许加入一个可选的评论部分。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that current RPs may not support this new format yet. Therefore, it is RECOMMENDED that a TA operator maintain a TAL file as defined in [RFC7730] for a time as well, until they are satisfied that RP tooling has been updated.",
+      "zh": "请注意，当前的 RP 可能还不支持这种新格式。因此，建议 TA 操作员也保留一段时间 [RFC7730] 中定义的 TAL 文件，直到他们确信 RP 工具已经更新。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Trust Anchor Locator",
+      "section_title": true,
+      "zh": "2. 信任锚定位器"
+    },
+    {
+      "indent": 0,
+      "text": "2.1. Trust Anchor Locator Motivation",
+      "section_title": true,
+      "zh": "2.1. 信任锚定位器 动机"
+    },
+    {
+      "indent": 3,
+      "text": "This document does not propose a new format for TA material. A TA in the RPKI is represented by a self-signed X.509 Certification Authority (CA) certificate, a format commonly used in PKIs and widely supported by RP software. This document specifies a format for data used to retrieve and verify the authenticity of a TA in a very simple fashion. That data is referred to as the TAL.",
+      "zh": "本文件并未提出 TA 资料的新格式。RPKI 中的 TA 由自签的 X.509 认证机构（CA）证书表示，这是 PKI 中常用的一种格式，也是 RP 软件广泛支持的一种格式。本文件规定了一种数据格式，用于以非常简单的方式检索和验证 TA 的真实性。该数据被称为 TAL。"
+    },
+    {
+      "indent": 3,
+      "text": "The motivation for defining the TAL is to enable selected data in the TA to change, without needing to redistribute the TA per se.",
+      "zh": "定义 TAL 的动机是使 TA 中的选定数据能够更改，而无需重新分配 TA 本身。"
+    },
+    {
+      "indent": 3,
+      "text": "In the RPKI, certificates contain one or more extensions [RFC3779] that can contain a set of IP Address Delegations and/or Autonomous System Identifier Delegations. In this document, we refer to these delegations as the Internet Number Resources (INRs) contained in an RPKI certificate.",
+      "zh": "在 RPKI 中，证书包含一个或多个扩展[RFC3779]，可以包含一组 IP 地址授权和/或自治系统标识符授权。在本文中，我们将这些授权称为 RPKI 证书中包含的互联网号码资源（INR）。"
+    },
+    {
+      "indent": 3,
+      "text": "The set of INRs associated with an entity acting as a TA is likely to change over time. Thus, if one were to use the common PKI convention of distributing a TA to RPs in a secure fashion, then this procedure would need to be repeated whenever the INR set for the entity acting as a TA changed. By distributing the TAL (in a secure fashion) instead of distributing the TA, this problem is avoided, i.e., the TAL is constant so long as the TA's public key and its location do not change.",
+      "zh": "与作为 TA 的实体相关联的 INR 集可能会随着时间的推移而改变。因此，如果使用常见的 PKI 惯例，以安全的方式向 RP 分发 TA，那么每当作为 TA 的实体的 INR 集发生变化时，就需要重复这一程序。通过（以安全方式）分发 TAL 而不是分发 TA，可以避免这个问题，也就是说，只要 TA 的公开密钥及其位置不发生变化，TAL 就是不变的。"
+    },
+    {
+      "indent": 3,
+      "text": "The TAL is analogous to the TrustAnchorInfo data structure specified in [RFC5914], which is on the Standards Track. That specification could be used to represent the TAL, if one defined an rsync or HTTPS URI extension for that data structure. However, the TAL format was adopted by RPKI implementors prior to the PKIX TA work, and the RPKI implementor community has elected to utilize the TAL format rather than define the requisite extension. The community also prefers the simplicity of the ASCII encoding of the TAL, versus the binary (ASN.1) encoding for TrustAnchorInfo.",
+      "zh": "TAL 类似于 [RFC5914] 中指定的 TrustAnchorInfo 数据结构，后者位于标准轨道上。如果为该数据结构定义了 rsync 或 HTTPS URI 扩展，则可以使用该规范来表示 TAL。不过，TAL 格式在 PKIX TA 工作之前就已被 RPKI 实现者采用，RPKI 实现者社区选择使用 TAL 格式，而不是定义必要的扩展。此外，与 TrustAnchorInfo 的二进制（ASN.1）编码相比，RPKI 社区更喜欢 TAL 的 ASCII 编码。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2. Trust Anchor Locator File Format",
+      "section_title": true,
+      "zh": "2.2. 信任锚定位器文件格式"
+    },
+    {
+      "indent": 3,
+      "text": "In this document, we define a TA URI as a URI that can be used to retrieve a current TA certificate. This URI MUST be either an rsync URI [RFC5781] or an HTTPS URI [RFC7230].",
+      "zh": "在本文档中，我们将 TA URI 定义为可用于检索当前 TA 证书的 URI。该 URI 必须是 rsync URI [RFC5781] 或 HTTPS URI [RFC7230]。"
+    },
+    {
+      "indent": 3,
+      "text": "The TAL is an ordered sequence of:",
+      "zh": "TAL 是一个有序序列："
+    },
+    {
+      "indent": 3,
+      "text": "1. an optional comment section consisting of one or more lines each starting with the \"#\" character, followed by human-readable informational UTF-8 text, conforming to the restrictions defined in Section 2 of [RFC5198], and ending with a line break,",
+      "zh": "1. 一个可选的注释部分，由一行或多行组成，每行以 \"#\"字符开头，后面是符合 [RFC5198] 第 2 节定义的限制条件的人类可读信息 UTF-8 文本，最后以换行结束、"
+    },
+    {
+      "indent": 3,
+      "text": "2. a URI section that is comprised of one or more ordered lines, each containing a TA URI, and ending with a line break,",
+      "zh": "2. 由一个或多个有序行组成的 URI 部分，每个有序行包含一个 TA URI，以换行结束、"
+    },
+    {
+      "indent": 3,
+      "text": "3. a line break, and",
+      "zh": "3. 换行，以及"
+    },
+    {
+      "indent": 3,
+      "text": "4. a subjectPublicKeyInfo [RFC5280] in DER format [X.509], encoded in base64 (see Section 4 of [RFC4648]). To avoid long lines, line breaks MAY be inserted into the base64-encoded string.",
+      "zh": "4. 以 base64 编码的 DER 格式[X.509]的 subjectPublicKeyInfo [RFC5280]（见 [RFC4648] 第 4 节）。为避免长行，可在 base64 编码的字符串中插入换行符。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that line breaks in this file can use either \"<CRLF>\" or \"<LF>\".",
+      "zh": "请注意，该文件中的换行符可以使用\"<CRLF>\"或\"<LF>\"。"
+    },
+    {
+      "indent": 0,
+      "text": "2.3. TAL and TA Certificate Considerations",
+      "section_title": true,
+      "zh": "2.3. TAL 和 TA 证书注意事项"
+    },
+    {
+      "indent": 3,
+      "text": "Each TA URI in the TAL MUST reference a single object. It MUST NOT reference a directory or any other form of collection of objects. The referenced object MUST be a self-signed CA certificate that conforms to the RPKI certificate profile [RFC6487]. This certificate is the TA in certification path discovery [RFC4158] and validation [RFC5280] [RFC3779].",
+      "zh": "TAL 中的每个 TA URI 必须引用一个对象。它不得引用目录或任何其它形式的对象集合。引用的对象必须是符合 RPKI 证书配置文件 [RFC6487] 的自签名 CA 证书。该证书是认证路径发现 [RFC4158] 和验证 [RFC5280] [RFC3779] 的 TA。"
+    },
+    {
+      "indent": 3,
+      "text": "The validity interval of this TA is chosen such that (1) the \"notBefore\" time predates the moment that this certificate is published and (2) the \"notAfter\" time is after the planned time of reissuance of this certificate.",
+      "zh": "该 TA 的有效期选择为：(1) \"notBefore\" 时间早于该证书发布的时间；(2) \"notAfter\" 时间晚于该证书计划重新签发的时间。"
+    },
+    {
+      "indent": 3,
+      "text": "The INR extension(s) of this TA MUST contain a non-empty set of number resources. It MUST NOT use the \"inherit\" form of the INR extension(s). The INR set described in this certificate is the set of number resources for which the issuing entity is offering itself as a putative TA in the RPKI [RFC6480].",
+      "zh": "该 TA 的 INR 扩展必须包含一组非空的数字资源。不得使用 INR 扩展名的 \"继承 \"形式。本证书中描述的 INR 集是签发实体在 RPKI [RFC6480] 中作为假定 TA 提供的一组号码资源。"
+    },
+    {
+      "indent": 3,
+      "text": "The public key used to verify the TA MUST be the same as the subjectPublicKeyInfo in the CA certificate and in the TAL.",
+      "zh": "用于验证 TA 的公钥必须与 CA 证书和 TAL 中的 subjectPublicKeyInfo 相同。"
+    },
+    {
+      "indent": 3,
+      "text": "The TA MUST contain a stable key that does not change when the certificate is reissued due to changes in the INR extension(s), when the certificate is renewed prior to expiration.",
+      "zh": "TA 必须包含一个稳定的密钥，在证书到期前更新时，该密钥不会因 INR 扩展名的更改而改变。"
+    },
+    {
+      "indent": 3,
+      "text": "Because the public key in the TAL and the TA MUST be stable, this motivates operation of that CA in an offline mode. In that case, a subordinate CA certificate containing the same INRs, or, in theory, any subset of INRs, can be issued for online operations. This allows the entity that issues the TA to keep the corresponding private key of this certificate offline, while issuing all relevant child certificates under the immediate subordinate CA. This measure also allows the Certificate Revocation List (CRL) issued by that entity to be used to revoke the subordinate CA certificate in the event of suspected key compromise of this online operational key pair that is potentially more vulnerable.",
+      "zh": "由于 TAL 和 TA 中的公开密钥必须是稳定的，这就促使该 CA 以离线模式运行。在这种情况下，可签发包含相同 INR 或理论上任何 INR 子集的下级 CA 证书，用于在线操作。这样，签发 TA 的实体就可以在离线状态下保留该证书的相应私钥，同时签发直属 CA 下的所有相关子证书。这项措施还允许该实体签发的证书吊销列表（CRL）在怀疑这对在线操作密钥对的密钥泄露时用于吊销下级 CA 证书，因为这对在线操作密钥对可能更容易受到攻击。"
+    },
+    {
+      "indent": 3,
+      "text": "The TA MUST be published at a stable URI. When the TA is reissued for any reason, the replacement CA certificate MUST be accessible using the same URI.",
+      "zh": "TA 必须在一个稳定的 URI 上发布。当 TA 因任何原因重新签发时，必须使用相同的 URI 访问替换的 CA 证书。"
+    },
+    {
+      "indent": 3,
+      "text": "Because the TA is a self-signed certificate, there is no corresponding CRL that can be used to revoke it, nor is there a manifest [RFC6486] that lists this certificate.",
+      "zh": "由于 TA 是自签证书，因此没有相应的 CRL 可用于撤销该证书，也没有清单 [RFC6486] 列出该证书。"
+    },
+    {
+      "indent": 3,
+      "text": "If an entity wishes to withdraw a self-signed CA certificate as a putative TA, for any reason, including key rollover, the entity MUST remove the object from the location referenced in the TAL.",
+      "zh": "如果一个实体出于任何原因（包括密钥展期）希望撤回作为推定 TA 的自签名 CA 证书，该实体必须从 TAL 中引用的位置删除该对象。"
+    },
+    {
+      "indent": 3,
+      "text": "Where the TAL contains two or more TA URIs, the same self-signed CA certificate MUST be found at each referenced location. In order to increase operational resilience, it is RECOMMENDED that (1) the domain name parts of each of these URIs resolve to distinct IP addresses that are used by a diverse set of repository publication points and (2) these IP addresses be included in distinct Route Origin Authorization (ROA) objects signed by different CAs.",
+      "zh": "如果 TAL 包含两个或多个 TA URI，则必须在每个引用位置找到相同的自签名 CA 证书。为了提高操作弹性，建议：(1) 每个 URI 的域名部分都解析到不同的 IP 地址，这些 IP 地址由不同的存储库发布点使用；(2) 这些 IP 地址包含在由不同 CA 签名的不同路由起源授权（ROA）对象中。"
+    },
+    {
+      "indent": 0,
+      "text": "2.4. Example",
+      "section_title": true,
+      "zh": "2.4. 示例"
+    },
+    {
+      "indent": 9,
+      "text": "# This TAL is intended for documentation purposes only. # Do not attempt to use this in a production setting. rsync://rpki.example.org/rpki/hedgehog/root.cer https://rpki.example.org/rpki/hedgehog/root.cer",
+      "zh": "# 此 TAL 仅用于文档目的。# rsync://rpki.example.org/rpki/hedgehog/root.cer https://rpki.example.org/rpki/hedgehog/root.cer"
+    },
+    {
+      "indent": 9,
+      "text": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAovWQL2lh6knDx\nGUG5hbtCXvvh4AOzjhDkSHlj22gn/1oiM9IeDATIwP44vhQ6L/xvuk7W6\nKfa5ygmqQ+xOZOwTWPcrUbqaQyPNxokuivzyvqVZVDecOEqs78q58mSp9\nnbtxmLRW7B67SJCBSzfa5XpVyXYEgYAjkk3fpmefU+AcxtxvvHB5OVPIa\nBfPcs80ICMgHQX+fphvute9XLxjfJKJWkhZqZ0v7pZm2uhkcPx1PMGcrG\nee0WSDC3fr3erLueagpiLsFjwwpX6F+Ms8vqz45H+DKmYKvPSstZjCCq9\naJ0qANT9OtnfSDOS+aLRPjZryCNyvvBHxZXqj5YCGKtwIDAQAB",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3. Relying Party Use",
+      "section_title": true,
+      "zh": "3. 依赖方使用"
+    },
+    {
+      "indent": 3,
+      "text": "In order to use the TAL to retrieve and validate a (putative) TA, an RP SHOULD:",
+      "zh": "为了使用 TAL 检索和验证（推定）TA，RP 应当"
+    },
+    {
+      "indent": 3,
+      "text": "1. Retrieve the object referenced by (one of) the TA URI(s) contained in the TAL.",
+      "zh": "1. 检索 TAL 中包含的 TA URI（其中之一）所引用的对象。"
+    },
+    {
+      "indent": 3,
+      "text": "2. Confirm that the retrieved object is a current, self-signed RPKI CA certificate that conforms to the profile as specified in [RFC6487].",
+      "zh": "2. 确认检索对象是符合 [RFC6487] 中规定的配置文件的当前自签名 RPKI CA 证书。"
+    },
+    {
+      "indent": 3,
+      "text": "3. Confirm that the public key in the TAL matches the public key in the retrieved object.",
+      "zh": "3. 确认 TAL 中的公钥与检索对象中的公钥一致。"
+    },
+    {
+      "indent": 3,
+      "text": "4. Perform other checks, as deemed appropriate (locally), to ensure that the RP is willing to accept the entity publishing this self-signed CA certificate to be a TA. These tests apply to the validity of attestations made in the context of the RPKI relating to all resources described in the INR extension(s) of this certificate.",
+      "zh": "4. 执行其他适当的检查（本地），以确保 RP 愿意接受发布此自签 CA 证书的实体为 TA。这些检验适用于在 RPKI 范围内对本证书 INR 扩展名中描述的所有资源所作证明的有效性。"
+    },
+    {
+      "indent": 3,
+      "text": "An RP SHOULD perform these functions for each instance of a TAL that it is holding for this purpose every time the RP performs a resynchronization across the local repository cache. In any case, an RP also SHOULD perform these functions prior to the expiration of the locally cached copy of the retrieved TA referenced by the TAL.",
+      "zh": "每次 RP 跨本地存储库缓存执行重新同步时，RP 都应为其为此目的持有的每个 TAL 实例执行这些功能。在任何情况下，RP 也应在 TAL 所引用的检索 TA 的本地缓存副本过期之前执行这些功能。"
+    },
+    {
+      "indent": 3,
+      "text": "In the case where a TAL contains multiple TA URIs, an RP MAY use a locally defined preference rule to select the URI to retrieve the self-signed RPKI CA certificate that is to be used as a TA. Some examples are:",
+      "zh": "在 TAL 包含多个 TA URI 的情况下，RP 可使用本地定义的首选规则来选择 URI，以检索将用作 TA 的自签名 RPKI CA 证书。举例如下"
+    },
+    {
+      "indent": 3,
+      "text": "o Using the order provided in the TAL",
+      "zh": "o 使用 TAL 中提供的顺序"
+    },
+    {
+      "indent": 3,
+      "text": "o Selecting the TA URI randomly from the available list",
+      "zh": "o 从可用列表中随机选择 TA URI"
+    },
+    {
+      "indent": 3,
+      "text": "o Creating a prioritized list of URIs based on RP-specific parameters, such as connection establishment delay",
+      "zh": "o 根据 RP 特定参数（如连接建立延迟）创建 URI 优先级列表"
+    },
+    {
+      "indent": 3,
+      "text": "If the connection to the preferred URI fails or the retrieved CA certificate public key does not match the TAL public key, the RP SHOULD retrieve the CA certificate from the next URI, according to the local preference ranking of URIs.",
+      "zh": "如果与首选 URI 的连接失败或检索到的 CA 证书公开密钥与 TAL 公开密钥不匹配，则 RP 应根据本地 URI 偏好排序，从下一个 URI 检索 CA 证书。"
+    },
+    {
+      "indent": 0,
+      "text": "4. URI Scheme Considerations",
+      "section_title": true,
+      "zh": "4. URI 方案注意事项"
+    },
+    {
+      "indent": 3,
+      "text": "Please note that the RSYNC protocol provides neither transport security nor any means by which the RP can validate that they are connected to the proper host. Therefore, it is RECOMMENDED that HTTPS be used as the preferred scheme.",
+      "zh": "请注意，RSYNC 协议既不提供传输安全性，也不提供任何 RP 可以用来验证是否连接到正确主机的方法。因此，建议将 HTTPS 作为首选方案。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that, although a Man in the Middle (MITM) cannot produce a CA certificate that would be considered valid according to the process described in Section 3, this type of attack can prevent the RP from learning about an updated CA certificate.",
+      "zh": "需要注意的是，虽然中间人（MITM）无法生成根据第 3 节所述过程被视为有效的 CA 证书，但这种攻击可以阻止 RP 了解更新的 CA 证书。"
+    },
+    {
+      "indent": 3,
+      "text": "RPs MUST do TLS certificate and host name validation when they fetch a CA certificate using an HTTPS URI on a TAL. RPs SHOULD log any TLS certificate or host name validation issues found so that an operator can investigate the cause.",
+      "zh": "RP 使用 TAL 上的 HTTPS URI 获取 CA 证书时，必须进行 TLS 证书和主机名验证。RP 应记录发现的任何 TLS 证书或主机名验证问题，以便操作员调查原因。"
+    },
+    {
+      "indent": 3,
+      "text": "It is RECOMMENDED that RPs and Repository Servers follow the Best Current Practices outlined in [RFC7525] on the use of HTTPS [RFC7230]. RPs SHOULD do TLS certificate and host name validation using subjectAltName dNSName identities as described in [RFC6125]. The rules and guidelines defined in [RFC6125] apply here, with the following considerations:",
+      "zh": "建议 RP 和版本库服务器遵循 [RFC7525] 中概述的关于使用 HTTPS [RFC7230] 的当前最佳做法。RP 应使用 [RFC6125] 中描述的 subjectAltName dNSName 身份进行 TLS 证书和主机名验证。此处适用 [RFC6125] 中定义的规则和指南，但须考虑以下因素："
+    },
+    {
+      "indent": 3,
+      "text": "o RPs and Repository Servers SHOULD support the DNS-ID identifier type. The DNS-ID identifier type SHOULD be present in Repository Server certificates.",
+      "zh": "o RP 和版本库服务器应支持 DNS-ID 标识符类型。版本库服务器证书中应包含 DNS-ID 标识符类型。"
+    },
+    {
+      "indent": 3,
+      "text": "o DNS names in Repository Server certificates SHOULD NOT contain the wildcard character \"*\".",
+      "zh": "o 版本库服务器证书中的 DNS 名称不应包含通配符 \"*\"。"
+    },
+    {
+      "indent": 3,
+      "text": "o This protocol does not require the use of SRV-IDs.",
+      "zh": "o 该协议不需要使用 SRV-ID。"
+    },
+    {
+      "indent": 3,
+      "text": "o This protocol does not require the use of URI-IDs.",
+      "zh": "o 本协议不要求使用 URI-ID。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Security Considerations",
+      "section_title": true,
+      "zh": "5. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "Compromise of a TA private key permits unauthorized parties to masquerade as a TA, with potentially severe consequences. Reliance on an inappropriate or incorrect TA has similar potentially severe consequences.",
+      "zh": "破坏 TA 私钥会使未经授权的各方冒充 TA，从而可能造成严重后果。依赖不适当或不正确的 TA 也可能造成类似的严重后果。"
+    },
+    {
+      "indent": 3,
+      "text": "This TAL does not directly provide a list of resources covered by the referenced self-signed CA certificate. Instead, the RP is referred to the TA itself and the INR extension(s) within this certificate. This provides necessary operational flexibility, but it also allows the certificate issuer to claim to be authoritative for any resource. RPs should either (1) have great confidence in the issuers of such certificates that they are configuring as TAs or (2) issue their own self-signed certificate as a TA and, in doing so, impose constraints on the subordinate certificates.",
+      "zh": "本 TAL 不直接提供所引用的自签名 CA 证书所涵盖的资源列表。取而代之的是，RP 被转到 TA 本身和该证书中的 INR 扩展名。这提供了必要的操作灵活性，但也允许证书颁发者声称自己对任何资源都具有权威性。注册服务提供商应(1)对其配置为 TA 的此类证书的签发者抱有极大的信心，或(2)签发自己的自签证书作为 TA，并在此过程中对下级证书施加限制。"
+    },
+    {
+      "indent": 0,
+      "text": "6. IANA Considerations",
+      "section_title": true,
+      "zh": "6. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This document has no IANA actions.",
+      "zh": "本文件没有 IANA 操作。"
+    },
+    {
+      "indent": 0,
+      "text": "7. References",
+      "section_title": true,
+      "zh": "7. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "7.1. Normative References",
+      "section_title": true,
+      "zh": "7.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, DOI 10.17487/RFC3779, June 2004, <https://www.rfc-editor.org/info/rfc3779>.",
+      "zh": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, DOI 10.17487/RFC3779, June 2004, <https://www.rfc-editor.org/info/rfc3779>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3986] Berners-Lee, T., Fielding, R., and L. Masinter, \"Uniform Resource Identifier (URI): Generic Syntax\", STD 66, RFC 3986, DOI 10.17487/RFC3986, January 2005, <https://www.rfc-editor.org/info/rfc3986>.",
+      "zh": "[RFC3986] Berners-Lee, T., Fielding, R., and L. Masinter, \"Uniform Resource Identifier (URI): Generic Syntax\", STD 66, RFC 3986, DOI 10.17487/RFC3986, January 2005, <https://www.rfc-editor.org/info/rfc3986>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4648] Josefsson, S., \"The Base16, Base32, and Base64 Data Encodings\", RFC 4648, DOI 10.17487/RFC4648, October 2006, <https://www.rfc-editor.org/info/rfc4648>.",
+      "zh": "[RFC4648] Josefsson, S., \"The Base16, Base32, and Base64 Data Encodings\", RFC 4648, DOI 10.17487/RFC4648, October 2006, <https://www.rfc-editor.org/info/rfc4648>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5198] Klensin, J. and M. Padlipsky, \"Unicode Format for Network Interchange\", RFC 5198, DOI 10.17487/RFC5198, March 2008, <https://www.rfc-editor.org/info/rfc5198>.",
+      "zh": "[RFC5198] Klensin, J. and M. Padlipsky, \"Unicode Format for Network Interchange\", RFC 5198, DOI 10.17487/RFC5198, March 2008, <https://www.rfc-editor.org/info/rfc5198>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, DOI 10.17487/RFC5280, May 2008, <https://www.rfc-editor.org/info/rfc5280>.",
+      "zh": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, DOI 10.17487/RFC5280, May 2008, <https://www.rfc-editor.org/info/rfc5280>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"The rsync URI Scheme\", RFC 5781, DOI 10.17487/RFC5781, February 2010, <https://www.rfc-editor.org/info/rfc5781>.",
+      "zh": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"The rsync URI Scheme\", RFC 5781, DOI 10.17487/RFC5781, February 2010, <https://www.rfc-editor.org/info/rfc5781>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6125] Saint-Andre, P. and J. Hodges, \"Representation and Verification of Domain-Based Application Service Identity within Internet Public Key Infrastructure Using X.509 (PKIX) Certificates in the Context of Transport Layer Security (TLS)\", RFC 6125, DOI 10.17487/RFC6125, March 2011, <https://www.rfc-editor.org/info/rfc6125>.",
+      "zh": "[RFC6125] Saint-Andre, P. and J. Hodges, \"Representation and Verification of Domain-Based Application Service Identity within Internet Public Key Infrastructure Using X.509 (PKIX) Certificates in the Context of Transport Layer Security (TLS)\", RFC 6125, DOI 10.17487/RFC6125, March 2011, <https://www.rfc-editor.org/info/rfc6125>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, DOI 10.17487/RFC6487, February 2012, <https://www.rfc-editor.org/info/rfc6487>.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, DOI 10.17487/RFC6487, February 2012, <https://www.rfc-editor.org/info/rfc6487>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7230] Fielding, R., Ed. and J. Reschke, Ed., \"Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing\", RFC 7230, DOI 10.17487/RFC7230, June 2014, <https://www.rfc-editor.org/info/rfc7230>.",
+      "zh": "[RFC7230] Fielding, R., Ed. 和 J. Reschke, Ed., \"超文本传输协议（HTTP/1.1）：消息语法和路由\"，RFC 7230，DOI 10.17487/RFC7230，2014 年 6 月，<https://www.rfc-editor.org/info/rfc7230>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7525] Sheffer, Y., Holz, R., and P. Saint-Andre, \"Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)\", BCP 195, RFC 7525, DOI 10.17487/RFC7525, May 2015, <https://www.rfc-editor.org/info/rfc7525>.",
+      "zh": "[RFC7525] Sheffer, Y., Holz, R., and P. Saint-Andre, \"Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)\", BCP 195, RFC 7525, DOI 10.17487/RFC7525, May 2015, <https://www.rfc-editor.org/info/rfc7525>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7730] Huston, G., Weiler, S., Michaelson, G., and S. Kent, \"Resource Public Key Infrastructure (RPKI) Trust Anchor Locator\", RFC 7730, DOI 10.17487/RFC7730, January 2016, <https://www.rfc-editor.org/info/rfc7730>.",
+      "zh": "[RFC7730] Huston, G., Weiler, S., Michaelson, G., and S. Kent, \"Resource Public Key Infrastructure (RPKI) Trust Anchor Locator\", RFC 7730, DOI 10.17487/RFC7730, January 2016, <https://www.rfc-editor.org/info/rfc7730>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>.",
+      "zh": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>。"
+    },
+    {
+      "indent": 3,
+      "text": "[X.509] ITU-T, \"Information technology - Open Systems Interconnection - The Directory: Public-key and attribute certificate frameworks\", ITU-T Recommendation X.509, October 2016, <https://www.itu.int/rec/T-REC-X.509>.",
+      "zh": "[X.509] ITU-T，\"信息技术--开放系统互连--目录：公钥和属性证书框架\"，ITU-T 建议 X.509，2016 年 10 月，<https://www.itu.int/rec/T-REC-X.509>。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2. Informative References",
+      "section_title": true,
+      "zh": "7.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4158] Cooper, M., Dzambasow, Y., Hesse, P., Joseph, S., and R. Nicholas, \"Internet X.509 Public Key Infrastructure: Certification Path Building\", RFC 4158, DOI 10.17487/RFC4158, September 2005, <https://www.rfc-editor.org/info/rfc4158>.",
+      "zh": "[RFC4158] Cooper, M., Dzambasow, Y., Hesse, P., Joseph, S., and R. Nicholas, \"Internet X.509 Public Key Infrastructure：Certification Path Building\", RFC 4158, DOI 10.17487/RFC4158, September 2005, <https://www.rfc-editor.org/info/rfc4158>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5914] Housley, R., Ashmore, S., and C. Wallace, \"Trust Anchor Format\", RFC 5914, DOI 10.17487/RFC5914, June 2010, <https://www.rfc-editor.org/info/rfc5914>.",
+      "zh": "[RFC5914] Housley, R., Ashmore, S., and C. Wallace, \"Trust Anchor Format\", RFC 5914, DOI 10.17487/RFC5914, June 2010, <https://www.rfc-editor.org/info/rfc5914>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, \"Manifests for the Resource Public Key Infrastructure (RPKI)\", RFC 6486, DOI 10.17487/RFC6486, February 2012, <https://www.rfc-editor.org/info/rfc6486>.",
+      "zh": "[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, \"Manifests for the Resource Public Key Infrastructure (RPKI)\", RFC 6486, DOI 10.17487/RFC6486, February 2012, <https://www.rfc-editor.org/info/rfc6486>。"
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgements",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "This approach to TA material was originally described by Robert Kisteleki.",
+      "zh": "这种处理 TA 材料的方法最初是由 Robert Kisteleki 描述的。"
+    },
+    {
+      "indent": 3,
+      "text": "The authors acknowledge the contributions of Rob Austein and Randy Bush, who assisted with drafting this document and with helpful review comments.",
+      "zh": "作者感谢 Rob Austein 和 Randy Bush 的贡献，他们协助起草了本文件并提供了有益的审阅意见。"
+    },
+    {
+      "indent": 3,
+      "text": "The authors acknowledge the work of Roque Gagliano, Terry Manderson, and Carlos Martinez-Cagnazzo in developing the ideas behind the inclusion of multiple URIs in the TAL.",
+      "zh": "作者感谢 Roque Gagliano、Terry Manderson 和 Carlos Martinez-Cagnazzo 为在 TAL 中纳入多个 URI 所做的工作。"
+    },
+    {
+      "indent": 3,
+      "text": "The authors acknowledge Job Snijders for suggesting the inclusion of comments at the start of the TAL.",
+      "zh": "作者感谢 Job Snijders 建议在 TAL 开头加入评论。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Geoff Huston APNIC",
+      "zh": "Geoff Huston APNIC"
+    },
+    {
+      "indent": 3,
+      "text": "Email: gih@apnic.net\nURI:   https://www.apnic.net",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Samuel Weiler W3C/MIT",
+      "zh": "塞缪尔-韦勒 W3C/MIT"
+    },
+    {
+      "indent": 3,
+      "text": "Email: weiler@csail.mit.edu",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "George Michaelson APNIC",
+      "zh": "乔治-迈克尔逊 APNIC"
+    },
+    {
+      "indent": 3,
+      "text": "Email: ggm@apnic.net\nURI:   https://www.apnic.net",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Stephen Kent Unaffiliated",
+      "zh": "斯蒂芬-肯特 无党派人士"
+    },
+    {
+      "indent": 3,
+      "text": "Email: kent@alum.mit.edu",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Tim Bruijnzeels NLnet Labs",
+      "zh": "Tim Bruijnzeels NLnet 实验室"
+    },
+    {
+      "indent": 3,
+      "text": "Email: tim@nlnetlabs.nl\nURI:   https://www.nlnetlabs.nl",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

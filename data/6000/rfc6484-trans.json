@@ -1,0 +1,2165 @@
+{
+  "title": {
+    "text": "RFC 6484 - Certificate Policy (CP) for the Resource Public Key Infrastructure (RPKI)",
+    "zh": "RFC 6484 - 资源公钥基础设施 (RPKI) 的证书策略 (CP)"
+  },
+  "number": 6484,
+  "created_at": "2023-12-04 17:02:50.023525+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                           S. Kent\nRequest for Comments: 6484                                       D. Kong\nBCP: 173                                                          K. Seo\nCategory: Best Current Practice                                 R. Watro\nISSN: 2070-1721                                         BBN Technologies\n                                                           February 2012",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 13,
+      "text": " Certificate Policy (CP) for the Resource Public Key Infrastructure (RPKI)",
+      "zh": "资源公钥基础设施 (RPKI) 的证书策略 (CP)"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document describes the certificate policy for a Public Key Infrastructure (PKI) used to support attestations about Internet Number Resource (INR) holdings. Each organization that distributes IP addresses or Autonomous System (AS) numbers to an organization will, in parallel, issue a (public key) certificate reflecting this distribution. These certificates will enable verification that the resources indicated in the certificate have been distributed to the holder of the associated private key and that this organization is the current, unique holder of these resources.",
+      "zh": "本文件描述了用于支持互联网号码资源（INR）持有证明的公钥基础设施（PKI）的证书政策。向某个组织分发 IP 地址或自治系统 (AS) 号码的每个组织都将同时签发一份（公钥）证书，以反映这一分发情况。这些证书将用于验证证书中显示的资源是否已分配给相关私钥的持有者，以及该组织是否是这些资源的当前唯一持有者。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This memo documents an Internet Best Current Practice.",
+      "zh": "本备忘录记录了互联网当前最佳做法。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on BCPs is available in Section 2 of RFC 5741.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关 BCP 的更多信息，请参见 RFC 5741 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6484.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6484。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2012 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "版权所有 (c) 2012 IETF 信托基金会和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1. Introduction ....................................................6\n   1.1. Overview ...................................................7\n   1.2. Document Name and Identification ...........................7\n   1.3. PKI Participants ...........................................7\n        1.3.1. Certification Authorities ...........................8\n        1.3.2. Registration Authorities ............................8\n        1.3.3. Subscribers .........................................8\n        1.3.4. Relying Parties .....................................8\n        1.3.5. Other Participants ..................................8\n   1.4. Certificate Usage ..........................................9\n        1.4.1. Appropriate Certificate Uses ........................9\n        1.4.2. Prohibited Certificate Uses .........................9\n   1.5. Policy Administration ......................................9\n        1.5.1. Organization Administering the Document .............9\n        1.5.2. Contact Person ......................................9\n        1.5.4. CP Approval Procedures ..............................9\n   1.6. Definitions and Acronyms ..................................10\n2. Publication and Repository Responsibilities ....................11\n   2.1. Repositories ..............................................11\n   2.2. Publication of Certification Information ..................11\n   2.3. Time or Frequency of Publication ..........................12\n   2.4. Access Controls on Repositories ...........................12\n3. Identification and Authentication ..............................12\n   3.1. Naming ....................................................12\n        3.1.1. Types of Names .....................................12\n        3.1.2. Need for Names to Be Meaningful ....................12\n        3.1.3. Anonymity or Pseudonymity of Subscribers ...........13\n        3.1.4. Rules for Interpreting Various Name Forms ..........13\n        3.1.5. Uniqueness of Names ................................13\n   3.2. Initial Identity Validation ...............................13\n        3.2.1. Method to Prove Possession of the Private Key ......13\n        3.2.2. Authentication of Organization Identity ............13\n        3.2.3. Authentication of Individual Identity ..............14\n        3.2.4. Non-Verified Subscriber Information ................14\n        3.2.5. Validation of Authority ............................14\n        3.2.6. Criteria for Interoperation ........................14\n   3.3. Identification and Authentication for Re-Key Requests .....14\n        3.3.1. Identification and Authentication for\n               Routine Re-Key .....................................14\n        3.3.2. Identification and Authentication for\n               Re-Key after Revocation ............................15\n   3.4. Identification and Authentication for Revocation Request ..15",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "4. Certificate Life-Cycle Operational Requirements ................16\n   4.1. Certificate Application ...................................16\n        4.1.1. Who Can Submit a Certificate Application ...........16\n        4.1.2. Enrollment Process and Responsibilities ............16\n   4.2. Certificate Application Processing ........................16\n        4.2.1. Performing Identification and\n               Authentication Functions ...........................16\n        4.2.2. Approval or Rejection of Certificate Applications ..16\n        4.2.3. Time to Process Certificate Applications ...........17\n   4.3. Certificate Issuance ......................................17\n        4.3.1. CA Actions during Certificate Issuance .............17\n        4.3.2. Notification to Subscriber by the CA of\n               Issuance of Certificate ............................17\n   4.4. Certificate Acceptance ....................................17\n        4.4.1. Conduct Constituting Certificate Acceptance ........17\n        4.4.2. Publication of the Certificate by the CA ...........17\n        4.4.3. Notification of Certificate Issuance by the\n               CA to Other Entities ...............................17\n   4.5. Key Pair and Certificate Usage ............................18\n        4.5.1. Subscriber Private Key and Certificate Usage .......18\n        4.5.2. Relying Party Public Key and Certificate Usage .....18\n   4.6. Certificate Renewal .......................................18\n        4.6.1. Circumstance for Certificate Renewal ...............19\n        4.6.2. Who May Request Renewal ............................19\n        4.6.3. Processing Certificate Renewal Requests ............19\n        4.6.4. Notification of New Certificate Issuance to\n               Subscriber .........................................19\n        4.6.5. Conduct Constituting Acceptance of a\n               Renewal Certificate ................................19\n        4.6.6. Publication of the Renewal Certificate by the CA ...20\n        4.6.7. Notification of Certificate Issuance by the\n               CA to Other Entities ...............................20\n   4.7. Certificate Re-Key ........................................20\n        4.7.1. Circumstance for Certificate Re-Key ................20\n        4.7.2. Who May Request Certification of a New Public Key ..20\n        4.7.3. Processing Certificate Re-Keying Requests ..........21\n        4.7.4. Notification of New Certificate Issuance to\n               Subscriber .........................................21\n        4.7.5. Conduct Constituting Acceptance of a\n               Re-Keyed Certificate ...............................21\n        4.7.6. Publication of the Re-Keyed Certificate by the CA ..21\n        4.7.7. Notification of Certificate Issuance by the\n               CA to Other Entities ...............................21\n   4.8. Certificate Modification ..................................21\n        4.8.1. Circumstance for Certificate Modification ..........21\n        4.8.2. Who May Request Certificate Modification ...........21\n        4.8.3. Processing Certificate Modification Requests .......22\n           4.8.4. Notification of New Certificate Issuance to\n               Subscriber .........................................22\n        4.8.5. Conduct Constituting Acceptance of Modified\n               Certificate ........................................22\n        4.8.6. Publication of the Modified Certificate by the CA ..22\n        4.8.7. Notification of Certificate Issuance by the\n               CA to Other Entities ...............................22\n   4.9. Certificate Revocation and Suspension .....................22\n        4.9.1. Circumstances for Revocation .......................22\n        4.9.2. Who Can Request Revocation .........................22\n        4.9.3. Procedure for Revocation Request ...................23\n        4.9.4. Revocation Request Grace Period ....................23\n        4.9.5. Time within which CA Must Process the\n               Revocation Request .................................23\n        4.9.6. Revocation Checking Requirement for Relying\n               Parties ............................................23\n        4.9.7. CRL Issuance Frequency .............................23\n        4.9.8. Maximum Latency for CRLs ...........................23\n   4.10. Certificate Status Services ..............................24\n5. Facility, Management, and Operational Controls .................24\n   5.1. Physical Controls .........................................24\n        5.1.1. Site Location and Construction .....................24\n        5.1.2. Physical Access ....................................24\n        5.1.3. Power and Air Conditioning .........................24\n        5.1.4. Water Exposures ....................................24\n        5.1.5. Fire Prevention and Protection .....................24\n        5.1.6. Media Storage ......................................24\n        5.1.7. Waste Disposal .....................................24\n        5.1.8. Off-Site Backup ....................................24\n   5.2. Procedural Controls .......................................24\n        5.2.1. Trusted Roles ......................................25\n        5.2.2. Number of Persons Required per Task ................25\n        5.2.3. Identification and Authentication for Each Role ....25\n        5.2.4. Roles Requiring Separation of Duties ...............25\n   5.3. Personnel Controls ........................................25\n   5.4. Audit Logging Procedures ..................................25\n        5.4.1. Types of Events Recorded ...........................25\n        5.4.2. Frequency of Processing Log ........................25\n        5.4.3. Retention Period for Audit Log .....................26\n        5.4.4. Protection of Audit Log ............................26\n        5.4.5. Audit Log Backup Procedures ........................26\n        5.4.8. Vulnerability Assessments ..........................26\n   5.6. Key Changeover ............................................26\n   5.7. CA or RA Termination ......................................26\n6. Technical Security Controls ....................................26\n   6.1. Key Pair Generation and Installation ......................27\n        6.1.1. Key Pair Generation ................................27\n        6.1.2. Private Key Delivery to Subscriber .................27\n           6.1.3. Public Key Delivery to Certificate Issuer ..........27\n        6.1.4. CA Public Key Delivery to Relying Parties ..........27\n        6.1.5. Key Sizes ..........................................27\n        6.1.6. Public Key Parameters Generation and\n               Quality Checking ...................................28\n        6.1.7. Key Usage Purposes (as per X.509 v3 Key\n               Usage Field) .......................................28\n   6.2. Private Key Protection and Cryptographic Module\n        Engineering Controls ......................................28\n        6.2.1. Cryptographic Module Standards and Controls ........28\n        6.2.2. Private Key (N out of M) Multi-Person Control ......28\n        6.2.3. Private Key Escrow .................................28\n        6.2.4. Private Key Backup .................................28\n        6.2.5. Private Key Archival ...............................28\n        6.2.6. Private Key Transfer into or from a\n               Cryptographic Module ...............................29\n        6.2.7. Private Key Storage on Cryptographic Module ........29\n        6.2.8. Method of Activating a Private Key .................29\n        6.2.9. Method of Deactivating a Private Key ...............29\n        6.2.10. Method of Destroying a Private Key ................29\n        6.2.11. Cryptographic Module Rating .......................29\n   6.3. Other Aspects of Key Pair Management ......................29\n        6.3.1. Public Key Archival ................................29\n        6.3.2. Certificate Operational Periods and Key\n               Pair Usage Periods .................................29\n   6.4. Activation Data ...........................................30\n   6.5. Computer Security Controls ................................30\n   6.6. Life-Cycle Technical Controls .............................30\n        6.6.1. System Development Controls ........................30\n        6.6.2. Security Management Controls .......................30\n        6.6.3. Life-Cycle Security Controls .......................30\n   6.7. Network Security Controls .................................30\n   6.8. Timestamping ..............................................30\n7. Certificate and CRL Profiles ...................................31\n8. Compliance Audit and Other Assessments .........................31\n9. Other Business and Legal Matters ...............................31\n   9.12.  Amendments ..............................................31\n        9.12.1. Procedure for Amendment ...........................31\n        9.12.2. Notification Mechanism and Period .................31\n        9.12.3. Circumstances under Which OID Must Be Changed .....32\n10. Security Considerations .......................................32\n11. Acknowledgments ...............................................33\n12. References ....................................................33\n   12.1. Normative References .....................................33\n   12.2. Informative References ...................................33",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document describes the certificate policy for a Public Key Infrastructure (PKI) used to attest to Internet Number Resource (INR) holdings (IP addresses or Autonomous System (AS) numbers). An organization that distributes INRs to another organization MAY, in parallel, issue a (public key) certificate reflecting this distribution. These certificates will enable verification that the resources indicated in the certificate have been distributed to the holder of the associated private key and that this organization is the current holder of these resources.",
+      "zh": "本文件描述了用于证明互联网号码资源（INR）持有量（IP 地址或自治系统（AS）号码）的公钥基础设施（PKI）的证书政策。向另一机构分发 INR 的机构可以同时签发反映该分发情况的（公钥）证书。这些证书将有助于验证证书中显示的资源是否已分配给相关私钥的持有者，以及该组织是否是这些资源的当前持有者。"
+    },
+    {
+      "indent": 3,
+      "text": "The most important and distinguishing aspect of the PKI for which this policy was created is that it does not purport to identify an INR holder via the subject name contained in the certificate issued to that entity. Rather, each certificate issued under this policy is intended to enable an entity to assert, in a verifiable fashion, that it is the current holder of an INR based on the current records of the entity responsible for the resources in question. Verification of the assertion is based on two criteria: the ability of the entity to digitally sign data that is verifiable using the public key contained in the corresponding certificate, and validation of that certificate in the context of this PKI.",
+      "zh": "本政策所针对的公用钥匙基础结构的最重要和最显著的方面是，它并不打算通过签发给 某实体的证书中所包含的主题名称来识别 INR 持有人。相反，根据本政策签发的每张证书都是为了使一个实体能够根据负责有关资源的实体的当前记录，以可核查的方式断言自己是 INR 的当前持有者。对这一断言的核实基于两个标准：一是该实体对数据进行数字签名的能力，这些数据可使用相应证书所含的公用钥匙进行核实；二是在本公用钥匙基础结构中对该证书进行验证。"
+    },
+    {
+      "indent": 3,
+      "text": "This PKI is designed exclusively for use in support of validation of claims related to current INR holdings. This includes any certificates issued in support of operation of this infrastructure, e.g., for integrity or access control of the repository system described in Section 2.4. Such transitive uses of certificates also are permitted under this policy. Use of the certificates and Certificate Revocation Lists (CRLs) managed under this PKI for any other purpose is a violation of this CP, and relying parties (RPs) SHOULD reject certificates presented for such uses.",
+      "zh": "本 PKI 专门用于支持与当前 INR 持有量相关的索赔验证。这包括为支持本基础设施的运行而签发的任何证书，例如第 2.4 节中描述的存储库系统的完整性或访问控制。本政策也允许证书的此类转用。将本 PKI 管理的证书和证书废止列表 (CRL) 用于任何其他目的都违反了本政策，依赖方 (RP) 应拒绝接受用于此类用途的证书。"
+    },
+    {
+      "indent": 3,
+      "text": "Note: This document is based on the template specified in RFC 3647 [RFC3647], a product of the Internet Engineering Task Force (IETF) stream. In the interest of keeping the document as short as reasonable, a number of sections contained in the template have been omitted from this policy because they do not apply to this PKI. However, we have retained the section numbering scheme employed in RFC 3647 to facilitate comparison with the outline in Section 6 of RFC 3647. Each of these omitted sections should be read as \"No stipulation\" in Certificate Policy (CP) / Certification Practice Statement (CPS) parlance.",
+      "zh": "注：本文档基于 RFC 3647 [RFC3647] 中指定的模板，RFC 3647 是互联网工程任务组 (IETF) 数据流的产物。为了使文件尽可能简短，本政策省略了模板中的一些章节，因为它们不适用于本 PKI。不过，我们保留了 RFC 3647 中使用的章节编号方案，以方便与 RFC 3647 第 6 节中的大纲进行比较。在证书政策 (CP) / 认证业务规则 (CPS) 的术语中，这些被省略的部分均应理解为 \"无规定\"。"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in RFC 2119 [RFC2119].",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照RFC 2119 [RFC2119]中的描述进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Overview",
+      "section_title": true,
+      "zh": "1.1. 概述"
+    },
+    {
+      "indent": 3,
+      "text": "This PKI is designed to support validation of claims by current holders of INRs, in accordance with the records of the organizations that act as Certification Authorities (CAs) in this PKI. The ability to verify such claims is essential to ensuring the unambiguous distribution of these resources [RFC6480].",
+      "zh": "本 PKI 旨在根据在本 PKI 中充当认证机构 (CA) 的组织的记录，支持对 INR 当前持有者的权利要求进行验证。验证此类声明的能力对于确保这些资源的无歧义分发至关重要 [RFC6480]。"
+    },
+    {
+      "indent": 3,
+      "text": "The structure of the RPKI is congruent with the number resource allocation framework of the Internet. The IANA allocates number resources to Regional Internet Registries (RIRs), to others, and for special purposes [RFC5736]. The RIRs, in turn, manage the allocation of number resources to end users, Internet Service Providers, and others.",
+      "zh": "RPKI 的结构与互联网的号码资源分配框架一致。IANA 将号码资源分配给区域互联网注册机构 (RIR)、其他机构和特殊用途机构 [RFC5736]。区域互联网注册管理机构则负责管理分配给最终用户、互联网服务提供商和其他方的号码资源。"
+    },
+    {
+      "indent": 3,
+      "text": "This PKI encompasses several types of certificates (see [RFC6487] for more details):",
+      "zh": "这种公钥基础设施包括几种类型的证书（详见 [RFC6487]）："
+    },
+    {
+      "indent": 3,
+      "text": "o CA certificates for each organization distributing INRs and for INR holders",
+      "zh": "o 各 INR 分发机构和 INR 持有者的 CA 证书"
+    },
+    {
+      "indent": 3,
+      "text": "o End-entity (EE) certificates for organizations to validate digital signatures on RPKI signed objects",
+      "zh": "o 终端实体 (EE) 证书，用于组织验证 RPKI 签名对象上的数字签名"
+    },
+    {
+      "indent": 0,
+      "text": "1.2. Document Name and Identification",
+      "section_title": true,
+      "zh": "1.2. 文件名称和标识"
+    },
+    {
+      "indent": 3,
+      "text": "The name of this document is \"Certificate Policy (CP) for the Resource PKI (RPKI)\".",
+      "zh": "本文件的名称为 \"资源 PKI (RPKI) 的证书策略 (CP)\"。"
+    },
+    {
+      "indent": 3,
+      "text": "This policy has been assigned the following OID:",
+      "zh": "该政策已被分配了以下 OID："
+    },
+    {
+      "indent": 3,
+      "text": "id-cp-ipAddr-asNumber OBJECT IDENTIFIER ::= { iso(1)",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 25,
+      "text": "identified-organization(3) dod(6) internet(1)",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 25,
+      "text": "security(5) mechanisms(5) pkix(7) cp(14) 2 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1.3. PKI Participants",
+      "section_title": true,
+      "zh": "1.3. PKI 参与者"
+    },
+    {
+      "indent": 3,
+      "text": "Note that in a PKI, the term \"subscriber\" refers to an individual or organization that is a subject of a certificate issued by a CA. The term is used in this fashion throughout this document, without qualification, and should not be confused with the networking use of the term to refer to an individual or organization that receives service from an ISP. In such cases, the term \"network subscriber\" will be used. Also note that, for brevity, this document always refers to PKI participants as organizations or entities, even though some of them are individuals.",
+      "zh": "请注意，在 PKI 中，\"用户 \"一词是指作为 CA 签发的证书主体的个人或组织。在本文件中，该术语以这种方式使用，没有限定条件，不应与网络中使用该术语指从互联网服务提供商接受服务的个人或组织相混淆。在这种情况下，将使用 \"网络用户 \"一词。另请注意，为简洁起见，本文件始终将 PKI 参与者称为组织或实体，尽管其中有些是个人。"
+    },
+    {
+      "indent": 0,
+      "text": "1.3.1. Certification Authorities",
+      "section_title": true,
+      "zh": "1.3.1. 认证机构"
+    },
+    {
+      "indent": 3,
+      "text": "The organizations that distribute IP addresses and AS numbers (IANA, RIRs, NIRs, ISPs) act as CAs in this PKI.",
+      "zh": "分配 IP 地址和 AS 号码的组织（IANA、RIR、NIR、ISP）在此 PKI 中充当 CA。"
+    },
+    {
+      "indent": 3,
+      "text": "Organizations that do not distribute INRs but hold such resources also act as CAs when they create EE certificates.",
+      "zh": "不分发 INR 但持有此类资源的组织在创建 EE 证书时也充当 CA。"
+    },
+    {
+      "indent": 0,
+      "text": "1.3.2. Registration Authorities",
+      "section_title": true,
+      "zh": "1.3.2. 登记机关"
+    },
+    {
+      "indent": 3,
+      "text": "This PKI does not require establishment or use of a registration authority (RA) function separate from the one provided inherently in conjunction with the CA function. The RA function MUST be provided by the same entity operating as a CA, e.g., entities listed in Section 1.3.1. An entity acting as a CA in this PKI already has a formal relationship with each organization to which it distributes INRs. These entities (the CAs) already perform the RA function implicitly since they already assume responsibility for distributing INRs.",
+      "zh": "本 PKI 不要求建立或使用注册机构 (RA) 功能，该功能与 CA 功能一起提供。注册机构功能必须由作为 CA 运行的同一实体提供，例如第 1.3.1 节中列出的实体。在本 PKI 中充当 CA 的实体已经与其分发 INR 的每个组织建立了正式关系。这些实体（CA）已经隐式地执行了 RA 功能，因为它们已经承担了分发 INR 的责任。"
+    },
+    {
+      "indent": 0,
+      "text": "1.3.3. Subscribers",
+      "section_title": true,
+      "zh": "1.3.3. 订阅者"
+    },
+    {
+      "indent": 3,
+      "text": "These are the organizations receiving distributions of INRs: RIRs, NIRs, ISPs, and other organizations.",
+      "zh": "这些是接受 INRs 分配的组织：区域互联网注册管理机构、国家互联网注册管理机构、互联网服务提供商和其他组织。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that any of these organizations may have received distributions from more than one source over time. This is true even for RIRs, which participate in inter-registry exchanges of address space. This PKI accommodates such relationships.",
+      "zh": "请注意，这些组织中的任何一个都可能在一段时间内从一个以上的来源获得分配。即使是参与地址空间登记处间交换的区域互联网注册管理机构也是如此。本公用钥匙基础结构允许这种关系。"
+    },
+    {
+      "indent": 0,
+      "text": "1.3.4. Relying Parties",
+      "section_title": true,
+      "zh": "1.3.4. 依赖方"
+    },
+    {
+      "indent": 3,
+      "text": "Entities or individuals that act in reliance on certificates or RPKI signed objects issued under this PKI are relying parties. Relying parties may or may not be subscribers within this PKI. (See Section 1.6 for the definition of an RPKI signed object.)",
+      "zh": "根据本 PKI 签发的证书或 RPKI 签名对象行事的实体或个人是依赖方。依赖方可以是也可以不是本 PKI 中的用户。(关于 RPKI 签名对象的定义，请参见第 1.6 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "1.3.5. Other Participants",
+      "section_title": true,
+      "zh": "1.3.5. 其他与会者"
+    },
+    {
+      "indent": 3,
+      "text": "Every organization that undertakes a role as a CA in this PKI is responsible for populating the RPKI distributed repository system with the certificates, CRLs, and RPKI signed objects that it issues. The organization MAY operate its own publication point, or it MAY outsource this function (see Sections 2.1 and 2.2).",
+      "zh": "在本 PKI 中扮演 CA 角色的每个组织都有责任将其签发的证书、CRL 和 RPKI 签名对象填充到 RPKI 分布式存储库系统中。该机构可以运行自己的发布点，也可以将此功能外包（见第 2.1 和 2.2 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "1.4. Certificate Usage",
+      "section_title": true,
+      "zh": "1.4. 证书使用"
+    },
+    {
+      "indent": 0,
+      "text": "1.4.1. Appropriate Certificate Uses",
+      "section_title": true,
+      "zh": "1.4.1. 适当的证书用途"
+    },
+    {
+      "indent": 3,
+      "text": "The certificates issued under this hierarchy are for authorization in support of validation of claims of current holdings of INRs.",
+      "zh": "在这一等级制度下签发的证书用于授权，以支持对当前持有的 INR 的要求进行验证。"
+    },
+    {
+      "indent": 3,
+      "text": "Additional uses of the certificates, consistent with the basic goal cited above, also are permitted under this policy. For example, certificates may be issued in support of integrity and access control for the repository system described in Section 2.4. Such transitive uses are permitted under this policy.",
+      "zh": "本政策还允许在符合上述基本目标的情况下使用证书的其他用途。例如，证书可用于支持第 2.4 节所述存储库系统的完整性和访问控制。根据本政策，允许使用此类转用证书。"
+    },
+    {
+      "indent": 0,
+      "text": "1.4.2. Prohibited Certificate Uses",
+      "section_title": true,
+      "zh": "1.4.2. 禁止的证书用途"
+    },
+    {
+      "indent": 3,
+      "text": "Any uses other than those described in Section 1.4.1 are prohibited under this policy.",
+      "zh": "除第 1.4.1 节所述用途外，本政策禁止任何其他用途。"
+    },
+    {
+      "indent": 0,
+      "text": "1.5. Policy Administration",
+      "section_title": true,
+      "zh": "1.5. 政策管理"
+    },
+    {
+      "indent": 0,
+      "text": "1.5.1. Organization Administering the Document",
+      "section_title": true,
+      "zh": "1.5.1. 管理文件的组织"
+    },
+    {
+      "indent": 3,
+      "text": "This CP is administered by",
+      "zh": "本国家方案由"
+    },
+    {
+      "indent": 3,
+      "text": "Internet Engineering Steering Group c/o Internet Society 1775 Wiehle Avenue, Suite 201 Reston, VA 20190-5108 U.S.A.",
+      "zh": "互联网工程指导小组 c/o 互联网协会 1775 Wiehle Avenue, Suite 201 Reston, VA 20190-5108 U.S.A."
+    },
+    {
+      "indent": 0,
+      "text": "1.5.2. Contact Person",
+      "section_title": true,
+      "zh": "1.5.2. 联系人"
+    },
+    {
+      "indent": 3,
+      "text": "The contact information is",
+      "zh": "联系信息如下"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: iesg@ietf.org\nPhone: +1-703-439-2120 (Internet Society)",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1.5.4. CP Approval Procedures",
+      "section_title": true,
+      "zh": "1.5.4. 国家方案审批程序"
+    },
+    {
+      "indent": 3,
+      "text": "If a replacement BCP is needed that updates or obsoletes the current BCP, then the replacement BCP MUST be approved by the IESG following the procedures of the IETF Standards Process as defined in RFC 2026 [RFC2026].",
+      "zh": "如果需要更新或删除当前 BCP 的替换 BCP，则替换 BCP 必须由 IESG 按照 RFC 2026 [RFC2026] 中定义的 IETF 标准流程程序批准。"
+    },
+    {
+      "indent": 0,
+      "text": "1.6. Definitions and Acronyms",
+      "section_title": true,
+      "zh": "1.6. 定义和缩略语"
+    },
+    {
+      "indent": 3,
+      "text": "CPS - Certification Practice Statement. A CPS is a document that specifies the practices that a Certification Authority (CA) employs in issuing certificates in this PKI.",
+      "zh": "CPS - 认证惯例声明。CPS 是一份文件，规定了认证机构 (CA) 在本 PKI 中签发证书时采用的做法。"
+    },
+    {
+      "indent": 3,
+      "text": "Distribution of INRs - A process of distribution of the INRs along the respective number hierarchy. IANA distributes blocks of IP addresses and AS numbers to the five Regional Internet Registries (RIRs). RIRs distribute smaller address blocks and AS numbers to organizations within their service regions, who in turn distribute IP addresses to their customers.",
+      "zh": "分发 INRs - 按照各自的号码层次分发 INRs 的过程。IANA 将 IP 地址块和 AS 号码分配给五个地区互联网注册管理机构 (RIR)。区域互联网注册管理机构将较小的地址块和 AS 号码分配给其服务区域内的组织，这些组织再将 IP 地址分配给其客户。"
+    },
+    {
+      "indent": 3,
+      "text": "IANA - Internet Assigned Numbers Authority. IANA is responsible for global coordination of the IP addressing system and AS numbers used for routing Internet traffic. IANA distributes INRs to Regional Internet Registries (RIRs).",
+      "zh": "IANA - 互联网编号分配机构。IANA 负责 IP 地址系统和用于路由互联网流量的 AS 号码的全球协调。IANA 将 INR 分配给地区互联网注册机构 (RIR)。"
+    },
+    {
+      "indent": 3,
+      "text": "INRs - Internet Number Resources. INRs are number values for three protocol parameter sets, namely:",
+      "zh": "INRs - 互联网号码资源。INRs 是三个协议参数集的号码值，即"
+    },
+    {
+      "indent": 10,
+      "text": "o IP version 4 addresses,",
+      "zh": "o IP 第 4 版地址、"
+    },
+    {
+      "indent": 10,
+      "text": "o IP version 6 addresses, and",
+      "zh": "o IP 版本 6 地址，以及"
+    },
+    {
+      "indent": 10,
+      "text": "o Identifiers used in Internet inter-domain routing, currently Border Gateway Protocol-4 AS numbers.",
+      "zh": "o 互联网域间路由中使用的标识符，目前是边界网关协议-4 AS 号码。"
+    },
+    {
+      "indent": 3,
+      "text": "ISP - Internet Service Provider. This is an organization managing and providing Internet services to other organizations.",
+      "zh": "ISP - 互联网服务提供商。这是一个管理并向其他组织提供互联网服务的机构。"
+    },
+    {
+      "indent": 3,
+      "text": "LIR - Local Internet Registry. In some regions, this term is used to refer to what is called an ISP in other regions.",
+      "zh": "LIR - 本地互联网注册机构。在某些地区，该术语用于指其他地区所谓的 ISP。"
+    },
+    {
+      "indent": 3,
+      "text": "NIR - National Internet Registry. This is an organization that manages the distribution of INRs for a portion of the geopolitical area covered by a Regional Registry. NIRs form an optional second tier in the tree scheme used to manage INRs.",
+      "zh": "NIR - 国家互联网注册机构。这是一个组织，负责管理区域注册中心所覆盖的部分地缘政治区域的 INR 分布。在用于管理 INR 的树状结构中，NIR 是可选的第二层。"
+    },
+    {
+      "indent": 3,
+      "text": "RIR - Regional Internet Registry. This is an organization that manages the distribution of INRs for a geopolitical area.",
+      "zh": "RIR - 地区互联网注册机构。这是一个管理地缘政治区域 INR 分布的组织。"
+    },
+    {
+      "indent": 3,
+      "text": "RPKI signed object - An RPKI signed object is a digitally signed data object (other than a certificate or CRL) that is declared to be such by a Standards Track RFC, and that can be validated using certificates issued under this PKI. The content and format of these data constructs depend on the context in which validation of claims of current holdings of INRs takes place. Examples of these objects are repository manifests [RFC6486] and Route Origin Authorizations (ROAs) [RFC6482].",
+      "zh": "RPKI 签名对象 - RPKI 签名对象是数字签名数据对象（证书或 CRL 除外），由标准跟踪 RFC 声明，并可使用该 PKI 签发的证书进行验证。这些数据结构的内容和格式取决于对 INR 当前持有量声明进行验证的环境。这些对象的例子包括存储库清单 [RFC6486] 和路由起源授权 (ROAs) [RFC6482]。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Publication and Repository Responsibilities",
+      "section_title": true,
+      "zh": "2. 出版和资料库责任"
+    },
+    {
+      "indent": 0,
+      "text": "2.1. Repositories",
+      "section_title": true,
+      "zh": "2.1. 资料库"
+    },
+    {
+      "indent": 3,
+      "text": "Certificates, CRLs, and RPKI signed objects (intended for public consumption) MUST be made available for downloading by all relying parties, to enable them to validate this data. This motivates use of a robust, distributed repository system. Each CA MUST maintain a publicly accessible online repository and publish all RPKI-signed objects (intended for public consumption) via this repository in a manner that conforms with \"A Profile for Resource Certificate Repository Structure\" [RFC6481]. (This function MAY be outsourced, as noted in Section 2.2 below.) The collection of repositories forms the RPKI distributed repository system.",
+      "zh": "证书、CRL 和 RPKI 签名对象（用于公共消费）必须可供所有依赖方下载，以便他们验证这些数据。这就需要使用强大的分布式存储库系统。每个 CA 必须维护一个可公开访问的在线存储库，并以符合 \"资源证书存储库结构简介\"[RFC6481] 的方式通过该存储库发布所有 RPKI 签名对象（用于公开消费）。(如下文第 2.2 节所述，此功能可以外包。)存储库的集合构成了 RPKI 分布式存储库系统。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2. Publication of Certification Information",
+      "section_title": true,
+      "zh": "2.2. 认证信息的公布"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA MUST publish the certificates (intended for public consumption) that it issues via the repository system.",
+      "zh": "每个 CA 必须通过存储库系统发布其签发的证书（供公众使用）。"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA MUST publish the CRLs (intended for public consumption) that it issues via the repository system.",
+      "zh": "每个 CA 必须通过存储库系统发布其签发的 CRL（供公众使用）。"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA MUST publish its RPKI signed objects (intended for public consumption) via the repository system.",
+      "zh": "每个 CA 必须通过存储库系统发布其 RPKI 签名对象（供公众使用）。"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA that issues certificates to entities outside of its administrative domain SHOULD create and publish a CPS that meets the requirements set forth in this CP. Publication means that the entities to which the CA issues certificates MUST be able to acquire a copy of the CPS, and MUST be able to ascertain when the CPS changes. (An organization that does not allocate or assign INRs does not need to create or publish a CPS.)",
+      "zh": "每个向其管理域外的实体签发证书的 CA 都应创建并公布符合本 CP 要求的 CPS。发布是指 CA 签发证书的实体必须能够获得 CPS 的副本，并且必须能够确定 CPS 何时变更。(不分配或不指派 INR 的组织不需要创建或公布 CPS）。"
+    },
+    {
+      "indent": 3,
+      "text": "An organization MAY choose to outsource publication of RPKI data -- certificates, CRLs, and other RPKI signed objects.",
+      "zh": "机构可以选择外包 RPKI 数据（证书、CRL 和其他 RPKI 签名对象）的发布。"
+    },
+    {
+      "indent": 3,
+      "text": "The CP will be published as an IETF-stream RFC and will be available from the RFC repository.",
+      "zh": "该 CP 将作为 IETF 流 RFC 发布，并可从 RFC 库中获取。"
+    },
+    {
+      "indent": 0,
+      "text": "2.3. Time or Frequency of Publication",
+      "section_title": true,
+      "zh": "2.3. 发布时间或频率"
+    },
+    {
+      "indent": 3,
+      "text": "The CPS for each CA MUST specify the following information:",
+      "zh": "每个 CA 的 CPS 必须指定以下信息："
+    },
+    {
+      "indent": 3,
+      "text": "The period of time within which a certificate will be published after the CA issues the certificate.",
+      "zh": "CA 签发证书后公布证书的期限。"
+    },
+    {
+      "indent": 3,
+      "text": "The period of time within which a CA will publish a CRL with an entry for a revoked certificate after it revokes that certificate.",
+      "zh": "CA 在废止证书后发布包含该废止证书条目的 CRL 的期限。"
+    },
+    {
+      "indent": 3,
+      "text": "Expired and revoked certificates SHOULD be removed from the RPKI repository system, upon expiration or revocation, respectively. Also, please note that each CA MUST publish its CRL prior to the nextUpdate value in the scheduled CRL previously issued by the CA.",
+      "zh": "过期和废止的证书应分别在过期或废止时从 RPKI 资源库系统中删除。此外，请注意每个 CA 必须在其先前发布的预定 CRL 的 nextUpdate 值之前发布其 CRL。"
+    },
+    {
+      "indent": 0,
+      "text": "2.4. Access Controls on Repositories",
+      "section_title": true,
+      "zh": "2.4. 存储库的访问控制"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA or repository operator MUST implement access controls to prevent unauthorized persons from adding, modifying, or deleting repository entries. A CA or repository operator MUST NOT intentionally use technical means of limiting read access to its CPS, certificates, CRLs, or RPKI signed objects. This data is intended to be accessible to the public.",
+      "zh": "每个 CA 或储存库操作员必须实施访问控制，以防止未经授权者添加、修改或删除储存库条目。CA 或储存库操作员不得故意使用技术手段限制对其 CPS、证书、CRL 或 RPKI 签名对象的读取访问。这些数据应向公众开放。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Identification and Authentication",
+      "section_title": true,
+      "zh": "3. 识别和认证"
+    },
+    {
+      "indent": 0,
+      "text": "3.1. Naming",
+      "section_title": true,
+      "zh": "3.1. 命名"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.1. Types of Names",
+      "section_title": true,
+      "zh": "3.1.1. 名称类型"
+    },
+    {
+      "indent": 3,
+      "text": "The distinguished name for every CA and end-entity consists of a single CommonName (CN) attribute with a value generated by the issuer of the certificate. Optionally, the serialNumber attribute MAY be included along with the common name (to form a terminal relative distinguished name set), to distinguish among successive instances of certificates associated with the same entity.",
+      "zh": "每个 CA 和终端实体的区分名称由单个通用名 (CN) 属性组成，其值由证书签发者生成。序列号属性可选择与通用名一起包含（形成终端相对区分名称集），以区分与同一实体相关的连续证书实例。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.2. Need for Names to Be Meaningful",
+      "section_title": true,
+      "zh": "3.1.2. 名称需要有意义"
+    },
+    {
+      "indent": 3,
+      "text": "The subject name in each certificate SHOULD NOT be \"meaningful\", i.e., the name is not intended to convey the identity of the subject to relying parties. The rationale here is that certificates issued under this PKI are used for authorization in support of applications that make use of attestations of INR holdings. They are not used to identify subjects.",
+      "zh": "每份证书中的主体名称不应 \"有意义\"，即该名称无意向依赖方传达主体的身份。这样做的理由是，在本公用钥匙基础结构下签发的证书用于授权，以支持使用 INR 持有量证明的应用程序。它们不是用来识别主体的。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.3. Anonymity or Pseudonymity of Subscribers",
+      "section_title": true,
+      "zh": "3.1.3. 用户的匿名性或假名性"
+    },
+    {
+      "indent": 3,
+      "text": "Although subject (and issuer) names need not be meaningful, and may appear \"random,\" anonymity is not a function of this PKI; thus, no explicit support for this feature is provided.",
+      "zh": "虽然主体（和签发人）名称不一定有意义，而且可能看起来是 \"随机 \"的，但匿名性并不是本 PKI 的功能之一；因此，本系统不提供对这一功能的明确支持。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.4. Rules for Interpreting Various Name Forms",
+      "section_title": true,
+      "zh": "3.1.4. 解释各种名称形式的规则"
+    },
+    {
+      "indent": 3,
+      "text": "None.",
+      "zh": "无。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1.5. Uniqueness of Names",
+      "section_title": true,
+      "zh": "3.1.5. 名称的独特性"
+    },
+    {
+      "indent": 3,
+      "text": "There is no guarantee that subject names are globally unique in this PKI. Each CA certifies subject names that MUST be unique among the certificates it issues. Although it is desirable that these subject names be unique throughout the PKI, name uniqueness within the RPKI cannot be guaranteed.",
+      "zh": "在此 PKI 中，不能保证主体名是全球唯一的。每个 CA 认证的主体名称在其签发的证书中必须是唯一的。虽然这些主题名称最好在整个 PKI 中都是唯一的，但 RPKI 内的名称唯一性无法保证。"
+    },
+    {
+      "indent": 3,
+      "text": "However, subject names in certificates SHOULD be constructed in a way that minimizes the chances that two entities in the RPKI will be assigned the same name. The RPKI Certificate Profile [RFC6487] provides an example of how to generate (meaningless) subject names in a way that minimizes the likelihood of collisions.",
+      "zh": "不过，证书中的主体名应尽量减少 RPKI 中两个实体被分配相同名称的机会。RPKI 证书规范 [RFC6487] 提供了一个示例，说明如何生成（无意义的）主题名称，以尽量减少碰撞的可能性。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2. Initial Identity Validation",
+      "section_title": true,
+      "zh": "3.2. 初始身份验证"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.1. Method to Prove Possession of the Private Key",
+      "section_title": true,
+      "zh": "3.2.1. 证明拥有私人密钥的方法"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA operating within the context of this PKI MUST require each subject to demonstrate proof of possession (PoP) of the private key corresponding to the public key in the certificate, prior to issuing the certificate. The means by which PoP is achieved is determined by each CA and MUST be declared in the CPS of that CA.",
+      "zh": "在本 PKI 范围内运行的每个 CA 必须要求每个主体在签发证书前证明拥有与证书中公钥相对应的私钥（PoP）。PoP 的实现方式由每个 CA 决定，并必须在该 CA 的 CPS 中声明。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.2. Authentication of Organization Identity",
+      "section_title": true,
+      "zh": "3.2.2. 组织身份验证"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA operating within the context of this PKI MUST employ procedures to ensure that each certificate it issues accurately reflects its records with regard to the organization to which the CA has distributed the INRs identified in the certificate. The specific procedures employed for this purpose MUST be described by the CPS for each CA. Relying parties can expect each CA to employ procedures commensurate with those it already employs as a registry or ISP in the management of the INRs. This authentication is solely for use by each CA in dealing with the organizations to which it distributes INRs, and thus should not be relied upon outside of this CA-subscriber relationship.",
+      "zh": "在本 PKI 范围内运行的每个 CA 必须采用程序，以确保其签发的每张证书都准确地反映了该 CA 向其分发证书中标识的 INR 的组织的记录。为此采用的具体程序必须由每个 CA 的 CPS 进行描述。依赖方可以期望每个 CA 在管理 INRs 时采用与它作为注册机构或 ISP 所采用的程序相称的程序。本认证仅由各 CA 在处理其向其分发 INR 的组织时使用，因此不应在此 CA-用户关系之外依赖本认证。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.3. Authentication of Individual Identity",
+      "section_title": true,
+      "zh": "3.2.3. 个人身份认证"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA operating within the context of this PKI MUST employ procedures to identify at least one individual as a representative of each organization that is an INR holder. The specific means by which each CA authenticates individuals as representatives for an organization MUST be described by the CPS for each CA. Relying parties can expect each CA to employ procedures commensurate with those it already employs as a registry or ISP in authenticating individuals as representatives for INR holders.",
+      "zh": "在本 PKI 范围内运行的每个 CA 必须采用程序来识别至少一名个人作为 INR 持有者的每个组织的代表。每个 CA 认证个人作为组织代表的具体方法必须由每个 CA 的 CPS 描述。依赖方可以期望每个 CA 在认证个人作为 INR 持有者代表时，采用与其作为注册机构或 ISP 所采用的程序相称的程序。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.4. Non-Verified Subscriber Information",
+      "section_title": true,
+      "zh": "3.2.4. 未经核实的用户信息"
+    },
+    {
+      "indent": 3,
+      "text": "A CA MUST NOT include any non-verified subscriber data in certificates issued under this certificate policy except for Subject Information Access (SIA) extensions.",
+      "zh": "除主题信息访问（SIA）扩展外，核证机构不得在根据本证书政策签发的证书中包含任何未经验证的用户数据。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.5. Validation of Authority",
+      "section_title": true,
+      "zh": "3.2.5. 权力的确认"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA operating within the context of this PKI MUST employ procedures to verify that an individual claiming to represent an organization to which a certificate is issued is authorized to represent that organization in this context. The procedures MUST be described by the CPS for the CA. Relying parties can expect each CA to employ procedures commensurate with those it already employs as a registry or ISP, in authenticating individuals as representatives for INR holders.",
+      "zh": "在本 PKI 范围内运行的每个 CA 都必须采用程序来验证声称代表被签发证书的组织的个人是否被授权在此范围内代表该组织。这些程序必须由 CA 的 CPS 描述。依赖方可以期望每个 CA 在验证个人作为 INR 持有者代表时，采用与它作为注册机构或 ISP 所采用的程序相称的程序。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.6. Criteria for Interoperation",
+      "section_title": true,
+      "zh": "3.2.6. 互操作标准"
+    },
+    {
+      "indent": 3,
+      "text": "This PKI is neither intended nor designed to interoperate with any other PKI.",
+      "zh": "本 PKI 既不打算也不设计用于与任何其他 PKI 进行互操作。"
+    },
+    {
+      "indent": 0,
+      "text": "3.3. Identification and Authentication for Re-Key Requests",
+      "section_title": true,
+      "zh": "3.3. 重配密钥请求的识别和验证"
+    },
+    {
+      "indent": 0,
+      "text": "3.3.1. Identification and Authentication for Routine Re-Key",
+      "section_title": true,
+      "zh": "3.3.1. 例行重配密钥的识别和认证"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA operating within the context of this PKI MUST employ procedures to ensure that an organization requesting a re-key is the legitimate holder of the certificate to be re-keyed and the associated INRs, and MUST require PoP of the private key corresponding to the new public key. The procedures employed for these purposes MUST be described in the CPS for the CA. With respect to authentication of the holder of the INRs, relying parties can expect each CA to employ procedures commensurate with those it already employs as a registry or ISP, in the management of INRs.",
+      "zh": "在本 PKI 范围内运行的每个 CA 必须采用程序确保请求重新密钥的机构是要重新密钥的证书和相关 INR 的合法持有者，并必须要求与新公开密钥相对应的私钥的 PoP。这些程序必须在 CA 的 CPS 中说明。关于 INRs 持有者的认证，依赖方可以期望每个 CA 在管理 INRs 时采用与其作为注册机构或 ISP 所采用的程序相称的程序。"
+    },
+    {
+      "indent": 3,
+      "text": "Note: An issuer MAY choose to require periodic re-keying consistent with contractual agreements with the recipient. If so, this MUST be described by the CPS for the CA.",
+      "zh": "注意：签发方可以选择要求定期重新密钥，以符合与接收方的合同协议。如果是这样，CA 的 CPS 必须对此进行说明。"
+    },
+    {
+      "indent": 0,
+      "text": "3.3.2. Identification and Authentication for Re-Key after Revocation",
+      "section_title": true,
+      "zh": "3.3.2. 撤销后重配密钥的识别和验证"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA operating within the context of this PKI MUST employ procedures to ensure that an organization requesting a re-key after revocation is the same entity to which the revoked certificate was issued and is the legitimate holder of the associated INR. The CA MUST require PoP of the private key corresponding to the new public key. The specific procedures employed for these purposes MUST be described by the CPS for the CA. With respect to authentication of the holder of the INRs, relying parties can expect each CA to employ procedures commensurate with those it already employs as a registry or ISP, in the management of INRs. Note that there MAY be different procedures for the case where the legitimate subject still possesses the original private key as opposed to the case when it no longer has access to that key.",
+      "zh": "在本 PKI 范围内运行的每个 CA 必须采用相应的程序，以确保在证书废止后请求重配密钥的组织是签发废止证书的同一实体，并且是相关 INR 的合法持有者。CA 必须要求与新公开密钥相对应的私人密钥的 PoP。CA 的 CPS 必须说明为此目的采用的具体程序。关于 INR 持有者的身份验证，依赖方可以期望每个 CA 在管理 INR 时采用与作为注册机构或 ISP 所采用的程序相称的程序。需要注意的是，合法主体仍然拥有原始私人密钥的情况与不再拥有该密钥的情况可能会有不同的程序。"
+    },
+    {
+      "indent": 0,
+      "text": "3.4. Identification and Authentication for Revocation Request",
+      "section_title": true,
+      "zh": "3.4. 撤销请求的识别和认证"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA operating within the context of this PKI MUST employ procedures to ensure that:",
+      "zh": "在本 PKI 范围内运行的每个 CA 必须采用以下程序来确保："
+    },
+    {
+      "indent": 3,
+      "text": "o an organization requesting revocation is the legitimate holder of the certificate to be revoked.",
+      "zh": "o 请求废止证书的组织是被废止证书的合法持有者。"
+    },
+    {
+      "indent": 3,
+      "text": "o each certificate it revokes accurately reflects its records with regard to the organization to which the CA has distributed the INRs identified in the certificate.",
+      "zh": "o 它所废止的每张证书都准确地反映了它对该机构的记录，该机构已将证书中确定的 INR 分发给该机构。"
+    },
+    {
+      "indent": 3,
+      "text": "o an individual claiming to represent an organization for which a certificate is to be revoked is authorized to represent that organization in this context.",
+      "zh": "o 声称代表证书将被废止的组织的个人在此情况下有权代表该组织。"
+    },
+    {
+      "indent": 3,
+      "text": "The specific procedures employed for these purposes MUST be described by the CPS for the CA. Relying parties can expect each CA to employ procedures commensurate with those it already employs as a registry or ISP, in the management of INRs.",
+      "zh": "CA 的 CPS 必须说明为这些目的采用的具体程序。依赖方可以期望每个 CA 在管理 INR 时采用与其作为注册机构或 ISP 所采用的程序相称的程序。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Certificate Life-Cycle Operational Requirements",
+      "section_title": true,
+      "zh": "4. 证书生命周期运行要求"
+    },
+    {
+      "indent": 0,
+      "text": "4.1. Certificate Application",
+      "section_title": true,
+      "zh": "4.1. 证书申请"
+    },
+    {
+      "indent": 0,
+      "text": "4.1.1. Who Can Submit a Certificate Application",
+      "section_title": true,
+      "zh": "4.1.1. 谁可以提交证书申请"
+    },
+    {
+      "indent": 3,
+      "text": "Any entity that distributes INRs SHOULD acquire a certificate. This includes Internet Registries and ISPs. Additionally, entities that hold INRs from an Internet Registry, or that are multi-homed, MAY acquire a certificate under this PKI. The (CA) certificates issued to these entities MUST include one or both of the extensions defined by RFC 3779 [RFC3779], \"X.509 Extensions for IP Addresses and AS Identifiers\", as appropriate.",
+      "zh": "任何分发 INR 的实体都应获得证书。这包括互联网注册机构和 ISP。此外，从互联网注册中心持有 INR 的实体或多址实体也可以根据本 PKI 获取证书。向这些实体签发的（CA）证书必须酌情包括 RFC 3779 [RFC3779]，\"X.509 扩展 IP 地址和 AS 标识符 \"中定义的一个或两个扩展。"
+    },
+    {
+      "indent": 3,
+      "text": "The application procedure MUST be described in the CPS for each CA.",
+      "zh": "申请程序必须在每个 CA 的 CPS 中说明。"
+    },
+    {
+      "indent": 0,
+      "text": "4.1.2. Enrollment Process and Responsibilities",
+      "section_title": true,
+      "zh": "4.1.2. 注册程序和责任"
+    },
+    {
+      "indent": 3,
+      "text": "The enrollment process and procedures MUST be described by the CPS for each CA. An entity that desires one or more certificates should contact the organization from which it receives its INRs.",
+      "zh": "注册过程和程序必须由每个 CA 的 CPS 说明。需要一个或多个证书的实体应与接收 INR 的机构联系。"
+    },
+    {
+      "indent": 0,
+      "text": "4.2. Certificate Application Processing",
+      "section_title": true,
+      "zh": "4.2. 证书申请处理"
+    },
+    {
+      "indent": 3,
+      "text": "CAs SHOULD make use of existing standards for certificate application processing. Section 6 of the Resource Certificate Profile [RFC6487] defines the standard certificate request formats that MUST be supported.",
+      "zh": "CA 应利用现有的证书申请处理标准。资源证书配置文件 [RFC6487] 第 6 节定义了必须支持的标准证书请求格式。"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA MUST define via its CPS, the certificate request/response standards that it employs.",
+      "zh": "每个 CA 必须通过其 CPS 定义其采用的证书请求/响应标准。"
+    },
+    {
+      "indent": 0,
+      "text": "4.2.1. Performing Identification and Authentication Functions",
+      "section_title": true,
+      "zh": "4.2.1. 执行识别和认证功能"
+    },
+    {
+      "indent": 3,
+      "text": "Existing practices employed by registries and ISPs to identify and authenticate organizations that receive INRs form the basis for issuance of certificates to these subscribers. It is important to note that the Resource PKI SHOULD NOT be used to authenticate the identity of an organization, but rather to bind subscribers to the INRs they hold. Because identity is not being vouched for by this PKI, certificate application procedures need not verify legal organization names, etc.",
+      "zh": "注册机构和互联网服务提供商为识别和验证接收 INR 的组织而采用的现有做法是向这些用户签发证书的基础。需要注意的是，资源公钥基础结构不应被用于验证组织的身份，而应被用于将用户与他们持有的 INR 绑定在一起。由于该 PKI 并不验证身份，因此证书申请程序无需验证合法组织名称等。"
+    },
+    {
+      "indent": 0,
+      "text": "4.2.2. Approval or Rejection of Certificate Applications",
+      "section_title": true,
+      "zh": "4.2.2. 批准或拒绝证书申请"
+    },
+    {
+      "indent": 3,
+      "text": "Certificate applications MUST be approved based on the normal business practices of the entity operating the CA, based on the CA's records of INR holders. Each CA MUST follow the procedures specified in Section 3.2.1 to verify that the requester holds the private key corresponding to the public key that will be bound to the certificate the CA issues to the requester. The details of how certificate applications are approved MUST be described in the CPS for the CA in question.",
+      "zh": "憑證申請必須依據憑證機構對 INR 持有者的記錄，依據憑證機構營運實體的正常業務慣例核准。每个 CA 必须遵循第 3.2.1 节规定的程序来验证申请者是否持有与 CA 签发给申请者的证书所绑定的公开密钥相对应的私钥。关于如何批准证书申请的细节必须在有关 CA 的 CPS 中说明。"
+    },
+    {
+      "indent": 0,
+      "text": "4.2.3. Time to Process Certificate Applications",
+      "section_title": true,
+      "zh": "4.2.3. 处理证书申请的时间"
+    },
+    {
+      "indent": 3,
+      "text": "No stipulation. As part of its CPS, each CA MUST declare its expected time frame to process (approve, issue, and publish) a certificate application.",
+      "zh": "无规定。作为其 CPS 的一部分，每个 CA 必须声明其处理（批准、签发和公布）证书申请的预期时间框架。"
+    },
+    {
+      "indent": 0,
+      "text": "4.3. Certificate Issuance",
+      "section_title": true,
+      "zh": "4.3. 证书发放"
+    },
+    {
+      "indent": 0,
+      "text": "4.3.1. CA Actions during Certificate Issuance",
+      "section_title": true,
+      "zh": "4.3.1. CA 在证书签发期间的操作"
+    },
+    {
+      "indent": 3,
+      "text": "If a CA determines that the request is acceptable, it MUST issue the corresponding certificate and publish it in the RPKI distributed repository system via publication of the certificate at the CA's repository publication point.",
+      "zh": "如果 CA 认定该请求可接受，则必须签发相应的证书，并通过在 CA 的存储库发布点发布证书的方式，在 RPKI 分布式存储库系统中发布该证书。"
+    },
+    {
+      "indent": 0,
+      "text": "4.3.2. Notification to Subscriber by the CA of Issuance of Certificate",
+      "section_title": true,
+      "zh": "4.3.2. CA 向用户发出的证书签发通知"
+    },
+    {
+      "indent": 3,
+      "text": "The CA MUST notify the subscriber when the certificate is published. The means by which a subscriber is notified MUST be defined by each CA in its CPS.",
+      "zh": "CA 必须在证书发布时通知用户。通知用户的方式必须由各 CA 在其 CPS 中定义。"
+    },
+    {
+      "indent": 0,
+      "text": "4.4. Certificate Acceptance",
+      "section_title": true,
+      "zh": "4.4. 接受证书"
+    },
+    {
+      "indent": 0,
+      "text": "4.4.1. Conduct Constituting Certificate Acceptance",
+      "section_title": true,
+      "zh": "4.4.1. 构成接受证书的行为"
+    },
+    {
+      "indent": 3,
+      "text": "Within the timeframe specified in its CPS, the CA MUST place the certificate in the repository and notify the subscriber. This MAY be done without subscriber review and acceptance. Each CA MUST state in its CPS the procedures it follows for publishing of the certificate and notification to the subscriber.",
+      "zh": "在其 CPS 规定的时限内，CA 必须将证书放入存储库并通知用户。这可以不经订户审查和接受。每个 CA 必须在其 CPS 中说明其发布证书和通知用户所遵循的程序。"
+    },
+    {
+      "indent": 0,
+      "text": "4.4.2. Publication of the Certificate by the CA",
+      "section_title": true,
+      "zh": "4.4.2. CA 公布证书"
+    },
+    {
+      "indent": 3,
+      "text": "Certificates MUST be published in the RPKI distributed repository system via publication of the certificate at the CA's repository publication point as per the conduct described in Section 4.4.1. The procedures for publication MUST be defined by each CA in its CPS.",
+      "zh": "证书必须按照第 4.4.1 节所述的行为，通过在 CA 的存储库发布点发布证书的方式在 RPKI 分布式存储库系统中发布。公布程序必须由各 CA 在其 CPS 中定义。"
+    },
+    {
+      "indent": 0,
+      "text": "4.4.3. Notification of Certificate Issuance by the CA to Other Entities",
+      "section_title": true,
+      "zh": "4.4.3. CA 向其他实体签发证书的通知"
+    },
+    {
+      "indent": 3,
+      "text": "The CPS of each CA MUST indicate whether any other entities will be notified when a certificate is issued.",
+      "zh": "每个 CA 的 CPS 必须说明在签发证书时是否会通知任何其他实体。"
+    },
+    {
+      "indent": 0,
+      "text": "4.5. Key Pair and Certificate Usage",
+      "section_title": true,
+      "zh": "4.5. 密钥对和证书的使用"
+    },
+    {
+      "indent": 3,
+      "text": "A summary of the use model for the RPKI is provided below.",
+      "zh": "下文概述了 RPKI 的使用模式。"
+    },
+    {
+      "indent": 0,
+      "text": "4.5.1. Subscriber Private Key and Certificate Usage",
+      "section_title": true,
+      "zh": "4.5.1. 用户私钥和证书的使用"
+    },
+    {
+      "indent": 3,
+      "text": "Each holder of an INR is eligible to request an X.509 [X.509] CA certificate containing appropriate RFC 3779 extensions. Holders of CA resource certificates also MAY issue EE certificates to themselves to enable verification of RPKI signed objects that they generate.",
+      "zh": "INR 的每个持有者都有资格申请包含适当 RFC 3779 扩展的 X.509 [X.509] CA 证书。CA 资源证书持有者也可以为自己颁发 EE 证书，以便对其生成的 RPKI 签名对象进行验证。"
+    },
+    {
+      "indent": 0,
+      "text": "4.5.2. Relying Party Public Key and Certificate Usage",
+      "section_title": true,
+      "zh": "4.5.2. 依赖方公用密钥和证书的使用"
+    },
+    {
+      "indent": 3,
+      "text": "Reliance on a certificate must be reasonable under the circumstances. If the circumstances indicate a need for additional assurances, the relying party must obtain such assurances in order for such reliance to be deemed reasonable.",
+      "zh": "在当时情况下，对证书的依赖必须是合理的。如果情况表明需要额外的保证，则依赖方必须获得此类保证才能被视为合理依赖。"
+    },
+    {
+      "indent": 3,
+      "text": "Before any act of reliance, relying parties MUST independently (1) verify that the certificate will be used for an appropriate purpose that is not prohibited or otherwise restricted by this CP (see Section 1.4), and (2) assess the status of the certificate and all the certificates in the chain (terminating at a trust anchor (TA) accepted by the RP) that issued the certificates relevant to the certificate in question. If any of the certificates in the certificate chain have been revoked or have expired, the relying party is solely responsible for determining whether reliance on a digital signature to be verified by the certificate in question is acceptable. Any such reliance is made solely at the risk of the relying party.",
+      "zh": "在作出任何依赖行为之前，依赖方必须独立地(1)核实证书将用于适当的目的，而该目的并不受本标准禁止或限制（见第 1.4 节），以及(2)评估证书和证书链中所有证书的状态（终止于注册人接受的信任锚（TA）），该信任锚签发了与有关证书相关的证书。如果证书链中的任何证书已被吊销或过期，则依赖方应自行负责确定是否可接受依赖由有关证书验证的数字签名。任何此类依赖的风险完全由依赖方承担。"
+    },
+    {
+      "indent": 3,
+      "text": "If a relying party determines that use of the certificate is appropriate, the relying party must utilize appropriate software and/or hardware to perform digital signature verification as a condition of relying on the certificate. Moreover, the relying party MUST validate the certificate in a manner consistent with the RPKI Certificate Profile [RFC6487], which specifies the extended validation algorithm for RPKI certificates.",
+      "zh": "如果依赖方认为使用证书是适当的，依赖方必须使用适当的软件和/或硬件进行数字签名验证，作为依赖证书的条件。此外，依赖方必须以符合 RPKI 证书配置文件 [RFC6487] 的方式验证证书，该配置文件规定了 RPKI 证书的扩展验证算法。"
+    },
+    {
+      "indent": 0,
+      "text": "4.6. Certificate Renewal",
+      "section_title": true,
+      "zh": "4.6. 证书续期"
+    },
+    {
+      "indent": 3,
+      "text": "This section describes the procedures for certificate renewal. Certificate renewal is the issuance of a new certificate to replace an old one prior to its expiration. Only the validity dates and the serial number (the field in the certificate, not the DN attribute) are changed. The public key and all other information remain the same.",
+      "zh": "本节介绍证书更新的程序。证书更新是指在旧证书到期前签发新证书以取代旧证书。只有有效期和序列号（证书中的字段，而不是 DN 属性）会被更改。公开密钥和所有其他信息保持不变。"
+    },
+    {
+      "indent": 0,
+      "text": "4.6.1. Circumstance for Certificate Renewal",
+      "section_title": true,
+      "zh": "4.6.1. 证书延期的情况"
+    },
+    {
+      "indent": 3,
+      "text": "A certificate MUST be processed for renewal based on its expiration date or a renewal request from the subscriber. Prior to the expiration of an existing subscriber's certificate, it is the responsibility of the subscriber to renew the certificate to maintain continuity of certificate usage. If the issuing CA initiates the renewal process based on the certificate expiration date, then that CA MUST notify the holder in advance of the renewal process. The validity interval of the new (renewed) certificate SHOULD overlap that of the previous certificate to ensure continuity of certificate usage. It is RECOMMENDED that the renewed certificate be issued and published at least 1 week prior to the expiration of the certificate it replaces.",
+      "zh": "必须根据证书的到期日或用户的续期申请对证书进行续期。在用户现有证书到期前，用户有责任更新证书，以保持证书使用的连续性。如果签发 CA 根据证书到期日启动续期程序，则该 CA 必须提前通知证书持有者续期程序。新（更新）证书的有效期应与以前证书的有效期重叠，以确保证书使用的连续性。建议至少在所替代证书到期前一周签发和公布更新证书。"
+    },
+    {
+      "indent": 3,
+      "text": "Certificate renewal SHOULD incorporate the same public key as the previous certificate, unless the private key has been reported as compromised. If a new key pair is being used, the stipulations of Section 4.7 apply.",
+      "zh": "证书更新应使用与上一证书相同的公开密钥，除非私人密钥已被报告泄露。如果使用新的配对密钥，则适用第 4.7 节的规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.6.2. Who May Request Renewal",
+      "section_title": true,
+      "zh": "4.6.2. 哪些人可以申请延期"
+    },
+    {
+      "indent": 3,
+      "text": "Only the certificate holder or the issuing CA may initiate the renewal process. The certificate holder MAY request an early renewal, for example, if it expects to be unavailable to support the renewal process during the normal expiration period. An issuing CA MAY initiate the renewal process based on the certificate expiration date.",
+      "zh": "只有证书持有者或签发 CA 才能启动续期程序。例如，如果证书持有者预计在正常到期期间无法支持续期程序，则可请求提前续期。签发 CA 可根据证书到期日启动续期程序。"
+    },
+    {
+      "indent": 0,
+      "text": "4.6.3. Processing Certificate Renewal Requests",
+      "section_title": true,
+      "zh": "4.6.3. 处理证书续期申请"
+    },
+    {
+      "indent": 3,
+      "text": "Renewal procedures MUST ensure that the person or organization seeking to renew a certificate is in fact the subscriber (or authorized by the subscriber) of the certificate and the legitimate holder of the INR associated with the renewed certificate. Renewal processing MUST verify that the certificate in question has not been revoked.",
+      "zh": "续期程序必须确保申请续期证书的个人或组织确实是证书的用户（或经用户授权）和与续期证书相关的 INR 的合法持有者。续期程序必须核实有关证书没有被废止。"
+    },
+    {
+      "indent": 0,
+      "text": "4.6.4. Notification of New Certificate Issuance to Subscriber",
+      "section_title": true,
+      "zh": "4.6.4. 向用户发出新证书签发通知"
+    },
+    {
+      "indent": 3,
+      "text": "No additional stipulations beyond those of Section 4.3.2.",
+      "zh": "除第 4.3.2 节的规定外，无其他规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.6.5. Conduct Constituting Acceptance of a Renewal Certificate",
+      "section_title": true,
+      "zh": "4.6.5. 构成接受更新证书的行为"
+    },
+    {
+      "indent": 3,
+      "text": "No additional stipulations beyond those of Section 4.4.1.",
+      "zh": "除第 4.4.1 节的规定外，无其他规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.6.6. Publication of the Renewal Certificate by the CA",
+      "section_title": true,
+      "zh": "4.6.6. CA 公布续期证书"
+    },
+    {
+      "indent": 3,
+      "text": "No additional stipulations beyond those of Section 4.4.2.",
+      "zh": "除第 4.4.2 节的规定外，无其他规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.6.7. Notification of Certificate Issuance by the CA to Other Entities",
+      "section_title": true,
+      "zh": "4.6.7. CA 向其他实体签发证书的通知"
+    },
+    {
+      "indent": 3,
+      "text": "No additional stipulations beyond those of Section 4.4.3.",
+      "zh": "除第 4.4.3 节的规定外，无其他规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.7. Certificate Re-Key",
+      "section_title": true,
+      "zh": "4.7. 证书重钥"
+    },
+    {
+      "indent": 3,
+      "text": "This section describes the procedures for certificate re-key. Certificate re-key is the issuance of a new certificate to replace an old one because the key needs to be replaced. Unlike with certificate renewal, the public key is changed.",
+      "zh": "本节介绍证书重新密钥的程序。证书重新密钥是指因需要更换密钥而签发新证书以取代旧证书。与证书更新不同，公开密钥会被更改。"
+    },
+    {
+      "indent": 0,
+      "text": "4.7.1. Circumstance for Certificate Re-Key",
+      "section_title": true,
+      "zh": "4.7.1. 重新密钥证书的情况"
+    },
+    {
+      "indent": 3,
+      "text": "Re-key of a certificate SHOULD be performed only when required, based on:",
+      "zh": "只有在需要时，才应根据以下情况重新密钥证书："
+    },
+    {
+      "indent": 3,
+      "text": "1. knowledge or suspicion of compromise or loss of the associated private key, or",
+      "zh": "1. 知道或怀疑相关私人密钥被泄露或丢失，或"
+    },
+    {
+      "indent": 3,
+      "text": "2. the expiration of the cryptographic lifetime of the associated key pair",
+      "zh": "2. 相关密钥对的加密寿命到期"
+    },
+    {
+      "indent": 3,
+      "text": "A CA re-key operation has dramatic consequences, requiring the reissuance of all certificates issued by the re-keyed entity. So it should be performed only when necessary and in a way that preserves the ability of relying parties to validate certificates whose validation path includes the re-keyed entity. CA key rollover MUST follow the procedures defined in \"CA Key Rollover in the RPKI\" [RFC6489].",
+      "zh": "CA 重新密钥操作会产生严重后果，需要重新签发由被重新密钥实体签发的所有证书。因此，只有在必要时才应执行，而且执行方式应能保证依赖方能够验证其验证路径包括重配密钥实体的证书。CA 密钥翻转必须遵循 \"RPKI 中的 CA 密钥翻转\"[RFC6489] 中定义的程序。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that if a certificate is revoked to replace the RFC 3779 extensions, the replacement certificate MUST incorporate the same public key rather than a new key. This applies when one is adding INRs (revocation not required) and when one is removing INRs (revocation required (see Section 4.8.1)).",
+      "zh": "请注意，如果为替换 RFC 3779 扩展名而撤销证书，则替换证书必须包含相同的公开密钥，而不是新密钥。这适用于添加 INR（不需要撤销）和删除 INR（需要撤销（见第 4.8.1 节））的情况。"
+    },
+    {
+      "indent": 3,
+      "text": "If the re-key is based on a suspected compromise, then the previous certificate MUST be revoked.",
+      "zh": "如果重新密钥是基于可疑的泄密行为，则必须吊销以前的证书。"
+    },
+    {
+      "indent": 0,
+      "text": "4.7.2. Who May Request Certification of a New Public Key",
+      "section_title": true,
+      "zh": "4.7.2. 谁可以申请认证新的公开密钥"
+    },
+    {
+      "indent": 3,
+      "text": "The holder of the certificate may request a re-key. In addition, the CA that issued the certificate MAY choose to initiate a re-key based on a verified compromise report.",
+      "zh": "证书持有者可要求重新密钥。此外，签发证书的 CA 可以选择根据经核实的失密报告启动重新密钥。"
+    },
+    {
+      "indent": 0,
+      "text": "4.7.3. Processing Certificate Re-Keying Requests",
+      "section_title": true,
+      "zh": "4.7.3. 处理证书重新键入请求"
+    },
+    {
+      "indent": 3,
+      "text": "The re-key process follows the general procedures of certificate generation as defined in Section 4.3.",
+      "zh": "重配密钥过程遵循第 4.3 节定义的证书生成一般程序。"
+    },
+    {
+      "indent": 0,
+      "text": "4.7.4. Notification of New Certificate Issuance to Subscriber",
+      "section_title": true,
+      "zh": "4.7.4. 向用户发出新证书签发通知"
+    },
+    {
+      "indent": 3,
+      "text": "No additional stipulations beyond those of Section 4.3.2.",
+      "zh": "除第 4.3.2 节的规定外，无其他规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.7.5. Conduct Constituting Acceptance of a Re-Keyed Certificate",
+      "section_title": true,
+      "zh": "4.7.5. 构成接受重钥证书的行为"
+    },
+    {
+      "indent": 3,
+      "text": "No additional stipulations beyond those of Section 4.4.1.",
+      "zh": "除第 4.4.1 节的规定外，无其他规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.7.6. Publication of the Re-Keyed Certificate by the CA",
+      "section_title": true,
+      "zh": "4.7.6. CA 公布重新密钥证书"
+    },
+    {
+      "indent": 3,
+      "text": "No additional stipulations beyond those of Section 4.4.2.",
+      "zh": "除第 4.4.2 节的规定外，无其他规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.7.7. Notification of Certificate Issuance by the CA to Other Entities",
+      "section_title": true,
+      "zh": "4.7.7. CA 向其他实体签发证书的通知"
+    },
+    {
+      "indent": 3,
+      "text": "No additional stipulations beyond those of Section 4.4.3.",
+      "zh": "除第 4.4.3 节的规定外，无其他规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.8. Certificate Modification",
+      "section_title": true,
+      "zh": "4.8. 证书修改"
+    },
+    {
+      "indent": 0,
+      "text": "4.8.1. Circumstance for Certificate Modification",
+      "section_title": true,
+      "zh": "4.8.1. 修改证书的情况"
+    },
+    {
+      "indent": 3,
+      "text": "Modification of a certificate occurs to implement changes to selected attribute values in a certificate. In the context of the RPKI, the only changes that are accommodated by certificate modification are changes to the INR holdings described by the RFC 3779 extension(s) and changes to the SIA extension.",
+      "zh": "修改证书的目的是对证书中选定的属性值进行修改。就 RPKI 而言，修改证书只能修改 RFC 3779 扩展描述的 INR 持有量，以及修改 SIA 扩展。"
+    },
+    {
+      "indent": 3,
+      "text": "When a certificate modification is approved, a new certificate is issued. If no INR holdings are removed from the certificate, the new certificate MUST contain the same public key and the same expiration date as the original certificate, but with the SIA extension and/or the INR set expanded. In this case, revocation of the previous certificate is not required.",
+      "zh": "当证书修改被批准后，将签发新的证书。如果没有从证书中删除 INR 持有量，新证书必须包含与原证书相同的公开密钥和相同的到期日，但 SIA 扩展和/或 INR 设置扩大。在这种情况下，不需要撤销以前的证书。"
+    },
+    {
+      "indent": 3,
+      "text": "When previously distributed INRs are removed from a certificate, then the old certificate MUST be revoked and a new certificate MUST be issued, reflecting the changed INR holdings. (The SIA extension in the new certificate will be unchanged, unless the affected INR holder supplies a new SIA value.)",
+      "zh": "当以前分发的 INR 从证书中删除时，旧证书必须废止，新证书必须签发，以反映 INR 持有量的变化。(新证书中的 SIA 扩展名将保持不变，除非受影响的 INR 持有者提供新的 SIA 值）。"
+    },
+    {
+      "indent": 0,
+      "text": "4.8.2. Who May Request Certificate Modification",
+      "section_title": true,
+      "zh": "4.8.2. 谁可以申请修改证书"
+    },
+    {
+      "indent": 3,
+      "text": "Either the certificate holder or the issuer may initiate the certificate modification process.",
+      "zh": "证书持有者或签发者均可启动证书修改程序。"
+    },
+    {
+      "indent": 0,
+      "text": "4.8.3. Processing Certificate Modification Requests",
+      "section_title": true,
+      "zh": "4.8.3. 处理证书修改申请"
+    },
+    {
+      "indent": 3,
+      "text": "The CA MUST determine that the requested modification is appropriate and that the procedures for the issuance of a new certificate are followed (see Section 4.3).",
+      "zh": "CA 必须确定所请求的修改是适当的，并遵循签发新证书的程序（见第 4.3 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "4.8.4. Notification of New Certificate Issuance to Subscriber",
+      "section_title": true,
+      "zh": "4.8.4. 向用户发出新证书签发通知"
+    },
+    {
+      "indent": 3,
+      "text": "No additional stipulations beyond those of Section 4.3.2.",
+      "zh": "除第 4.3.2 节的规定外，无其他规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.8.5. Conduct Constituting Acceptance of Modified Certificate",
+      "section_title": true,
+      "zh": "4.8.5. 构成接受修改证书的行为"
+    },
+    {
+      "indent": 3,
+      "text": "No additional stipulations beyond those of Section 4.4.1.",
+      "zh": "除第 4.4.1 节的规定外，无其他规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.8.6. Publication of the Modified Certificate by the CA",
+      "section_title": true,
+      "zh": "4.8.6. CA 公布修改后的证书"
+    },
+    {
+      "indent": 3,
+      "text": "No additional stipulations beyond those of Section 4.4.2.",
+      "zh": "除第 4.4.2 节的规定外，无其他规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.8.7. Notification of Certificate Issuance by the CA to Other Entities",
+      "section_title": true,
+      "zh": "4.8.7. CA 向其他实体签发证书的通知"
+    },
+    {
+      "indent": 3,
+      "text": "No additional stipulations beyond those of Section 4.4.3.",
+      "zh": "除第 4.4.3 节的规定外，无其他规定。"
+    },
+    {
+      "indent": 0,
+      "text": "4.9. Certificate Revocation and Suspension",
+      "section_title": true,
+      "zh": "4.9. 证书吊销和暂停"
+    },
+    {
+      "indent": 0,
+      "text": "4.9.1. Circumstances for Revocation",
+      "section_title": true,
+      "zh": "4.9.1. 撤销的情况"
+    },
+    {
+      "indent": 3,
+      "text": "A certificate MUST be revoked (and published on a CRL) if there is reason to believe that there has been a compromise of a subscriber's private key. A certificate also MAY be revoked to invalidate a data object signed by the private key associated with that certificate. Other circumstances that justify revocation of a certificate MAY be specified in a CA's CPS.",
+      "zh": "如果有理由相信用户的私钥被泄露，证书必须被废止（并公布在 CRL 上）。证书也可以被废止，使与证书相关的私钥签署的数据对象失效。有理由废止证书的其他情况可在 CA 的 CPS 中规定。"
+    },
+    {
+      "indent": 3,
+      "text": "Note: If new INRs are being added to an organization's existing distribution, the old certificate need not be revoked. Instead, a new certificate MAY be issued with both the old and the new resources and the old key. If INRs are being removed or if there has been a key compromise, then the old certificate MUST be revoked (and a re-key MUST be performed in the event of key compromise).",
+      "zh": "注：如果新的 INR 被添加到组织的现有分发系统中，则旧证书无需废止。相反，可以用新旧资源和旧密钥签发新证书。如果 INR 被删除或出现密钥泄露，则必须废止旧证书（如果出现密钥泄露，则必须重新密钥）。"
+    },
+    {
+      "indent": 0,
+      "text": "4.9.2. Who Can Request Revocation",
+      "section_title": true,
+      "zh": "4.9.2. 谁可以申请撤销"
+    },
+    {
+      "indent": 3,
+      "text": "This MUST be defined in the CPS of the organization that issued the certificate.",
+      "zh": "这必须在颁发证书的组织的 CPS 中定义。"
+    },
+    {
+      "indent": 0,
+      "text": "4.9.3. Procedure for Revocation Request",
+      "section_title": true,
+      "zh": "4.9.3. 申请撤销程序"
+    },
+    {
+      "indent": 3,
+      "text": "A subscriber MAY submit a request to the certificate issuer for a revocation. This request MUST identify the certificate to be revoked and MUST be authenticated. The procedures for making the request MUST be described in the CPS for each CA. The RPKI provisioning document [RFC6492] describes a protocol that MAY be used to make revocation requests.",
+      "zh": "用戶可向證書簽發機構提出廢止證書的要求。该请求必须指明要废止的证书，并且必须经过验证。提出申请的程序必须在每个 CA 的 CPS 中说明。RPKI provisioning 文档 [RFC6492] 描述了可用于提出废止请求的协议。"
+    },
+    {
+      "indent": 3,
+      "text": "A certificate issuer MUST notify the subscriber when revoking a certificate. The notification requirement is satisfied by CRL publication. The CPS for a CA MUST indicate the means by which the CA will inform a subscriber of certificate revocation.",
+      "zh": "证书签发者在废止证书时必须通知用户。发布证书废止列表可满足通知要求。CA 的 CPS 必须说明 CA 通知用 户证书废止的方式。"
+    },
+    {
+      "indent": 0,
+      "text": "4.9.4. Revocation Request Grace Period",
+      "section_title": true,
+      "zh": "4.9.4. 撤销申请宽限期"
+    },
+    {
+      "indent": 3,
+      "text": "A subscriber SHOULD request revocation as soon as possible after the need for revocation has been identified. There is no specified grace period for the subscriber in this process.",
+      "zh": "用户应在确定需要撤销后尽快申请撤销。在此过程中，没有为用户规定宽限期。"
+    },
+    {
+      "indent": 0,
+      "text": "4.9.5. Time within which CA Must Process the Revocation Request",
+      "section_title": true,
+      "zh": "4.9.5. CA 必须处理撤销请求的时间"
+    },
+    {
+      "indent": 3,
+      "text": "No stipulation. Each CA SHOULD specify its expected revocation processing time in its CPS.",
+      "zh": "无规定。每个 CA 应在其 CPS 中指定其预期的撤销处理时间。"
+    },
+    {
+      "indent": 0,
+      "text": "4.9.6. Revocation Checking Requirement for Relying Parties",
+      "section_title": true,
+      "zh": "4.9.6. 对依赖方的撤销检查要求"
+    },
+    {
+      "indent": 3,
+      "text": "A relying party MUST acquire and check the most recent, scheduled CRL from the issuer of the certificate, whenever the relying party validates a certificate.",
+      "zh": "每当依赖方验证证书时，必须从证书签发者处获取并检查最新的、预定的证书废止列表。"
+    },
+    {
+      "indent": 0,
+      "text": "4.9.7. CRL Issuance Frequency",
+      "section_title": true,
+      "zh": "4.9.7. CRL 签发频率"
+    },
+    {
+      "indent": 3,
+      "text": "The CRL issuance frequency MUST be determined by each CA and stated in its CPS. Each CRL carries a nextScheduledUpdate value, and a new CRL MUST be published at or before that time. A CA MUST set the nextUpdate value when it issues a CRL to signal when the next scheduled CRL will be issued.",
+      "zh": "CRL 发布频率必须由每个 CA 确定，并在其 CPS 中说明。每个CRL都有一个nextScheduledUpdate值，新的CRL必须在该时间或该时间之前发布。CA 必须在发布 CRL 时设置 nextUpdate 值，以提示下一个预定 CRL 的发布时间。"
+    },
+    {
+      "indent": 0,
+      "text": "4.9.8. Maximum Latency for CRLs",
+      "section_title": true,
+      "zh": "4.9.8. CRL 的最大延迟"
+    },
+    {
+      "indent": 3,
+      "text": "The CPS for each CA MUST specify the maximum latency associated with posting its CRL to the repository system.",
+      "zh": "每个 CA 的 CPS 必须指定与向存储库系统发布其 CRL 相关的最大延迟。"
+    },
+    {
+      "indent": 0,
+      "text": "4.10. Certificate Status Services",
+      "section_title": true,
+      "zh": "4.10. 证书状态服务"
+    },
+    {
+      "indent": 3,
+      "text": "This PKI does not make provision for use of the Online Certificate Status Protocol (OCSP) [RFC2560] or Server-Based Certificate Validation Protocol (SCVP) [RFC5055]. This is because it is anticipated that the primary RPs (ISPs) will acquire and validate certificates for all participating resource holders. These protocols are not designed for such large-scale, bulk certificate status checking. RPs MUST check for new CRLs at least daily. It is RECOMMENDED that RPs perform this check several times per day, but no more than 8-12 times per day (to avoid excessive repository accesses).",
+      "zh": "本 PKI 不提供在线证书状态协议 (OCSP) [RFC2560] 或基于服务器的证书验证协议 (SCVP) [RFC5055]。这是因为预计主要 RP（互联网服务提供商）将为所有参与的资源持有者获取和验证证书。这些协议不是为这种大规模、批量证书状态检查而设计的。RP 必须至少每天检查新的 CRL。建议 RP 每天进行多次检查，但每天不超过 8-12 次（以避免对资源库的过度访问）。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Facility, Management, and Operational Controls",
+      "section_title": true,
+      "zh": "5. 设施、管理和运行控制"
+    },
+    {
+      "indent": 0,
+      "text": "5.1. Physical Controls",
+      "section_title": true,
+      "zh": "5.1. 物理控制"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA MUST maintain physical security controls for its operation that are commensurate with those employed by the organization in the management of INR distribution. The physical controls employed for CA operation MUST be specified in its CPS. Possible topics to be covered in the CPS are shown below. (These sections are taken from [RFC3647].)",
+      "zh": "每个 CA 必须为其运行维护与组织在 INR 分发管理中采用的安全控制相匹配的物理安全控制。必须在其 CPS 中规定 CA 运行所采用的物理控制。CPS 可能涵盖的主题如下。(这些部分摘自 [RFC3647]）。"
+    },
+    {
+      "indent": 0,
+      "text": "5.1.1. Site Location and Construction",
+      "section_title": true,
+      "zh": "5.1.1. 场地选址和施工"
+    },
+    {
+      "indent": 0,
+      "text": "5.1.2. Physical Access",
+      "section_title": true,
+      "zh": "5.1.2. 物理访问"
+    },
+    {
+      "indent": 0,
+      "text": "5.1.3. Power and Air Conditioning",
+      "section_title": true,
+      "zh": "5.1.3. 电源和空调"
+    },
+    {
+      "indent": 0,
+      "text": "5.1.4. Water Exposures",
+      "section_title": true,
+      "zh": "5.1.4. 水接触"
+    },
+    {
+      "indent": 0,
+      "text": "5.1.5. Fire Prevention and Protection",
+      "section_title": true,
+      "zh": "5.1.5. 防火和保护"
+    },
+    {
+      "indent": 0,
+      "text": "5.1.6. Media Storage",
+      "section_title": true,
+      "zh": "5.1.6. 媒体存储"
+    },
+    {
+      "indent": 0,
+      "text": "5.1.7. Waste Disposal",
+      "section_title": true,
+      "zh": "5.1.7. 废物处理"
+    },
+    {
+      "indent": 0,
+      "text": "5.1.8. Off-Site Backup",
+      "section_title": true,
+      "zh": "5.1.8. 站外备份"
+    },
+    {
+      "indent": 0,
+      "text": "5.2. Procedural Controls",
+      "section_title": true,
+      "zh": "5.2. 程序控制"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA MUST maintain procedural security controls that are commensurate with those employed by the organization in the management of INR distribution. The procedural security controls employed for CA operation MUST be specified in its CPS. Possible topics to be covered in the CPS are shown below. (These sections are taken from [RFC3647].)",
+      "zh": "每个 CA 必须保持与组织在 INR 分发管理中采用的程序相称的程序安全控制。CA 操作所采用的程序安全控制必须在其 CPS 中规定。CPS可能涵盖的主题如下。(这些部分摘自 [RFC3647]）。"
+    },
+    {
+      "indent": 0,
+      "text": "5.2.1. Trusted Roles",
+      "section_title": true,
+      "zh": "5.2.1. 受托角色"
+    },
+    {
+      "indent": 0,
+      "text": "5.2.2. Number of Persons Required per Task",
+      "section_title": true,
+      "zh": "5.2.2. 每项任务所需人数"
+    },
+    {
+      "indent": 0,
+      "text": "5.2.3. Identification and Authentication for Each Role",
+      "section_title": true,
+      "zh": "5.2.3. 每个角色的识别和认证"
+    },
+    {
+      "indent": 0,
+      "text": "5.2.4. Roles Requiring Separation of Duties",
+      "section_title": true,
+      "zh": "5.2.4. 需要职责分离的角色"
+    },
+    {
+      "indent": 0,
+      "text": "5.3. Personnel Controls",
+      "section_title": true,
+      "zh": "5.3. 人员控制"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA MUST maintain personnel security controls that are commensurate with those employed by the organization in the management of INR distribution. The details for each CA MUST be specified in its CPS.",
+      "zh": "每个 CA 必须保持与组织在 INR 分发管理中采用的人员安全控制相称。每个 CA 的详情必须在其 CPS 中具体说明。"
+    },
+    {
+      "indent": 0,
+      "text": "5.4. Audit Logging Procedures",
+      "section_title": true,
+      "zh": "5.4. 审计日志程序"
+    },
+    {
+      "indent": 3,
+      "text": "Details of how a CA implements the audit logging described in Sections 5.4.1 to 5.4.8 MUST be addressed in its CPS.",
+      "zh": "CA 必须在其 CPS 中详细说明如何实施 5.4.1 至 5.4.8 节中描述的审计日志。"
+    },
+    {
+      "indent": 0,
+      "text": "5.4.1. Types of Events Recorded",
+      "section_title": true,
+      "zh": "5.4.1. 记录的事件类型"
+    },
+    {
+      "indent": 3,
+      "text": "Audit records MUST be generated for the basic operations of the certification authority computing equipment. Audit records MUST include the date, time, responsible user or process, and summary content data relating to the event. Auditable events include:",
+      "zh": "必须为验证机构计算设备的基本操作生成审计记录。审核记录必须包括日期、时间、负责用户或流程以及与事件有关的内容摘要数据。可审计的事件包括"
+    },
+    {
+      "indent": 3,
+      "text": "o Access to CA computing equipment (e.g., logon, logout)",
+      "zh": "o 访问 CA 计算机设备（如登录、注销）"
+    },
+    {
+      "indent": 3,
+      "text": "o Messages received requesting CA actions (e.g., certificate requests, certificate revocation requests, compromise notifications)",
+      "zh": "o 收到的请求 CA 采取行动的信息（如证书请求、证书撤销请求、泄密通知等）"
+    },
+    {
+      "indent": 3,
+      "text": "o Certificate creation, modification, revocation, or renewal actions",
+      "zh": "o 证书创建、修改、撤销或续期操作"
+    },
+    {
+      "indent": 3,
+      "text": "o Posting of any material to a repository",
+      "zh": "o 向存储处张贴任何材料"
+    },
+    {
+      "indent": 3,
+      "text": "o Any attempts to change or delete audit data",
+      "zh": "o 任何更改或删除审计数据的尝试"
+    },
+    {
+      "indent": 3,
+      "text": "o Key generation",
+      "zh": "o 密钥生成"
+    },
+    {
+      "indent": 3,
+      "text": "o Software and/or configuration updates to the CA",
+      "zh": "o CA 的软件和/或配置更新"
+    },
+    {
+      "indent": 3,
+      "text": "o Clock adjustments",
+      "zh": "o 时钟调整"
+    },
+    {
+      "indent": 0,
+      "text": "5.4.2. Frequency of Processing Log",
+      "section_title": true,
+      "zh": "5.4.2. 处理日志的频率"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA MUST establish its own procedures for review of audit logs.",
+      "zh": "每个 CA 必须制定自己的审计日志审查程序。"
+    },
+    {
+      "indent": 0,
+      "text": "5.4.3. Retention Period for Audit Log",
+      "section_title": true,
+      "zh": "5.4.3. 审计日志的保存期限"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA MUST establish its own polices for retention of audit logs.",
+      "zh": "每个 CA 必须制定自己的审计日志保留政策。"
+    },
+    {
+      "indent": 0,
+      "text": "5.4.4. Protection of Audit Log",
+      "section_title": true,
+      "zh": "5.4.4. 保护审计日志"
+    },
+    {
+      "indent": 3,
+      "text": "The audit log SHOULD be protected based on current industry standards.",
+      "zh": "应根据当前的行业标准保护审计日志。"
+    },
+    {
+      "indent": 0,
+      "text": "5.4.5. Audit Log Backup Procedures",
+      "section_title": true,
+      "zh": "5.4.5. 审计日志备份程序"
+    },
+    {
+      "indent": 3,
+      "text": "The audit log SHOULD be backed up based on current industry standards.",
+      "zh": "审计日志应根据当前的行业标准进行备份。"
+    },
+    {
+      "indent": 0,
+      "text": "5.4.8. Vulnerability Assessments",
+      "section_title": true,
+      "zh": "5.4.8. 脆弱性评估"
+    },
+    {
+      "indent": 3,
+      "text": "The RPKI subsystems of a registry or ISP SHOULD participate in any vulnerability assessments that these organizations run as part of their normal business practice.",
+      "zh": "注册机构或 ISP 的 RPKI 子系统应参与这些机构作为其正常业务实践的一部分而进行的任何漏洞评估。"
+    },
+    {
+      "indent": 0,
+      "text": "5.6. Key Changeover",
+      "section_title": true,
+      "zh": "5.6. 钥匙更换"
+    },
+    {
+      "indent": 3,
+      "text": "When a CA wishes to change keys, it MUST acquire a new certificate containing its new public key. See [RFC6489] for a description of how key changeover is effected in the RPKI.",
+      "zh": "当 CA 希望更换密钥时，它必须获取一份包含其新公开密钥的新证书。有关 RPKI 中如何实现密钥更换的说明，请参见 [RFC6489]。"
+    },
+    {
+      "indent": 0,
+      "text": "5.7. CA or RA Termination",
+      "section_title": true,
+      "zh": "5.7. CA 或 RA 终止"
+    },
+    {
+      "indent": 3,
+      "text": "In the RPKI, each subscriber acts as a CA for the specified INRs that were distributed to that entity. Procedures associated with the termination of a CA MUST be described in the CPS for that CA. These procedures MUST include a provision to notify each entity that issued a certificate to the organization that is operating the CA that is terminating.",
+      "zh": "在 RPKI 中，每个用户都是分配给该实体的指定 INR 的 CA。与 CA 终止相关的程序必须在该 CA 的 CPS 中描述。这些程序必须包括通知向正在运行终止 CA 的组织签发证书的每个实体的规定。"
+    },
+    {
+      "indent": 3,
+      "text": "Since the RA function MUST be provided by the same entity operating as the CA (see Section 1.3.2), there are no separate stipulations for RAs.",
+      "zh": "由于 RA 功能必须由与 CA 运营相同的实体提供（见第 1.3.2 节），因此对 RA 没有单独的规定。"
+    },
+    {
+      "indent": 0,
+      "text": "6. Technical Security Controls",
+      "section_title": true,
+      "zh": "6. 技术安全控制"
+    },
+    {
+      "indent": 3,
+      "text": "The organizations that distribute INRs to network subscribers are authoritative for these distributions. This PKI is designed to enable ISPs and network subscribers to demonstrate that they are the holders of the INRs that have been distributed to them. Accordingly, the security controls used by CAs and subscribers for this PKI need only to be as secure as those that apply to the procedures for administering the distribution of INR data by the extant organizations. Details of each CA's security controls MUST be described in the CPS issued by the CA.",
+      "zh": "向网络订户分发 INR 的组织对这些分发具有权威性。设计本 PKI 的目的是使 ISP 和网络订户能够证明他们是分发给他们的 INR 的持有者。因此，核證機關和用戶為此公匙基礎建設所採用的保安控制措施，只須與現行機構管理 INR 數據分發程序的保安控制措施同樣安全。每个 CA 的安全控制细节必须在 CA 签发的 CPS 中说明。"
+    },
+    {
+      "indent": 0,
+      "text": "6.1. Key Pair Generation and Installation",
+      "section_title": true,
+      "zh": "6.1. 配对密钥的生成和安装"
+    },
+    {
+      "indent": 0,
+      "text": "6.1.1. Key Pair Generation",
+      "section_title": true,
+      "zh": "6.1.1. 密钥对生成"
+    },
+    {
+      "indent": 3,
+      "text": "In most instances, public key pairs will be generated by the subject, i.e., the organization receiving the distribution of INRs. However, some CAs MAY offer to generate key pairs on behalf of their subjects at the request of the subjects, e.g., to accommodate subscribers who do not have the ability to perform key generation in a secure fashion. (The CA has to check the quality of the keys only if it generates them; see Section 6.1.6.) Since the keys used in this PKI are not for non-repudiation purposes, generation of key pairs by CAs does not inherently undermine the security of the PKI. Each CA MUST describe its key pair generation procedures in its CPS.",
+      "zh": "在大多数情况下，公用密钥对将由主体（即接受 INR 分配的组织）生成。然而，有些 CA 可能会应主体的要求代其生成配对密钥，例如，为了满足那些没有能力以安全方式生成密钥的用户的需要。(CA 只有在生成密钥时才需要检查密钥的质量；参见第 6.1.6 节）。由于本 PKI 中使用的密钥不是用于不可抵赖目的，因此由 CA 生成密钥对从本质上不会破坏 PKI 的安全性。每个 CA 必须在其 CPS 中描述其配对密钥的生成过程。"
+    },
+    {
+      "indent": 0,
+      "text": "6.1.2. Private Key Delivery to Subscriber",
+      "section_title": true,
+      "zh": "6.1.2. 向用户交付私钥"
+    },
+    {
+      "indent": 3,
+      "text": "If a CA provides key pair generation services for subscribers, its CPS MUST describe the means by which private keys are delivered to subscribers in a secure fashion.",
+      "zh": "如果 CA 为订户提供配对密钥生成服务，其 CPS 必须描述以安全方式向订户交付私钥的方法。"
+    },
+    {
+      "indent": 0,
+      "text": "6.1.3. Public Key Delivery to Certificate Issuer",
+      "section_title": true,
+      "zh": "6.1.3. 向证书颁发机构交付公钥"
+    },
+    {
+      "indent": 3,
+      "text": "When a public key is transferred to the issuing CA to be certified, it MUST be delivered through a mechanism ensuring that the public key has not been altered during transit and that the subscriber possesses the private key corresponding to the transferred public key.",
+      "zh": "当公开密钥被传送到签发 CA 进行认证时，它必须通过一种机制来传送，以确保公开密钥在传送过程中没有被更改，而且用户拥有与传送的公开密钥相对应的私人密钥。"
+    },
+    {
+      "indent": 0,
+      "text": "6.1.4. CA Public Key Delivery to Relying Parties",
+      "section_title": true,
+      "zh": "6.1.4. 向依赖方交付 CA 公钥"
+    },
+    {
+      "indent": 3,
+      "text": "CA public keys for all entities (other than trust anchors) are contained in certificates issued by other CAs. These certificates MUST be published in the RPKI distributed repository system. Relying parties download these certificates from the repositories. Public key values and associated data for (putative) trust anchors are distributed out of band and accepted by relying parties on the basis of locally defined criteria.",
+      "zh": "所有实体（信任锚除外）的 CA 公钥都包含在其他 CA 签发的证书中。这些证书必须发布在 RPKI 分布式存储库系统中。依赖方可从存储库中下载这些证书。（推定）信任锚的公开密钥值和相关数据在带外发布，依赖方根据本地定义的标准接受。"
+    },
+    {
+      "indent": 0,
+      "text": "6.1.5. Key Sizes",
+      "section_title": true,
+      "zh": "6.1.5. 主要尺寸"
+    },
+    {
+      "indent": 3,
+      "text": "The algorithms and key sizes used in the RPKI are specified in \"A Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure\" [RFC6485].",
+      "zh": "RPKI 中使用的算法和密钥大小在 \"A Profile for Algorithms and Key Sizes for Use in Resource Public Key Infrastructure\" [RFC6485]中规定。"
+    },
+    {
+      "indent": 0,
+      "text": "6.1.6. Public Key Parameters Generation and Quality Checking",
+      "section_title": true,
+      "zh": "6.1.6. 公钥参数生成和质量检查"
+    },
+    {
+      "indent": 3,
+      "text": "The public key parameters used in the RPKI are specified in [RFC6485]. Each subscriber is responsible for performing checks on the quality of its key pair. A CA is not responsible for performing such checks for subscribers except in the case where the CA generates the key pair on behalf of the subscriber.",
+      "zh": "RPKI 中使用的公钥参数在 [RFC6485] 中作了规定。每个用户负责检查其配对密钥的质量。CA 不负责为用户执行此类检查，除非 CA 代表用户生成配对密钥。"
+    },
+    {
+      "indent": 0,
+      "text": "6.1.7. Key Usage Purposes (as per X.509 v3 Key Usage Field)",
+      "section_title": true,
+      "zh": "6.1.7. 密钥使用目的（与 X.509 v3 密钥使用字段一致）"
+    },
+    {
+      "indent": 3,
+      "text": "The Key usage extension bit values used in the RPKI are specified in RPKI Certificate Profile [RFC6487].",
+      "zh": "RPKI 中使用的密钥使用扩展位值在 RPKI 证书配置文件 [RFC6487] 中指定。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2. Private Key Protection and Cryptographic Module Engineering Controls",
+      "section_title": true,
+      "zh": "6.2. 私钥保护和密码模块工程控制"
+    },
+    {
+      "indent": 0,
+      "text": "6.2.1. Cryptographic Module Standards and Controls",
+      "section_title": true,
+      "zh": "6.2.1. 密码模块标准和控制"
+    },
+    {
+      "indent": 3,
+      "text": "The cryptographic module standards and controls employed by each CA MUST be described in the CPS issued by that CA.",
+      "zh": "每个 CA 采用的加密模块标准和控制必须在该 CA 签发的 CPS 中描述。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2.2. Private Key (N out of M) Multi-Person Control",
+      "section_title": true,
+      "zh": "6.2.2. 私人密钥 (N 出 M) 多人控制"
+    },
+    {
+      "indent": 3,
+      "text": "CAs MAY employ multi-person controls to constrain access to their private keys, but this is not a requirement for all CAs in the PKI. The CPS for each CA MUST describe which, if any, multi-person controls it employs.",
+      "zh": "CA 可以采用多人控制来限制对其私钥的访问，但这并非 PKI 中对所有 CA 的要求。每个 CA 的 CPS 必须说明它采用了哪些多人控制（如有）。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2.3. Private Key Escrow",
+      "section_title": true,
+      "zh": "6.2.3. 私人密钥托管"
+    },
+    {
+      "indent": 3,
+      "text": "No private key escrow procedures are required for the RPKI.",
+      "zh": "RPKI 不需要私钥托管程序。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2.4. Private Key Backup",
+      "section_title": true,
+      "zh": "6.2.4. 私人密钥备份"
+    },
+    {
+      "indent": 3,
+      "text": "Because of the adverse operational implications associated with the loss of use of a CA private key in the PKI, each CA MUST employ a secure means to back up its private keys. The details of the procedures for backing up a CA's private key MUST be described in the CPS issued by the CA.",
+      "zh": "由于在 PKI 中丢失 CA 私钥会对运行产生不利影响，因此每个 CA 必须采用安全的方式备份其私钥。备份 CA 私钥的程序细节必须在 CA 签发的 CPS 中描述。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2.5. Private Key Archival",
+      "section_title": true,
+      "zh": "6.2.5. 私钥存档"
+    },
+    {
+      "indent": 3,
+      "text": "The details of the process and procedures used to archive the CA's private key MUST be described in the CPS issued by the CA.",
+      "zh": "CA 签发的 CPS 中必须描述用于存档 CA 私钥的过程和程序的细节。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2.6. Private Key Transfer into or from a Cryptographic Module",
+      "section_title": true,
+      "zh": "6.2.6. 私钥转入或转出加密模块"
+    },
+    {
+      "indent": 3,
+      "text": "The details of the process and procedures used to transfer the CA's private key into or from a cryptographic module MUST be described in the CPS issued by the CA.",
+      "zh": "将 CA 的私钥转入或转出加密模块的过程和程序的细节必须在 CA 签发的 CPS 中描述。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2.7. Private Key Storage on Cryptographic Module",
+      "section_title": true,
+      "zh": "6.2.7. 加密模块上的私钥存储"
+    },
+    {
+      "indent": 3,
+      "text": "The details of the process and procedures used to store the CA's private key on a cryptographic module and protect it from unauthorized use MUST be described in the CPS issued by the CA.",
+      "zh": "CA 签发的 CPS 中必须详细说明用于将 CA 的私钥存储在加密模块上并防止其被非法使用的过程和程序。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2.8. Method of Activating a Private Key",
+      "section_title": true,
+      "zh": "6.2.8. 激活私人密钥的方法"
+    },
+    {
+      "indent": 3,
+      "text": "The details of the process and procedures used to activate the CA's private key MUST be described in the CPS issued by the CA.",
+      "zh": "用于激活 CA 私钥的过程和程序的细节必须在 CA 签发的 CPS 中描述。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2.9. Method of Deactivating a Private Key",
+      "section_title": true,
+      "zh": "6.2.9. 停用私人密钥的方法"
+    },
+    {
+      "indent": 3,
+      "text": "The details of the process and procedures used to deactivate the CA's private key MUST be described in the CPS issued by the CA.",
+      "zh": "用于停用 CA 私钥的过程和程序的细节必须在 CA 签发的 CPS 中描述。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2.10. Method of Destroying a Private Key",
+      "section_title": true,
+      "zh": "6.2.10. 销毁私人密钥的方法"
+    },
+    {
+      "indent": 3,
+      "text": "The details of the process and procedures used to destroy the CA's private key MUST be described in the CPS issued by the CA.",
+      "zh": "销毁 CA 私钥的过程和程序的细节必须在 CA 签发的 CPS 中描述。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2.11. Cryptographic Module Rating",
+      "section_title": true,
+      "zh": "6.2.11. 密码模块评级"
+    },
+    {
+      "indent": 3,
+      "text": "The security rating of the cryptographic module MUST be described in the CPS issued by the CA.",
+      "zh": "加密模块的安全等级必须在 CA 签发的 CPS 中描述。"
+    },
+    {
+      "indent": 0,
+      "text": "6.3. Other Aspects of Key Pair Management",
+      "section_title": true,
+      "zh": "6.3. 密钥对管理的其他方面"
+    },
+    {
+      "indent": 0,
+      "text": "6.3.1. Public Key Archival",
+      "section_title": true,
+      "zh": "6.3.1. 公钥存档"
+    },
+    {
+      "indent": 3,
+      "text": "Because this PKI does not support non-repudiation, there is no need to archive public keys.",
+      "zh": "由于这种 PKI 不支持不可抵赖性，因此没有必要将公开密钥存档。"
+    },
+    {
+      "indent": 0,
+      "text": "6.3.2. Certificate Operational Periods and Key Pair Usage Periods",
+      "section_title": true,
+      "zh": "6.3.2. 证书有效期和密钥对使用期"
+    },
+    {
+      "indent": 3,
+      "text": "The INRs held by a CA may periodically change when it receives new distributions. To minimize disruption, the CA key pair MUST NOT change when INRs are added to its certificate.",
+      "zh": "当 CA 收到新的分发时，它持有的 INR 可能会定期更改。为尽量减少中断，当 INR 被添加到 CA 证书时，CA 密钥对不得更改。"
+    },
+    {
+      "indent": 3,
+      "text": "If ISP and network-subscriber certificates are tied to the duration of service agreements, these certificates should have validity periods commensurate with the duration of these agreements. In any case, the validity period for certificates MUST be chosen by the issuing CA and described in its CPS.",
+      "zh": "如果 ISP 和网络用户证书与服务协议的期限挂钩，这些证书的有效期应与这些协议的期限一致。无论如何，证书的有效期必须由签发 CA 选择并在其 CPS 中说明。"
+    },
+    {
+      "indent": 0,
+      "text": "6.4. Activation Data",
+      "section_title": true,
+      "zh": "6.4. 激活数据"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA MUST document in its CPS how it will generate, install, and protect its activation data.",
+      "zh": "每个 CA 必须在其 CPS 中记录如何生成、安装和保护其激活数据。"
+    },
+    {
+      "indent": 0,
+      "text": "6.5. Computer Security Controls",
+      "section_title": true,
+      "zh": "6.5. 计算机安全控制"
+    },
+    {
+      "indent": 3,
+      "text": "Each CA MUST document the technical security requirements it employs for CA computer operation in its CPS.",
+      "zh": "每个 CA 必须在其 CPS 中记录 CA 计算机操作所采用的技术安全要求。"
+    },
+    {
+      "indent": 0,
+      "text": "6.6. Life-Cycle Technical Controls",
+      "section_title": true,
+      "zh": "6.6. 生命周期技术控制"
+    },
+    {
+      "indent": 0,
+      "text": "6.6.1. System Development Controls",
+      "section_title": true,
+      "zh": "6.6.1. 系统开发控制"
+    },
+    {
+      "indent": 3,
+      "text": "The CPS for each CA MUST document any system development controls required by that CA, if applicable.",
+      "zh": "每个 CA 的 CPS 必须记录该 CA 要求的任何系统开发控制（如果适用）。"
+    },
+    {
+      "indent": 0,
+      "text": "6.6.2. Security Management Controls",
+      "section_title": true,
+      "zh": "6.6.2. 安全管理控制"
+    },
+    {
+      "indent": 3,
+      "text": "The CPS for each CA MUST document the security controls applied to the software and equipment used for this PKI. These controls MUST be commensurate with those used for the systems used by the CAs for managing the INRs.",
+      "zh": "每个 CA 的 CPS 必须记录应用于该 PKI 的软件和设备的安全控制。这些控制措施必须与 CA 用于管理 INR 的系统所使用的控制措施相称。"
+    },
+    {
+      "indent": 0,
+      "text": "6.6.3. Life-Cycle Security Controls",
+      "section_title": true,
+      "zh": "6.6.3. 生命周期安全控制"
+    },
+    {
+      "indent": 3,
+      "text": "The CPS for each CA MUST document how the equipment (hardware and software) used for this PKI will be procured, installed, maintained, and updated. This MUST be done in a fashion commensurate with the way in which equipment for the management and distribution of INRs is handled.",
+      "zh": "每个 CA 的 CPS 必须记录如何采购、安装、维护和更新用于该 PKI 的设备（硬件和软件）。这必须与管理和分发 INR 的设备的处理方式相一致。"
+    },
+    {
+      "indent": 0,
+      "text": "6.7. Network Security Controls",
+      "section_title": true,
+      "zh": "6.7. 网络安全控制"
+    },
+    {
+      "indent": 3,
+      "text": "The CPS for each CA MUST document the network security controls employed for CA operation. These MUST be commensurate with the protection it employs for the computers used for managing distribution of INRs.",
+      "zh": "每个 CA 的 CPS 必须记录 CA 运行所采用的网络安全控制。这些控制措施必须与用于管理 INR 分配的计算机的保护措施相称。"
+    },
+    {
+      "indent": 0,
+      "text": "6.8. Timestamping",
+      "section_title": true,
+      "zh": "6.8. 时间戳"
+    },
+    {
+      "indent": 3,
+      "text": "The RPKI does not make use of timestamping.",
+      "zh": "RPKI 不使用时间戳。"
+    },
+    {
+      "indent": 0,
+      "text": "7. Certificate and CRL Profiles",
+      "section_title": true,
+      "zh": "7. 证书和 CRL 配置文件"
+    },
+    {
+      "indent": 3,
+      "text": "Please refer to the RPKI Certificate and CRL Profile [RFC6487].",
+      "zh": "请参阅 RPKI 证书和 CRL 配置文件 [RFC6487]。"
+    },
+    {
+      "indent": 0,
+      "text": "8. Compliance Audit and Other Assessments",
+      "section_title": true,
+      "zh": "8. 合规审计和其他评估"
+    },
+    {
+      "indent": 3,
+      "text": "The certificate policy for a typical PKI defines the criteria against which prospective CAs are evaluated and establishes requirements that they must meet. In this PKI, the CAs are already authoritative for the management of INRs, and the PKI simply supports verification of the distribution of these resources to network subscribers. Accordingly, whatever audit and other assessments are already used to ensure the security of the management of INRs is sufficient for this PKI. The CPS for each CA MUST describe what audits and other assessments are used.",
+      "zh": "典型 PKI 的证书策略定义了评估潜在 CA 的标准，并规定了它们必须满足的要求。在这个 PKI 中，CA 已经是 INR 管理的权威，PKI 只是支持对这些资源分配给网络用户的验证。因此，无论审计和其他评估已被用于确保 INR 管理的安全性，对本 PKI 来说都是足够的。每个 CA 的 CPS 必须说明使用了哪些审计和其他评估。"
+    },
+    {
+      "indent": 0,
+      "text": "9. Other Business and Legal Matters",
+      "section_title": true,
+      "zh": "9. 其他业务和法律事项"
+    },
+    {
+      "indent": 3,
+      "text": "As noted throughout this certificate policy, the organizations managing the distribution of INRs are authoritative in their roles as managers of this data. They MUST operate this PKI to allow the holders of INRs to generate digitally signed data that attest to these distributions. Therefore, the manner in which the organizations in question manage their business and legal matters for this PKI MUST be commensurate with the way in which they already manage business and legal matters in their existing roles. Since there is no single set of responses to this section that would apply to all organizations, the topics listed in Sections 4.9.1 to 4.9.11 and 4.9.13 to 4.9.17 of RFC 3647 SHOULD be covered in the CPS issued by each CA, although not every CA may choose to address all of these topics. Please note that the topics in the above sections of RFC 3647 become sections 9.1 to 9.11 and 9.13 to 9.17 in the CPS.",
+      "zh": "正如本证书政策通篇所指出的，管理 INR 的分发的组织作为该数据的管理者具有权威性。它们必须运行此 PKI，允许 INRs 持有者生成证明这些分发的数字签名数据。因此，有关组织管理该 PKI 的业务和法律事务的方式必须与它们在现有角色中管理业务和法律事务的方式相称。由于没有一套适用于所有组织的对本节的响应，RFC 3647 的第 4.9.1 节至第 4.9.11 节和第 4.9.13 节至第 4.9.17 节中列出的主题应包含在每个 CA 签发的 CPS 中，尽管并非每个 CA 都会选择处理所有这些主题。请注意，RFC 3647 上述章节中的主题将成为 CPS 中的 9.1 至 9.11 节和 9.13 至 9.17 节。"
+    },
+    {
+      "indent": 0,
+      "text": "9.12. Amendments",
+      "section_title": true,
+      "zh": "9.12. 修正案"
+    },
+    {
+      "indent": 0,
+      "text": "9.12.1. Procedure for Amendment",
+      "section_title": true,
+      "zh": "9.12.1. 修订程序"
+    },
+    {
+      "indent": 3,
+      "text": "The procedure for amending this CP is via written notice from the IESG in the form of a new (BCP) RFC that updates or obsoletes this document.",
+      "zh": "修改本 CP 的程序是由 IESG 以新（BCP）RFC 的形式发出书面通知，更新或废止本文件。"
+    },
+    {
+      "indent": 0,
+      "text": "9.12.2. Notification Mechanism and Period",
+      "section_title": true,
+      "zh": "9.12.2. 通知机制和期限"
+    },
+    {
+      "indent": 3,
+      "text": "Successive versions of the CP will be published with the following statement:",
+      "zh": "历次出版的《国家方案》都将附有如下说明："
+    },
+    {
+      "indent": 6,
+      "text": "This CP takes effect on MM/DD/YYYY.",
+      "zh": "本 CP 于年月日生效。"
+    },
+    {
+      "indent": 3,
+      "text": "MM/DD/YYYY MUST be a minimum of 6 months from the date of publication.",
+      "zh": "MM/DD/YYYY 必须距出版日期至少 6 个月。"
+    },
+    {
+      "indent": 0,
+      "text": "9.12.3. Circumstances under Which OID Must Be Changed",
+      "section_title": true,
+      "zh": "9.12.3. 必须更改 OID 的情况"
+    },
+    {
+      "indent": 3,
+      "text": "If the IESG judges that changes to the CP do not materially reduce the acceptability of certificates issued for RPKI purposes, there will be no change to the CP OID. If the IESG judges that changes to the CP do materially change the acceptability of certificates for RPKI purposes, then there MUST be a new CP OID.",
+      "zh": "如果 IESG 认为对证书政策的修改不会在实质上降低为 RPKI 目的签发证书的可接受性，则不会修改证书政策 OID。如果 IESG 认为对 CP 的修改确实在实质上改变了为 RPKI 目的签发证书的可接受性，则必须有一个新的 CP OID。"
+    },
+    {
+      "indent": 0,
+      "text": "10. Security Considerations",
+      "section_title": true,
+      "zh": "10. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "According to X.509, a certificate policy (CP) is \"a named set of rules that indicates the applicability of a certificate to a particular community and/or class of applications with common security requirements.\" A CP may be used by a relying party to help in deciding whether a certificate and the binding therein are sufficiently trustworthy and otherwise appropriate for a particular application. This document describes the CP for the Resource Public Key Infrastructure (RPKI). There are separate documents (CPSs) that cover the factors that determine the degree to which a relying party can trust the binding embodied in a certificate. The degree to which such a binding can be trusted depends on several factors, e.g., the practices followed by the CA in authenticating the subject; the CA's operating policy, procedures, and technical security controls, including the scope of the subscriber's responsibilities (for example, in protecting the private key), and the stated responsibilities and liability terms and conditions of the CA (for example, warranties, disclaimers of warranties, and limitations of liability).",
+      "zh": "根据 X.509，证书策略（CP）是 \"一组指定的规则，表明证书对具有共同安全要求的特定社区和/或应用类别的适用性\"。依赖方可使用证书政策来帮助决定证书及其绑定是否足够可信，以及是否适合特定应用。本文件介绍了资源公钥基础设施（RPKI）的 CP。还有一些单独的文件（CPS）涵盖了决定依赖方对证书所包含的约束力的信任程度的因素。这种约束力的可信赖程度取决于几个因素，如 CA 在验证主体时所遵循的惯例；CA 的运行政策、程序和技术安全控制，包括用户的责任范围（如保护私钥），以及 CA 所声明的责任和责任条款及条件（如保证、保证的免责声明和责任限制）。"
+    },
+    {
+      "indent": 3,
+      "text": "Since name uniqueness within the RPKI cannot be guaranteed, there is a risk that two or more CAs in the RPKI will issue certificates and CRLs under the same issuer name. Path validation implementations that conform to the resource certification path validation algorithm (see [RFC6487]) verify that the same key was used to sign both the target (the resource certificate) and the corresponding CRL. So, a name collision will not change the result. Use of the basic X.509 path validation algorithm, which assumes name uniqueness, could result in a revoked certificate being accepted as valid or a valid certificate being rejected as revoked. Relying parties must ensure that the software they use to validate certificates issued under this policy verifies that the same key was used to sign both the certificate and the corresponding CRL, as specified in [RFC6487].",
+      "zh": "由于无法保证 RPKI 中名称的唯一性，因此 RPKI 中的两个或多个 CA 有可能以相同的签发者名称签发证书和 CRL。符合资源认证路径验证算法（见 [RFC6487]）的路径验证实现会验证目标（资源证书）和相应的 CRL 是否使用相同的密钥签名。因此，名称碰撞不会改变结果。基本 X.509 路径验证算法假定名称具有唯一性，使用该算法可能导致已撤销的证书被当作有效证书接受，或有效证书被当作已撤销证书拒绝。依赖方必须确保其用于验证根据本策略签发的证书的软件，按照 [RFC6487] 的规定，验证证书和相应的 CRL 是否使用了相同的密钥。"
+    },
+    {
+      "indent": 0,
+      "text": "11. Acknowledgments",
+      "section_title": true,
+      "zh": "11. 致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors would like to thank Geoff Huston, Randy Bush, Andrei Robachevsky, and other members of the RPKI community for reviewing this document and Matt Lepinski for his help with the formatting.",
+      "zh": "作者感谢 Geoff Huston、Randy Bush、Andrei Robachevsky 以及 RPKI 社区的其他成员对本文档的审阅，并感谢 Matt Lepinski 对文档格式的帮助。"
+    },
+    {
+      "indent": 0,
+      "text": "12. References",
+      "section_title": true,
+      "zh": "12. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "12.1. Normative References",
+      "section_title": true,
+      "zh": "12.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2026] Bradner, S., \"The Internet Standards Process -- Revision 3\", BCP 9, RFC 2026, October 1996.",
+      "zh": "[RFC2026] Bradner, S., \"The Internet Standards Process -- Revision 3\", BCP 9, RFC 2026, October 1996."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, June 2004.",
+      "zh": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, June 2004."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6481] Huston, G., Loomans, R., and G. Michaelson, \"A Profile for Resource Certificate Repository Structure\", RFC 6481, February 2012.",
+      "zh": "[RFC6481] Huston, G., Loomans, R., and G. Michaelson, \"A Profile for Resource Certificate Repository Structure\", RFC 6481, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6485] Huston, G., \"The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)\", RFC 6485, February 2012.",
+      "zh": "[RFC6485] Huston, G., \"The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)\", RFC 6485, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6489] Huston, G., Michaelson, G., and S. Kent, \"CA Key Rollover in the RPKI\", BCP 174, RFC 6489, February 2012.",
+      "zh": "[RFC6489] Huston, G., Michaelson, G., and S. Kent, \"CA Key Rollover in the RPKI\", BCP 174, RFC 6489, February 2012."
+    },
+    {
+      "indent": 0,
+      "text": "12.2. Informative References",
+      "section_title": true,
+      "zh": "12.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2560] Myers, M., Ankney, R., Malpani, A., Galperin, S., and C. Adams, \"X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP\", RFC 2560, June 1999.",
+      "zh": "[RFC2560] Myers, M., Ankney, R., Malpani, A., Galperin, S., and C. Adams, \"X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP\", RFC 2560, June 1999."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3647] Chokhani, S., Ford, W., Sabett, R., Merrill, C., and S. Wu, \"Internet X.509 Public Key Infrastructure Certificate Policy and Certification Practices Framework\", RFC 3647, November 2003.",
+      "zh": "[RFC3647] Chokhani, S., Ford, W., Sabett, R., Merrill, C., and S. Wu, \"Internet X.509 Public Key Infrastructure Certificate Policy and Certification Practices Framework\", RFC 3647, November 2003."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5055] Freeman, T., Housley, R., Malpani, A., Cooper, D., and W. Polk, \"Server-Based Certificate Validation Protocol (SCVP)\", RFC 5055, December 2007.",
+      "zh": "[RFC5055] Freeman, T., Housley, R., Malpani, A., Cooper, D., and W. Polk, \"Server-Based Certificate Validation Protocol (SCVP)\", RFC 5055, December 2007."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5736] Huston, G., Cotton, M., and L. Vegoda, \"IANA IPv4 Special Purpose Address Registry\", RFC 5736, January 2010.",
+      "zh": "[RFC5736] Huston, G., Cotton, M., and L. Vegoda, \"IANA IPv4 Special Purpose Address Registry\", RFC 5736, January 2010."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, February 2012.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, February 2012.",
+      "zh": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, \"Manifests for the Resource Public Key Infrastructure (RPKI)\", RFC 6486, February 2012.",
+      "zh": "[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, \"Manifests for the Resource Public Key Infrastructure (RPKI)\", RFC 6486, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6492] Huston, G., Loomans, R., Ellacott, B., and R. Austein, \"A Protocol for Provisioning Resource Certificates\", RFC 6492, February 2012.",
+      "zh": "[RFC6492] Huston, G., Loomans, R., Ellacott, B., and R. Austein, \"A Protocol for Provisioning Resource Certificates\", RFC 6492, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[X.509] ITU-T Recommendation X.509 | ISO/IEC 9594-8, \"Information technology -- Open systems interconnection -- The Directory: Public-key and attribute certificate frameworks\", November 2008.",
+      "zh": "[X.509] ITU-T Recommendation X.509 | ISO/IEC 9594-8，\"信息技术--开放系统互连--目录：公钥和属性证书框架\"，2008 年 11 月。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Stephen Kent BBN Technologies 10 Moulton Street Cambridge MA 02138 USA",
+      "zh": "Stephen Kent BBN Technologies 10 Moulton Street Cambridge MA 02138 USA"
+    },
+    {
+      "indent": 3,
+      "text": "Phone: +1 617 873 3988\nEMail: skent@bbn.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Derrick Kong BBN Technologies Moulton Street Cambridge MA 02138 USA",
+      "zh": "Derrick Kong BBN Technologies Moulton Street Cambridge MA 02138 USA"
+    },
+    {
+      "indent": 3,
+      "text": "Phone: +1 617 873 1951\nEMail: dkong@bbn.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Karen Seo BBN Technologies 10 Moulton Street Cambridge MA 02138 USA",
+      "zh": "Karen Seo BBN Technologies 10 Moulton Street Cambridge MA 02138 USA"
+    },
+    {
+      "indent": 3,
+      "text": "Phone: +1 617 873 3152\nEMail: kseo@bbn.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Ronald Watro BBN Technologies 10 Moulton Street Cambridge MA 02138 USA",
+      "zh": "Ronald Watro BBN Technologies 10 Moulton Street Cambridge MA 02138 USA"
+    },
+    {
+      "indent": 3,
+      "text": "Phone: +1 617 873 2551\nEMail: rwatro@bbn.com",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 8416 - Simplified Local Internet Number Resource Management with the RPKI (SLURM) 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">8416</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc8416">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 8416 - Simplified Local Internet Number Resource Management with the RPKI (SLURM) 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc8416">
+            https://datatracker.ietf.org/doc/html/rfc8416
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 8416 - 利用 RPKI 简化本地互联网号码资源管理（SLURM）</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                             D. Ma
+Request for Comments: 8416                                          ZDNS
+Category: Standards Track                                  D. Mandelberg
+ISSN: 2070-1721                                             Unaffiliated
+                                                          T. Bruijnzeels
+                                                              NLnet Labs
+                                                             August 2018
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Simplified Local Internet Number Resource Management with the RPKI (SLURM)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+利用 RPKI 简化本地互联网号码资源管理（SLURM）
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Resource Public Key Infrastructure (RPKI) is a global authorization infrastructure that allows the holder of Internet Number Resources (INRs) to make verifiable statements about those resources. Network operators, e.g., Internet Service Providers (ISPs), can use the RPKI to validate BGP route origin assertions. ISPs can also use the RPKI to validate the path of a BGP route. However, ISPs may want to establish a local view of exceptions to the RPKI data in the form of local filters and additions. The mechanisms described in this document provide a simple way to enable INR holders to establish a local, customized view of the RPKI, overriding global RPKI repository data as needed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源公钥基础设施（RPKI）是一种全球授权基础设施，允许互联网号码资源（INR）持有者对这些资源做出可验证的声明。网络运营商，如互联网服务提供商（ISP），可以使用 RPKI 验证 BGP 路由来源声明。ISP 也可使用 RPKI 验证 BGP 路由的路径。不过，互联网服务提供商可能希望以本地过滤和添加的形式，对 RPKI 数据的例外情况建立本地视图。本文档中描述的机制提供了一种简单的方法，使 INR 持有者能够根据需要覆盖全局 RPKI 资源库数据，建立 RPKI 的本地定制视图。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This is an Internet Standards Track document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这是一份互联网标准跟踪文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc8416.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc8416。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2018 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2018 IETF Trust 和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受BCP 78以及本文档发布之日有效的IETF信托基金关于IETF文档的法律规定（https://trustee.ietf.org/license-info）的约束。 请仔细阅读这些文档，因为它们描述了您对本文档的权利和限制。 从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中描述的简化 BSD 许可证文本，并且不提供简化 BSD 许可证中描述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1. Introduction ....................................................3
+      1.1. Terminology ................................................4
+   2. RP with SLURM ...................................................4
+   3. SLURM Files and Mechanisms ......................................5
+      3.1. Use of JSON ................................................5
+      3.2. SLURM File Overview ........................................5
+      3.3. Validation Output Filters ..................................6
+           3.3.1. Validated ROA Prefix Filters ........................6
+           3.3.2. BGPsec Assertion Filters ............................7
+      3.4. Locally Added Assertions ...................................9
+           3.4.1. ROA Prefix Assertions ...............................9
+           3.4.2. BGPsec Assertions ..................................10
+      3.5. Example of a SLURM File with Filters and Assertions .......11
+   4. SLURM File Configuration .......................................13
+      4.1. SLURM File Atomicity ......................................13
+      4.2. Multiple SLURM Files ......................................13
+   5. IANA Considerations ............................................14
+   6. Security Considerations ........................................14
+   7. References .....................................................14
+      7.1. Normative References ......................................14
+      7.2. Informative References ....................................16
+   Acknowledgments ...................................................17
+   Authors&#39; Addresses ................................................17
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Resource Public Key Infrastructure (RPKI) is a global authorization infrastructure that allows the holder of Internet Number Resources (INRs) to make verifiable statements about those resources. For example, the holder of a block of IP(v4 or v6) addresses can issue a Route Origin Authorization (ROA) [RFC6482] to authorize an Autonomous System (AS) to originate routes for that block. Internet Service Providers (ISPs) can then use the RPKI to validate BGP routes. (Validation of the origin of a route is described in [RFC6811], and validation of the path of a route is described in [RFC8205].)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源公钥基础设施（RPKI）是一种全球授权基础设施，允许互联网号码资源（INR）持有者对这些资源做出可验证的声明。例如，IP（v4 或 v6）地址块的持有者可以发布路由起源授权（ROA）[RFC6482]，授权自治系统（AS）为该地址块创建路由。互联网服务提供商 (ISP) 可以使用 RPKI 验证 BGP 路由（路由起源的验证在 [RFC6811] 中描述，路由路径的验证在 [RFC8205] 中描述）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+However, an RPKI Relying Party (RP) may want to override some of the information expressed via configured Trust Anchors (TAs) and the certificates downloaded from the RPKI repository system. For instance, [RFC6491] recommends the creation of ROAs that would invalidate public routes for reserved and unallocated address space, yet some ISPs might like to use BGP and the RPKI with private address space (see [RFC1918], [RFC4193], and [RFC6598]) or private AS numbers (see [RFC1930] and [RFC6996]). Local use of private address space and/or AS numbers is consistent with the RFCs cited above, but such use cannot be verified by the global RPKI. This motivates creation of mechanisms that enable a network operator to publish, at its discretion, an exception to the RPKI in the form of filters and additions (for its own use and that of its customers). Additionally, a network operator might wish to make use of a local override capability to protect routes from adverse actions [RFC8211], until the results of such actions have been addressed. The mechanisms developed to provide this capability to network operators are hereby called &#34;Simplified Local Internet Number Resource Management with the RPKI (SLURM)&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+不过，RPKI 依赖方（RP）可能希望覆盖通过配置的信任锚点（TA）和从 RPKI 资源库系统下载的证书所表达的某些信息。例如，[RFC6491] 建议创建 ROA，使保留和未分配地址空间的公共路由失效，但一些 ISP 可能希望使用 BGP 和 RPKI 的私有地址空间（见 [RFC1918]、[RFC4193] 和 [RFC6598]）或私有 AS 号码（见 [RFC1930] 和 [RFC6996]）。本地使用私有地址空间和/或 AS 编号符合上述 RFC，但这种使用无法通过全局 RPKI 验证。这就需要建立一种机制，使网络运营商能够自行决定以过滤和添加的形式发布 RPKI 的例外情况（供自己和客户使用）。此外，网络运营商可能希望利用本地覆盖功能来保护路由免受不利操作 [RFC8211]，直到这些操作的结果得到处理。为向网络运营商提供这种功能而开发的机制被称为 &#34;使用 RPKI 的简化本地互联网号码资源管理（SLURM）&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+SLURM allows an operator to create a local view of the global RPKI by generating sets of assertions. For origin validation [RFC6811], an assertion is a tuple of {IP prefix, prefix length, maximum length, Autonomous System Number (ASN)} as used by the RPKI-Router protocol, version 0 [RFC6810] and version 1 [RFC8210]. For BGPsec [RFC8205], an assertion is a tuple of {ASN, subject key identifier, router public key} as used by version 1 of the RPKI-Router protocol. (For the remainder of this document, these assertions are called &#34;ROA Prefix Assertions&#34; and &#34;BGPsec Assertions&#34;, respectively.)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+SLURM 允许操作员通过生成一组断言来创建全局 RPKI 的本地视图。对于起源验证 [RFC6811]，断言是 RPKI-Router 协议第 0 版 [RFC6810] 和第 1 版 [RFC8210] 所使用的 {IP 前缀、前缀长度、最大长度、自治系统编号 (ASN)} 元组。对于 BGPsec [RFC8205]，断言是 RPKI-Router 协议版本 1 中使用的 {ASN、主体密钥标识符、路由器公钥} 的元组。(在本文档的其余部分，这些断言分别称为 &#34;ROA 前缀断言 &#34;和 &#34;BGPsec 断言&#34;）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-1--Terminology">
+1.1. Terminology
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.1. 用语
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;NOT RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, 以及 &#34;OPTIONAL&#34; 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--RP-with-SLURM">
+2. RP with SLURM
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 使用 SLURM 的 RP
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+SLURM provides a simple way to enable an RP to establish a local, customized view of the RPKI, overriding RPKI repository data if needed. To that end, an RP with SLURM filters out (i.e., removes from consideration for routing decisions) any assertions in the RPKI that are overridden by local ROA Prefix Assertions and BGPsec Assertions.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+SLURM 提供了一种简单的方法，使 RP 能够建立本地的、定制的 RPKI 视图，并在需要时覆盖 RPKI 存储库数据。为此，使用 SLURM 的 RP 会过滤掉（即从路由决策中删除）RPKI 中被本地 ROA 前缀断言和 BGPsec 断言覆盖的任何断言。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In general, the primary output of an RP is the data it sends to routers over the RPKI-Router protocol [RFC8210]. The RPKI-Router protocol enables routers to query an RP for all assertions it knows about (Reset Query) or for an update of only the changes in assertions (Serial Query). The mechanisms specified in this document are to be applied to the result set for a Reset Query and to both the old and new sets that are compared for a Serial Query. RP software may modify other forms of output in comparable ways, but that is outside the scope of this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+一般来说，RP 的主要输出是通过 RPKI-Router 协议 [RFC8210] 发送给路由器的数据。RPKI-Router 协议使路由器能够查询 RP 所知道的所有断言（重置查询）或只查询断言变化的更新（序列查询）。本文档规定的机制适用于重置查询的结果集和串行查询的新旧比较集。RP 软件可能会以类似方式修改其他形式的输出，但这不在本文档的讨论范围之内。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   +--------------+   +---------------------------+   +------------+
+   |              |   |                           |   |            |
+   | Repositories +---&gt;Local cache of RPKI objects+---&gt; Validation |
+   |              |   |                           |   |            |
+   +--------------+   +---------------------------+   +-----+------+
+                                                            |
+          +-------------------------------------------------+
+          |
+   +------v-------+   +------------+   +-----------+   +-------------+
+   |              |   |            |   |           |   |             |
+   |    SLURM     +---&gt;   SLURM    +---&gt;RPKI-Router+---&gt; BGP Speakers|
+   |   Filters    |   | Assertions |   | Protocol  |   |             |
+   +--------------+   +------------+   +-----------+   +-------------+
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-16">
+Figure 1: SLURM&#39;s Position in the RP Stack
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-16">
+图 1：SLURM 在 RP 堆栈中的位置
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--SLURM-Files-and-Mechanisms">
+3. SLURM Files and Mechanisms
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. SLURM 文件和机制
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-1--Use-of-JSON">
+3.1. Use of JSON
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.1. 使用 JSON
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+SLURM filters and assertions are specified in JSON format [RFC8259]. JSON members that are not defined here MUST NOT be used in SLURM files. An RP MUST consider any deviations from the specifications to be errors. Future additions to the specifications in this document MUST use an incremented value for the &#34;slurmVersion&#34; member.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+SLURM 过滤器和断言以 JSON 格式 [RFC8259] 指定。此处未定义的 JSON 成员不得在 SLURM 文件中使用。RP 必须将任何偏离规范的行为视为错误。本文档中对规范的未来添加必须使用 &#34;slurmVersion &#34;成员的递增值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-2--SLURM-File-Overview">
+3.2. SLURM File Overview
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.2. SLURM 文件概述
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A SLURM file consists of a single JSON object containing the following members:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+SLURM 文件由单个 JSON 对象组成，其中包含以下成员：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o A &#34;slurmVersion&#34; member that MUST be set to 1, encoded as a number
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 必须设置为 1 的 &#34;slurmVersion &#34;成员，用数字编码
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o A &#34;validationOutputFilters&#34; member (Section 3.3), whose value is an object. The object MUST contain exactly two members:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 一个 &#34;validationOutputFilters &#34;成员（第 3.3 节），其值是一个对象。该对象必须包含两个成员：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+* A &#34;prefixFilters&#34; member, whose value is described in Section 3.3.1.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+* prefixFilters&#34; 成员，其值在第 3.3.1 节中说明。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+* A &#34;bgpsecFilters&#34; member, whose value is described in Section 3.3.2.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+* bgpsecFilters&#34; 成员，其值在第 3.3.2 节中描述。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o A &#34;locallyAddedAssertions&#34; member (Section 3.4), whose value is an object. The object MUST contain exactly two members:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 一个 &#34;locallyAddedAssertions &#34;成员（第 3.4 节），其值是一个对象。该对象必须包含两个成员：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+* A &#34;prefixAssertions&#34; member, whose value is described in Section 3.4.1.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+* 前缀断言 &#34;成员，其值在第 3.4.1 节中说明。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+* A &#34;bgpsecAssertions&#34; member, whose value is described in Section 3.4.2.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+* bgpsecAssertions&#34; 成员，其值在第 3.4.2 节中描述。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the envisioned typical use case, an RP uses both Validation Output Filters and Locally Added Assertions. In this case, the resulting assertions MUST be the same as if output filtering were performed before locally adding assertions; that is, Locally Added Assertions MUST NOT be removed by output filtering.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在设想的典型用例中，RP 同时使用验证输出过滤器和本地添加断言。在这种情况下，生成的断言必须与本地添加断言之前执行输出过滤时的结果相同；也就是说，本地添加的断言不得被输出过滤删除。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following JSON structure with JSON members represents a SLURM file that has no filters or assertions:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+以下带有 JSON 成员的 JSON 结构表示一个没有过滤器或断言的 SLURM 文件：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   {
+     &#34;slurmVersion&#34;: 1,
+     &#34;validationOutputFilters&#34;: {
+       &#34;prefixFilters&#34;: [],
+       &#34;bgpsecFilters&#34;: []
+     },
+     &#34;locallyAddedAssertions&#34;: {
+       &#34;prefixAssertions&#34;: [],
+       &#34;bgpsecAssertions&#34;: []
+     }
+   }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-24">
+Figure 2: Empty SLURM File
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-24">
+图 2：空 SLURM 文件
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-3--Validation-Output-Filters">
+3.3. Validation Output Filters
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.3. 验证输出过滤器
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-3-1--Validated-ROA-Prefix-Filters">
+3.3.1. Validated ROA Prefix Filters
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.3.1. 经过验证的 ROA 前缀过滤器
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RP can configure zero or more Validated ROA Prefix Filters (&#34;Prefix Filters&#34; for short). Each Prefix Filter can contain either an IPv4 or IPv6 prefix and/or an ASN. It is RECOMMENDED that an explanatory comment is included with each Prefix Filter so that it can be shown to users of the RP software.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RP 可配置零个或多个已验证 ROA 前缀过滤器（简称 &#34;前缀过滤器&#34;）。每个前缀过滤器可包含 IPv4 或 IPv6 前缀和/或 ASN。 建议在每个前缀过滤器中包含解释性注释，以便向 RP 软件用户显示。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The above is expressed as a value of the &#34;prefixFilters&#34; member, as an array of zero or more objects. Each object MUST contain either 1) one of the following members or 2) one of each of the following members.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+上述内容以 &#34;prefixFilters&#34;（前缀过滤器）成员的值表示，是一个由 0 个或多个对象组成的数组。每个对象必须包含 1) 下列成员之一或 2) 下列成员之一。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o A &#34;prefix&#34; member, whose value is a string representing either an IPv4 prefix (see Section 3.1 of [RFC4632]) or an IPv6 prefix (see [RFC5952]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 前缀 &#34;成员，其值是一个字符串，代表 IPv4 前缀（见 [RFC4632] 第 3.1 节）或 IPv6 前缀（见 [RFC5952]）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o An &#34;asn&#34; member, whose value is a number.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o asn&#34; 成员，其值为一个数字。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In addition, each object MAY contain one optional &#34;comment&#34; member, whose value is a string.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+此外，每个对象还可以包含一个可选的 &#34;注释 &#34;成员，其值为字符串。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following example JSON structure represents a &#34;prefixFilters&#34; member with an array of example objects for each use case listed above:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下面的 JSON 结构示例代表了一个 &#34;prefixFilters &#34;成员，其中包含一个针对上述每种使用情况的示例对象数组：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+           &#34;prefixFilters&#34;: [
+             {
+               &#34;prefix&#34;: &#34;192.0.2.0/24&#34;,
+               &#34;comment&#34;: &#34;All VRPs encompassed by prefix&#34;
+             },
+             {
+               &#34;asn&#34;: 64496,
+               &#34;comment&#34;: &#34;All VRPs matching ASN&#34;
+             },
+             {
+               &#34;prefix&#34;: &#34;198.51.100.0/24&#34;,
+               &#34;asn&#34;: 64497,
+               &#34;comment&#34;: &#34;All VRPs encompassed by prefix, matching ASN&#34;
+             }
+           ]
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-20">
+Figure 3: &#34;prefixFilters&#34; Examples
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-20">
+图 3：&#34;前缀过滤器 &#34;示例
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Any Validated ROA Payload (VRP) [RFC6811] that matches any configured Prefix Filter MUST be removed from the RP&#39;s output.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+必须从 RP 的输出中删除与任何已配置的前缀过滤器匹配的任何已验证 ROA 有效负载 (VRP) [RFC6811]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A VRP is considered to match with a Prefix Filter if one of the following cases applies:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果出现以下情况之一，则认为 VRP 与前缀过滤器匹配：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. If the Prefix Filter only contains an IPv4 or IPv6 prefix, the VRP is considered to match the filter if the VRP prefix is equal to or covered by the Prefix Filter prefix.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 如果前缀过滤器只包含 IPv4 或 IPv6 前缀，则如果 VRP 前缀等于或包含在前缀过滤器前缀中，则认为 VRP 与过滤器匹配。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. If the Prefix Filter only contains an ASN, the VRP is considered to match the filter if the VRP ASN matches the Prefix Filter ASN.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 如果前缀过滤器只包含 ASN，则如果 VRP ASN 与前缀过滤器 ASN 匹配，则认为 VRP 与过滤器匹配。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. If the Prefix Filter contains both an IPv4 or IPv6 prefix and an ASN, the VRP is considered to match if the VRP prefix is equal to or covered by the Prefix Filter prefix and the VRP ASN matches the Prefix Filter ASN.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 如果前缀筛选器包含 IPv4 或 IPv6 前缀和 ASN，则如果 VRP 前缀等于或包含在前缀筛选器前缀中，且 VRP ASN 与前缀筛选器 ASN 相匹配，则认为 VRP 匹配。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-3-2--BGPsec-Assertion-Filters">
+3.3.2. BGPsec Assertion Filters
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.3.2. BGPsec 断言过滤器
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RP can configure zero or more BGPsec Assertion Filters (&#34;BGPsec Filters&#34; for short). Each BGPsec Filter can contain an ASN and/or the Base64 [RFC4648] encoding of a Router Subject Key Identifier (SKI), as described in [RFC8209] and [RFC6487]. It is RECOMMENDED that an explanatory comment is also included with each BGPsec Filter, so that it can be shown to users of the RP software.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RP 可配置零个或多个 BGPsec 断言过滤器（简称 &#34;BGPsec 过滤器&#34;）。如 [RFC8209] 和 [RFC6487] 所述，每个 BGPsec 过滤器可包含 ASN 和/或路由器主题密钥标识符 (SKI) 的 Base64 [RFC4648] 编码。建议每个 BGPsec 过滤器都包含一个解释性注释，以便向 RP 软件用户展示。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The above is expressed as a value of the &#34;bgpsecFilters&#34; member, as an array of zero or more objects. Each object MUST contain one of either, or one each of both following members: o An &#34;asn&#34; member, whose value is a number
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+上述内容以 &#34;bgpsecFilters &#34;成员的值表示，是一个由 0 个或多个对象组成的数组。每个对象必须包含以下两个成员中的一个或各一个： o 一个 &#34;asn &#34;成员，其值是一个数字
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o An &#34;SKI&#34; member, whose value is the Base64 encoding without trailing &#39;=&#39; (Section 5 of [RFC4648]) of the certificate&#39;s Subject Key Identifier as described in Section 4.8.2 of [RFC6487]. (This is the value of the ASN.1 OCTET STRING without the ASN.1 tag or length fields.)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 一个 &#34;SKI &#34;成员，其值是[RFC6487]第 4.8.2 节所述的证书主题密钥标识符的 Base64 编码，不带尾部&#39;=&#39;（[RFC4648]第 5 节）。(这是 ASN.1 OCTET STRING 的值，不含 ASN.1 标记或长度字段）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In addition, each object MAY contain one optional &#34;comment&#34; member, whose value is a string.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+此外，每个对象还可以包含一个可选的 &#34;注释 &#34;成员，其值为字符串。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following example JSON structure represents a &#34;bgpsecFilters&#34; member with an array of example objects for each use case listed above:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下面的 JSON 结构示例表示一个 &#34;bgpsecFilters &#34;成员，其中包含一个针对上述每种用例的示例对象数组：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+           &#34;bgpsecFilters&#34;: [
+             {
+               &#34;asn&#34;: 64496,
+               &#34;comment&#34;: &#34;All keys for ASN&#34;
+             },
+             {
+               &#34;SKI&#34;: &#34;&lt;Base 64 of some SKI&gt;&#34;,
+               &#34;comment&#34;: &#34;Key matching Router SKI&#34;
+             },
+             {
+               &#34;asn&#34;: 64497,
+               &#34;SKI&#34;: &#34;&lt;Base 64 of some SKI&gt;&#34;,
+               &#34;comment&#34;: &#34;Key for ASN 64497 matching Router SKI&#34;
+             }
+           ]
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-20">
+Figure 4: &#34;bgpsecFilters&#34; Examples
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-20">
+图 4：&#34;bgpsecFilters &#34;示例
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Any BGPsec Assertion that matches any configured BGPsec Filter MUST be removed from the RP&#39;s output. A BGPsec Assertion is considered to match with a BGPsec Filter if one of the following cases applies:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+与任何已配置的 BGPsec 过滤匹配的任何 BGPsec Assertion 都必须从 RP 的输出中删除。如果出现以下情况之一，则认为 BGPsec Assertion 与 BGPsec 筛选器匹配：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. If the BGPsec Filter only contains an ASN, a BGPsec Assertion is considered to match if the Assertion ASN matches the Filter ASN.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 如果 BGPsec 筛选器只包含 ASN，则如果断言 ASN 与筛选器 ASN 匹配，则认为 BGPsec 断言匹配。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. If the BGPsec Filter only contains an SKI, a BGPsec Assertion is considered to match if the Assertion Router SKI matches the Filter SKI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 如果 BGPsec 筛选器只包含一个 SKI，则如果断言路由器 SKI 与筛选器 SKI 匹配，则认为 BGPsec 断言是匹配的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. If the BGPsec Filter contains both an ASN and a Router SKI, then a BGPsec Assertion is considered to match if both the Assertion ASN matches the Filter ASN and the Assertion Router SKI matches the Filter SKI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 如果 BGPsec 筛选器包含 ASN 和路由器 SKI，那么如果断言 ASN 与筛选器 ASN 匹配，且断言路由器 SKI 与筛选器 SKI 匹配，则认为 BGPsec 断言是匹配的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-4--Locally-Added-Assertions">
+3.4. Locally Added Assertions
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.4. 本地添加断言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-4-1--ROA-Prefix-Assertions">
+3.4.1. ROA Prefix Assertions
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.4.1. ROA 前缀断言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Each RP is locally configured with a (possibly empty) array of ROA Prefix Assertions (&#34;Prefix Assertions&#34; for short). Each ROA Prefix Assertion MUST contain an IPv4 or IPv6 prefix and an ASN. It MAY include a value for the maximum length. It is RECOMMENDED that an explanatory comment is also included with each so that it can be shown to users of the RP software.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+每个 RP 本地都配置有一个 ROA 前缀断言（简称 &#34;前缀断言&#34;）数组（可能为空）。每个 ROA 前缀断言必须包含一个 IPv4 或 IPv6 前缀和一个 ASN，并可包含一个最大长度值。建议每个前缀断言都包含解释性注释，以便向 RP 软件用户展示。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The above is expressed as a value of the &#34;prefixAssertions&#34; member, as an array of zero or more objects. Each object MUST contain one of each of the following members:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+上述内容以 &#34;prefixAssertions&#34;（前缀断言）成员的值表示，是一个由 0 个或多个对象组成的数组。每个对象必须包含以下每个成员中的一个：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o A &#34;prefix&#34; member, whose value is a string representing either an IPv4 prefix (see Section 3.1 of [RFC4632]) or an IPv6 prefix (see [RFC5952]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 前缀 &#34;成员，其值是一个字符串，代表 IPv4 前缀（见 [RFC4632] 第 3.1 节）或 IPv6 前缀（见 [RFC5952]）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o An &#34;asn&#34; member, whose value is a number.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o asn &#34;成员，其值为一个数字。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In addition, each object MAY contain one of each of the following members:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+此外，每个对象还可以包含以下每个成员中的一个：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o A &#34;maxPrefixLength&#34; member, whose value is a number.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o maxPrefixLength&#34; 成员，其值为一个数字。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o A &#34;comment&#34; member, whose value is a string.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 注释 &#34;成员，其值为字符串。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following example JSON structure represents a &#34;prefixAssertions&#34; member with an array of example objects for each use case listed above:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下面的 JSON 结构示例代表了一个 &#34;prefixAssertions &#34;成员，其中包含一个针对上述每种用例的示例对象数组：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+     &#34;prefixAssertions&#34;: [
+       {
+         &#34;asn&#34;: 64496,
+         &#34;prefix&#34;: &#34;198.51.100.0/24&#34;,
+         &#34;comment&#34;: &#34;My other important route&#34;
+       },
+       {
+         &#34;asn&#34;: 64496,
+         &#34;prefix&#34;: &#34;2001:DB8::/32&#34;,
+         &#34;maxPrefixLength&#34;: 48,
+         &#34;comment&#34;: &#34;My other important de-aggregated routes&#34;
+       }
+     ]
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-19">
+Figure 5: &#34;prefixAssertions&#34; Examples
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-19">
+图 5：&#34;前缀断言 &#34;示例
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that the combination of the prefix, ASN, and optional maximum length describes a VRP as described in [RFC6811]. The RP MUST add all Prefix Assertions found this way to the VRP found through RPKI validation and ensure that it sends the complete set of Protocol Data Units (PDUs), excluding duplicates when using the RPKI-Router protocol (see Sections 5.6 and 5.7 of [RFC8210]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，前缀、ASN 和可选最大长度的组合描述了 [RFC6811] 中所述的 VRP。RP 必须将以这种方式找到的所有前缀断言添加到通过 RPKI 验证找到的 VRP 中，并确保在使用 RPKI-Router 协议（参见 [RFC8210] 第 5.6 和 5.7 节）时发送完整的协议数据单元 (PDU)，不包括重复数据。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-4-2--BGPsec-Assertions">
+3.4.2. BGPsec Assertions
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.4.2. BGPsec 断言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Each RP is locally configured with a (possibly empty) array of BGPsec Assertions. Each BGPsec Assertion MUST contain an AS number, a Router SKI, and the router public key. It is RECOMMENDED that an explanatory comment is also included so that it can be shown to users of the RP software.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+每个 RP 本地都配置有一个 BGPsec 断言数组（可能为空）。每个 BGPsec 断言必须包含 AS 编号、路由器 SKI 和路由器公钥。建议同时包含解释性注释，以便向 RP 软件用户显示。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The above is expressed as a value of the &#34;bgpsecAssertions&#34; member, as an array of zero or more objects. Each object MUST contain one each of all of the following members:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+上述内容表示为 &#34;bgpsecAssertions &#34;成员的值，即由 0 个或多个对象组成的数组。每个对象必须包含以下所有成员中的一个：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o An &#34;asn&#34; member, whose value is a number.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o asn &#34;成员，其值为一个数字。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o An &#34;SKI&#34; member, whose value is the Base64 encoding without trailing &#39;=&#39; (Section 5 of [RFC4648]) of the certificate&#39;s Subject Key Identifier as described in Section 4.8.2 of [RFC6487] (This is the value of the ASN.1 OCTET STRING without the ASN.1 tag or length fields.)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 一个 &#34;SKI &#34;成员，其值是[RFC6487]第 4.8.2 节所述证书主题密钥标识符的 Base64 编码，不带尾部&#34;=&#34;（[RFC4648]第 5 节）（这是 ASN.1 OCTET STRING 的值，不带 ASN.1 标记或长度字段）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o A &#34;routerPublicKey&#34; member, whose value is the Base64 encoding without trailing &#39;=&#39; (Section 5 of [RFC4648]) of the equivalent to the subjectPublicKeyInfo value of the router certificate&#39;s public key, as described in [RFC8208]. This is the full ASN.1 DER encoding of the subjectPublicKeyInfo, including the ASN.1 tag and length values of the subjectPublicKeyInfo SEQUENCE.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 路由器公钥（routerPublicKey）&#34;成员，其值是 Base64 编码，不带尾部&#39;=&#39;（[RFC4648]第 5 节），等同于[RFC8208]所述的路由器证书公钥的 subjectPublicKeyInfo 值。这是 subjectPublicKeyInfo 的完整 ASN.1 DER 编码，包括 subjectPublicKeyInfo SEQUENCE 的 ASN.1 标记和长度值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following example JSON structure represents a &#34;bgpsecAssertions&#34; member with one object as described above:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下面的 JSON 结构示例用一个对象来表示 &#34;bgpsecAssertions &#34;成员，如上所述：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+     &#34;bgpsecAssertions&#34;: [
+       {
+         &#34;asn&#34;: 64496,
+         &#34;SKI&#34;: &#34;&lt;some base64 SKI&gt;&#34;,
+         &#34;routerPublicKey&#34;: &#34;&lt;some base64 public key&gt;&#34;,
+         &#34;comment&#34;: &#34;My known key for my important ASN&#34;
+       }
+     ]
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-19">
+Figure 6: &#34;bgpsecAssertions&#34; Examples
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-19">
+图 6：&#34;bgpsecAssertions &#34;示例
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that a &#34;bgpsecAssertions&#34; member matches the syntax of the Router Key PDU described in Section 5.10 of [RFC8210]. Relying Parties MUST add any &#34;bgpsecAssertions&#34; member thus found to the set of Router Key PDUs, excluding duplicates, when using the RPKI-Router protocol [RFC8210].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，&#34;bgpsecAssertions &#34;成员与 [RFC8210] 第 5.10 节中描述的路由器密钥 PDU 的语法一致。依赖方在使用 RPKI-Router 协议 [RFC8210] 时，必须将由此发现的任何 &#34;bgpsecAssertions &#34;成员添加到路由器密钥 PDU 中，不包括重复的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-5--Example-of-a-SLURM-File-with-Filters-and-Assertions">
+3.5. Example of a SLURM File with Filters and Assertions
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.5. 带有过滤器和断言的 SLURM 文件示例
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following JSON structure represents an example of a SLURM file that uses all the elements described in the previous sections:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下面的 JSON 结构是 SLURM 文件的一个示例，它使用了前面章节中描述的所有元素：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+     {
+       &#34;slurmVersion&#34;: 1,
+       &#34;validationOutputFilters&#34;: {
+         &#34;prefixFilters&#34;: [
+           {
+             &#34;prefix&#34;: &#34;192.0.2.0/24&#34;,
+             &#34;comment&#34;: &#34;All VRPs encompassed by prefix&#34;
+           },
+           {
+             &#34;asn&#34;: 64496,
+             &#34;comment&#34;: &#34;All VRPs matching ASN&#34;
+           },
+           {
+             &#34;prefix&#34;: &#34;198.51.100.0/24&#34;,
+             &#34;asn&#34;: 64497,
+             &#34;comment&#34;: &#34;All VRPs encompassed by prefix, matching ASN&#34;
+           }
+         ],
+         &#34;bgpsecFilters&#34;: [
+           {
+             &#34;asn&#34;: 64496,
+             &#34;comment&#34;: &#34;All keys for ASN&#34;
+           },
+           {
+             &#34;SKI&#34;: &#34;Zm9v&#34;,
+             &#34;comment&#34;: &#34;Key matching Router SKI&#34;
+           },
+           {
+             &#34;asn&#34;: 64497,
+             &#34;SKI&#34;: &#34;YmFy&#34;,
+             &#34;comment&#34;: &#34;Key for ASN 64497 matching Router SKI&#34;
+           }
+         ]
+       },
+       &#34;locallyAddedAssertions&#34;: {
+         &#34;prefixAssertions&#34;: [
+           {
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+             &#34;asn&#34;: 64496,
+             &#34;prefix&#34;: &#34;198.51.100.0/24&#34;,
+             &#34;comment&#34;: &#34;My other important route&#34;
+           },
+           {
+             &#34;asn&#34;: 64496,
+             &#34;prefix&#34;: &#34;2001:DB8::/32&#34;,
+             &#34;maxPrefixLength&#34;: 48,
+             &#34;comment&#34;: &#34;My other important de-aggregated routes&#34;
+           }
+         ],
+         &#34;bgpsecAssertions&#34;: [
+           {
+             &#34;asn&#34;: 64496,
+             &#34;comment&#34; : &#34;My known key for my important ASN&#34;,
+             &#34;SKI&#34;: &#34;&lt;some base64 SKI&gt;&#34;,
+             &#34;routerPublicKey&#34;: &#34;&lt;some base64 public key&gt;&#34;
+           }
+         ]
+       }
+     }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-19">
+Figure 7: Example of Full SLURM File
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-19">
+图 7：完整 SLURM 文件示例
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--SLURM-File-Configuration">
+4. SLURM File Configuration
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. SLURM 文件配置
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-1--SLURM-File-Atomicity">
+4.1. SLURM File Atomicity
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.1. SLURM 文件原子性
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+To ensure local consistency, the effect of SLURM MUST be atomic. That is, the output of the RP either MUST be the same as if a SLURM file were not used or MUST reflect the entire SLURM configuration. For an example of why this is required, consider the case of two local routes for the same prefix but different origin ASNs. Both routes are configured with Locally Added Assertions. If neither addition occurs, then both routes could be in the NotFound state [RFC6811]. If both additions occur, then both routes would be in the Valid state. However, if one addition occurs and the other does not, then one could be Invalid while the other is Valid.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为确保本地一致性，SLURM 的效果必须是原子性的。也就是说，RP 的输出要么必须与未使用 SLURM 文件时的输出相同，要么必须反映整个 SLURM 配置。举例说明为什么需要这样做，请看相同前缀但不同源 ASN 的两条本地路由。两条路由都配置了本地添加断言。如果两个路由都没有添加，那么两个路由都可能处于 NotFound 状态 [RFC6811]。如果两个添加都发生，那么两个路由都将处于有效状态。但是，如果一个添加发生，而另一个没有发生，那么其中一个可能是无效的，而另一个是有效的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-2--Multiple-SLURM-Files">
+4.2. Multiple SLURM Files
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.2. 多个 SLURM 文件
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An implementation MAY support the concurrent use of multiple SLURM files. In this case, the resulting inputs to Validation Output Filters and Locally Added Assertions are the respective unions of the inputs from each file. The envisioned typical use case for multiple files is when the files have distinct scopes. For instance, operators of two distinct networks may resort to one RP system to frame routing decisions. As such, they probably deliver SLURM files to this RP independently. Before an RP configures SLURM files from different sources, it MUST make sure there is no internal conflict among the INR assertions in these SLURM files. To do so, the RP SHOULD check the entries of each SLURM file with regard to overlaps of the INR assertions and report errors to the sources that created the SLURM files in question. The RP gets multiple SLURM files as a set, and the whole set MUST be rejected in case of any overlaps among the SLURM files.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+实施可能支持同时使用多个 SLURM 文件。在这种情况下，验证输出过滤器和本地添加断言的输入结果是每个文件输入结果的联合。设想的多文件典型用例是文件具有不同的作用域。例如，两个不同网络的运营商可能会使用一个 RP 系统来制定路由决策。因此，他们可能会将 SLURM 文件独立交付给该 RP。在 RP 配置来自不同来源的 SLURM 文件之前，它必须确保这些 SLURM 文件中的 INR 断言之间没有内部冲突。为此，RP 应检查每个 SLURM 文件中的 INR 断言是否重叠，并向创建相关 SLURM 文件的来源报告错误。RP 将多个 SLURM 文件作为一个集合获取，如果 SLURM 文件之间有任何重叠，则必须拒绝整个集合。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If a problem is detected with the INR assertions in these SLURM files, the RP MUST NOT use them and SHOULD issue a warning as error report in the following cases:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果检测到这些 SLURM 文件中的 INR 断言有问题，RP 不得使用它们，并应在以下情况下发出警告作为错误报告：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. There may be conflicting changes to ROA Prefix Assertions if an IP address X and distinct SLURM files Y and Z exist such that X is contained by any prefix in any &#34;prefixAssertions&#34; or &#34;prefixFilters&#34; in file Y and X is contained by any prefix in any &#34;prefixAssertions&#34; or &#34;prefixFilters&#34; in file Z.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 如果存在 IP 地址 X 和不同的 SLURM 文件 Y 和 Z，且 X 被文件 Y 中的任何 &#34;prefixAssertions &#34;或 &#34;prefixFilters &#34;中的任何前缀包含，而 X 又被文件 Z 中的任何 &#34;prefixAssertions &#34;或 &#34;prefixFilters &#34;中的任何前缀包含，则 ROA 前缀断言的更改可能会发生冲突。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. There may be conflicting changes to BGPsec Assertions if an ASN X and distinct SLURM files Y and Z exist such that X is used in any &#34;bgpsecAssertions&#34; or &#34;bgpsecFilters&#34; in file Y and X is used in any &#34;bgpsecAssertions&#34; or &#34;bgpsecFilters&#34; in file Z.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 如果存在 ASN X 和不同的 SLURM 文件 Y 和 Z，且文件 Y 中的任何 &#34;bgpsecAssertions &#34;或 &#34;bgpsecFilters &#34;中使用了 X，而文件 Z 中的任何 &#34;bgpsecAssertions &#34;或 &#34;bgpsecFilters &#34;中使用了 X，则对 BGPsec 断言的更改可能会发生冲突。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--IANA-Considerations">
+5. IANA Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. IANA考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document has no IANA actions.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件没有 IANA 操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Security-Considerations">
+6. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The mechanisms described in this document provide a network operator with additional ways to control use of RPKI data while preserving autonomy in address space and ASN management. These mechanisms are only applied locally; they do not influence how other network operators interpret RPKI data. Nonetheless, care should be taken in how these mechanisms are employed. Note that it also is possible to use SLURM to (locally) manipulate assertions about non-private INRs, e.g., allocated address space that is globally routed. For example, a SLURM file may be used to override RPKI data that a network operator believes has been corrupted by an adverse action. Network operators who elect to use SLURM in this fashion should use extreme caution.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中描述的机制为网络运营商提供了控制 RPKI 数据使用的额外方法，同时保留了地址空间和 ASN 管理的自主性。这些机制仅适用于本地；它们不会影响其他网络运营商如何解释 RPKI 数据。尽管如此，在使用这些机制时仍需谨慎。请注意，也可以使用 SLURM 来（本地）操作有关非私有 INR 的断言，例如全球路由的已分配地址空间。例如，SLURM 文件可用于覆盖网络运营商认为已被不利行为破坏的 RPKI 数据。选择以这种方式使用 SLURM 的网络运营商应格外谨慎。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The goal of the mechanisms described in this document is to enable an RP to create its own view of the RPKI, which is intrinsically a security function. An RP using a SLURM file is trusting the assertions made in that file. Errors in the SLURM file used by an RP can undermine the security offered to that RP by the RPKI. A SLURM file could declare as invalid ROAs that would otherwise be valid, and vice versa. As a result, an RP MUST carefully consider the security implications of the SLURM file being used, especially if the file is provided by a third party.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档所述机制的目标是使 RP 能够创建自己的 RPKI 视图，这本质上是一种安全功能。使用 SLURM 文件的 RP 信任该文件中的断言。RP 使用的 SLURM 文件中的错误会破坏 RPKI 为 RP 提供的安全性。SLURM 文件可能会将原本有效的 ROA 宣布为无效，反之亦然。因此，RP 必须仔细考虑所使用的 SLURM 文件的安全影响，尤其是在该文件由第三方提供的情况下。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Additionally, each RP using SLURM MUST ensure the authenticity and integrity of any SLURM file that it uses. Initially, the SLURM file may be preconfigured out of band, but if the RP updates its SLURM file over the network, it MUST verify the authenticity and integrity of the updated SLURM file. The mechanism to update the SLURM file to guarantee authenticity and integrity is out of the scope of this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+此外，使用 SLURM 的每个 RP 必须确保其使用的任何 SLURM 文件的真实性和完整性。最初，SLURM 文件可能是在带外预先配置的，但如果 RP 通过网络更新其 SLURM 文件，则必须验证更新后 SLURM 文件的真实性和完整性。更新 SLURM 文件以保证真实性和完整性的机制不属于本文档的讨论范围。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--References">
+7. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7-1--Normative-References">
+7.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4632] Fuller, V. and T. Li, &#34;Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan&#34;, BCP 122, RFC 4632, DOI 10.17487/RFC4632, August 2006, &lt;https://www.rfc-editor.org/info/rfc4632&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4632] Fuller, V. and T. Li, &#34;Classless Inter-domain Routing (CIDR)：互联网地址分配和聚合计划&#34;，BCP 122，RFC 4632，DOI 10.17487/RFC4632，2006 年 8 月，&lt;https://www.rfc-editor.org/info/rfc4632&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4648] Josefsson, S., &#34;The Base16, Base32, and Base64 Data Encodings&#34;, RFC 4648, DOI 10.17487/RFC4648, October 2006, &lt;https://www.rfc-editor.org/info/rfc4648&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4648] Josefsson, S., &#34;The Base16, Base32, and Base64 Data Encodings&#34;, RFC 4648, DOI 10.17487/RFC4648, October 2006, &lt;https://www.rfc-editor.org/info/rfc4648&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5952] Kawamura, S. and M. Kawashima, &#34;A Recommendation for IPv6 Address Text Representation&#34;, RFC 5952, DOI 10.17487/RFC5952, August 2010, &lt;https://www.rfc-editor.org/info/rfc5952&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5952] Kawamura, S. and M. Kawashima, &#34;A Recommendation for IPv6 Address Text Representation&#34;, RFC 5952, DOI 10.17487/RFC5952, August 2010, &lt;https://www.rfc-editor.org/info/rfc5952&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Huston, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, DOI 10.17487/RFC6487, February 2012, &lt;https://www.rfc-editor.org/info/rfc6487&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Huston, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, DOI 10.17487/RFC6487, February 2012, &lt;https://www.rfc-editor.org/info/rfc6487&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, &#34;BGP Prefix Origin Validation&#34;, RFC 6811, DOI 10.17487/RFC6811, January 2013, &lt;https://www.rfc-editor.org/info/rfc6811&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, &#34;BGP Prefix Origin Validation&#34;, RFC 6811, DOI 10.17487/RFC6811, January 2013, &lt;https://www.rfc-editor.org/info/rfc6811&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8205] Lepinski, M., Ed. and K. Sriram, Ed., &#34;BGPsec Protocol Specification&#34;, RFC 8205, DOI 10.17487/RFC8205, September 2017, &lt;https://www.rfc-editor.org/info/rfc8205&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8205] Lepinski, M., Ed. and K. Sriram, Ed., &#34;BGPsec Protocol Specification&#34;, RFC 8205, DOI 10.17487/RFC8205, September 2017, &lt;https://www.rfc-editor.org/info/rfc8205&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8208] Turner, S. and O. Borchert, &#34;BGPsec Algorithms, Key Formats, and Signature Formats&#34;, RFC 8208, DOI 10.17487/RFC8208, September 2017, &lt;https://www.rfc-editor.org/info/rfc8208&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8208] Turner, S. and O. Borchert, &#34;BGPsec Algorithms, Key Formats, and Signature Formats&#34;, RFC 8208, DOI 10.17487/RFC8208, September 2017, &lt;https://www.rfc-editor.org/info/rfc8208&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8209] Reynolds, M., Turner, S., and S. Kent, &#34;A Profile for BGPsec Router Certificates, Certificate Revocation Lists, and Certification Requests&#34;, RFC 8209, DOI 10.17487/RFC8209, September 2017, &lt;https://www.rfc-editor.org/info/rfc8209&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8209] Reynolds, M., Turner, S., and S. Kent, &#34;A Profile for BGPsec Router Certificates, Certificate Revocation Lists, and Certification Requests&#34;, RFC 8209, DOI 10.17487/RFC8209, September 2017, &lt;https://www.rfc-editor.org/info/rfc8209&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8259] Bray, T., Ed., &#34;The JavaScript Object Notation (JSON) Data Interchange Format&#34;, STD 90, RFC 8259, DOI 10.17487/RFC8259, December 2017, &lt;https://www.rfc-editor.org/info/rfc8259&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8259] Bray, T., Ed., &#34;The JavaScript Object Notation (JSON) Data Interchange Format&#34;, STD 90, RFC 8259, DOI 10.17487/RFC8259, December 2017, &lt;https://www.rfc-editor.org/info/rfc8259&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7-2--Informative-References">
+7.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC1918] Rekhter, Y., Moskowitz, B., Karrenberg, D., de Groot, G., and E. Lear, &#34;Address Allocation for Private Internets&#34;, BCP 5, RFC 1918, DOI 10.17487/RFC1918, February 1996, &lt;https://www.rfc-editor.org/info/rfc1918&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC1918] Rekhter, Y., Moskowitz, B., Karrenberg, D., de Groot, G., and E. Lear, &#34;Address Allocation for Private Internets&#34;, BCP 5, RFC 1918, DOI 10.17487/RFC1918, February 1996, &lt;https://www.rfc-editor.org/info/rfc1918&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC1930] Hawkinson, J. and T. Bates, &#34;Guidelines for creation, selection, and registration of an Autonomous System (AS)&#34;, BCP 6, RFC 1930, DOI 10.17487/RFC1930, March 1996, &lt;https://www.rfc-editor.org/info/rfc1930&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC1930] Hawkinson, J. and T. Bates, &#34;Guidelines for creation, selection, and registration of an Autonomous System (AS)&#34;, BCP 6, RFC 1930, DOI 10.17487/RFC1930, March 1996, &lt;https://www.rfc-editor.org/info/rfc1930&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4193] Hinden, R. and B. Haberman, &#34;Unique Local IPv6 Unicast Addresses&#34;, RFC 4193, DOI 10.17487/RFC4193, October 2005, &lt;https://www.rfc-editor.org/info/rfc4193&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4193] Hinden, R. and B. Haberman, &#34;Unique Local IPv6 Unicast Addresses&#34;, RFC 4193, DOI 10.17487/RFC4193, October 2005, &lt;https://www.rfc-editor.org/info/rfc4193&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6491] Manderson, T., Vegoda, L., and S. Kent, &#34;Resource Public Key Infrastructure (RPKI) Objects Issued by IANA&#34;, RFC 6491, DOI 10.17487/RFC6491, February 2012, &lt;https://www.rfc-editor.org/info/rfc6491&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6491] Manderson, T., Vegoda, L., and S. Kent, &#34;Resource Public Key Infrastructure (RPKI) Objects Issued by IANA&#34;, RFC 6491, DOI 10.17487/RFC6491, February 2012, &lt;https://www.rfc-editor.org/info/rfc6491&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6598] Weil, J., Kuarsingh, V., Donley, C., Liljenstolpe, C., and M. Azinger, &#34;IANA-Reserved IPv4 Prefix for Shared Address Space&#34;, BCP 153, RFC 6598, DOI 10.17487/RFC6598, April 2012, &lt;https://www.rfc-editor.org/info/rfc6598&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6598] Weil, J., Kuarsingh, V., Donley, C., Liljenstolpe, C., and M. Azinger, &#34;IANA-Reserved IPv4 Prefix for Shared Address Space&#34;, BCP 153, RFC 6598, DOI 10.17487/RFC6598, April 2012, &lt;https://www.rfc-editor.org/info/rfc6598&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6810] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol&#34;, RFC 6810, DOI 10.17487/RFC6810, January 2013, &lt;https://www.rfc-editor.org/info/rfc6810&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6810] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol&#34;, RFC 6810, DOI 10.17487/RFC6810, January 2013, &lt;https://www.rfc-editor.org/info/rfc6810&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6996] Mitchell, J., &#34;Autonomous System (AS) Reservation for Private Use&#34;, BCP 6, RFC 6996, DOI 10.17487/RFC6996, July 2013, &lt;https://www.rfc-editor.org/info/rfc6996&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6996] Mitchell, J., &#34;Autonomous System (AS) Reservation for Private Use&#34;, BCP 6, RFC 6996, DOI 10.17487/RFC6996, July 2013, &lt;https://www.rfc-editor.org/info/rfc6996&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8210] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1&#34;, RFC 8210, DOI 10.17487/RFC8210, September 2017, &lt;https://www.rfc-editor.org/info/rfc8210&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8210] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1&#34;, RFC 8210, DOI 10.17487/RFC8210, September 2017, &lt;https://www.rfc-editor.org/info/rfc8210&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8211] Kent, S. and D. Ma, &#34;Adverse Actions by a Certification Authority (CA) or Repository Manager in the Resource Public Key Infrastructure (RPKI)&#34;, RFC 8211, DOI 10.17487/RFC8211, September 2017, &lt;https://www.rfc-editor.org/info/rfc8211&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8211] Kent, S. and D. Ma, &#34;Adverse Actions by a Certification Authority (CA) or Repository Manager in the Resource Public Key Infrastructure (RPKI)&#34;, RFC 8211, DOI 10.17487/RFC8211, September 2017, &lt;https://www.rfc-editor.org/info/rfc8211&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Acknowledgments
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+致谢
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors would like to thank Stephen Kent for his guidance and detailed reviews of this document. The authors would also like to thank Richard Hansen for his careful reviews and Hui Zou and Chunlin An for their editorial assistance.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢斯蒂芬-肯特（Stephen Kent）对本文的指导和详细审查。作者还要感谢理查德-汉森（Richard Hansen）的认真审阅，以及邹慧和安春林的编辑协助。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Di Ma ZDNS 4 South 4th St. Zhongguancun Haidian, Beijing 100190 China
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Di Ma ZDNS 北京市海淀区中关村南四街 4 号 邮政编码 100190 中国
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: madi@zdns.cn
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+David Mandelberg Unaffiliated
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+大卫-曼德尔伯格 无党派人士
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: david@mandelberg.org
+   URI:   https://david.mandelberg.org
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Tim Bruijnzeels NLnet Labs Science Park 400 Amsterdam 1098 XH The Netherlands
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Tim Bruijnzeels NLnet 实验室 科学园 400 阿姆斯特丹 1098 XH 荷兰
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: tim@nlnetlabs.nl
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

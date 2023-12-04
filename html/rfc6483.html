@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 6483 - Validation of Route Origination Using the Resource Certificate Public Key Infrastructure (PKI) and Route Origin Authorizations (ROAs) 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">6483</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc6483">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 6483 - Validation of Route Origination Using the Resource Certificate Public Key Infrastructure (PKI) and Route Origin Authorizations (ROAs) 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc6483">
+            https://datatracker.ietf.org/doc/html/rfc6483
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 6483 - 使用资源证书公钥基础架构 (PKI) 和路由起源授权 (ROAs) 验证路由起源</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                         G. Huston
+Request for Comments: 6483                                 G. Michaelson
+Category: Informational                                            APNIC
+ISSN: 2070-1721                                            February 2012
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+ Validation of Route Origination Using the Resource Certificate Public Key Infrastructure (PKI) and Route Origin Authorizations (ROAs)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+使用资源证书公钥基础架构 (PKI) 和路由起源授权 (ROAs) 验证路由起源
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines the semantics of a Route Origin Authorization (ROA) in terms of the context of an application of the Resource Public Key Infrastructure to validate the origination of routes advertised in the Border Gateway Protocol.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档定义了路由起源授权（ROA）的语义，即应用 &#34;资源公钥基础设施 &#34;验证 &#34;边界网关协议 &#34;中广告路由的起源。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is not an Internet Standards Track specification; it is published for informational purposes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件不是互联网标准轨道规范，仅为提供信息而发布。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Not all documents approved by the IESG are a candidate for any level of Internet Standard; see Section 2 of RFC 5741.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。并非所有经 IESG 批准的文件都能成为任何级别的互联网标准候选文件；请参见 RFC 5741 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6483.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6483。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2012 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版权所有 (c) 2012 IETF 信托基金会和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1. Introduction ....................................................2
+   2. ROA Validation Outcomes for a Route .............................3
+   3. Applying Validation Outcomes to Route Selection .................5
+   4. Disavowal of Routing Origination ................................6
+   5. Route Validation Lifetime .......................................6
+   6. Security Considerations .........................................7
+   7. Acknowledgements ................................................7
+   8. References ......................................................8
+      8.1. Normative References .......................................8
+      8.2. Informative References .....................................8
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines the semantics of a Route Origin Authorization (ROA) in terms of the context of an application of the Resource Public Key Infrastructure (RPKI) [RFC6480] to validate the origination of routes advertised in the Border Gateway Protocol (BGP) [RFC4271].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档根据资源公钥基础设施 (RPKI) [RFC6480] 的应用环境定义了路由起源授权 (ROA) 的语义，以验证边界网关协议 (BGP) [RFC4271] 中广告路由的起源。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RPKI is based on a hierarchy of resource certificates that are aligned to the Internet Number Resource allocation structure. Resource certificates are X.509 certificates that conform to the PKIX profile [RFC5280], and to the extensions for IP addresses and AS identifiers [RFC3779]. A resource certificate describes an action by an issuer that binds a list of IP address blocks and Autonomous System (AS) numbers to the subject of a certificate, identified by the unique association of the subject&#39;s private key with the public key contained in the resource certificate. The RPKI is structured such that each current resource certificate matches a current resource allocation or assignment. This is further described in [RFC6480].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 基于与互联网号码资源分配结构相一致的资源证书层次结构。资源证书是符合 PKIX 配置文件 [RFC5280] 以及 IP 地址和 AS 标识符扩展 [RFC3779] 的 X.509 证书。资源证书描述了签发者将 IP 地址块和自治系统（AS）编号列表与证书主体绑定的行为，主体的私钥与资源证书中包含的公钥之间的唯一关联可识别该主体。RPKI 的结构使每个当前资源证书与当前资源分配或指派相匹配。[RFC6480] 对此有进一步说明。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+ROAs are digitally signed objects that bind an address to an AS number, and are signed by the address holder. A ROA provides a means of verifying that an IP address block holder has authorized a particular AS to originate routes in the inter-domain routing environment for that address block. ROAs are described in [RFC6482]. ROAs are intended to fit within the requirements for adding security to inter-domain routing.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+ROA 是数字签名对象，将地址与 AS 编号绑定，并由地址持有者签名。ROA 提供了一种验证 IP 地址块持有者已授权特定 AS 在域间路由环境中为该地址块创建路由的方法。ROA 在 [RFC6482] 中进行了描述。ROA 旨在满足为域间路由添加安全性的要求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document describes the semantic interpretation of a ROA, with particular reference to application in inter-domain routing relating to the origination of routes, and the intended scope of the authority that is conveyed in the ROA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件描述了 ROA 的语义解释，特别是域间路由中与路由起始有关的应用，以及 ROA 中传达的授权的预期范围。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--ROA-Validation-Outcomes-for-a-Route">
+2. ROA Validation Outcomes for a Route
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. ROA 路线验证结果
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A &#34;route&#34; is unit of information that associates a set of destinations described by an IP address prefix with a set of attributes of a path to those destinations, as defined in Section 1.1 of [RFC4271].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+根据 [RFC4271] 第 1.1 节的定义，&#34;路由 &#34;是将 IP 地址前缀描述的一组目的地与通往这些目的地的路径的一组属性关联起来的信息单元。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A route&#39;s &#34;origin AS&#34; is defined as follows: If the final path segment of the AS_PATH is of type AS_SEQUENCE, the origin AS is the first element of the sequence (i.e., the AS in the rightmost position with respect to the position of octets in the protocol message). If the AS_PATH contains a path segment of type AS_SET, indicating that the route is an aggregate, then the origin AS cannot be determined. In terms of validation of a route in the context of a routing environment, the address prefix value and the origin AS are used in the ROA validation operation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由的 &#34;起源 AS &#34;定义如下：如果 AS_PATH 的最后一个路径段是 AS_SEQUENCE 类型，则起源 AS 是该序列的第一个元素（即相对于协议报文中八位字节位置最右边的 AS）。如果 AS_PATH 包含 AS_SET 类型的路径段，表明路由是一个聚合，则无法确定原点 AS。在路由环境中对路由进行验证时，地址前缀值和起源 AS 会被用于 ROA 验证操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is assumed here that a relying party (RP) has access to a local cache of the complete set of valid ROAs when performing validation of a route. (Valid ROAs are defined as ROAs that are determined to be syntactically correct and are signed using a signature that can be verified using the RPKI, as described in [RFC6482].) The RP needs to match a route to one or more valid candidate ROAs in order to determine a validation outcome, which, in turn, can be used to determine the appropriate local actions to perform on the route.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这里假定，依赖方（RP）在对路由进行验证时，可以访问本地缓存中的整套有效 ROA。(有效 ROA 的定义是：ROA 在语法上被确定为正确，并使用可通过 RPKI 验证的签名（如 [RFC6482] 所述）。RP 需要将路由与一个或多个有效候选 ROA 进行匹配，以确定验证结果，进而确定对路由执行的适当本地操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This approach to route origination validation uses a generic model of &#34;positive&#34; attestation that has an associated inference that routes that cannot be validated within the RPKI framework would conventionally be interpreted by an RP as &#34;invalid&#34;. However, the considerations of accommodating environments of partial adoption of the use of ROAs, where only a subset of validly advertised address prefixes have associated published ROAs within the structure of the RPKI, imply some modification to this model of positive attestation. In the context of route validation, it is assumed that once an address prefix is described in a ROA, then this ROA specifically encompasses all address prefixes that are more specific than that described in the ROA. Thus, any route for a more specific address prefix than that described by any valid ROA that does not itself have a matching valid ROA can be considered &#34;invalid&#34;. However, routes for address prefixes that are not fully described by any single ROA (i.e., those routes whose address prefixes may be an aggregate of address prefixes described in a valid ROA, or have address prefixes where there is no intersection with any valid ROA), and are not matched by any valid ROA and do not have an address prefix that is a more specific address prefix described in any valid ROA, cannot be reliably classified as &#34;invalid&#34; in a partial deployment scenario. Such routes have a validation outcome of &#34;unknown&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这种路由起源验证方法使用的是 &#34;积极 &#34;证明的通用模型，其相关推论是，无法在 RPKI 框架内验证的路由通常会被 RP 解释为 &#34;无效&#34;。但是，在部分采用 ROA 的环境中，只有部分有效的广告地址前缀在 RPKI 结构中具有相关的已发布 ROA，这就需要对这种积极证明模型进行一些修改。在路由验证的背景下，我们假定一旦某个地址前缀在 ROA 中被描述，那么该 ROA 就会具体包括比 ROA 中描述的更具体的所有地址前缀。因此，与任何有效 ROA 所描述的地址前缀相比，更具体的地址前缀的任何路由，如果本身没有匹配的有效 ROA，都可视为 &#34;无效&#34;。但是，对于地址前缀未被任何单个 ROA 完全描述的路由（即地址前缀可能是有效 ROA 中描述的地址前缀的集合，或地址前缀与任何有效 ROA 没有交集的路由），且未被任何有效 ROA 匹配，也没有任何有效 ROA 中描述的更具体地址前缀的路由，在部分部署场景中不能可靠地归类为 &#34;无效&#34;。此类路由的验证结果为 &#34;未知&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An abstract attribute of a route can be determined as the outcome of this validation procedure, namely a &#34;validity state&#34; [BGP-PFX]. The validity state of a route, with a prefix and an origin AS as defined above, when using single ROA for determining this validity state, is summarized in the following table:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由的一个抽象属性，即 &#34;有效性状态&#34;[BGP-PFX]，可根据此验证过程的结果确定。在使用单一 ROA 确定路由的有效性状态时，下表概括了路由的有效性状态（如上文所定义的前缀和来源 AS）：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+           Route    matching  non-matching
+      Prefix   AS-&gt;   AS         AS
+       V           +---------+---------+
+      Non-         | unknown | unknown |
+      Intersecting |         |         |
+                   +---------+---------+
+      Covering     | unknown | unknown |
+      Aggregate    |         |         |
+                   +---------+---------+
+      match ROA    | valid   | invalid |
+      prefix       |         |         |
+                   +---------+---------+
+      More         |         |         |
+      Specific     | invalid | invalid |
+      than ROA     |         |         |
+                   +---------+---------+
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-18">
+Route&#39;s Validity State
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-18">
+航线的有效状态
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In an environment of a collection of valid ROAs, a route&#39;s validity state is considered to be &#34;valid&#34; if any ROA provides a &#34;valid&#34; outcome. It&#39;s validity state is considered to be &#34;invalid&#34; if one (or more) ROAs provide an &#34;invalid&#34; outcome and no ROAs provide a &#34;valid&#34; outcome. Its validity state is considered to be &#34;unknown&#34; (or, synonymously, &#34;not found&#34; [BGP-PFX]) when no valid ROA can produce either a &#34;valid&#34; or an &#34;invalid&#34; validity state outcome.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在有效 ROA 集合的环境中，如果有任何 ROA 提供了 &#34;有效 &#34;结果，则路由的有效性状态被视为 &#34;有效&#34;。如果一个（或多个）ROA 提供了 &#34;无效 &#34;结果，且没有任何 ROA 提供 &#34;有效 &#34;结果，则路由的有效性状态被视为 &#34;无效&#34;。如果没有有效的 ROA 能提供 &#34;有效 &#34;或 &#34;无效 &#34;的有效性状态结果，则其有效性状态被视为 &#34;未知&#34;（或同义词 &#34;未找到&#34;[BGP-PFX]）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A route validity state is defined by the following procedure:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由有效状态由以下程序定义：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+1. Select all valid ROAs that include a ROAIPAddress value that either matches, or is a covering aggregate of, the address prefix in the route. This selection forms the set of &#34;candidate ROAs&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+1. 选择包含 ROAIPAddress 值的所有有效 ROA，这些 ROAIPAddress 值要么与路由中的地址前缀相匹配，要么是地址前缀的覆盖集合。这一选择构成了 &#34;候选 ROA &#34;集。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+2. If the set of candidate ROAs is empty, then the procedure stops with an outcome of &#34;unknown&#34; (or, synonymously, &#34;not found&#34;, as used in [BGP-PFX]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+2. 如果候选 ROA 集为空，那么程序将以 &#34;未知&#34;（或同义词 &#34;未找到&#34;，如 [BGP-PFX] 中所用）的结果停止。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+3. If the route&#39;s origin AS can be determined and any of the set of candidate ROAs has an asID value that matches the origin AS in the route, and the route&#39;s address prefix matches a ROAIPAddress in the ROA (where &#34;match&#34; is defined as where the route&#39;s address precisely matches the ROAIPAddress, or where the ROAIPAddress includes a maxLength element, and the route&#39;s address prefix is a more specific prefix of the ROAIPAddress, and the route&#39;s address prefix length value is less than or equal to the ROAIPAddress maxLength value), then the procedure halts with an outcome of &#34;valid&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+3. 如果路由的起源 AS 可以确定，且候选 ROA 中的任何一个 ROA 的 asID 值与路由中的起源 AS 匹配，且路由的地址前缀与 ROA 中的 ROAIPAddress 匹配（其中 &#34;匹配 &#34;的定义是路由的地址与 ROAIPAddress 精确匹配、或 ROAIPAddress 包含一个 maxLength 元素，且路由的地址前缀是 ROAIPAddress 的一个更具体的前缀，且路由的地址前缀长度值小于或等于 ROAIPAddress maxLength 值），则程序终止，结果为 &#34;有效&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+4. Otherwise, the procedure halts with an outcome of &#34;invalid&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+4. 否则，程序停止，结果为 &#34;无效&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Applying-Validation-Outcomes-to-Route-Selection">
+3. Applying Validation Outcomes to Route Selection
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 将验证结果应用于路线选择
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Within the framework of the abstract model of the operation of inter-domain routing using BGP [RFC4271], a received prefix announcement from a routing peer is compared to all announcements for this prefix received from other routing peers, and a route selection procedure is used to select the &#34;best&#34; route from this candidate set.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在使用 BGP 运行域间路由的抽象模型框架内 [RFC4271]，路由对等体收到的前缀公告会与其他路由对等体收到的该前缀的所有公告进行比较，并使用路由选择程序从候选集中选择 &#34;最佳 &#34;路由。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The route&#39;s validity state, described in Section 2, of &#34;valid&#34;, &#34;invalid&#34;, or &#34;unknown&#34; may be used as part of the determination of the local degree of preference, in which case the local order of preference is as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+第 2 节所述的路由有效状态（&#34;有效&#34;、&#34;无效 &#34;或 &#34;未知&#34;）可用于确定本地优先级，在这种情况下，本地优先级顺序如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+&#34;valid&#34; is to be preferred over &#34;unknown&#34;, which is to be preferred over &#34;invalid&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+有效 &#34;优于 &#34;未知&#34;，而 &#34;未知 &#34;优于 &#34;无效&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is a matter of local routing policy as to the actions to be undertaken by a routing entity in processing those routes with &#34;unknown&#34; validity states. Due to considerations of partial use of ROAs in heterogeneous environments, such as in the public Internet, it is advised that local policy settings should not result in &#34;unknown&#34; validity state outcomes being considered as sufficient grounds to reject a route outright from further consideration as a local best route.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+至于路由实体在处理 &#34;未知 &#34;有效性状态的路由时应采取哪些行动，则是本地路由政策的问题。出于在异构环境（如公共互联网）中部分使用 ROA 的考虑，建议本地政策设置不应导致将 &#34;未知 &#34;有效性状态结果视为直接拒绝路由作为本地最佳路由的充分理由。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is a matter of local routing policy as to whether routes with an &#34;invalid&#34; validity state are considered to be ineligible for further consideration in a route selection process. Potential circular dependence is a consideration here: if the authoritative publication point of the repository of ROAs, or that of any certificate used in relation to an address prefix, is located at an address that lies within the address prefix described in a ROA, then the repository can only be accessed by the RP once a route for the prefix has been accepted by the RP&#39;s local routing domain. It is also noted that the propagation time of RPKI objects may be different to the propagation time of routes, and that routes may be learned by an RP&#39;s routing system before the RP&#39;s local RPKI repository cache picks up the associated ROAs and recognizes them as having a validity state of &#34;valid&#34; within the RPKI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+至于在路由选择过程中，有效状态为 &#34;无效 &#34;的路由是否被视为不符合进一步考虑的条件，这属于本地路由选择政策的问题。这里需要考虑潜在的循环依赖性：如果 ROA 资源库的权威发布点或与地址前缀相关的任何证书的权威发布点位于 ROA 中描述的地址前缀内的某个地址，那么只有当 RP 的本地路由域接受了该前缀的路由后，RP 才能访问资源库。还需注意的是，RPKI 对象的传播时间可能与路由的传播时间不同，在 RP 的本地 RPKI 资源库缓存拾取相关 ROA 并将其识别为 RPKI 中 &#34;有效 &#34;的有效性状态之前，RP 的路由系统可能已经学习了路由。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Disavowal-of-Routing-Origination">
+4. Disavowal of Routing Origination
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 不承认路由选择权
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A ROA is a positive attestation that a prefix holder has authorized an AS to originate a route for this prefix into the inter-domain routing system. It is possible for a prefix holder to construct an authorization where no valid AS has been granted any such authority to originate a route for an address prefix. This is achieved by using a ROA where the ROA&#39;s subject AS is one that must not be used in any routing context. Specifically, AS 0 is reserved by the IANA such that it may be used to identify non-routed networks [IANA-AS].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+ROA 是前缀持有者授权某个 AS 在域间路由系统中为该前缀创建路由的肯定证明。如果没有任何有效的 AS 被授权为地址前缀创建路由，则前缀持有者可以创建一个授权。这可以通过使用 ROA 来实现，ROA 的主体 AS 不得在任何路由上下文中使用。具体来说，AS 0 由 IANA 保留，可用于标识非路由网络 [IANA-AS]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A ROA with a subject of AS 0 (AS 0 ROA) is an attestation by the holder of a prefix that the prefix described in the ROA, and any more specific prefix, should not be used in a routing context.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+主题为 AS 0 的 ROA（AS 0 ROA）是由前缀持有者证明 ROA 中描述的前缀以及任何更具体的前缀不应在路由上下文中使用。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The route validation procedure, described in Section 2, will provide a &#34;valid&#34; outcome if any ROA matches the address prefix and origin AS, even if other valid ROAs would provide an &#34;invalid&#34; validation outcome if used in isolation. Consequently, an AS 0 ROA has a lower relative preference than any other ROA that has a routable AS as its subject. This allows a prefix holder to use an AS 0 ROA to declare a default condition that any route that is equal to or more specific than the prefix to be considered &#34;invalid&#34;, while also allowing other concurrently issued ROAs to describe valid origination authorizations for more specific prefixes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果任何 ROA 与地址前缀和源 AS 相匹配，第 2 节所述的路由验证程序将提供 &#34;有效 &#34;结果，即使其他有效 ROA 单独使用也会提供 &#34;无效 &#34;验证结果。因此，AS 0 ROA 的相对优先级低于任何其他以可路由 AS 为主题的 ROA。这就允许前缀持有者使用 AS 0 ROA 声明默认条件，即任何与前缀相同或比前缀更具体的路由都将被视为 &#34;无效&#34;，同时也允许其他同时发布的 ROA 为更具体的前缀描述有效的发端授权。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+By convention, an AS 0 ROA should have a maxLength value of 32 for IPv4 addresses and a maxlength value of 128 for IPv6 addresses; although, in terms of route validation, the same outcome would be achieved with any valid maxLength value, or even if the maxLength element were to be omitted from the ROA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+按照惯例，AS 0 ROA 对 IPv4 地址的 maxLength 值应为 32，对 IPv6 地址的 maxLength 值应为 128；不过，就路由验证而言，任何有效的 maxLength 值，甚至从 ROA 中省略 maxLength 元素，都能实现相同的结果。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Also by convention, an AS 0 ROA should be the only ROA issued for a given address prefix; although again, this is not a strict requirement. An AS 0 ROA may coexist with ROAs that have different subject AS values; although in such cases, the presence or lack of presence of the AS 0 ROA does not alter the route&#39;s validity state in any way.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+另外，按照惯例，AS 0 ROA 应该是为给定地址前缀签发的唯一 ROA，但这并不是一个严格的要求。AS 0 ROA 可能与具有不同主题 AS 值的 ROA 共存；但在这种情况下，AS 0 ROA 的存在与否不会以任何方式改变路由的有效性状态。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Route-Validation-Lifetime">
+5. Route Validation Lifetime
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 路由验证寿命
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &#34;lifetime&#34; of a validation outcome refers to the time period during which the original validation outcome can be still applied. The implicit assumption here is that when the validation lifetime &#34;expires&#34;, the route should be re-tested for validity.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+验证结果的 &#34;有效期 &#34;是指原始验证结果仍可应用的时间段。这里隐含的假设是，当验证期限 &#34;到期 &#34;时，路由应重新进行有效性测试。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The validation lifetime for a ROA is controlled by the Valid times specified in the end-entity (EE) certificate used to sign the ROA, and the valid times of those certificates in the certification path used to validate the EE certificate. A ROA validation expires at the notAfter field of the signing EE certificate, or at such a time when there is no certification path that can validate the ROA. A ROA issuer may elect to prematurely invalidate a ROA by revoking the EE certificate that was used to sign the ROA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+ROA 的验证有效期由用于签署 ROA 的最终实体（EE）证书中指定的有效时间和用于验证 EE 证书的认证路径中的证书有效时间控制。ROA 验证在签署 EE 证书的 notAfter 字段过期，或在没有可验证 ROA 的认证路径时过期。ROA 签发者可选择撤销用于签署 ROA 的 EE 证书，从而提前使 ROA 失效。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Security-Considerations">
+6. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+ROA issuers should be aware of the validation implication in issuing a ROA, in that a ROA implicitly invalidates all routes that have more specific prefixes with a prefix length greater than maxLength, and all originating AS&#39;s other than the AS listed in the collection of ROAs for this prefix.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+ROA 签发者应注意签发 ROA 时的验证含义，因为 ROA 会隐含地使前缀长度大于 maxLength 的更多特定前缀的所有路由无效，并使该前缀的 ROA 集合中所列 AS 以外的所有发端 AS 无效。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A conservative operational practice would be to ensure the issuing of ROAs for all more specific prefixes with distinct origination ASes prior to the issuing of ROAs for larger encompassing address blocks, in order to avoid inadvertent invalidation of valid routes during ROA generation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+一种保守的操作方法是，确保在为较大的地址块发布 ROA 之前，先为所有具有不同始发 AS 的更具体前缀发布 ROA，以避免在生成 ROA 时无意中使有效路由失效。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+ROA issuers should also be aware that if they generate a ROA for one origin AS, then if the address prefix holder authorizes multiple ASes to originate routes for a given address prefix, then is necessary for a ROA be generated for every such authorized AS.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+ROA 签发者还应注意，如果他们为一个源 AS 生成 ROA，那么如果地址前缀持有者授权多个 AS 为给定地址前缀生成路由，则有必要为每个授权 AS 生成 ROA。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--Acknowledgements">
+7. Acknowledgements
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 致谢
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors would like to acknowledge the helpful contributions of John Scudder and Stephen Kent in preparing this document, and also the contributions of many members of the SIDR working group in response to presentations of this material in SIDR WG sessions. The authors also acknowledge prior work undertaken by Tony Bates, Randy Bush, Tony Li, and Yakov Rekhter as the validation outcomes described here reflect the authentication outcomes and semantics of origin AS verification described in [NLRI-ORIG]. A number of validation concepts relating to a route&#39;s validity state presented in [BGP-PFX], edited by Pradosh Mohapatra, et al., have be used in this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者衷心感谢 John Scudder 和 Stephen Kent 在编写本文档过程中提供的帮助，以及 SIDR 工作组许多成员在 SIDR 工作组会议上介绍本材料时提供的帮助。作者还对 Tony Bates、Randy Bush、Tony Li 和 Yakov Rekhter 之前所做的工作表示感谢，因为这里描述的验证结果反映了 [NLRI-ORIG] 中描述的起源 AS 验证的认证结果和语义。Pradosh Mohapatra 等人编辑的[BGP-PFX]中提出的一些与路由有效性状态相关的验证概念在本文档中得到了应用。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8--References">
+8. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8-1--Normative-References">
+8.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3779] Lynn, C., Kent, S., and K. Seo, &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34;, RFC 3779, June 2004.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3779] Lynn, C., Kent, S., and K. Seo, &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34;, RFC 3779, June 2004.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, January 2006.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, January 2006.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, May 2008.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, May 2008.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8-2--Informative-References">
+8.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[BGP-PFX] Mohapatra, P., Ed., Scudder, J., Ed., Ward, D., Ed., Bush, R., Ed., and R. Austein, Ed., &#34;BGP Prefix Origin Validation&#34;, Work in Progress, October 2011.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Mohapatra, P., Ed., Scudder, J., Ed., Ward, D., Ed., Bush, R., Ed., and R. Austein, Ed., &#34;BGP Prefix Origin Validation&#34;, Work in Progress, October 2011.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[IANA-AS] IANA, &#34;Autonomous System (AS) Numbers&#34;, http://http://www.iana.org/assignments/as-numbers
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[IANA-AS] IANA，&#34;自治系统（AS）编号&#34;，http://http://www.iana.org/assignments/as-numbers
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[NLRI-ORIG] Bates, T., Bush, R., Li, T., and Y. Rekhter, &#34;DNS-based NLRI origin AS verification in BGP&#34;, Work in Progress, January 1998.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Bates, T., Bush, R., Li, T., and Y. Rekhter, &#34;DNS-based NLRI origin AS verification in BGP&#34;, Work in Progress, January 1998.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Geoff Huston APNIC
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Geoff Huston APNIC
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: gih@apnic.net
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+George Michaelson APNIC
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+乔治-迈克尔逊 APNIC
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: ggm@apnic.net
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

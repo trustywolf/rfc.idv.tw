@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 6489 - Certification Authority (CA) Key Rollover in the Resource Public Key Infrastructure (RPKI) 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">6489</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc6489">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 6489 - Certification Authority (CA) Key Rollover in the Resource Public Key Infrastructure (RPKI) 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc6489">
+            https://datatracker.ietf.org/doc/html/rfc6489
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 6489 - 资源公钥基础架构 (RPKI) 中的认证机构 (CA) 密钥展期</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                         G. Huston
+Request for Comments: 6489                                 G. Michaelson
+BCP: 174                                                           APNIC
+Category: Best Current Practice                                  S. Kent
+ISSN: 2070-1721                                                      BBN
+                                                           February 2012
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-13">
+ Certification Authority (CA) Key Rollover in the Resource Public Key Infrastructure (RPKI)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-13">
+资源公钥基础架构 (RPKI) 中的认证机构 (CA) 密钥展期
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document describes how a Certification Authority (CA) in the Resource Public Key Infrastructure (RPKI) performs a planned rollover of its key pair. This document also notes the implications of this key rollover procedure for relying parties (RPs). In general, RPs are expected to maintain a local cache of the objects that have been published in the RPKI repository, and thus the way in which a CA performs key rollover impacts RPs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件描述了资源公钥基础架构（RPKI）中的认证机构（CA）如何执行其配对密钥的计划展期。本文件还指出了此密钥翻转程序对依赖方（RP）的影响。一般来说，RPs 应维护 RPKI 存储库中已发布对象的本地缓存，因此 CA 执行密钥展期的方式会对 RPs 产生影响。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This memo documents an Internet Best Current Practice.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本备忘录记录了互联网当前最佳做法。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on BCPs is available in Section 2 of RFC 5741.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关 BCP 的更多信息，请参见 RFC 5741 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6489.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6489。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2012 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版权所有 (c) 2012 IETF 信托基金会和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1. Introduction ....................................................2
+      1.1. Terminology and Concepts ...................................2
+   2. CA Key Rollover Procedure .......................................3
+   3. Relying Party Requirements ......................................6
+   4. Reissuing Certificates and RPKI Signed Objects ..................7
+      4.1. CA Certificates ............................................7
+      4.2. RPKI Signed Objects ........................................7
+   5. Security Considerations .........................................8
+   6. Acknowledgements ................................................8
+   7. References ......................................................9
+      7.1. Normative References .......................................9
+      7.2. Informative References .....................................9
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document describes an algorithm to be employed by a Certification Authority (CA) in the Resource Public Key Infrastructure (RPKI) [RFC6480] to perform a rollover of its key pair.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档描述了资源公钥基础设施（RPKI）[RFC6480] 中的认证机构（CA）执行密钥对展期时使用的算法。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines a conservative procedure for such entities to follow when performing a key rollover. This procedure is &#34;conservative&#34; in that the CA&#39;s actions in key rollover are not intended to disrupt the normal operation of relying parties (RPs) in maintaining a local cached version of the RPKI distributed repository. Using this procedure, RPs are in a position to be able to validate all authentic objects in the RPKI using the validation procedure described in [RFC6480] at all times.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件定义了此类实体在执行密钥展期时应遵循的保守程序。该程序的 &#34;保守 &#34;之处在于，CA 在密钥转移中的行为无意破坏依赖方 (RP) 维护 RPKI 分布式存储库本地缓存版本的正常操作。使用该程序，RP 可以随时使用 [RFC6480] 中描述的验证程序来验证 RPKI 中的所有真实对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-1--Terminology-and-Concepts">
+1.1. Terminology and Concepts
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.1. 术语和概念
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is assumed that the reader is familiar with the terms and concepts described in &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34; [RFC5280], &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34; [RFC3779], the profile for RPKI Certificates [RFC6487], and the RPKI repository structure [RFC6481] .
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+假定读者熟悉 &#34;互联网 X.509 公钥基础设施证书和证书吊销列表 (CRL) 配置文件&#34; [RFC5280]、&#34;IP 地址和 AS 标识符的 X.509 扩展&#34; [RFC3779]、RPKI 证书配置文件 [RFC6487] 和 RPKI 资源库结构 [RFC6481] 中描述的术语和概念。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in [RFC2119].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;、&#34;MUST NOT&#34;、&#34;REQUIRED&#34;、&#34;SHALL&#34;、&#34;SHALL NOT&#34;、&#34;SHOULD&#34;、&#34;SHOULD NOT&#34;、&#34;RECOMMENDED&#34;、&#34;MAY &#34;和 &#34;OPTIONAL &#34;应按照 [RFC2119] 中的描述进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--CA-Key-Rollover-Procedure">
+2. CA Key Rollover Procedure
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. CA 密钥翻转程序
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A CA in the RPKI is an entity that issues CA and end-entity (EE) certificates and Certificate Revocation Lists (CRLs). A CA instance is associated with a single key pair [RFC6487], implying that if key rollover is a regularly scheduled event, then, over time, there will be many CA instances. The implication in the context of key rollover is that, strictly speaking, a CA does not perform a key rollover per se. In order to perform the equivalent of a key rollover, the CA creates a &#34;new&#34; instance of itself, with a new key pair, and then effectively substitutes this &#34;new&#34; CA instance into the RPKI hierarchy in place of the &#34;old&#34; CA instance.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 中的 CA 是签发 CA 和最终实体 (EE) 证书以及证书吊销列表 (CRL) 的实体。CA 实例与单个密钥对相关联 [RFC6487]，这意味着如果密钥滚动是定期发生的事件，那么随着时间的推移，会有很多 CA 实例。密钥翻转的含义是，严格来说，CA 本身并不执行密钥翻转。为了执行等同于密钥翻转的操作，CA 使用新的密钥对创建一个 &#34;新 &#34;实例，然后有效地将这个 &#34;新 &#34;CA 实例替换为 RPKI 层次结构中的 &#34;旧 &#34;CA 实例。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that focus of this procedure is planned key rollover, not an emergency key rollover, e.g., promoted by a suspected or detected private key compromise. However, the procedure described here is applicable in emergency key rollover situations, with the exception of the &#34;Staging Period&#34; duration.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，本程序的重点是计划中的密钥滚转，而不是紧急密钥滚转，例如，由怀疑或检测到的私钥泄露引起的密钥滚转。不过，这里描述的程序适用于紧急密钥转移情况，但 &#34;暂存期 &#34;的持续时间除外。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+There are several considerations regarding this procedure that MUST be followed by a CA performing a key rollover operation. The critical consideration is that the RPKI has potential application in the area of control of routing integrity [RFC6480], and key rollover should not cause any transient hiatus in which an RP is led to incorrect conclusions regarding the authenticity of attestations made in the context of the RPKI. A CA cannot assume that all RPs will perform path validation and path discovery in the same fashion; therefore, the key rollover procedure MUST preserve the integrity of the CRL Distribution Points (CRLDP), Subject Information Access (SIA), and Authority Information Access (AIA) pointers in RPKI certificates.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+执行密钥展期操作的 CA 必须遵守有关此程序的若干注意事项。关键的考虑因素是，RPKI 在路由完整性控制 [RFC6480] 领域具有潜在的应用，密钥转移不应导致任何瞬时中断，从而使 RP 对在 RPKI 上下文中做出的证明的真实性得出错误的结论。CA 不能假定所有 RP 都会以相同的方式执行路径验证和路径发现；因此，密钥滚转程序必须保持 RPKI 证书中 CRL 分发点 (CRLDP)、主体信息访问 (SIA) 和机构信息访问 (AIA) 指针的完整性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the procedure described here, the CA creates a &#34;new&#34; CA instance, and has the associated new public key published in the form of a &#34;new&#34; CA certificate. While the &#34;current&#34; and &#34;new&#34; CA instances share a single repository publication point, each CA has its own CRL and its own manifest. Initially, the &#34;new&#34; CA publishes an empty CRL and a manifest that contains a single entry for the CRL. The &#34;current&#34; CA also maintains its published CRL and manifest at this repository publication point.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在这里描述的程序中，CA 创建一个 &#34;新 &#34;CA 实例，并以 &#34;新 &#34;CA 证书的形式发布相关的新公钥。虽然 &#34;当前 &#34;和 &#34;新 &#34;CA 实例共享一个存储库发布点，但每个 CA 都有自己的 CRL 和清单。最初，&#34;新 &#34;CA 发布一个空的 CRL 和一个清单，其中包含 CRL 的一个条目。当前 &#34;CA 也在该存储库发布点维护其已发布的 CRL 和清单。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The CA performing key rollover waits for a period of time to afford every RP an opportunity to discover and retrieve this &#34;new&#34; CA certificate, and store it in its local RPKI repository cache instance. This period of time is termed the Staging Period. During this period, the CA will have a &#34;new&#34; CA instance, with no subordinate products, and a &#34;current&#34; CA instance that has issued all subordinate products. At the expiration of the Staging Period, the
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+执行密钥转移的 CA 会等待一段时间，让每个 RP 都有机会发现和检索该 &#34;新&#34; CA 证书，并将其存储在本地 RPKI 存储库缓存实例中。这段时间称为 &#34;暂存期&#34;。在此期间，CA 将有一个 &#34;新的 &#34;CA 实例，没有下级产品，而 &#34;当前 &#34;CA 实例已签发了所有下级产品。在 &#34;暂存期 &#34;结束时，CA 将有一个 &#34;新的 &#34;CA 实例。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+&#34;new&#34; CA instance MUST replace all (valid) subordinate products of the &#34;current&#34; CA instance, overwriting the &#34;current&#34; subordinate products in the CA&#39;s repository publication point. When this process is complete, the &#34;current&#34; CA instance is retired, and the &#34;new&#34; CA instance becomes the &#34;current&#34; CA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+新 &#34;CA 实例必须替换 &#34;当前 &#34;CA 实例的所有（有效）下级产品，覆盖 CA 资源库发布点中的 &#34;当前 &#34;下级产品。该过程完成后，&#34;当前 &#34;CA 实例退役，&#34;新 &#34;CA 实例成为 &#34;当前 &#34;CA。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+During the transition of the &#34;current&#34; and &#34;new&#34; CA instances, the &#34;new&#34; CA instance MUST reissue all subordinate products of the &#34;current&#34; CA. The procedure described here requires that, with the exception of manifests and CRLs, the reissued subordinate products be published using the same repository publication point object names, effectively overwriting the old objects with these reissued objects. The intent of this overwriting operation is to ensure that the AIA pointers of subordinate products at lower tiers in the RPKI hierarchy remain correct, and that CA key rollover does not require any associated actions by any subordinate CA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 &#34;当前 &#34;和 &#34;新 &#34;CA 实例过渡期间，&#34;新 &#34;CA 实例必须重新发布 &#34;当前 &#34;CA 的所有下属产品。这里描述的程序要求，除清单和 CRL 外，重新发布的下属产品必须使用相同的存储库发布点对象名称发布，从而有效地用这些重新发布的对象覆盖旧对象。这种覆盖操作的目的是确保 RPKI 层次结构中较低层次的下级产品的 AIA 指针保持正确，并且 CA 密钥展期不需要任何下级 CA 进行任何相关操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+There are three CA states described here:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这里描述了三种 CA 状态：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CURRENT: The CURRENT CA is the active CA instance used to accept and process certificate issuance and revocation requests. The starting point for this algorithm is that the key of the CURRENT CA is to be rolled over.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当前：当前 CA 是用于接受和处理证书签发和撤销请求的活动 CA 实例。该算法的出发点是 CURRENT CA 的密钥要被延展。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+NEW: The NEW CA is the CA instance that is being created. The NEW CA is not active, and thus does not accept nor process certificate issuance and revocation requests. The NEW CA SHOULD issue a CRL and an EE certificate in association with its manifest to provide a trivial, complete, and consistent instance of a CA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+新：新 CA 是正在创建的 CA 实例。新 CA 不活动，因此不接受也不处理证书签发和废止请求。新 CA 应结合其清单签发 CRL 和 EE 证书，以提供一个琐碎、完整和一致的 CA 实例。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+OLD: The CA instance is in the process of being removed. An OLD CA instance is unable to process any certificate issuance and revocation requests. An OLD CA instance will continue to issue regularly scheduled CRLs and issue an EE certificate as part of the process of updating its manifest to reflect the updated CRL.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+OLD：CA 实例正在被删除。OLD CA 实例无法处理任何证书签发和撤销请求。OLD CA 实例将继续定期发布 CRL，并在更新其清单以反映更新的 CRL 的过程中签发 EE 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+To perform a key rollover operation, the CA MUST perform the following steps in the order given here. Unless specified otherwise each step SHOULD be performed without any intervening delay. The process MUST be run through to completion.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+要执行密钥展期操作，CA 必须按照此处给出的顺序执行以下步骤。除非另有规定，否则每个步骤都应在没有任何延迟的情况下执行。该过程必须贯穿始终。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+1. Generate a new key pair for use by the NEW CA. Because the goal of this algorithm is key rollover, the key pair generated in this step MUST be different from the pair in use by the CURRENT CA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+1. 生成新的密钥对，供新 CA 使用。由于该算法的目标是密钥展期，因此这一步生成的密钥对必须与当前 CA 使用的密钥对不同。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+2. Generate a certificate request with this key pair and pass the request to the CA that issued the CURRENT CA certificate. This request MUST include the same SIA extension that is present in the CURRENT CA certificate. This request, when satisfied, will result in the publication of the NEW CA certificate. This (NEW) CA certificate will contain a subject name selected by the issuer, which MUST be distinct from the subject name used in the CURRENT CA certificate. The Certificate Practice Statement (CPS) for the issuer of the NEW CA certificate will indicate the time frame within which a certificate request is expected to be processed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+2. 用该配对密钥生成证书请求，并将该请求传递给签发 CURRENT CA 证书的 CA。该请求必须包括与当前 CA 证书相同的 SIA 扩展名。该请求满足后，将发布新 CA 证书。该（新）CA 证书将包含一个由签发者选择的主题名，该主题名必须与当前 CA 证书中使用的主题名不同。新 CA 证书签发者的证书业务规则（CPS）将说明处理证书请求的时间范围。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+3. Publish the NEW CA&#39;s CRL and manifest.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+3. 发布新 CA 的 CRL 和清单。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+The steps involved here are:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+这里涉及的步骤有
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+- Wait for the issuer of the NEW CA to publish the NEW CA certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+- 等待新 CA 的签发者发布新 CA 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+- As quickly as possible following the publication of the NEW CA certificate, use the key pair associated with the NEW CA to generate an initially empty CRL, and publish this CRL in the NEW CA&#39;s repository publication point. It is RECOMMENDED that the CRL for the NEW CA have a nextUpdate value that will cause the CRL to be replaced at the end of the Staging Period (see in Step 4 below).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+- 在新 CA 证书发布后，尽快使用与新 CA 关联的密钥对生成初始为空的 CRL，并在新 CA 的存储库发布点发布该 CRL。建议新 CA 的 CRL 具有 nextUpdate 值，该值将导致 CRL 在暂存期结束时被替换（见下文步骤 4）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+- Generate a new key pair, and generate an associated EE certificate request with an AIA value of the NEW CA&#39;s repository publication point. Pass this EE certificate request to the NEW CA, and use the returned (single-use) EE certificate as the NEW CA&#39;s manifest EE certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+- 生成新的密钥对，并生成相关的 EE 证书请求，其 AIA 值为新 CA 的存储库发布点。将此 EE 证书请求传递给新 CA，并使用返回的（一次性）EE 证书作为新 CA 的清单 EE 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+- Generate a manifest containing the new CA&#39;s CRL as the only entry, and sign it with the private key associated with the manifest EE certificate. Publish the manifest at the NEW CA&#39;s repository publication point.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+- 生成一份清单，将新 CA 的 CRL 作为唯一条目，并使用与清单 EE 证书关联的私钥对其进行签名。在新 CA 的存储库发布点发布清单。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+- Destroy the private key associated with the manifest EE certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+- 销毁与清单 EE 证书相关的私钥。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+4. The NEW CA enters a Staging Period. The duration of the Staging Period is determined by the CA, but it SHOULD be no less than 24 hours. The Staging Period is intended to afford an opportunity for all RPs to download the NEW CA certificate prior to publication of certificates, CRLs, and RPKI signed objects under the NEW CA. During the Staging Period, the NEW CA SHOULD reissue, but not publish, all of the products that were issued under the CURRENT CA. This includes all CA certificates, EE certificates, and RPKI signed objects. Section 4 describes how each reissued product relates to the product that it replaces. During the Staging Period, the CURRENT CA SHOULD continue to accept and process certificate issuance requests and MUST continue to accept and process certificate revocation requests. If any certificates are issued by the CURRENT CA during the Staging Period, they MUST be reissued under the NEW CA during this period. Any certificates that are revoked under the CURRENT CA MUST NOT be reissued under the NEW CA. As noted above, in the case of an emergency key rollover, a CA will decide whether the 24 hour minimal Staging Period interval is appropriate, or if a shorter Staging Period is needed. As the Staging Period imposes no additional burden on Relying Parties, there is no stipulated or recommended maximum Staging Period.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+4. 新 CA 进入 &#34;暂存期&#34;。暫存期間的長短由憑證機構決定，但應不少於 24 小時。暫存期間的目的是在新憑證機構公佈憑證、憑證廢止清冊及 RPKI 簽章物件前，讓所有 RP 有機會下載新憑證機構的憑證。在暂存期间，新 CA 应重新签发，但不公布在当前 CA 下签发的所有产品。这包括所有 CA 证书、EE 证书和 RPKI 签名对象。第 4 节描述了每个重新签发的产品与其替代产品的关系。在暂存期间，当前 CA 应继续接受和处理证书签发请求，并必须继续接受和处理证书废止请求。如果在暂存期间有任何证书由当前 CA 签发，则必须在此期间由新 CA 重新签发。任何在当前 CA 下撤销的证书不得在新 CA 下重新签发。如上所述，在紧急金钥转移的情况下，CA 将决定 24 小时最小暂存期间隔是否合适，或是否需要更短的暂存期。由于暂存期不会给依赖方带来额外负担，因此没有规定或建议最长暂存期。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+5. Upon expiration of the Staging Period, the NEW CA MUST publish the signed products that have been reissued under the NEW CA, replacing the corresponding products issued under the CURRENT CA at the NEW CA&#39;s repository publication point. This replacement is implied by the file naming requirements imposed by [RFC6481] for these signed products. The trivial manifest for the NEW CA (which contained only one entry, for the NEW CA&#39;s CRL) is replaced by a manifest listing all of these reissued, signed products. At this point, the CURRENT CA becomes the OLD CA, and the NEW CA becomes the CURRENT CA. Use the OLD CA to issue a manifest that lists only the OLD CA&#39;s CRL. It is anticipated that this step is very brief, perhaps a few minutes in duration, because the CA has reissued all of the signed products during the Staging Period. Nonetheless, it is desirable that the activities performed in this step be viewed as atomic by RPs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+5. 暫存期間結束後，新憑證機構必須在新憑證機構的儲存庫發佈點發佈在新憑證機構下重新簽發的簽章產品，取代在現行憑證機構下簽發的相對應產品。这种替换由 [RFC6481] 为这些签名产品规定的文件命名要求所暗示。新 CA 的琐碎清单（只包含一个条目，即新 CA 的 CRL）被列出所有这些重新发布的签名产品的清单所取代。此时，当前 CA 变为旧 CA，新 CA 变为当前 CA。使用 &#34;旧 CA &#34;发布一份清单，其中只列出 &#34;旧 CA &#34;的 CRL。预计这一步骤非常简短，可能只持续几分钟，因为 CA 已在 &#34;暂存期间 &#34;重新签发了所有已签名产品。尽管如此，RP 最好还是将此步骤中执行的活动视为原子活动。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+6. Generate a certificate revocation request for the OLD CA certificate and submit it to the issuer of that certificate. When the OLD CA certificate is revoked, the CRL for the OLD CA is removed from the repository, along with the manifest for the OLD CA. The private key for the OLD CA is destroyed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+6. 生成旧 CA 证书的证书吊销请求，并提交给该证书的签发者。当旧 CA 证书被吊销时，旧 CA 的 CRL 会连同旧 CA 的清单一起从存储库中删除。旧 CA 的私钥也会被销毁。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Relying-Party-Requirements">
+3. Relying Party Requirements
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 依赖方要求
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This procedure defines a Staging Period for CAs performing a key rollover operation. This period is defined as a period no shorter than 24 hours.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本程序为执行密钥展期操作的 CA 定义了一个暂存期。这段时间不短于 24 小时。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPs who maintain a local cache of the distributed RPKI repository MUST perform a local cache synchronization operation against the distributed RPKI repository at regular intervals of no longer than 24 hours.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+维护分布式 RPKI 资源库本地缓存的 RP 必须针对分布式 RPKI 资源库定期执行本地缓存同步操作，时间间隔不得超过 24 小时。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Reissuing-Certificates-and-RPKI-Signed-Objects">
+4. Reissuing Certificates and RPKI Signed Objects
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 重新签发证书和 RPKI 签名对象
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This section provides rules a CA MUST use when it reissues subordinate certificates and RPKI signed objects [RFC6488] as part of the key rollover process. Note that CRLs and manifests are not reissued, per se. They are generated for each CA instance. A manifest catalogues the contents of a publication point relative to a CA instance. A CRL lists revoked certificates relative to a CA instance. Key rollover processing for CRLs and manifests is described above, in Section 3.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本节规定了 CA 在密钥展期过程中重新签发下级证书和 RPKI 签名对象 [RFC6488] 时必须使用的规则。请注意，CRL 和清单本身并不重新签发。它们是为每个 CA 实例生成的。清单对与 CA 实例相关的发布点内容进行编目。CRL 列出与 CA 实例相关的已撤销证书。上文第 3 节介绍了 CRL 和清单的密钥延期处理。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-1--CA-Certificates">
+4.1. CA Certificates
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.1. CA 证书
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When a CA, as part of the key rollover process, reissues a CA certificate, it copies all of the field and extension values from the old certificate into the new certificate. The only exceptions to this rule are that the notBefore value MAY be set to the current date and time, and the certificate serial number MAY change. Because the reissued CA certificate is issued by a different CA instance, it is not a requirement that the certificate serial number change in the reissued certificate. Nonetheless, the CA MUST ensure that each certificate issued under a specific CA instance (a distinct name and key) contains a unique serial number.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当 CA 作为密钥展期过程的一部分重新签发 CA 证书时，会将旧证书中的所有字段和扩展名值复制到新证书中。这一规则的唯一例外是：notBefore 值可设置为当前日期和时间，证书序列号可更改。由于重新签发的 CA 证书是由不同的 CA 实例签发的，因此不要求在重新签发的证书中更改证书序列号。尽管如此，CA 必须确保在特定 CA 实例（不同的名称和密钥）下签发的每份证书都包含唯一的序列号。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-2--RPKI-Signed-Objects">
+4.2. RPKI Signed Objects
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.2. RPKI 签名对象
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An RPKI signed object is a Cryptographic Message Syntax (CMS) signed-data object, containing an EE certificate and a payload (content) [RFC6488]. When a key rollover occurs, the EE certificate for the RPKI signed object MUST be reissued, under the key of the NEW CA. A CA MAY choose to treat this EE certificate the same way that it deals with CA certificates, i.e., to copy over all fields and extensions, and MAY change only the notBefore date and the serial number. If the CA adopts this approach, then the new EE certificate is inserted into the CMS wrapper, but the signed context remains the same. (If the signing time or binary signing time values in the CMS wrapper are non-null, they MAY be updated to reflect the current time.) Alternatively, the CA MAY elect to generate a new key pair for this EE certificate. If it does so, the object content MUST be resigned under the private key corresponding to the EE certificate. In this case, the EE certificate MUST contain a new public key and a new notBefore value, and it MAY contain a new notAfter value, but all other field and extension values, other than those relating to the digital signature and its associated certificate validation path, remain unchanged. If the signing time or binary signing time values in the CMS wrapper are non-null, they MAY be updated to reflect the current time.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 签名对象是一个加密信息语法（CMS）签名数据对象，包含一个 EE 证书和一个有效载荷（内容）[RFC6488]。当发生密钥转移时，RPKI 签名对象的 EE 证书必须在新 CA 的密钥下重新签发。CA 可以选择与处理 CA 证书相同的方式来处理该 EE 证书，即复制所有字段和扩展名，并可以只更改 notBefore 日期和序列号。如果 CA 采用这种方式，新的 EE 证书就会插入 CMS 封装程序，但签署的上下文保持不变。(如果 CMS 封装器中的签名时间或二进制签名时间值为非空，则可以更新以反映当前时间）。或者，CA 可以选择为 EE 证书生成新的密钥对。如果这样做，对象内容必须根据 EE 证书对应的私钥进行签名。在这种情况下，EE 证书必须包含新的公开密钥和新的 notBefore 值，也可包含新的 notAfter 值，但除与数字签名及其相关证书验证路径有关的值外，所有其它字段和扩展值保持不变。如果 CMS 封装程序中的签名时间或二进制签名时间值为非空，则可以更新这些值以反映当前时间。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As noted in Sections 2.1.6.4.3 and 2.1.6.4.4 of [RFC6488], the presence or absence of the signing-time and/or the binary-signing-time attribute MUST NOT affect the validity of the RPKI signed object.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如 [RFC6488] 第 2.1.6.4.3 和 2.1.6.4.4 节所述，签名时间和/或二进制签名时间属性的存在与否不得影响 RPKI 签名对象的有效性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Security-Considerations">
+5. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+No key should be used forever. The longer a key is in use, the greater the probability that it will have been compromised through carelessness, accident, espionage, or cryptanalysis. Infrequent key rollover increases the risk that the rollover procedures will not be followed to the appropriate level of precision, increasing the risk of operational failure of some form in the key rollover process. Regular scheduling of key rollover is generally considered to be a part of a prudent key management practice. However, key rollover does impose additional operational burdens on both the CA and the population of RPs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+任何密钥都不应永远使用。密钥使用时间越长，因疏忽大意、意外事故、间谍活动或密码分析而泄露的可能性就越大。如果不经常更换密钥，就会增加更换程序不精确的风险，从而增加密钥更换过程中某种形式的操作失败的风险。一般认为，定期安排密钥交接是谨慎的密钥管理做法的一部分。然而，密钥延期确实会给核证机构和注册表用户群带来额外的操作负担。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+These considerations imply that in choosing lifetimes for the keys it manages, a CA should balance security and operational impact (on RPs). A CA should perform key rollover at regularly scheduled intervals. These intervals should be frequent enough to minimize the risks associated with key compromise (noted above) and to maintain local operational proficiency with respect to the key rollover process. However, key lifetimes should be sufficiently long so that the (system-wide) load associated with key rollover events (across the entire RPKI) does not impose an excessive burden upon the population of RPs. RPs are encouraged to maintain an accurate local cache of the current state of the RPKI, which implies frequent queries to the RPKI repository system to detect changes. When a CA rekeys, it changes many signed objects, thus impacting all RPs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这些考虑意味着，在选择其管理的密钥的有效期时，CA 应平衡安全性和（对 RP 的）操作影响。CA 应定期执行密钥延期。这些间隔应足够频繁，以尽量减少与密钥泄露有关的风险（如上所述），并保持本地操作人员对密钥翻转过程的熟练程度。然而，密钥的使用寿命应足够长，这样与密钥翻转事件（整个 RPKI）相关的（全系统）负荷才不会对所有注册人员造成过重的负担。我们鼓励 RP 维护 RPKI 当前状态的准确本地缓存，这意味着要经常查询 RPKI 存储库系统以检测变化。当 CA 重新键入时，会更改许多签名对象，从而影响所有 RP。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Acknowledgements">
+6. Acknowledgements
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 致谢
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors would like to acknowledge the review comments of Tim Bruijnzeels and Sean Turner in preparing this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢 Tim Bruijnzeels 和 Sean Turner 在编写本文件过程中提出的审查意见。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--References">
+7. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7-1--Normative-References">
+7.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3779] Lynn, C., Kent, S., and K. Seo, &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34;, RFC 3779, June 2004.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3779] Lynn, C., Kent, S., and K. Seo, &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34;, RFC 3779, June 2004.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, May 2008.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, May 2008.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Huston, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Huston, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7-2--Informative-References">
+7.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6488] Lepinski, M., Chi, A., and S. Kent, &#34;Signed Object Template for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6488, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6488] Lepinski, M., Chi, A., and S. Kent, &#34;Signed Object Template for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6488, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Geoff Huston APNIC
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Geoff Huston APNIC
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: gih@apnic.net
+   URI:   http://www.apnic.net
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+George Michaelson APNIC
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+乔治-迈克尔逊 APNIC
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: ggm@apnic.net
+   URI:   http://www.apnic.net
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Stephen Kent BBN Technologies 10 Moulton St. Cambridge, MA 02138 USA
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Stephen Kent BBN Technologies 10 Moulton St.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: kent@bbn.com
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

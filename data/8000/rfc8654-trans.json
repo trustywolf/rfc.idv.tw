@@ -1,0 +1,395 @@
+{
+  "title": {
+    "text": "RFC 8654 - Extended Message Support for BGP",
+    "zh": "RFC 8654 - BGP 扩展报文支持"
+  },
+  "number": 8654,
+  "created_at": "2023-12-04 15:56:23.912309+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                           R. Bush\nRequest for Comments: 8654                                  Arrcus & IIJ\nUpdates: 4271                                                   K. Patel\nCategory: Standards Track                                   Arrcus, Inc.\nISSN: 2070-1721                                                  D. Ward\n                                                           Cisco Systems\n                                                            October 2019",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 20,
+      "text": "Extended Message Support for BGP",
+      "zh": "BGP 扩展报文支持"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "The BGP specification (RFC 4271) mandates a maximum BGP message size of 4,096 octets. As BGP is extended to support new Address Family Identifiers (AFIs), Subsequent AFIs (SAFIs), and other features, there is a need to extend the maximum message size beyond 4,096 octets. This document updates the BGP specification by extending the maximum message size from 4,096 octets to 65,535 octets for all messages except for OPEN and KEEPALIVE messages.",
+      "zh": "BGP 规范（RFC 4271）规定 BGP 信息的最大大小为 4,096 个八进制字节。随着 BGP 扩展到支持新的地址族标识符 (AFI)、后续 AFI (SAFI) 和其他功能，有必要将最大报文大小扩展到 4,096 个八位字节以上。本文档更新了 BGP 规范，将所有报文（OPEN 和 KEEPALIVE 报文除外）的最大报文大小从 4,096 个八位字节扩展到 65,535 个八位字节。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc8654.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc8654。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2019 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "Copyright (c) 2019 IETF Trust 和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受BCP 78以及本文档发布之日有效的IETF信托基金关于IETF文档的法律规定（https://trustee.ietf.org/license-info）的约束。 请仔细阅读这些文档，因为它们描述了您对本文档的权利和限制。 从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中描述的简化 BSD 许可证文本，并且不提供简化 BSD 许可证中描述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction\n  1.1.  Requirements Language\n2.  BGP Extended Message\n3.  BGP Extended Message Capability\n4.  Operation\n5.  Error Handling\n6.  Changes to RFC 4271\n7.  IANA Considerations\n8.  Security Considerations\n9.  References\n  9.1.  Normative References\n  9.2.  Informative References\nAcknowledgments\nAuthors' Addresses",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "The BGP specification [RFC4271] mandates a maximum BGP message size of 4,096 octets. As BGP is extended to support new AFIs, SAFIs, and other capabilities (e.g., BGPsec [RFC8205] and BGP - Link State (BGP-LS) [RFC7752]), there is a need to extend the maximum message size beyond 4,096 octets. This document provides an extension to BGP to extend the message size limit from 4,096 octets to 65,535 octets for all messages except for OPEN and KEEPALIVE messages.",
+      "zh": "BGP 规范 [RFC4271] 规定 BGP 报文的最大大小为 4,096 个八位字节。随着 BGP 的扩展以支持新的 AFI、SAFI 和其他功能（如 BGPsec [RFC8205] 和 BGP - Link State (BGP-LS) [RFC7752]），有必要将最大报文大小扩展到 4,096 个八位字节以上。本文档对 BGP 进行了扩展，将除 OPEN 和 KEEPALIVE 消息以外的所有消息的消息大小限制从 4,096 个八位字节扩展到 65,535 个八位字节。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Requirements Language",
+      "section_title": true,
+      "zh": "1.1. 要求语言"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. BGP Extended Message",
+      "section_title": true,
+      "zh": "2. BGP 扩展报文"
+    },
+    {
+      "indent": 3,
+      "text": "A BGP message over 4,096 octets in length is a BGP Extended Message.",
+      "zh": "长度超过 4,096 个八位位组的 BGP 报文为 BGP 扩展报文。"
+    },
+    {
+      "indent": 3,
+      "text": "BGP Extended Messages have a maximum message size of 65,535 octets. The smallest message that may be sent is a BGP KEEPALIVE, which consists of 19 octets.",
+      "zh": "BGP 扩展报文的最大报文大小为 65,535 个八位字节。可发送的最小报文是 BGP KEEPALIVE，由 19 个八位字节组成。"
+    },
+    {
+      "indent": 0,
+      "text": "3. BGP Extended Message Capability",
+      "section_title": true,
+      "zh": "3. BGP 扩展报文功能"
+    },
+    {
+      "indent": 3,
+      "text": "The BGP Extended Message Capability is a new BGP capability [RFC5492] defined with Capability Code 6 and Capability Length 0.",
+      "zh": "BGP 扩展报文能力是一种新的 BGP 能力[RFC5492]，定义为能力代码 6 和能力长度 0。"
+    },
+    {
+      "indent": 3,
+      "text": "To advertise the BGP Extended Message Capability to a peer, a BGP speaker uses BGP Capabilities Advertisement [RFC5492]. By advertising the BGP Extended Message Capability to a peer, a BGP speaker conveys that it is able to receive and properly handle BGP Extended Messages (see Section 4).",
+      "zh": "BGP 说话者使用 BGP 能力广告 [RFC5492]，向对等方发布 BGP 扩展报文能力广告。通过向对等方发布 BGP 扩展报文能力广告，BGP 说话者表明它能够接收并正确处理 BGP 扩展报文（见第 4 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "Peers that wish to use the BGP Extended Message Capability MUST support error handling for BGP UPDATE messages per [RFC7606].",
+      "zh": "希望使用 BGP 扩展报文功能的对等网络必须根据 [RFC7606] 支持 BGP UPDATE 报文的错误处理。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Operation",
+      "section_title": true,
+      "zh": "4. 运行"
+    },
+    {
+      "indent": 3,
+      "text": "The BGP Extended Message Capability applies to all messages except for OPEN and KEEPALIVE messages. These exceptions reduce the complexity of providing backward compatibility.",
+      "zh": "BGP 扩展报文能力适用于除 OPEN 和 KEEPALIVE 报文以外的所有报文。这些例外情况降低了提供向后兼容性的复杂性。"
+    },
+    {
+      "indent": 3,
+      "text": "A BGP speaker that is capable of receiving BGP Extended Messages SHOULD advertise the BGP Extended Message Capability to its peers using BGP Capabilities Advertisement [RFC5492]. A BGP speaker MAY send BGP Extended Messages to a peer only if the BGP Extended Message Capability was received from that peer.",
+      "zh": "能够接收 BGP 扩展信息的 BGP 发言者应使用 BGP 能力广告 [RFC5492]，将 BGP 扩展信息能力广告给其对等方。只有在从对等方接收到 BGP 扩展消息能力的情况下，BGP 发言者才可以向该对等方发送 BGP 扩展消息。"
+    },
+    {
+      "indent": 3,
+      "text": "An implementation that advertises the BGP Extended Message Capability MUST be capable of receiving a message with a length up to and including 65,535 octets.",
+      "zh": "宣传 BGP 扩展报文能力的实现必须能够接收长度不超过（包括）65,535 八位字节的报文。"
+    },
+    {
+      "indent": 3,
+      "text": "Applications generating information that might be encapsulated within BGP messages MUST limit the size of their payload to take the maximum message size into account.",
+      "zh": "生成可能封装在 BGP 报文中的信息的应用程序必须限制其有效载荷的大小，以便将最大报文大小考虑在内。"
+    },
+    {
+      "indent": 3,
+      "text": "If a BGP message with a length greater than 4,096 octets is received by a BGP listener who has not advertised the BGP Extended Message Capability, the listener will generate a NOTIFICATION with the Error Subcode set to Bad Message Length ([RFC4271], Section 6.1).",
+      "zh": "如果未公布 BGP 扩展报文能力的 BGP 监听器接收到长度大于 4,096 个八位字节的 BGP 报文，该监听器将生成一个错误子码设置为报文长度不良的通知（[RFC4271]，第 6.1 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "A BGP UPDATE will (if allowed by policy, best path, etc.) typically propagate throughout the BGP-speaking Internet and hence to BGP speakers that may not support BGP Extended Messages. Therefore, an announcement in a BGP Extended Message where the size of the attribute set plus the NLRI is larger than 4,096 octets may cause lack of reachability.",
+      "zh": "如果策略、最佳路径等允许，BGP UPDATE 通常会传播到整个讲 BGP 的互联网，从而传播到可能不支持 BGP 扩展信息的 BGP 发言者。因此，如果 BGP 扩展报文中属性集和 NLRI 的大小超过 4,096 个八位字节，则可能会导致缺乏可达性。"
+    },
+    {
+      "indent": 3,
+      "text": "A BGP speaker that has advertised the BGP Extended Message Capability to its peers may receive an UPDATE from one of its peers that produces an ongoing announcement that is larger than 4,096 octets. When propagating that UPDATE onward to a neighbor that has not advertised the BGP Extended Message Capability, the speaker SHOULD try to reduce the outgoing message size by removing attributes eligible under the \"attribute discard\" approach of [RFC7606]. If the message is still too big, then it must not be sent to the neighbor ([RFC4271], Section 9.2). Additionally, if the NLRI was previously advertised to that peer, it must be withdrawn from service ([RFC4271], Section 9.1.3).",
+      "zh": "已向对等体公布 BGP 扩展报文能力的 BGP 说话者可能会从其中一个对等体收到一个 UPDATE，该 UPDATE 产生的持续公布大于 4,096 个八进制字节。当将该 UPDATE 传播到未宣传 BGP 扩展消息能力的邻居时，发言者应尝试通过删除 [RFC7606] 中 \"属性丢弃 \"方法下符合条件的属性来减小传出消息的大小。如果报文仍然过大，则不得将其发送给邻居（[RFC4271]，第 9.2 节）。此外，如果 NLRI 以前曾向该对等体发布过广告，则必须将其从服务中撤销（[RFC4271]，第 9.1.3 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "If an Autonomous System (AS) has multiple internal BGP speakers and also has multiple external BGP neighbors, care must be taken to ensure a consistent view within the AS in order to present a consistent external view. In the context of BGP Extended Messages, a consistent view can only be guaranteed if all the Internal BGP (iBGP) speakers advertise the BGP Extended Message Capability. If that is not the case, then the operator should consider whether or not the BGP Extended Message Capability should be advertised to external peers.",
+      "zh": "如果一个自治系统（AS）有多个内部 BGP 发言者，同时也有多个外部 BGP 邻居，则必须注意确保 AS 内部视图的一致性，以便呈现一致的外部视图。就 BGP 扩展报文而言，只有当所有内部 BGP (iBGP) 发言者都公布了 BGP 扩展报文功能时，才能保证一致的视图。如果情况并非如此，运营商就应考虑是否应向外部对等方公布 BGP 扩展消息功能。"
+    },
+    {
+      "indent": 3,
+      "text": "During the incremental deployment of BGP Extended Messages and use of the \"attribute discard\" approach of [RFC7606] in an iBGP mesh or with External BGP (eBGP) peers, the operator should monitor any routes dropped and any discarded attributes.",
+      "zh": "在 iBGP 网状网络或外部 BGP (eBGP) 对等体中逐步部署 BGP 扩展信息和使用 [RFC7606] 的 \"属性丢弃 \"方法期间，操作员应监控丢弃的任何路由和丢弃的任何属性。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Error Handling",
+      "section_title": true,
+      "zh": "5. 错误处理"
+    },
+    {
+      "indent": 3,
+      "text": "A BGP speaker that has the ability to use BGP Extended Messages but has not advertised the BGP Extended Message Capability, presumably due to configuration, MUST NOT accept a BGP Extended Message. A speaker MUST NOT implement a more liberal policy accepting BGP Extended Messages.",
+      "zh": "有能力使用 BGP 扩展报文但可能由于配置原因尚未公布 BGP 扩展报文能力的 BGP 说话者不得接受 BGP 扩展报文。发言者不得实施接受 BGP 扩展信息的更宽松策略。"
+    },
+    {
+      "indent": 3,
+      "text": "A BGP speaker that does not advertise the BGP Extended Message Capability might also genuinely not support BGP Extended Messages. Such a speaker will follow the error-handling procedures of [RFC4271] if it receives a BGP Extended Message. Similarly, any speaker that treats an improper BGP Extended Message as a fatal error MUST follow the error-handling procedures of [RFC4271].",
+      "zh": "不宣传 BGP 扩展报文能力的 BGP 发言者也可能真正不支持 BGP 扩展报文。这样的发言者在收到 BGP 扩展报文时将遵循 [RFC4271] 的错误处理程序。同样，任何将不适当的 BGP 扩展信息视为致命错误的发言者必须遵守 [RFC4271] 的错误处理程序。"
+    },
+    {
+      "indent": 3,
+      "text": "Error handling for UPDATE messages, as specified in Section 6.3 of [RFC4271], is unchanged. However, if a NOTIFICATION is to be sent to a BGP speaker that has not advertised the BGP Extended Message Capability, the size of the message MUST NOT exceed 4,096 octets.",
+      "zh": "[RFC4271] 第 6.3 节规定的 UPDATE 消息的错误处理方法不变。但是，如果要向未公布 BGP 扩展报文能力的 BGP 说话者发送通知，则报文的大小不得超过 4,096 个八位字节。"
+    },
+    {
+      "indent": 3,
+      "text": "It is RECOMMENDED that BGP protocol developers and implementers are conservative in their application and use of BGP Extended Messages. Future protocol specifications MUST describe how to handle peers that can only accommodate 4,096 octet messages.",
+      "zh": "建议 BGP 协议开发者和实施者在应用和使用 BGP 扩展报文时保持保守。未来的协议规范必须说明如何处理只能容纳 4,096 个字节报文的对等方。"
+    },
+    {
+      "indent": 0,
+      "text": "6. Changes to RFC 4271",
+      "section_title": true,
+      "zh": "6. 对 RFC 4271 的修改"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4271] states \"The value of the Length field MUST always be at least 19 and no greater than 4096.\" This document changes the latter number to 65,535 for all messages except for OPEN and KEEPALIVE messages.",
+      "zh": "[RFC4271]规定：\"长度字段的值必须始终至少为 19，且不大于 4096\"。除 OPEN 和 KEEPALIVE 报文外，本文件将所有报文的长度字段值改为 65 535。"
+    },
+    {
+      "indent": 3,
+      "text": "Section 6.1 of [RFC4271] specifies raising an error if the length of a message is over 4,096 octets. For all messages except for OPEN and KEEPALIVE messages, if the receiver has advertised the BGP Extended Message Capability, this document raises that limit to 65,535.",
+      "zh": "[RFC4271]第 6.1 节规定，如果报文长度超过 4,096 个八位字节，就会出错。对于除 OPEN 和 KEEPALIVE 报文之外的所有报文，如果接收方已公布了 BGP 扩展报文能力，本文档会将该限制提高到 65,535 字节。"
+    },
+    {
+      "indent": 0,
+      "text": "7. IANA Considerations",
+      "section_title": true,
+      "zh": "7. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has made the following allocation in the \"Capability Codes\" registry:",
+      "zh": "IANA 在 \"能力代码 \"注册表中进行了如下分配："
+    },
+    {
+      "indent": 3,
+      "text": "+-------+----------------------+-----------+\n| Value | Description          | Reference |\n+=======+======================+===========+\n| 6     | BGP Extended Message | RFC 8654  |\n+-------+----------------------+-----------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 5,
+      "text": "Table 1: Addition to \"Capability Codes\" Registry",
+      "zh": "表 1：\"能力代码 \"登记表新增内容"
+    },
+    {
+      "indent": 0,
+      "text": "8. Security Considerations",
+      "section_title": true,
+      "zh": "8. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This extension to BGP does not change BGP's underlying security issues [RFC4272].",
+      "zh": "对 BGP 的这一扩展不会改变 BGP 的基本安全问题 [RFC4272]。"
+    },
+    {
+      "indent": 3,
+      "text": "Due to increased memory requirements for buffering, there may be increased exposure to resource exhaustion, intentional or unintentional.",
+      "zh": "由于缓冲所需的内存增加，可能会有意或无意地增加资源耗尽的风险。"
+    },
+    {
+      "indent": 3,
+      "text": "If a remote speaker is able to craft a large BGP Extended Message to send on a path where one or more peers do not support BGP Extended Messages, peers that support BGP Extended Messages may:",
+      "zh": "如果远程发言者能够在一个或多个对等方不支持 BGP 扩展报文的路径上精心制作一个大的 BGP 扩展报文来发送，那么支持 BGP 扩展报文的对等方可能会："
+    },
+    {
+      "indent": 3,
+      "text": "* act to reduce the outgoing message (see Section 4) and, in doing so, cause an attack by discarding attributes one or more of its peers may be expecting. The attributes eligible under the \"attribute discard\" approach must have no effect on route selection or installation [RFC7606].",
+      "zh": "* 减少发出的信息（见第 4 节），并在此过程中，通过丢弃一个或多个对等方可能期待的属性而造成攻击。根据 \"属性丢弃 \"方法，符合条件的属性不得对路由选择或安装产生任何影响 [RFC7606]。"
+    },
+    {
+      "indent": 3,
+      "text": "* act to reduce the outgoing message (see Section 4) and, in doing so, allow a downgrade attack. This would only affect the attacker's message, where 'downgrade' has questionable meaning.",
+      "zh": "* 减少发出的信息（见第 4 节），从而允许降级攻击。这只会影响攻击者的信息，而 \"降级 \"的含义值得商榷。"
+    },
+    {
+      "indent": 3,
+      "text": "* incur resource load (processing, message resizing, etc.) when reformatting the large messages.",
+      "zh": "* 在重新格式化大型报文时，会增加资源负荷（处理、调整报文大小等）。"
+    },
+    {
+      "indent": 0,
+      "text": "9. References",
+      "section_title": true,
+      "zh": "9. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "9.1. Normative References",
+      "section_title": true,
+      "zh": "9.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, DOI 10.17487/RFC4271, January 2006, <https://www.rfc-editor.org/info/rfc4271>.",
+      "zh": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, DOI 10.17487/RFC4271, January 2006, <https://www.rfc-editor.org/info/rfc4271>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5492] Scudder, J. and R. Chandra, \"Capabilities Advertisement with BGP-4\", RFC 5492, DOI 10.17487/RFC5492, February 2009, <https://www.rfc-editor.org/info/rfc5492>.",
+      "zh": "[RFC5492] Scudder, J. and R. Chandra, \"Capabilities Advertisement with BGP-4\", RFC 5492, DOI 10.17487/RFC5492, February 2009, <https://www.rfc-editor.org/info/rfc5492>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7606] Chen, E., Ed., Scudder, J., Ed., Mohapatra, P., and K. Patel, \"Revised Error Handling for BGP UPDATE Messages\", RFC 7606, DOI 10.17487/RFC7606, August 2015, <https://www.rfc-editor.org/info/rfc7606>.",
+      "zh": "[RFC7606] Chen, E., Ed., Scudder, J., Ed., Mohapatra, P., and K. Patel, \"Revised Error Handling for BGP UPDATE Messages\", RFC 7606, DOI 10.17487/RFC7606, August 2015, <https://www.rfc-editor.org/info/rfc7606>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>.",
+      "zh": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>。"
+    },
+    {
+      "indent": 0,
+      "text": "9.2. Informative References",
+      "section_title": true,
+      "zh": "9.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4272] Murphy, S., \"BGP Security Vulnerabilities Analysis\", RFC 4272, DOI 10.17487/RFC4272, January 2006, <https://www.rfc-editor.org/info/rfc4272>.",
+      "zh": "[RFC4272] Murphy, S., \"BGP 安全漏洞分析\"，RFC 4272，DOI 10.17487/RFC4272，2006 年 1 月，<https://www.rfc-editor.org/info/rfc4272>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7752] Gredler, H., Ed., Medved, J., Previdi, S., Farrel, A., and S. Ray, \"North-Bound Distribution of Link-State and Traffic Engineering (TE) Information Using BGP\", RFC 7752, DOI 10.17487/RFC7752, March 2016, <https://www.rfc-editor.org/info/rfc7752>.",
+      "zh": "[RFC7752] Gredler, H., Ed., Medved, J., Previdi, S., Farrel, A., and S. Ray, \"North-Bound Distribution of Link-State and Traffic Engineering (TE) Information Using BGP\", RFC 7752, DOI 10.17487/RFC7752, March 2016, <https://www.rfc-editor.org/info/rfc7752>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8205] Lepinski, M., Ed. and K. Sriram, Ed., \"BGPsec Protocol Specification\", RFC 8205, DOI 10.17487/RFC8205, September 2017, <https://www.rfc-editor.org/info/rfc8205>.",
+      "zh": "[RFC8205] Lepinski, M., Ed. and K. Sriram, Ed., \"BGPsec Protocol Specification\", RFC 8205, DOI 10.17487/RFC8205, September 2017, <https://www.rfc-editor.org/info/rfc8205>。"
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgments",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors thank Alvaro Retana for an amazing review; Enke Chen, Susan Hares, John Scudder, John Levine, and Job Snijders for their input; and Oliver Borchert and Kyehwan Lee for their implementations and testing.",
+      "zh": "作者感谢 Alvaro Retana 的精彩审阅；感谢 Enke Chen、Susan Hares、John Scudder、John Levine 和 Job Snijders 的意见；感谢 Oliver Borchert 和 Kyehwan Lee 的实现和测试。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Randy Bush Arrcus & IIJ 5147 Crystal Springs Bainbridge Island, WA 98110 United States of America",
+      "zh": "Randy Bush Arrcus & IIJ 5147 Crystal Springs Bainbridge Island, WA 98110 美利坚合众国"
+    },
+    {
+      "indent": 3,
+      "text": "Email: randy@psg.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Keyur Patel Arrcus, Inc.",
+      "zh": "Keyur Patel Arrcus, Inc."
+    },
+    {
+      "indent": 3,
+      "text": "Email: keyur@arrcus.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Dave Ward Cisco Systems 170 W. Tasman Drive San Jose, CA 95134 United States of America",
+      "zh": "Dave Ward 思科系统 170 W. Tasman Drive San Jose, CA 95134 美利坚合众国"
+    },
+    {
+      "indent": 3,
+      "text": "Email: dward@cisco.com",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

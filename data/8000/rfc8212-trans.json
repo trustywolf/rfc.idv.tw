@@ -1,0 +1,360 @@
+{
+  "title": {
+    "text": "RFC 8212 - Default External BGP (EBGP) Route Propagation Behavior without Policies",
+    "zh": "RFC 8212 - 无策略的默认外部 BGP (EBGP) 路由传播行为"
+  },
+  "number": 8212,
+  "created_at": "2023-12-04 16:33:03.348888+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                          J. Mauch\nRequest for Comments: 8212                                        Akamai\nUpdates: 4271                                                J. Snijders\nCategory: Standards Track                                            NTT\nISSN: 2070-1721                                               G. Hankins\n                                                                   Nokia\n                                                               July 2017",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "Default External BGP (EBGP) Route Propagation Behavior without Policies",
+      "zh": "无策略的默认外部 BGP (EBGP) 路由传播行为"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document updates RFC 4271 by defining the default behavior of a BGP speaker when there is no Import or Export Policy associated with an External BGP session.",
+      "zh": "本文件更新了 RFC 4271，定义了当外部 BGP 会话没有关联导入或导出策略时 BGP 说话者的默认行为。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参阅 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc8212.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc8212。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2017 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "版权所有 (c) 2017 IETF 信托基金会和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2\n2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3\n  2.1.  Requirements Language . . . . . . . . . . . . . . . . . .   3\n3.  Changes to RFC 4271 . . . . . . . . . . . . . . . . . . . . .   3\n4.  Security Considerations . . . . . . . . . . . . . . . . . . .   4\n5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   4\n6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   4\n  6.1.  Normative References  . . . . . . . . . . . . . . . . . .   4\n  6.2.  Informative References  . . . . . . . . . . . . . . . . .   5\nAppendix A.  Transition Considerations for BGP Implementers . . .   6\n  A.1.  \"N+1 N+2\" Release Strategy  . . . . . . . . . . . . . . .   6\nAcknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .   6\nContributors  . . . . . . . . . . . . . . . . . . . . . . . . . .   7\nAuthors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   7",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "BGP routing security issues need to be addressed in order to make the Internet more stable. Route leaks [RFC7908] are part of the problem, but software defects or operator misconfiguration can also contribute. This document updates [RFC4271] so that routes are neither imported nor exported unless specifically enabled by configuration. This change reduces the consequences of these problems and improves the default level of Internet routing security.",
+      "zh": "为了使互联网更加稳定，需要解决 BGP 路由安全问题。路由泄漏 [RFC7908] 是问题的一部分，但软件缺陷或操作员的错误配置也会造成路由泄漏。本文件更新了 [RFC4271]，使路由既不会被导入，也不会被导出，除非通过配置特别启用。这一变更减少了这些问题的后果，并提高了互联网路由安全的默认级别。"
+    },
+    {
+      "indent": 3,
+      "text": "Many deployed BGP speakers send and accept any and all route announcements between their BGP neighbors by default. This practice dates back to the early days of the Internet, where operators were permissive in sending routing information to allow all networks to reach each other. As the Internet has become more densely interconnected, the risk of a misbehaving BGP speaker poses significant risks to Internet routing.",
+      "zh": "许多已部署的 BGP 发言者默认发送并接受其 BGP 邻居之间的所有路由通告。这种做法可以追溯到互联网的早期，当时运营商允许发送路由信息，以允许所有网络相互连接。随着互联网的互联密度越来越高，行为不端的 BGP 说话者会给互联网路由带来巨大风险。"
+    },
+    {
+      "indent": 3,
+      "text": "This specification intends to improve this situation by requiring the explicit configuration of both BGP Import and Export Policies for any External BGP (EBGP) session such as customers, peers, or confederation boundaries for all enabled address families. Through codification of the aforementioned requirement, operators will benefit from consistent behavior across different BGP implementations.",
+      "zh": "本规范要求为所有启用地址系列的客户、对等方或联盟边界等任何外部 BGP (EBGP) 会话明确配置 BGP 导入和导出策略，以改善这种情况。通过编纂上述要求，运营商将从不同 BGP 实现的一致行为中受益。"
+    },
+    {
+      "indent": 3,
+      "text": "BGP speakers following this specification do not use or send routes on EBGP sessions, unless specifically configured to do so.",
+      "zh": "遵循本规范的 BGP 发言者不会在 EBGP 会话中使用或发送路由，除非特别配置为这样做。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Terminology",
+      "section_title": true,
+      "zh": "2. 用语"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4271] describes a Policy Information Base (PIB) that contains local policies that can be applied to the information in the Routing Information Base (RIB). This document distinguishes the type of a policy based on its application.",
+      "zh": "[RFC4271]描述了一个策略信息库（PIB），其中包含可应用于路由信息库（RIB）中信息的本地策略。本文档根据策略的应用来区分策略的类型。"
+    },
+    {
+      "indent": 3,
+      "text": "Import Policy: a local policy to be applied to the information contained in the Adj-RIBs-In. As described in Section 3.2 [RFC4271], the Adj-RIBs-In contain information learned from other BGP speakers, and the application of the Import Policy results in the routes that will be considered in the Decision Process by the local BGP speaker.",
+      "zh": "导入策略：将应用于 Adj-RIBs-In 所含信息的本地策略。如第 3.2 节 [RFC4271] 所述，Adj-RIBs-In 包含从其他 BGP 发言者处获得的信息，应用导入策略后，本地 BGP 发言者将在决策过程中考虑路由。"
+    },
+    {
+      "indent": 3,
+      "text": "Export Policy: a local policy to be applied in selecting the information contained in the Adj-RIBs-Out. As described in Section 3.2 [RFC4271], the Adj-RIBs-Out contain information that has been selected for advertisement to other BGP speakers.",
+      "zh": "导出策略：在选择 Adj-RIBs-Out 中包含的信息时应用的本地策略。如第 3.2 节 [RFC4271] 所述，Adj-RIBs-Out 包含的信息已被选定用于向其他 BGP 发言者发布广告。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1. Requirements Language",
+      "section_title": true,
+      "zh": "2.1. 要求语言"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Changes to RFC 4271",
+      "section_title": true,
+      "zh": "3. 对 RFC 4271 的修改"
+    },
+    {
+      "indent": 3,
+      "text": "This section updates [RFC4271] to specify the default behavior of a BGP speaker when there are no Import or Export Policies associated with a particular EBGP session. A BGP speaker MAY provide a configuration option to deviate from the following updated behaviors.",
+      "zh": "本节更新了 [RFC4271]，规定了当没有与特定 EBGP 会话关联的导入或导出策略时 BGP 发言者的默认行为。BGP 说话者可以提供一个配置选项来偏离以下更新的行为。"
+    },
+    {
+      "indent": 3,
+      "text": "The following paragraph is added to Section 9.1 (Decision Process) after the fifth paragraph, which ends in \"route aggregation and route information reduction\":",
+      "zh": "在第 9.1 节（决策过程）第五段之后添加以下段落，该段以 \"路由聚合和路由信息缩减 \"结尾："
+    },
+    {
+      "indent": 6,
+      "text": "Routes contained in an Adj-RIB-In associated with an EBGP peer SHALL NOT be considered eligible in the Decision Process if no explicit Import Policy has been applied.",
+      "zh": "如果未应用显式导入策略，则与 EBGP 对等方相关联的 Adj-RIB-In 中包含的路由在决策过程中不应被视为合格。"
+    },
+    {
+      "indent": 3,
+      "text": "The following paragraph is added to Section 9.1.3 (Phase 3: Route Dissemination) after the third paragraph, which ends in \"by means of an UPDATE message (see 9.2).\":",
+      "zh": "在第 9.1.3 节（第 3 阶段：路由传播）第三段之后添加以下段落，该段以 \"通过 UPDATE 消息（见 9.2）\"结尾："
+    },
+    {
+      "indent": 6,
+      "text": "Routes SHALL NOT be added to an Adj-RIB-Out associated with an EBGP peer if no explicit Export Policy has been applied.",
+      "zh": "如果未应用显式导出策略，则不得将路由添加到与 EBGP 对等体关联的 Adj-RIB-Out 中。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Security Considerations",
+      "section_title": true,
+      "zh": "4. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "Permissive default routing policies can result in inadvertent effects such as route leaks [RFC7908], in general resulting in routing of traffic through an unexpected path. While it is possible for an operator to use monitoring to detect unexpected flows, there is no general framework that can be applied. These policies also have the potential to expose software defects or misconfiguration that could have unforeseen technical and business impacting effects.",
+      "zh": "允许的默认路由选择策略可能会导致路由泄漏 [RFC7908]等意外后果，一般会导致流量通过意外路径路由。虽然运营商可以通过监控来检测意外流量，但目前还没有通用的框架可供使用。这些策略还有可能暴露软件缺陷或配置错误，从而产生不可预见的技术和业务影响。"
+    },
+    {
+      "indent": 3,
+      "text": "The update to [RFC4271] specified in this document is intended to eliminate those inadvertent effects. Operators must explicitly configure Import and Export Policies to achieve their expected goals. There is of course no protection against a malicious or incorrect explicit configuration.",
+      "zh": "本文件对 [RFC4271] 的更新旨在消除这些意外影响。操作员必须明确配置导入和导出策略，以实现其预期目标。当然，对于恶意或不正确的显式配置没有任何保护措施。"
+    },
+    {
+      "indent": 3,
+      "text": "The security considerations described in [RFC4271] and the vulnerability analysis discussed in [RFC4272] also apply to this document.",
+      "zh": "RFC4271] 中描述的安全考虑因素和 [RFC4272] 中讨论的漏洞分析也适用于本文档。"
+    },
+    {
+      "indent": 0,
+      "text": "5. IANA Considerations",
+      "section_title": true,
+      "zh": "5. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This document does not require any IANA actions.",
+      "zh": "本文件无需 IANA 采取任何行动。"
+    },
+    {
+      "indent": 0,
+      "text": "6. References",
+      "section_title": true,
+      "zh": "6. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "6.1. Normative References",
+      "section_title": true,
+      "zh": "6.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <http://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <http://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, DOI 10.17487/RFC4271, January 2006, <http://www.rfc-editor.org/info/rfc4271>.",
+      "zh": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, DOI 10.17487/RFC4271, January 2006, <http://www.rfc-editor.org/info/rfc4271>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <http://www.rfc-editor.org/info/rfc8174>.",
+      "zh": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <http://www.rfc-editor.org/info/rfc8174>。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2. Informative References",
+      "section_title": true,
+      "zh": "6.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4272] Murphy, S., \"BGP Security Vulnerabilities Analysis\", RFC 4272, DOI 10.17487/RFC4272, January 2006, <http://www.rfc-editor.org/info/rfc4272>.",
+      "zh": "[RFC4272] Murphy, S., \"BGP 安全漏洞分析\"，RFC 4272，DOI 10.17487/RFC4272，2006 年 1 月，<http://www.rfc-editor.org/info/rfc4272>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7908] Sriram, K., Montgomery, D., McPherson, D., Osterweil, E., and B. Dickson, \"Problem Definition and Classification of BGP Route Leaks\", RFC 7908, DOI 10.17487/RFC7908, June 2016, <http://www.rfc-editor.org/info/rfc7908>.",
+      "zh": "[RFC7908] Sriram, K., Montgomery, D., McPherson, D., Osterweil, E., and B. Dickson, \"Problem Definition and Classification of BGP Route Leaks\", RFC 7908, DOI 10.17487/RFC7908, June 2016, <http://www.rfc-editor.org/info/rfc7908>。"
+    },
+    {
+      "indent": 0,
+      "text": "Appendix A. Transition Considerations for BGP Implementers",
+      "section_title": true,
+      "zh": "附录A. BGP 实施者的过渡考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This appendix is not normative.",
+      "zh": "本附录不具有规范性。"
+    },
+    {
+      "indent": 3,
+      "text": "For an implementer, transitioning to a compliant BGP implementation may require a process that can take several years.",
+      "zh": "对于实施者来说，过渡到符合要求的 BGP 实施可能需要几年的时间。"
+    },
+    {
+      "indent": 3,
+      "text": "It is understood and acknowledged that operators who are taking advantage of an undefined behavior will always be surprised by changes to said behavior.",
+      "zh": "我们理解并承认，利用未定义行为的操作员总会对该行为的变化感到惊讶。"
+    },
+    {
+      "indent": 0,
+      "text": "A.1. \"N+1 N+2\" Release Strategy",
+      "section_title": true,
+      "zh": "A.1. \"N+1 N+2\" 发布策略"
+    },
+    {
+      "indent": 3,
+      "text": "An implementer could leverage an approach described as the \"N+1 and N+2\" release strategy. In release N+1, the implementer introduces a new default configuration parameter to indicate that the BGP speaker is operating in \"ebgp insecure-mode\". In addition to the introduction of the new parameter, an implementer could begin to display informational warnings to the operator that certain parts of the configuration are incomplete. In release N+1, operators of the BGP implementation become aware that a configurable default exists in the implementation, and can prepare accordingly. In release N+2 or later, the inverse of the previous default configuration parameter that was introduced in release N+1 becomes the new default.",
+      "zh": "实施者可以利用一种被称为 \"N+1 和 N+2 \"的发布策略。在 N+1 版中，实施者会引入一个新的默认配置参数，指示 BGP 发言者以 \"ebgp 不安全模式 \"运行。除引入新参数外，实施者还可开始向操作员显示信息警告，说明配置的某些部分不完整。在 N+1 版中，BGP 实现的操作员会意识到实现中存在一个可配置的默认值，并可以做好相应的准备。在 N+2 版或更高版本中，在 N+1 版中引入的先前默认配置参数的倒数将成为新的默认值。"
+    },
+    {
+      "indent": 3,
+      "text": "As a result, any new installation of release N+2 will adhere to this document. Installations upgraded from version release N+1 will adhere to the previous insecure behavior, if no modification was made to the \"ebgp insecure-mode\" configuration parameter.",
+      "zh": "因此，任何新安装的 N+2 版本都将遵循本文档。如果没有修改 \"ebgp insecure-mode \"配置参数，从版本 N+1 升级的安装将遵循以前的不安全行为。"
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgments",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors would like to thank the following people for their comments, support and review: Shane Amante, Christopher Morrow, Robert Raszuk, Greg Skinner, Adam Chappell, Sriram Kotikalapudi, Brian Dickson, Jeffrey Haas, John Heasley, Ignas Bagdonas, Donald Smith, Alvaro Retana, John Scudder, and Dale Worley.",
+      "zh": "作者衷心感谢以下人员的意见、支持和审阅：Shane Amante、Christopher Morrow、Robert Raszuk、Greg Skinner、Adam Chappell、Sriram Kotikalapudi、Brian Dickson、Jeffrey Haas、John Heasley、Ignas Bagdonas、Donald Smith、Alvaro Retana、John Scudder 和 Dale Worley。"
+    },
+    {
+      "indent": 0,
+      "text": "Contributors",
+      "zh": "贡献者"
+    },
+    {
+      "indent": 3,
+      "text": "The following people contributed to successful deployment of the solution described in this document:",
+      "zh": "以下人员为本文件所述解决方案的成功部署做出了贡献："
+    },
+    {
+      "indent": 3,
+      "text": "Jakob Heitz Cisco",
+      "zh": "雅各布-海茨-思科"
+    },
+    {
+      "indent": 3,
+      "text": "Email: jheitz@cisco.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Ondrej Filip CZ.NIC",
+      "zh": "Ondrej Filip CZ.NIC"
+    },
+    {
+      "indent": 3,
+      "text": "Email: ondrej.filip@nic.cz",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Jared Mauch Akamai Technologies 8285 Reese Lane Ann Arbor Michigan 48103 United States of America",
+      "zh": "Jared Mauch Akamai Technologies 8285 Reese Lane Ann Arbor Michigan 48103 美国"
+    },
+    {
+      "indent": 3,
+      "text": "Email: jared@akamai.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Job Snijders NTT Communications Theodorus Majofskistraat 100 Amsterdam 1065 SZ The Netherlands",
+      "zh": "Job Snijders NTT Communications Theodorus Majofskistraat 100 Amsterdam 1065 SZ The Netherlands"
+    },
+    {
+      "indent": 3,
+      "text": "Email: job@ntt.net",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Greg Hankins Nokia 777 E. Middlefield Road Mountain View, CA 94043 United States of America",
+      "zh": "Greg Hankins Nokia 777 E. Middlefield Road Mountain View, CA 94043 美利坚合众国"
+    },
+    {
+      "indent": 3,
+      "text": "Email: greg.hankins@nokia.com",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

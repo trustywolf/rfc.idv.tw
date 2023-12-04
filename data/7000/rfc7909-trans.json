@@ -1,0 +1,754 @@
+{
+  "title": {
+    "text": "RFC 7909 - Securing Routing Policy Specification Language (RPSL) Objects with Resource Public Key Infrastructure (RPKI) Signatures",
+    "zh": "RFC 7909 - 利用资源公钥基础设施 (RPKI) 签名确保路由策略规范语言 (RPSL) 对象的安全"
+  },
+  "number": 7909,
+  "created_at": "2023-12-04 16:45:02.303219+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                      R. Kisteleki\nRequest for Comments: 7909                                      RIPE NCC\nUpdates: 2622, 4012                                          B. Haberman\nCategory: Standards Track                                        JHU APL\nISSN: 2070-1721                                                June 2016",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 5,
+      "text": "Securing Routing Policy Specification Language (RPSL) Objects with Resource Public Key Infrastructure (RPKI) Signatures",
+      "zh": "利用资源公钥基础设施 (RPKI) 签名确保路由策略规范语言 (RPSL) 对象的安全"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document describes a method that allows parties to electronically sign Routing Policy Specification Language objects and validate such electronic signatures. This allows relying parties to detect accidental or malicious modifications of such objects. It also allows parties who run Internet Routing Registries or similar databases, but do not yet have authentication (based on Routing Policy System Security) of the maintainers of certain objects, to verify that the additions or modifications of such database objects are done by the legitimate holder(s) of the Internet resources mentioned in those objects. This document updates RFCs 2622 and 4012 to add the signature attribute to supported RPSL objects.",
+      "zh": "本文件描述了一种方法，允许各方以电子方式签署路由选择策略规范语言对象并验证此类电子签名。这样，依赖方就能发现对此类对象的意外或恶意修改。它还允许运行互联网路由注册表或类似数据库，但尚未对某些对象的维护者进行身份验证（基于路由策略系统安全性）的各方，验证这些数据库对象的添加或修改是由这些对象中提及的互联网资源的合法持有者完成的。本文件更新了 RFC 2622 和 4012，为受支持的 RPSL 对象添加了签名属性。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc7909.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc7909。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2016 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "Copyright (c) 2016 IETF Trust 和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3\n2.  Signature Syntax and Semantics  . . . . . . . . . . . . . . .   4\n  2.1.  General Attributes and Meta Information . . . . . . . . .   4\n  2.2.  Signed Attributes . . . . . . . . . . . . . . . . . . . .   5\n  2.3.  Storage of the Signature Data . . . . . . . . . . . . . .   6\n  2.4.  Number Resource Coverage  . . . . . . . . . . . . . . . .   6\n  2.5.  Validity Time of the Signature  . . . . . . . . . . . . .   6\n3.  Signature Creation and Validation Steps . . . . . . . . . . .   6\n  3.1.  Canonicalization  . . . . . . . . . . . . . . . . . . . .   6\n  3.2.  Signature Creation  . . . . . . . . . . . . . . . . . . .   8\n  3.3.  Signature Validation  . . . . . . . . . . . . . . . . . .   9\n4.  Signed Object Types and Set of Signed Attributes  . . . . . .   9\n5.  Keys and Certificates Used for Signature and Verification . .  11\n6.  Security Considerations . . . . . . . . . . . . . . . . . . .  12\n7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  12\n  7.1.  Normative References  . . . . . . . . . . . . . . . . . .  12\n  7.2.  Informative References  . . . . . . . . . . . . . . . . .  14\nAcknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  14\nAuthors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "Objects stored in resource databases, like the RIPE DB, are generally protected by an authentication mechanism: anyone creating or modifying an object in the database has to have proper authorization to do so, and therefore has to go through an authentication procedure (provide a password, certificate, email signature, etc.). However, for objects transferred between resource databases, the authentication is not guaranteed. This means that when a Routing Policy Specification Language (RPSL) object is downloaded from a database, the consumer can reasonably claim that the object is authentic if it was locally created, but cannot make the same claim for an object imported from a different database. Also, once such an object is downloaded from the database, it becomes a simple (but still structured) text file with no integrity protection. More importantly, the authentication and integrity guarantees associated with these objects do not always ensure that the entity that generated them is authorized to make the assertions implied by the data contained in the objects.",
+      "zh": "存储在资源数据库（如 RIPE DB）中的对象通常受到身份验证机制的保护：任何在数据库中创建或修改对象的人都必须获得适当授权，因此必须通过身份验证程序（提供密码、证书、电子邮件签名等）。但是，对于在资源数据库之间传输的对象，身份验证是无法保证的。这就意味着，当路由策略规范语言（RPSL）对象从数据库下载时，如果该对象是在本地创建的，消费者可以合理地声称该对象是真实的，但对于从不同数据库导入的对象，消费者则无法作出同样的声称。而且，一旦从数据库下载了这样一个对象，它就变成了一个简单的（但仍然是结构化的）文本文件，没有完整性保护。更重要的是，与这些对象相关的身份验证和完整性保证并不总能确保生成这些对象的实体被授权做出对象所含数据暗示的断言。"
+    },
+    {
+      "indent": 3,
+      "text": "A potential use for resource certificates [RFC6487] is to use them to secure such (both imported and downloaded) database objects, by applying a digital signature over the object contents in lieu of methods such as Routing Policy System Security [RFC2725]. The signer of such signed database objects MUST possess a relevant resource certificate, which shows him/her as the legitimate holder of an Internet number resource. This mechanism allows the users of such database objects to verify that the contents are in fact produced by the legitimate holder(s) of the Internet resources mentioned in those objects. It also allows the signatures to cover whole RPSL objects, or just selected attributes of them. In other words, a digital signature created using the private key associated with a resource certificate can offer object security in addition to the channel security already present in most resource databases. Object security in turn allows such objects to be hosted in different databases and still be independently verifiable.",
+      "zh": "资源证书[RFC6487]的一个潜在用途是通过对对象内容应用数字签名来代替路由策略系统安全[RFC2725]等方法，从而确保此类数据库对象（包括导入和下载的数据库对象）的安全。此类签名数据库对象的签名者必须持有相关的资源证书，表明他/她是互联网号码资源的合法持有者。通过这种机制，此类数据库对象的用户可以验证这些对象中提及的互联网资源的合法持有者确实制作了这些内容。它还允许签名涵盖整个 RPSL 对象，或仅涵盖其中的选定属性。换句话说，使用与资源证书相关的私钥创建的数字签名，可以在大多数资源数据库已有的信道安全基础上提供对象安全。对象安全反过来又允许这些对象托管在不同的数据库中，而且仍然可以独立验证。"
+    },
+    {
+      "indent": 3,
+      "text": "While the approach outlined in this document mandates the use of the Resource Public Key Infrastructure (RPKI) for certificate distribution, it is not dependent upon the RPKI for correct functionality. Equivalent functionality can be achieved with a more traditional Certification Authority (CA), using the extensions described in [RFC3779] within the certificates, and the appropriate trust anchor material to verify the digital signature.",
+      "zh": "虽然本文件概述的方法规定使用资源公钥基础设施（RPKI）来分发证书，但其正确功能并不依赖于 RPKI。使用证书中 [RFC3779] 所描述的扩展和适当的信任锚材料来验证数字签名，可以通过更传统的认证机构 (CA) 实现同等功能。"
+    },
+    {
+      "indent": 3,
+      "text": "The capitalized key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in [RFC2119].",
+      "zh": "本文档中大写的关键词 \"MUST\"、\"MUST NOT\"、\"REQUIRED\"、\"SHALL\"、\"SHALL NOT\"、\"SHOULD\"、\"SHOULD NOT\"、\"RECOMMENDED\"、\"MAY \"和 \"OPTIONAL \"应按照 [RFC2119] 中的描述进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Signature Syntax and Semantics",
+      "section_title": true,
+      "zh": "2. 签名语法和语义"
+    },
+    {
+      "indent": 3,
+      "text": "When signing an RPSL object [RFC2622] [RFC4012], the input for the signature process is transformed into a sequence of strings of ASCII data. The approach is similar to the one used in Domain Key Identified Mail (DKIM) [RFC6376]. In the case of RPSL, the object to be signed closely resembles an SMTP header, so it seems reasonable to adapt DKIM's relevant features.",
+      "zh": "在对 RPSL 对象[RFC2622] [RFC4012]进行签名时，签名过程的输入被转换成一串 ASCII 数据。这种方法与域密钥识别邮件 (DKIM) [RFC6376] 中使用的方法类似。就 RPSL 而言，要签名的对象与 SMTP 标头非常相似，因此采用 DKIM 的相关功能似乎是合理的。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1. General Attributes and Meta Information",
+      "section_title": true,
+      "zh": "2.1. 一般属性和元信息"
+    },
+    {
+      "indent": 3,
+      "text": "The digital signature associated with an RPSL object is itself a new attribute named \"signature\". It consists of mandatory and optional fields. These fields are structured in a sequence of name and value pairs, separated by a semicolon \";\" and a whitespace. Collectively, these fields make up the value for the new \"signature\" attribute. The \"name\" part of such a component is always a single ASCII character that serves as an identifier; the value is an ASCII string the contents of which depend on the field type. Mandatory fields MUST appear exactly once, whereas optional fields MUST appear at most once.",
+      "zh": "与 RPSL 对象相关联的数字签名本身就是一个名为 \"签名 \"的新属性。它由必填字段和可选字段组成。这些字段由名称和值对组成，中间用分号\"; \"和空格隔开。这些字段共同构成了新 \"签名 \"属性的值。这种组件的 \"名称 \"部分总是一个 ASCII 字符，用作标识符；值是一个 ASCII 字符串，其内容取决于字段类型。必填字段必须出现一次，而可选字段最多出现一次。"
+    },
+    {
+      "indent": 3,
+      "text": "Mandatory fields of the \"signature\" attribute:",
+      "zh": "签名 \"属性的必填字段："
+    },
+    {
+      "indent": 3,
+      "text": "o Version of the signature (field \"v\"): This field MUST be set to \"rpkiv1\" and MAY be the first field of the signature attribute to simplify the parsing of the attributes' fields. The signature format described in this document applies when the version field is set to \"rpkiv1\". All the rest of the signature attributes are defined by the value of the version field.",
+      "zh": "o 签名的版本（字段 \"v\"）：该字段必须设置为 \"rpkiv1\"，可以是签名属性的第一个字段，以简化属性字段的解析。当版本字段设置为 \"rpkiv1 \"时，本文档中描述的签名格式将适用。所有其他签名属性均由版本字段的值定义。"
+    },
+    {
+      "indent": 3,
+      "text": "o Reference to the certificate corresponding to the private key used to sign this object (field \"c\"): The value of this field MUST be a URL of type \"rsync\" [RFC5781] or \"http(s)\" [RFC7230] that points to a specific resource certificate in an RPKI repository [RFC6481]. Any non URL-safe characters (including semicolon \";\" and plus \"+\") must be URL encoded [RFC3986].",
+      "zh": "o 与用于签署此对象的私人密钥相对应的证书引用（字段 \"c\"）：该字段的值必须是 \"rsync\" [RFC5781] 或 \"http(s)\" [RFC7230] 类型的 URL，指向 RPKI 资源库 [RFC6481] 中的特定资源证书。任何非 URL 安全字符（包括分号\"; \"和加号 \"+\"）都必须进行 URL 编码 [RFC3986]。"
+    },
+    {
+      "indent": 3,
+      "text": "o Signature method (field \"m\"): What hash and signature algorithms were used to create the signature. This specification follows the algorithms defined in RFC 6485 [RFC6485]. The algorithms are referenced within the signature attribute by the ASCII names of the algorithms.",
+      "zh": "o 签名方法（字段 \"m\"）：创建签名时使用的哈希算法和签名算法。本规范采用 RFC 6485 [RFC6485] 中定义的算法。这些算法在签名属性中以算法的 ASCII 名称引用。"
+    },
+    {
+      "indent": 3,
+      "text": "o Time of signing (field \"t\"): The format of the value of this field MUST be in the Internet Date/Time ABNF format [RFC3339]. All times MUST be converted to Universal Coordinated Time (UTC), i.e., the ABNF time-offset is always \"Z\".",
+      "zh": "o 签名时间（字段 \"t\"）：该字段值的格式必须符合 Internet Date/Time ABNF 格式 [RFC3339]。所有时间必须转换为世界协调时（UTC），即 ABNF 时间偏移始终为 \"Z\"。"
+    },
+    {
+      "indent": 3,
+      "text": "o The signed attributes (field \"a\"): This is a list of attribute names, separated by an ASCII \"+\" character (if more than one attribute is enumerated). The list must include any attribute at most once.",
+      "zh": "o 签名属性（字段 \"a\"）：这是一个属性名称列表，以 ASCII \"+\"字符分隔（如果列举的属性不止一个）。该列表最多只能包含一个属性。"
+    },
+    {
+      "indent": 3,
+      "text": "o The signature itself (field \"b\"): This MUST be the last field in the list. The signature is the output of the signature algorithm using the appropriate private key and the calculated hash value of the object as inputs. The value of this field is the digital signature in base64 encoding (Section 4 of [RFC4648]).",
+      "zh": "o 签名本身（字段 \"b\"）：这必须是列表中的最后一个字段。签名是签名算法的输出，使用适当的私人密钥和计算出的对象哈希值作为输入。该字段的值是 base64 编码的数字签名（[RFC4648] 第 4 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "Optional fields of the \"signature\" attribute:",
+      "zh": "签名 \"属性的可选字段："
+    },
+    {
+      "indent": 3,
+      "text": "o Signature expiration time (field \"x\"): The format of the value of this field MUST be in the Internet Date/Time format [RFC3339]. All times MUST be represented in UTC.",
+      "zh": "o 签名失效时间（字段 \"x\"）：该字段值的格式必须是 Internet 日期/时间格式 [RFC3339]。所有时间必须使用 UTC 表示。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2. Signed Attributes",
+      "section_title": true,
+      "zh": "2.2. 签名属性"
+    },
+    {
+      "indent": 3,
+      "text": "One can look at an RPSL object as an (ordered) set of attributes, each having a \"key: value\" syntax. Understanding this structure can help in developing more flexible methods for applying digital signatures.",
+      "zh": "我们可以把 RPSL 对象看作一组（有序的）属性，每个属性都有一个 \"键：值 \"语法。了解这种结构有助于开发更灵活的数字签名应用方法。"
+    },
+    {
+      "indent": 3,
+      "text": "Some of these attributes are automatically added by the database, some are database-dependent, yet others do not carry operationally important information. This specification allows the maintainer of such an object to decide which attributes are important (signed) and which are not (not signed), from among all the attributes of the object; in other words, we define a way of including important attributes while excluding irrelevant ones. Allowing the maintainer of an object to select the attributes that are covered by the digital signature achieves the goals established in Section 1.",
+      "zh": "这些属性中，有些是数据库自动添加的，有些与数据库有关，还有些并不包含重要的操作信息。本规范允许此类对象的维护者从对象的所有属性中决定哪些属性重要（已签名），哪些不重要（未签名）；换句话说，我们定义了一种包括重要属性而排除无关属性的方法。允许对象的维护者选择数字签名所涵盖的属性，这就实现了第 1 节中确定的目标。"
+    },
+    {
+      "indent": 3,
+      "text": "The type of the object determines the minimum set of attributes that MUST be signed. The signer MAY choose to sign additional attributes, in order to provide integrity protection for those attributes too.",
+      "zh": "对象的类型决定了必须签名的最小属性集。签名者可以选择签署其他属性，以便为这些属性提供完整性保护。"
+    },
+    {
+      "indent": 3,
+      "text": "When verifying the signature of an object, the verifier has to check whether the signature itself is valid, and whether all the specified attributes are referenced in the signature. If not, the verifier MUST reject the signature and treat the object as a regular, unsigned RPSL object.",
+      "zh": "在验证对象的签名时，验证者必须检查签名本身是否有效，签名中是否引用了所有指定的属性。如果不是，验证者必须拒绝该签名，并将该对象视为普通的无签名 RPSL 对象。"
+    },
+    {
+      "indent": 0,
+      "text": "2.3. Storage of the Signature Data",
+      "section_title": true,
+      "zh": "2.3. 签名数据的存储"
+    },
+    {
+      "indent": 3,
+      "text": "The result of applying the signature mechanism once is exactly one new attribute for the object. As an illustration, the structure of a signed RPSL object is as follows:",
+      "zh": "应用一次签名机制的结果恰好是该对象的一个新属性。例如，已签名 RPSL 对象的结构如下："
+    },
+    {
+      "indent": 5,
+      "text": "attribute1:  value1\nattribute2:  value2\nattribute3:  value3\n...\nsignature:   v=rpkiv1; c=rsync://.....; m=sha256WithRSAEncryption;\n             t=2014-12-31T23:59:60Z;\n             a=attribute1+attribute2+attribute3+...;\n             b=<base64 data>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "2.4. Number Resource Coverage",
+      "section_title": true,
+      "zh": "2.4. 数量 资源覆盖范围"
+    },
+    {
+      "indent": 3,
+      "text": "Even if the signature over the object is valid according to the signature validation rules, it may not be relevant to the object; it also needs to cover the relevant Internet number resources mentioned in the object.",
+      "zh": "即使对象上的签名根据签名验证规则是有效的，它也可能与对象无关；它还需要涵盖对象中提到的相关互联网号码资源。"
+    },
+    {
+      "indent": 3,
+      "text": "Therefore, the Internet number resources present in [RFC3779] extensions of the certificate referred to in the \"c\" field of the signature MUST cover the resources in the primary key of the object (e.g., value of the \"aut-num:\" attribute of an aut-num object, value of the \"inetnum:\" attribute of an inetnum object, values of \"route:\", and \"origin:\" attributes of a route object, etc.).",
+      "zh": "因此，签名 \"c \"字段中提及的证书[RFC3779]扩展中的因特网号码资源必须涵盖对象主键中的资源（如 aut-num 对象的 \"aut-num: \"属性值、inetnum 对象的 \"inetnum: \"属性值、路由对象的 \"route: \"和 \"origin: \"属性值等）。"
+    },
+    {
+      "indent": 0,
+      "text": "2.5. Validity Time of the Signature",
+      "section_title": true,
+      "zh": "2.5. 签名有效时间"
+    },
+    {
+      "indent": 3,
+      "text": "The validity time interval of a signature is the intersection of the validity time of the certificate used to verify the signature, the \"not before\" time specified by the \"t\" field of the signature, and the optional \"not after\" time specified by the \"x\" field of the signature.",
+      "zh": "签名的有效时间间隔是用于验证签名的证书有效时间、签名 \"t \"字段指定的 \"非之前 \"时间和签名 \"x \"字段指定的可选 \"非之后 \"时间的交集。"
+    },
+    {
+      "indent": 3,
+      "text": "When checking multiple signatures, these checks are individually applied to each signature.",
+      "zh": "检查多个签名时，这些检查将分别应用于每个签名。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Signature Creation and Validation Steps",
+      "section_title": true,
+      "zh": "3. 签名创建和验证步骤"
+    },
+    {
+      "indent": 0,
+      "text": "3.1. Canonicalization",
+      "section_title": true,
+      "zh": "3.1. 规范化"
+    },
+    {
+      "indent": 3,
+      "text": "The notion of canonicalization is essential to digital signature generation and validation whenever data representations may change between a signer and one or more signature verifiers. Canonicalization defines how one transforms a representation of data into a series of bits for signature generation and verification. The task of canonicalization is to make irrelevant differences in representations of the same object, which would otherwise cause signature verification to fail. Examples of this could be:",
+      "zh": "当数据表示在签名者和一个或多个签名验证者之间发生变化时，规范化概念对数字签名的生成和验证至关重要。规范化定义了如何将数据表示转换为一系列比特，以便生成和验证签名。规范化的任务是使同一对象的不同表示法变得无关紧要，否则会导致签名验证失败。这方面的例子有"
+    },
+    {
+      "indent": 3,
+      "text": "o data transformations applied by the databases that host these objects (such as notational changes for IPv4/IPv6 prefixes, automatic addition/modification of \"changed\" attributes, etc.)",
+      "zh": "o 托管这些对象的数据库所应用的数据转换（如 IPv4/IPv6 前缀的符号更改、自动添加/修改 \"已更改 \"属性等）。"
+    },
+    {
+      "indent": 3,
+      "text": "o the difference of line terminators across different systems",
+      "zh": "o 不同系统中线路终端器的差异"
+    },
+    {
+      "indent": 3,
+      "text": "This means that the destination database might change parts of the submitted data after it was signed, which would cause signature verification to fail. This document specifies strict canonicalization rules to overcome this problem.",
+      "zh": "这意味着目标数据库可能会在提交数据签名后更改其中的部分内容，从而导致签名验证失败。本文件规定了严格的规范化规则，以克服这一问题。"
+    },
+    {
+      "indent": 3,
+      "text": "The following steps MUST be applied in order to achieve canonicalized representation of an object, before the actual signature (verification) process can begin:",
+      "zh": "在开始实际签名（验证）过程之前，必须采用以下步骤来实现对象的规范化表示："
+    },
+    {
+      "indent": 3,
+      "text": "1. Comments (anything beginning with a \"#\") MUST be omitted.",
+      "zh": "1. 注释（以 \"#\"开头的内容）必须省略。"
+    },
+    {
+      "indent": 3,
+      "text": "2. Any trailing whitespace MUST be omitted.",
+      "zh": "2. 必须省略任何尾部空白。"
+    },
+    {
+      "indent": 3,
+      "text": "3. A multi-line attribute MUST be converted into its single-line equivalent. This is accomplished by:",
+      "zh": "3. 多行属性必须转换为单行属性。具体方法如下"
+    },
+    {
+      "indent": 7,
+      "text": "* Converting all line endings to a single blank space (ASCII code 32).",
+      "zh": "* 将所有行结束符转换为单个空格（ASCII 代码 32）。"
+    },
+    {
+      "indent": 7,
+      "text": "* Concatenating all lines into a single line.",
+      "zh": "* 将所有行连接成一行。"
+    },
+    {
+      "indent": 7,
+      "text": "* Replacing the trailing blank space with a single new line (\"\\n\", ASCII code 10).",
+      "zh": "* 用一个新行（\"\\n\"，ASCII 码 10）代替尾部空格。"
+    },
+    {
+      "indent": 3,
+      "text": "4. Numerical fields MUST be converted to canonical representations. These include:",
+      "zh": "4. 数字字段必须转换为规范表示法。这些字段包括"
+    },
+    {
+      "indent": 7,
+      "text": "* Date and time fields MUST be converted to UTC and MUST be represented in the Internet Date/Time format [RFC3339].",
+      "zh": "* 日期和时间字段必须转换为 UTC，并必须使用 Internet Date/Time 格式 [RFC3339]。"
+    },
+    {
+      "indent": 7,
+      "text": "* AS numbers MUST be converted to ASPLAIN syntax [RFC5396].",
+      "zh": "* AS 数字必须转换为 ASPLAIN 语法 [RFC5396]。"
+    },
+    {
+      "indent": 7,
+      "text": "* IPv6 addresses MUST be canonicalized as defined in [RFC5952].",
+      "zh": "* IPv6 地址必须按照 [RFC5952] 中的定义进行规范化。"
+    },
+    {
+      "indent": 7,
+      "text": "* IPv4 addresses MUST be represented as the ipv4-address type defined by RPSL [RFC2622].",
+      "zh": "* IPv4 地址必须表示为 RPSL [RFC2622] 定义的 ipv4-address 类型。"
+    },
+    {
+      "indent": 7,
+      "text": "* All IP prefixes (IPv4 and IPv6) MUST be represented in Classless Inter-Domain Routing (CIDR) notation [RFC4632].",
+      "zh": "* 所有 IP 前缀（IPv4 和 IPv6）必须使用无类别域间路由（CIDR）符号 [RFC4632]。"
+    },
+    {
+      "indent": 3,
+      "text": "5. All ranges, lists, or sets of numerical fields are represented using the appropriate RPSL attribute and each numerical element contained within those attributes MUST conform to the canonicalization rules in this document. The ordering of values within such fields MUST be maintained during database transfers.",
+      "zh": "5. 数字字段的所有范围、列表或集合都使用适当的 RPSL 属性表示，这些属性中包含的每个数字元素都必须符合本文档中的规范化规则。在数据库传输过程中，必须保持此类字段中数值的排序。"
+    },
+    {
+      "indent": 3,
+      "text": "6. The name of each attribute MUST be converted into lower case, and MUST be kept as part of the attribute line.",
+      "zh": "6. 每个属性的名称必须转换为小写字母，并作为属性行的一部分保留。"
+    },
+    {
+      "indent": 3,
+      "text": "7. Tab characters (\"\\t\", ASCII code 09) MUST be converted into spaces.",
+      "zh": "7. Tab 字符（\"\\t\"，ASCII 码 09）必须转换为空格。"
+    },
+    {
+      "indent": 3,
+      "text": "8. Multiple whitespaces MUST be collapsed into a single space (\" \", ASCII code 32) character.",
+      "zh": "8. 多个空格必须合并为一个空格（\"\"，ASCII 码 32）字符。"
+    },
+    {
+      "indent": 3,
+      "text": "9. All line endings MUST be converted into a single new line (\"\\n\", ASCII code 10) character, (thus avoiding CR vs. CRLF differences).",
+      "zh": "9. 所有行结束符都必须转换成一个新行（\"\\n\"，ASCII 码 10）字符（从而避免 CR 与 CRLF 的差异）。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2. Signature Creation",
+      "section_title": true,
+      "zh": "3.2. 签名创作"
+    },
+    {
+      "indent": 3,
+      "text": "Given an RPSL object and corresponding certificate, in order to create the digital signature, the following steps MUST be performed:",
+      "zh": "给定一个 RPSL 对象和相应的证书后，为了创建数字签名，必须执行以下步骤："
+    },
+    {
+      "indent": 3,
+      "text": "1. Create a list of attribute names referring to the attributes that will be signed (contents of the \"a\" field). The minimum set of these attributes is determined by the object type; the signer MAY select additional attributes.",
+      "zh": "1. 创建一个属性名称列表，其中包含要签名的属性（\"a \"字段的内容）。这些属性的最小集合由对象类型决定；签名者可以选择其他属性。"
+    },
+    {
+      "indent": 3,
+      "text": "2. Arrange the selected attributes according to the selection sequence specified in the \"a\" field as above, omitting all attributes that will not be signed.",
+      "zh": "2. 按照上述 \"a \"字段中指定的选择顺序排列所选属性，省略所有不签名的属性。"
+    },
+    {
+      "indent": 3,
+      "text": "3. Construct the new \"signature\" attribute, with all its fields, leaving the value of the \"b\" field empty.",
+      "zh": "3. 创建新的 \"签名 \"属性及其所有字段，\"b \"字段的值留空。"
+    },
+    {
+      "indent": 3,
+      "text": "4. Apply canonicalization rules to the result (including the \"signature\" attribute).",
+      "zh": "4. 对结果（包括 \"签名 \"属性）应用规范化规则。"
+    },
+    {
+      "indent": 3,
+      "text": "5. Create the signature over the results of the canonicalization process (according to the signature and hash algorithms specified in the \"m\" field of the signature attribute).",
+      "zh": "5. 在规范化处理结果上创建签名（根据签名属性 \"m \"字段中指定的签名和哈希算法）。"
+    },
+    {
+      "indent": 3,
+      "text": "6. Insert the base64-encoded value of the signature as the value of the \"b\" field.",
+      "zh": "6. 插入签名的 base64 编码值作为 \"b \"字段的值。"
+    },
+    {
+      "indent": 3,
+      "text": "7. Append the resulting \"signature\" attribute to the original object.",
+      "zh": "7. 将生成的 \"签名 \"属性附加到原始对象上。"
+    },
+    {
+      "indent": 0,
+      "text": "3.3. Signature Validation",
+      "section_title": true,
+      "zh": "3.3. 签名验证"
+    },
+    {
+      "indent": 3,
+      "text": "In order to validate a signature over such an object, the following steps MUST be performed:",
+      "zh": "为了验证此类对象的签名，必须执行以下步骤："
+    },
+    {
+      "indent": 3,
+      "text": "1. Verify the syntax of the \"signature\" attribute (i.e., whether it contains the mandatory and optional components and the syntax of these fields matches the specification as described in Section 2.1).",
+      "zh": "1. 验证 \"签名 \"属性的语法（即是否包含必填项和可选项，以及这些字段的语法是否与第 2.1 节所述的规范相符）。"
+    },
+    {
+      "indent": 3,
+      "text": "2. Fetch the certificate referred to in the \"c\" field of the \"signature\" attribute, and check its validity using the steps described in [RFC6487].",
+      "zh": "2. 获取 \"签名 \"属性的 \"c \"字段中提到的证书，并使用 [RFC6487] 中描述的步骤检查其有效性。"
+    },
+    {
+      "indent": 3,
+      "text": "3. Extract the list of attributes that were signed using the signer from the \"a\" field of the \"signature\" attribute.",
+      "zh": "3. 从 \"signature（签名）\"属性的 \"a \"字段中提取使用签名者签名的属性列表。"
+    },
+    {
+      "indent": 3,
+      "text": "4. Verify that the list of signed attributes includes the minimum set of attributes for that object type.",
+      "zh": "4. 验证已签名属性列表是否包含该对象类型的最小属性集。"
+    },
+    {
+      "indent": 3,
+      "text": "5. Arrange the selected attributes according to the selection sequence provided in the value of the \"a\" field, omitting all unsigned attributes.",
+      "zh": "5. 根据 \"a \"字段值中提供的选择顺序排列所选属性，省略所有无符号属性。"
+    },
+    {
+      "indent": 3,
+      "text": "6. Replace the value of the signature field \"b\" of the \"signature\" attribute with an empty string.",
+      "zh": "6. 用空字符串替换 \"signature \"属性中签名字段 \"b \"的值。"
+    },
+    {
+      "indent": 3,
+      "text": "7. Apply the canonicalization procedure to the selected attributes (including the \"signature\" attribute).",
+      "zh": "7. 对所选属性（包括 \"签名 \"属性）应用规范化程序。"
+    },
+    {
+      "indent": 3,
+      "text": "8. Check the validity of the signature using the signature algorithm specified in the \"m\" field of the signature attribute, the public key contained in the certificate mentioned in the \"c\" field of the signature, the signature value specified in the \"b\" field of the signature attribute, and the output of the canonicalization process.",
+      "zh": "8. 使用签名属性 \"m \"字段中指定的签名算法、签名 \"c \"字段中提到的证书中包含的公开密钥、签名属性 \"b \"字段中指定的签名值以及规范化处理的输出结果检查签名的有效性。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Signed Object Types and Set of Signed Attributes",
+      "section_title": true,
+      "zh": "4. 签名对象类型和签名属性集"
+    },
+    {
+      "indent": 3,
+      "text": "This section describes a list of object types that MAY be signed using this approach. For each object type, the set of attributes that MUST be signed for these object types (the minimum set noted in Section 3.3 is enumerated.",
+      "zh": "本节列出了可以使用这种方法签名的对象类型。对于每种对象类型，都列举了这些对象类型必须签名的属性集（第 3.3 节中提到的最小属性集）。"
+    },
+    {
+      "indent": 3,
+      "text": "This list generally excludes attributes that are used to maintain referential integrity in the databases that carry these objects, since these usually make sense only within the context of such a database, whereas the scope of the signatures is only one specific object. Since the attributes in the referred object (such as mnt-by, admin-c, tech-c, etc.) can change without any modifications to the signed object, signing such attributes could lead to a false sense of security in terms of the contents of the signed data; therefore, including such attributes should only be done in order to provide full integrity protection of the object itself.",
+      "zh": "该列表通常不包括用于在携带这些对象的数据库中维护参照完整性的属性，因为这些属性通常只在此类数据库的上下文中才有意义，而签名的范围只是一个特定的对象。由于引用对象中的属性（如 mnt-by、admin-c、tech-c 等）可以在不修改签名对象的情况下发生变化，因此对这些属性进行签名可能会导致对签名数据内容的错误安全感；因此，只有在为对象本身提供全面完整性保护的情况下，才应包含这些属性。"
+    },
+    {
+      "indent": 3,
+      "text": "The newly constructed \"signature\" attribute is always included in the list. The signature under construction MUST NOT include signature attributes that are already present in the object.",
+      "zh": "新建的 \"签名 \"属性总是包含在列表中。正在构建的签名不得包括对象中已有的签名属性。"
+    },
+    {
+      "indent": 6,
+      "text": "as-block:",
+      "zh": "as-block："
+    },
+    {
+      "indent": 6,
+      "text": "* as-block",
+      "zh": "* 模块"
+    },
+    {
+      "indent": 6,
+      "text": "* signature",
+      "zh": "* 签字"
+    },
+    {
+      "indent": 6,
+      "text": "aut-num:",
+      "zh": "aut-num："
+    },
+    {
+      "indent": 6,
+      "text": "* aut-num\n\n* as-name\n\n* member-of\n\n* import\n\n* mp-import\n\n* export\n\n* mp-export\n\n* default\n\n* mp-default\n\n* signature",
+      "zh": "* aut-num\n\n* as-name\n\n* 成员\n\n* 导入\n\n* mp-import\n\n* 出口\n\n* mp-export\n\n* 默认\n\n* mp-default\n\n* 签名"
+    },
+    {
+      "indent": 6,
+      "text": "inet[6]num:",
+      "zh": "inet[6]num："
+    },
+    {
+      "indent": 6,
+      "text": "* inet[6]num\n\n* netname\n\n* country\n\n* status\n\n* signature route[6]:",
+      "zh": "* inet[6]num\n\n* 网名\n\n* 国家\n\n* 状态\n\n* 签名路线[6]："
+    },
+    {
+      "indent": 6,
+      "text": "* route[6]\n\n* origin\n\n* holes\n\n* member-of\n\n* signature",
+      "zh": "* 路线[6]\n\n* 原点\n\n* 孔\n\n* 成员\n\n* 签名"
+    },
+    {
+      "indent": 3,
+      "text": "It should be noted that the approach defined in this document has a limitation in signing route[6] objects. This document only supports a single signature per object. This means that it is not possible to properly sign route[6] objects where one resource holder possesses the Autonomous System Number (ASN) and another resource holder possesses the referenced prefix. A future version of this specification may resolve this limitation.",
+      "zh": "需要注意的是，本文档中定义的方法在路由[6] 对象的签名方面存在限制。本文件只支持对每个对象进行一次签名。这意味着，如果一个资源持有者拥有自治系统编号（ASN），而另一个资源持有者拥有引用的前缀，则无法正确签署路由[6]对象。本规范的未来版本可能会解决这一限制。"
+    },
+    {
+      "indent": 3,
+      "text": "For each signature, the extension described in RFC 3779 that appears in the certificate used to verify the signature MUST include a resource entry that is equivalent to, or covers (i.e., is \"less specific\" than) the following resources mentioned in the object the signature is attached to:",
+      "zh": "对于每个签名，用于验证签名的证书中出现的 RFC 3779 中描述的扩展必须包括一个资源条目，该条目等同于或涵盖（即 \"不那么具体\"）签名所附对象中提到的以下资源："
+    },
+    {
+      "indent": 3,
+      "text": "o For the as-block object type: the resource in the \"as-block\" attribute.",
+      "zh": "o 对于 as-block 对象类型：\"as-block \"属性中的资源。"
+    },
+    {
+      "indent": 3,
+      "text": "o For the aut-num object type: the resource in the \"aut-num\" attribute.",
+      "zh": "o 对于 aut-num 对象类型：\"aut-num \"属性中的资源。"
+    },
+    {
+      "indent": 3,
+      "text": "o For the inet[6]num object type: the resource in the \"inet[6]num\" attribute.",
+      "zh": "o 对于 inet[6]num 对象类型：\"inet[6]num \"属性中的资源。"
+    },
+    {
+      "indent": 3,
+      "text": "o For the route[6] object type: the resource in the \"route[6]\" or \"origin\" (or both) attributes.",
+      "zh": "o 对于 route[6] 对象类型：\"route[6]\"或 \"origin\"（或两者）属性中的资源。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Keys and Certificates Used for Signature and Verification",
+      "section_title": true,
+      "zh": "5. 用于签名和验证的密钥和证书"
+    },
+    {
+      "indent": 3,
+      "text": "The certificate that is referred to in the signature (in the \"c\" field):",
+      "zh": "签名中提到的证书（\"c \"字段）："
+    },
+    {
+      "indent": 3,
+      "text": "o MUST be an end-entity (i.e., non-CA) certificate",
+      "zh": "o 必须是最终实体（即非 CA）证书"
+    },
+    {
+      "indent": 3,
+      "text": "o MUST conform to the X.509 PKIX Resource Certificate profile [RFC6487]",
+      "zh": "o 必须符合 X.509 PKIX 资源证书配置文件 [RFC6487] 的规定"
+    },
+    {
+      "indent": 3,
+      "text": "o MUST have the extension described in RFC 3779 that covers the Internet number resource included in a signed attribute [RFC3779]",
+      "zh": "o 必须具有 RFC 3779 中描述的扩展，该扩展涵盖了签名属性 [RFC3779] 中包含的 Internet 号码资源"
+    },
+    {
+      "indent": 3,
+      "text": "The certificate generated will omit the Subject Information Access (SIA) extension mandated by RFC 6487 as that extension requires an rsync URI for the accessLocation form and RPSL currently does not support database access via rsync.",
+      "zh": "生成的证书将省略 RFC 6487 规定的主题信息访问（SIA）扩展，因为该扩展要求 accessLocation 表格包含 rsync URI，而 RPSL 目前不支持通过 rsync 访问数据库。"
+    },
+    {
+      "indent": 0,
+      "text": "6. Security Considerations",
+      "section_title": true,
+      "zh": "6. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "RPSL objects stored in the Internet Routing Registry (IRR) databases are public, and as such there is no need for confidentiality. Each signed RPSL object can have its integrity and authenticity verified using the supplied digital signature and the referenced certificate.",
+      "zh": "互联网路由注册（IRR）数据库中存储的 RPSL 对象是公开的，因此无需保密。每个已签名的 RPSL 对象都可通过提供的数字签名和参考证书验证其完整性和真实性。"
+    },
+    {
+      "indent": 3,
+      "text": "Since the RPSL signature approach leverages X.509 extensions, the security considerations in [RFC3779] apply here as well. Additionally, implementers MUST follow the certificate validation steps described in RFC 6487.",
+      "zh": "由于 RPSL 签名方法利用了 X.509 扩展，[RFC3779] 中的安全注意事项也适用于此。此外，实施者必须遵循 RFC 6487 中描述的证书验证步骤。"
+    },
+    {
+      "indent": 3,
+      "text": "The maintainer of an object has the ability to include attributes in the signature that are not included in the resource certificate used to create the signature. Potentially, a maintainer may include attributes that reference resources the maintainer is not authorized to use.",
+      "zh": "对象的维护者可以在签名中包含用于创建签名的资源证书中未包含的属性。维护者有可能在签名中包含引用其无权使用的资源的属性。"
+    },
+    {
+      "indent": 3,
+      "text": "It should be noted that this digital signature does not preclude monkey-in-the-middle attacks where the adversary either intercepts RPSL object transfers, deletes the signature attribute, modifies the contents, or intercepts the transfer and drops the objects destined for the requester.",
+      "zh": "值得注意的是，这种数字签名并不能排除 \"中间人 \"攻击，即对手拦截 RPSL 对象传输，删除签名属性，修改内容，或拦截传输并丢弃发送给请求者的对象。"
+    },
+    {
+      "indent": 0,
+      "text": "7. References",
+      "section_title": true,
+      "zh": "7. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "7.1. Normative References",
+      "section_title": true,
+      "zh": "7.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <http://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <http://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2622] Alaettinoglu, C., Villamizar, C., Gerich, E., Kessens, D., Meyer, D., Bates, T., Karrenberg, D., and M. Terpstra, \"Routing Policy Specification Language (RPSL)\", RFC 2622, DOI 10.17487/RFC2622, June 1999, <http://www.rfc-editor.org/info/rfc2622>.",
+      "zh": "[RFC2622] Alaettinoglu, C., Villamizar, C., Gerich, E., Kessens, D., Meyer, D., Bates, T., Karrenberg, D., and M. Terpstra, \"Routing Policy Specification Language (RPSL)\", RFC 2622, DOI 10.17487/RFC2622, June 1999, <http://www.rfc-editor.org/info/rfc2622>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3339] Klyne, G. and C. Newman, \"Date and Time on the Internet: Timestamps\", RFC 3339, DOI 10.17487/RFC3339, July 2002, <http://www.rfc-editor.org/info/rfc3339>.",
+      "zh": "[RFC3339] Klyne, G. and C. Newman, \"Date and Time on the Internet：Timestamps\", RFC 3339, DOI 10.17487/RFC3339, July 2002, <http://www.rfc-editor.org/info/rfc3339>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, DOI 10.17487/RFC3779, June 2004, <http://www.rfc-editor.org/info/rfc3779>.",
+      "zh": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, DOI 10.17487/RFC3779, June 2004, <http://www.rfc-editor.org/info/rfc3779>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3986] Berners-Lee, T., Fielding, R., and L. Masinter, \"Uniform Resource Identifier (URI): Generic Syntax\", STD 66, RFC 3986, DOI 10.17487/RFC3986, January 2005, <http://www.rfc-editor.org/info/rfc3986>.",
+      "zh": "[RFC3986] Berners-Lee, T., Fielding, R., and L. Masinter, \"Uniform Resource Identifier (URI): Generic Syntax\", STD 66, RFC 3986, DOI 10.17487/RFC3986, January 2005, <http://www.rfc-editor.org/info/rfc3986>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4012] Blunk, L., Damas, J., Parent, F., and A. Robachevsky, \"Routing Policy Specification Language next generation (RPSLng)\", RFC 4012, DOI 10.17487/RFC4012, March 2005, <http://www.rfc-editor.org/info/rfc4012>.",
+      "zh": "[RFC4012] Blunk, L., Damas, J., Parent, F., and A. Robachevsky, \"Routing Policy Specification Language next generation (RPSLng)\", RFC 4012, DOI 10.17487/RFC4012, March 2005, <http://www.rfc-editor.org/info/rfc4012>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4632] Fuller, V. and T. Li, \"Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan\", BCP 122, RFC 4632, DOI 10.17487/RFC4632, August 2006, <http://www.rfc-editor.org/info/rfc4632>.",
+      "zh": "[RFC4632] Fuller, V. and T. Li, \"Classless Inter-domain Routing (CIDR)：互联网地址分配和聚合计划\"，BCP 122，RFC 4632，DOI 10.17487/RFC4632，2006 年 8 月，<http://www.rfc-editor.org/info/rfc4632>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4648] Josefsson, S., \"The Base16, Base32, and Base64 Data Encodings\", RFC 4648, DOI 10.17487/RFC4648, October 2006, <http://www.rfc-editor.org/info/rfc4648>.",
+      "zh": "[RFC4648] Josefsson, S., \"The Base16, Base32, and Base64 Data Encodings\", RFC 4648, DOI 10.17487/RFC4648, October 2006, <http://www.rfc-editor.org/info/rfc4648>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5396] Huston, G. and G. Michaelson, \"Textual Representation of Autonomous System (AS) Numbers\", RFC 5396, DOI 10.17487/RFC5396, December 2008, <http://www.rfc-editor.org/info/rfc5396>.",
+      "zh": "[RFC5396] Huston, G. and G. Michaelson, \"Textual Representation of Autonomous System (AS) Numbers\", RFC 5396, DOI 10.17487/RFC5396, December 2008, <http://www.rfc-editor.org/info/rfc5396>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"The rsync URI Scheme\", RFC 5781, DOI 10.17487/RFC5781, February 2010, <http://www.rfc-editor.org/info/rfc5781>.",
+      "zh": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"The rsync URI Scheme\", RFC 5781, DOI 10.17487/RFC5781, February 2010, <http://www.rfc-editor.org/info/rfc5781>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5952] Kawamura, S. and M. Kawashima, \"A Recommendation for IPv6 Address Text Representation\", RFC 5952, DOI 10.17487/RFC5952, August 2010, <http://www.rfc-editor.org/info/rfc5952>.",
+      "zh": "[RFC5952] Kawamura, S. and M. Kawashima, \"A Recommendation for IPv6 Address Text Representation\", RFC 5952, DOI 10.17487/RFC5952, August 2010, <http://www.rfc-editor.org/info/rfc5952>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6481] Huston, G., Loomans, R., and G. Michaelson, \"A Profile for Resource Certificate Repository Structure\", RFC 6481, DOI 10.17487/RFC6481, February 2012, <http://www.rfc-editor.org/info/rfc6481>.",
+      "zh": "[RFC6481] Huston, G., Loomans, R., and G. Michaelson, \"A Profile for Resource Certificate Repository Structure\", RFC 6481, DOI 10.17487/RFC6481, February 2012, <http://www.rfc-editor.org/info/rfc6481>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6485] Huston, G., \"The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)\", RFC 6485, DOI 10.17487/RFC6485, February 2012, <http://www.rfc-editor.org/info/rfc6485>.",
+      "zh": "[RFC6485] Huston, G., \"The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)\", RFC 6485, DOI 10.17487/RFC6485, February 2012, <http://www.rfc-editor.org/info/rfc6485>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, DOI 10.17487/RFC6487, February 2012, <http://www.rfc-editor.org/info/rfc6487>.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, DOI 10.17487/RFC6487, February 2012, <http://www.rfc-editor.org/info/rfc6487>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7230] Fielding, R., Ed. and J. Reschke, Ed., \"Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing\", RFC 7230, DOI 10.17487/RFC7230, June 2014, <http://www.rfc-editor.org/info/rfc7230>.",
+      "zh": "[RFC7230] Fielding, R., Ed. 和 J. Reschke, Ed., \"超文本传输协议（HTTP/1.1）：消息语法和路由\"，RFC 7230，DOI 10.17487/RFC7230，2014 年 6 月，<http://www.rfc-editor.org/info/rfc7230>。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2. Informative References",
+      "section_title": true,
+      "zh": "7.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2725] Villamizar, C., Alaettinoglu, C., Meyer, D., and S. Murphy, \"Routing Policy System Security\", RFC 2725, DOI 10.17487/RFC2725, December 1999, <http://www.rfc-editor.org/info/rfc2725>.",
+      "zh": "[RFC2725] Villamizar, C., Alaettinoglu, C., Meyer, D., and S. Murphy, \"Routing Policy System Security\", RFC 2725, DOI 10.17487/RFC2725, December 1999, <http://www.rfc-editor.org/info/rfc2725>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6376] Crocker, D., Ed., Hansen, T., Ed., and M. Kucherawy, Ed., \"DomainKeys Identified Mail (DKIM) Signatures\", STD 76, RFC 6376, DOI 10.17487/RFC6376, September 2011, <http://www.rfc-editor.org/info/rfc6376>.",
+      "zh": "[RFC6376] Crocker, D., Ed., Hansen, T., Ed., and M. Kucherawy, Ed., \"DomainKeys Identified Mail (DKIM) Signatures\", STD 76, RFC 6376, DOI 10.17487/RFC6376, September 2011, <http://www.rfc-editor.org/info/rfc6376>。"
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgements",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors would like to acknowledge the valued contributions from Jos Boumans, Tom Harrison, Steve Kent, Sandra Murphy, Magnus Nystrom, Alvaro Retana, Sean Turner, Geoff Huston, and Stephen Farrell in preparation of this document.",
+      "zh": "作者衷心感谢 Jos Boumans、Tom Harrison、Steve Kent、Sandra Murphy、Magnus Nystrom、Alvaro Retana、Sean Turner、Geoff Huston 和 Stephen Farrell 为编写本文件做出的宝贵贡献。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Robert Kisteleki RIPE NCC",
+      "zh": "罗伯特-基斯特莱基 RIPE NCC"
+    },
+    {
+      "indent": 3,
+      "text": "Email: robert@ripe.net\nURI:   http://www.ripe.net",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Brian Haberman Johns Hopkins University Applied Physics Lab",
+      "zh": "布莱恩-哈伯曼 约翰-霍普金斯大学应用物理实验室"
+    },
+    {
+      "indent": 3,
+      "text": "Email: brian@innovationslab.net",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

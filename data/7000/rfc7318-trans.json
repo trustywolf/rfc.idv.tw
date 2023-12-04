@@ -1,0 +1,231 @@
+{
+  "title": {
+    "text": "RFC 7318 - Policy Qualifiers in Resource Public Key Infrastructure (RPKI) Certificates",
+    "zh": "RFC 7318 - 资源公钥基础设施 (RPKI) 证书中的策略限定符"
+  },
+  "number": 7318,
+  "created_at": "2023-12-04 16:38:00.891092+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                         A. Newton\nRequest for Comments: 7318                                          ARIN\nUpdates: 6487                                                  G. Huston\nCategory: Standards Track                                          APNIC\nISSN: 2070-1721                                                July 2014",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 5,
+      "text": "Policy Qualifiers in Resource Public Key Infrastructure (RPKI) Certificates",
+      "zh": "资源公钥基础设施 (RPKI) 证书中的策略限定符"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document updates RFC 6487 by clarifying the inclusion of policy qualifiers in the certificate policies extension of Resource Public Key Infrastructure (RPKI) resource certificates.",
+      "zh": "本文件更新了 RFC 6487，明确了在资源公钥基础设施 (RPKI) 资源证书的证书策略扩展中包含策略限定符的问题。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 5741 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc7318.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc7318。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2014 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "Copyright (c) 2014 IETF Trust 和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2\n2.  Update to RFC 6487  . . . . . . . . . . . . . . . . . . . . .   2\n3.  Security Considerations . . . . . . . . . . . . . . . . . . .   3\n4.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .   4\n5.  Normative References  . . . . . . . . . . . . . . . . . . . .   4",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document introduces policy qualifiers in the certificate policies extension of the RPKI resource certificates. This document updates [RFC6487].",
+      "zh": "本文件在 RPKI 资源证书的证书策略扩展中引入了策略限定符。本文件更新了 [RFC6487]。"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in [RFC2119].",
+      "zh": "本文档中的关键词 \"MUST\"、\"MUST NOT\"、\"REQUIRED\"、\"SHALL\"、\"SHALL NOT\"、\"SHOULD\"、\"SHOULD NOT\"、\"RECOMMENDED\"、\"MAY \"和 \"OPTIONAL \"应按照 [RFC2119] 中的描述进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Update to RFC 6487",
+      "section_title": true,
+      "zh": "2. 更新 RFC 6487"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] profiles certificates, certificate revocation lists, and certificate signing requests specified in [RFC5280] for use in routing public key infrastructure.",
+      "zh": "[RFC6487]将[RFC5280]中指定的证书、证书吊销列表和证书签名请求用于路由公钥基础设施。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5280] defines an extension to certificates for the listing of policy information (see Section 4.2.1.4). [RFC6487] states in Section 4.8.9: \"This extension MUST be present and MUST be marked critical. It MUST include exactly one policy, as specified in the RPKI CP [RFC6484]\". This references the CertPolicyId of the sequence allowed in PolicyInformation as defined by [RFC5280].",
+      "zh": "[RFC5280]定义了用于列出策略信息的证书扩展（见第 4.2.1.4 节）。[RFC6487]在第 4.8.9 节中指出：\"该扩展必须存在，并且必须标为关键。它必须包括 RPKI CP [RFC6484] 中指定的一个策略\"。这引用了 [RFC5280] 所定义的策略信息中允许的序列的 CertPolicyId。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5280] also specifies that PolicyInformation may optionally have a sequence of PolicyQualifierInfo objects. [RFC6487] does not specifically allow or disallow these PolicyQualifierInfo objects, although Section 4 also states: \"Unless specifically noted as being OPTIONAL, all the fields listed here MUST be present, and any other fields MUST NOT appear in a conforming resource certificate.\" Because there is a need for some RPKI Certificate Authorities to include policy qualifiers in their certificates, this document updates Section 4.8.9 of [RFC6487] as follows:",
+      "zh": "[RFC5280] 还规定，PolicyInformation 可以有选择地拥有一系列 PolicyQualifierInfo 对象。尽管 [RFC6487] 第 4 节也指出：\"除非特别指出是可选的，否则此处列出的所有字段都必须存在：\"除非特别注明是可选的，否则此处列出的所有字段都必须存在，任何其他字段都不得出现在符合要求的资源证书中。由于某些 RPKI 证书颁发机构需要在其证书中包含策略限定符，本文档对 [RFC6487] 第 4.8.9 节更新如下："
+    },
+    {
+      "indent": 6,
+      "text": "OLD:",
+      "zh": "老了："
+    },
+    {
+      "indent": 9,
+      "text": "This extension MUST be present and MUST be marked critical. It MUST include exactly one policy, as specified in the RPKI Certificate Policy (CP) [RFC6484].",
+      "zh": "该扩展必须存在，且必须标记为关键。它必须包含 RPKI 证书策略 (CP) [RFC6484] 中指定的一项策略。"
+    },
+    {
+      "indent": 6,
+      "text": "NEW:",
+      "zh": "新"
+    },
+    {
+      "indent": 9,
+      "text": "This extension MUST be present and MUST be marked critical. It MUST include exactly one policy, as specified in the RPKI CP [RFC6484]. Exactly one policy qualifier MAY be included. If a policy qualifier is included, the policyQualifierId MUST be the Certification Practice Statement (CPS) pointer qualifier type (id-qt-cps).",
+      "zh": "该扩展必须存在，且必须标记为关键。它必须包含 RPKI CP [RFC6484] 中指定的一个策略。可以包含一个确切的策略限定符。如果包含一个策略限定符，则 policyQualifierId 必须是认证实践声明 (CPS) 指针限定符类型 (id-qt-cps)。"
+    },
+    {
+      "indent": 3,
+      "text": "As noted in [RFC5280], Section 4.2.1.4: \"Optional qualifiers, which MAY be present, are not expected to change the definition of the policy.\" In this case, any optional policy qualifier that MAY be present in a resource certificate MUST NOT change the definition of the RPKI CP [RFC6484].",
+      "zh": "如 [RFC5280] 第 4.2.1.4 节所述：\"可能存在的可选限定符不会改变策略定义\"。在这种情况下，资源证书中可能出现的任何可选策略限定符都不得改变 RPKI CP [RFC6484] 的定义。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Security Considerations",
+      "section_title": true,
+      "zh": "3. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "The Security Considerations of [RFC6487] apply to this document.",
+      "zh": "RFC6487] 的安全考虑因素适用于本文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document updates the RPKI certificate profile to specify that the certificate policies extension can include a policy qualifier, which is a URI. While dereferencing the URI is not required for certificate validation, doing so could provide a denial-of-service (DoS) vector, where the target host may be subjected to bogus work dereferencing the URI. However, this specification, like [RFC5280], places no processing requirements on the URI included in the qualifier.",
+      "zh": "本文件更新了 RPKI 证书配置文件，规定证书策略扩展可包括策略限定符，即 URI。虽然证书验证不需要引用 URI，但引用 URI 可提供拒绝服务（DoS）向量，目标主机可能会受到引用 URI 的虚假工作的影响。不过，本规范与 [RFC5280] 一样，对限定符中包含的 URI 不作任何处理要求。"
+    },
+    {
+      "indent": 3,
+      "text": "As an update to [RFC6487], this document broadens the class of certificates that conform to the RPKI profile by explicitly including within the profile those certificates that contain a policy qualifier as described here. A relying party that performs a strict validation based on [RFC6487] and fails to support the updates described in this document would incorrectly invalidate RPKI objects that include the changes in Section 2.",
+      "zh": "作为对[RFC6487]的更新，本文档明确将包含此处所述策略限定符的证书纳入 RPKI 配置文件，从而扩大了符合 RPKI 配置文件的证书类别。如果依赖方根据 [RFC6487] 执行严格验证，但不支持本文所述的更新，则会错误地使包含第 2 节所述更改的 RPKI 对象失效。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Acknowledgments",
+      "section_title": true,
+      "zh": "4. 致谢"
+    },
+    {
+      "indent": 3,
+      "text": "Frank Hill and Adam Guyot helped define the scope of the issue covered by this document and identified and worked with RPKI validator implementers to clarify the use of policy qualifiers in resource certificates.",
+      "zh": "弗兰克-希尔（Frank Hill）和亚当-古约特（Adam Guyot）帮助确定了本文件所涉及问题的范围，并与 RPKI 验证器实施者共同确定和澄清了资源证书中策略限定符的使用。"
+    },
+    {
+      "indent": 3,
+      "text": "Sean Turner provided significant text to this document regarding the processing of the CPS URI and limiting the scope of the allowable content of the policy qualifier.",
+      "zh": "Sean Turner 为本文件提供了有关处理 CPS URI 和限制策略限定符允许内容范围的重要文本。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Normative References",
+      "section_title": true,
+      "zh": "5. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, May 2008.",
+      "zh": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, May 2008."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6484] Kent, S., Kong, D., Seo, K., and R. Watro, \"Certificate Policy (CP) for the Resource Public Key Infrastructure (RPKI)\", BCP 173, RFC 6484, February 2012.",
+      "zh": "[RFC6484] Kent, S., Kong, D., Seo, K., and R. Watro, \"Certificate Policy (CP) for the Resource Public Key Infrastructure (RPKI)\", BCP 173, RFC 6484, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012."
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Andrew Lee Newton American Registry for Internet Numbers 3635 Concorde Parkway Chantilly, VA 20151 USA",
+      "zh": "安德鲁-李-牛顿 美国互联网号码注册处 3635 Concorde Parkway Chantilly, VA 20151 USA"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: andy@arin.net\nURI:   http://www.arin.net",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Geoff Huston Asia Pacific Network Information Center 6 Cordelia Street South Brisbane QLD 4101 Australia",
+      "zh": "Geoff Huston 亚太网络信息中心 6 Cordelia Street South Brisbane QLD 4101 澳大利亚"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: gih@apnic.net\nURI:   http://www.apnic.net",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

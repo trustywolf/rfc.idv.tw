@@ -1,0 +1,946 @@
+{
+  "title": {
+    "text": "RFC 8181 - A Publication Protocol for the Resource Public Key Infrastructure (RPKI)",
+    "zh": "RFC 8181 - 资源公钥基础设施 (RPKI) 的发布协议"
+  },
+  "number": 8181,
+  "created_at": "2023-12-04 16:01:34.904744+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                         S. Weiler\nRequest for Comments: 8181                                     W3C / MIT\nCategory: Standards Track                                    A. Sonalker\nISSN: 2070-1721                                               STEER Tech\n                                                              R. Austein\n                                                    Dragon Research Labs\n                                                               July 2017",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "A Publication Protocol for the Resource Public Key Infrastructure (RPKI)",
+      "zh": "资源公钥基础设施 (RPKI) 的发布协议"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines a protocol for publishing Resource Public Key Infrastructure (RPKI) objects. Even though the RPKI will have many participants issuing certificates and creating other objects, it is operationally useful to consolidate the publication of those objects. Even in cases where a certificate issuer runs its own publication repository, it can be useful to run the certificate engine itself on a different machine from the publication repository. This document defines a protocol which addresses these needs.",
+      "zh": "本文档定义了发布资源公钥基础设施（RPKI）对象的协议。尽管 RPKI 将有许多参与者签发证书并创建其他对象，但合并发布这些对象在操作上是非常有用的。即使在证书颁发者运行自己的发布库的情况下，在不同于发布库的机器上运行证书引擎本身也是有用的。本文件定义了一个满足这些需求的协议。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc8181.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc8181。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2017 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "版权所有 (c) 2017 IETF 信托基金会和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3\n  1.1.  Historical Note . . . . . . . . . . . . . . . . . . . . .   4\n  1.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   5\n2.  Protocol Specification  . . . . . . . . . . . . . . . . . . .   5\n  2.1.  Common XML Message Format . . . . . . . . . . . . . . . .   6\n  2.2.  Publication and Withdrawal  . . . . . . . . . . . . . . .   7\n  2.3.  Listing the Repository  . . . . . . . . . . . . . . . . .   8\n  2.4.  Error Handling  . . . . . . . . . . . . . . . . . . . . .   8\n  2.5.  Error Codes . . . . . . . . . . . . . . . . . . . . . . .   9\n  2.6.  XML Schema  . . . . . . . . . . . . . . . . . . . . . . .  10\n3.  Examples  . . . . . . . . . . . . . . . . . . . . . . . . . .  12\n  3.1.  <publish/> Query, No Existing Object  . . . . . . . . . .  12\n  3.2.  <publish/> Query, Overwriting Existing Object . . . . . .  12\n  3.3.  <withdraw/> Query . . . . . . . . . . . . . . . . . . . .  13\n  3.4.  <success/> Reply  . . . . . . . . . . . . . . . . . . . .  13\n  3.5.  <report_error/> with Optional Elements  . . . . . . . . .  13\n  3.6.  <report_error/> without Optional Elements . . . . . . . .  14\n  3.7.  Error Handling with Multi-Element Queries . . . . . . . .  14\n    3.7.1.  Multi-Element Query . . . . . . . . . . . . . . . . .  14\n    3.7.2.  Successful Multi-Element Response . . . . . . . . . .  15\n    3.7.3.  Failure Multi-Element Response, First Error Only  . .  15\n    3.7.4.  Failure Multi-Element Response, All Errors  . . . . .  16\n  3.8.  <list/> Query . . . . . . . . . . . . . . . . . . . . . .  16\n  3.9.  <list/> Reply . . . . . . . . . . . . . . . . . . . . . .  17\n4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  17\n5.  Security Considerations . . . . . . . . . . . . . . . . . . .  18\n6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  19\n  6.1.  Normative References  . . . . . . . . . . . . . . . . . .  19\n  6.2.  Informative References  . . . . . . . . . . . . . . . . .  20\nAcknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  21\nAuthors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  21",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document assumes a working knowledge of the Resource Public Key Infrastructure (RPKI), which is intended to support improved routing security on the Internet. See [RFC6480] for an overview of the RPKI.",
+      "zh": "本文档假定读者对资源公钥基础设施（RPKI）有所了解，该基础设施旨在支持改进互联网路由安全。有关 RPKI 的概述，请参阅 [RFC6480]。"
+    },
+    {
+      "indent": 3,
+      "text": "In order to make participation in the RPKI easier, it is helpful to have a few consolidated repositories for RPKI objects, thus saving every participant from the cost of maintaining a new service. Similarly, relying parties using the RPKI objects will find it faster and more reliable to retrieve the necessary set from a smaller number of repositories.",
+      "zh": "为了更方便地参与 RPKI，最好能有几个 RPKI 对象的综合资源库，从而使每个参与者都不必为维护新的服务而付出代价。同样，使用 RPKI 对象的依赖方也会发现，从数量较少的资源库中检索必要的数据集会更快、更可靠。"
+    },
+    {
+      "indent": 3,
+      "text": "These consolidated RPKI object repositories will in many cases be outside the administrative scope of the organization issuing a given RPKI object. In some cases, outsourcing operation of the repository will be an explicit goal: some resource holders who strongly wish to control their own RPKI private keys may lack the resources to operate a 24x7 repository or may simply not wish to do so.",
+      "zh": "这些合并的 RPKI 对象存储库在很多情况下都不属于发行特定 RPKI 对象的组织的管理范围。在某些情况下，将存储库的运行外包将是一个明确的目标：一些强烈希望控制自己的 RPKI 私钥的资源持有者可能缺乏全天候运行存储库的资源，或者根本不想这样做。"
+    },
+    {
+      "indent": 3,
+      "text": "The operator of an RPKI publication repository may well be an Internet registry which issues certificates to its customers, but it need not be; conceptually, operation of an RPKI publication repository is separate from operation of an RPKI Certification Authority (CA).",
+      "zh": "RPKI 发布库的操作者很可能是一个向客户签发证书的互联网注册机构，但也不一定；从概念上讲，RPKI 发布库的操作与 RPKI 验证机构 (CA) 的操作是分开的。"
+    },
+    {
+      "indent": 3,
+      "text": "Even in cases where a resource holder operates both a certificate engine and a publication repository, it can be useful to separate the two functions, as they have somewhat different operational and security requirements.",
+      "zh": "即使在资源持有者同时运营证书引擎和出版物存储库的情况下，将这两种功能分开也是有用的，因为它们对操作和安全的要求有所不同。"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines an RPKI publication protocol which allows publication either within or across organizational boundaries and which makes fairly minimal demands on both the CA engine and the publication service.",
+      "zh": "本文件定义了一种 RPKI 发布协议，允许在组织内部或跨组织发布，对 CA 引擎和发布服务的要求都相当低。"
+    },
+    {
+      "indent": 3,
+      "text": "The authentication and message integrity architecture of the publication protocol is essentially identical to the architecture used in [RFC6492] because the participants in this protocol are the same CA engines as in RFC 6492; this allows reuse of the same \"Business PKI\" (BPKI) (see Section 1.2) infrastructure used to support RFC 6492. As in RFC 6492, authorization is a matter of external configuration: we assume that any given publication repository has some kind of policy controlling which certificate engines are allowed to publish, modify, or withdraw particular RPKI objects, most likely following the recommendation in [RFC6480], Section 4.4; the details of this policy are a private matter between the operator of a certificate engine and the operator of the chosen publication repository.",
+      "zh": "发布协议的身份验证和信息完整性架构与 [RFC6492] 中使用的架构基本相同，因为本协议的参与者与 RFC 6492 中的 CA 引擎相同；这样就可以重复使用用于支持 RFC 6492 的相同的 \"业务 PKI\"（BPKI）（见第 1.2 节）基础架构。与 RFC 6492 一样，授权是一个外部配置问题：我们假定任何给定的发布库都有某种政策来控制哪些证书引擎可以发布、修改或撤回特定的 RPKI 对象，很可能是遵循 [RFC6480] 第 4.4 节中的建议；该政策的细节是证书引擎操作者和所选发布库操作者之间的私事。"
+    },
+    {
+      "indent": 3,
+      "text": "The following diagram attempts to convey where this publication protocol fits into the overall data flow between the certificate issuers and relying parties:",
+      "zh": "下图试图说明该发布协议在证书颁发者和依赖方之间的整体数据流中的位置："
+    },
+    {
+      "indent": 3,
+      "text": "       +------+    +------+    +------+\n       |  CA  |    |  CA  |    |  CA  |\n       +------+    +------+    +------+\n           |           |           |    Publication protocol\n           |           |           |    business relationship\n           +-------+   |  +--------+      perhaps set up by\n                   |   |  |                    RFC 8183\n              +----v---v--v-----+\n              |                 |\n              |   Publication   |\n              |   Repository    |\n              |                 |\n              +-----------------+     Distribution protocols\n                       |                   rsync or RRDP\n        +--------------+----------------+\n        |              |                |\n+-------v-----+ +------v------+  +------v------+\n|   Relying   | |   Relying   |  |   Relying   |\n|    Party    | |    Party    |  |    Party    |\n+-------------+ +-------------+  +-------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The publication protocol itself is not visible to relying parties: a relying party sees the public interface of the publication server, which is an rsync or RPKI Repository Delta Protocol (RRDP) [RFC8182] server.",
+      "zh": "依赖方看不到发布协议本身：依赖方看到的是发布服务器的公共接口，即 rsync 或 RPKI 储藏库三角协议 (RRDP) [RFC8182] 服务器。"
+    },
+    {
+      "indent": 3,
+      "text": "Operators of certificate engines and publication repositories may find [RFC8183] a useful tool in setting up the pairwise relationships between these servers, but they are not required to use it.",
+      "zh": "证书引擎和发布库的操作者可能会发现 [RFC8183] 是建立这些服务器之间配对关系的有用工具，但他们并不需要使用它。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Historical Note",
+      "section_title": true,
+      "zh": "1.1. 历史说明"
+    },
+    {
+      "indent": 3,
+      "text": "This protocol started out as an informal collaboration between several of the early RPKI implementers, and while it was always the designers' intention that the resulting protocol end up on the IETF Standards Track, it took a few years to get there because standardization of other pieces of the overall RPKI protocol space was more urgent. The Standards Track version of this publication protocol preserves the original XML namespace and protocol version scheme in order to maintain backwards compatibility with running code implemented against older versions of the specification.",
+      "zh": "该协议最初是几个早期 RPKI 实现者之间的非正式合作，虽然设计者一直希望最终形成的协议能进入 IETF 标准轨道，但由于整个 RPKI 协议空间中其他部分的标准化工作更为紧迫，因此花了几年时间才得以实现。该发布协议的标准轨版本保留了原始 XML 名称空间和协议版本方案，以便与根据旧版本规范执行的运行代码保持向后兼容性。"
+    },
+    {
+      "indent": 0,
+      "text": "1.2. Terminology",
+      "section_title": true,
+      "zh": "1.2. 用语"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。"
+    },
+    {
+      "indent": 3,
+      "text": "\"Publication engine\" and \"publication server\" are used interchangeably to refer to the server providing the service described in this document.",
+      "zh": "\"出版引擎 \"和 \"出版服务器 \"可以互换使用，指提供本文档所述服务的服务器。"
+    },
+    {
+      "indent": 3,
+      "text": "\"Business Public Key Infrastructure\" (\"Business PKI\" or \"BPKI\") refers to a PKI, separate from the RPKI, used to authenticate clients to the publication engine. We use the term \"Business PKI\" here because an Internet registry might already have a PKI for authenticating its clients and might wish to reuse that PKI for this protocol. There is, however, no requirement to reuse such a PKI.",
+      "zh": "\"业务公钥基础设施\"（\"Business PKI \"或 \"BPKI\"）指的是与 RPKI 不同的 PKI，用于验证客户端到发布引擎的身份。我们在此使用 \"业务 PKI \"一词，是因为互联网注册机构可能已经拥有一个用于验证其客户身份的 PKI，并且可能希望在本协议中重复使用该 PKI。不过，我们并不要求重复使用这种 PKI。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Protocol Specification",
+      "section_title": true,
+      "zh": "2. 协议规范"
+    },
+    {
+      "indent": 3,
+      "text": "The publication protocol uses XML [XML] messages wrapped in signed Cryptographic Message Syntax (CMS) messages, carried over HTTP transport [RFC7230]. The CMS encapsulation is identical to that used in Section 3.1 (and subsections) of RFC 6492 [RFC6492].",
+      "zh": "发布协议使用 XML[XML]报文，用签名的加密报文语法（CMS）报文封装，通过 HTTP 传输[RFC7230]。CMS 封装与 RFC 6492 [RFC6492] 第 3.1 节（及各小节）中使用的封装相同。"
+    },
+    {
+      "indent": 3,
+      "text": "The publication protocol uses a simple request/response interaction. The client passes a request to the server, and the server generates a corresponding response.",
+      "zh": "发布协议采用简单的请求/响应交互方式。客户端向服务器发送请求，服务器则生成相应的响应。"
+    },
+    {
+      "indent": 3,
+      "text": "A message exchange commences with the client initiating an HTTP POST with a content type of \"application/rpki-publication\", with the message object as the body. The server's response will similarly be the body of the response with a content type of \"application/ rpki-publication\".",
+      "zh": "信息交换开始时，客户端启动 HTTP POST，内容类型为 \"application/rpki-publication\"，信息对象为正文。服务器的响应同样是内容类型为 \"application/ rpki-publication \"的响应正文。"
+    },
+    {
+      "indent": 3,
+      "text": "The content of the POST and the server's response will be a well-formed CMS [RFC5652] object with OID = 1.2.840.113549.1.7.2 as described in Section 3.1 of [RFC6492].",
+      "zh": "如 [RFC6492] 第 3.1 节所述，POST 和服务器响应的内容将是格式良好的 CMS [RFC5652] 对象，OID = 1.2.840.113549.1.7.2。"
+    },
+    {
+      "indent": 3,
+      "text": "The CMS signatures are used to protect the integrity of the protocol messages and to authenticate the client and server to each other. Authorization to perform particular operations is a local matter, perhaps determined by contractual agreements between the operators of any particular client-server pair, but in any case is beyond the scope of this specification.",
+      "zh": "CMS 签名用于保护协议信息的完整性，以及客户端和服务器之间的相互验证。执行特定操作的授权属于本地事务，可能由任何特定客户机-服务器对的运营商之间的合同协议决定，但无论如何都超出了本规范的范围。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1. Common XML Message Format",
+      "section_title": true,
+      "zh": "2.1. 通用 XML 信息格式"
+    },
+    {
+      "indent": 3,
+      "text": "The XML schema for this protocol is below in Section 2.6. The basic XML message format looks like this:",
+      "zh": "该协议的 XML 模式见下文第 2.6 节。基本的 XML 信息格式如下"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"query\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <!-- Zero or more PDUs -->\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"reply\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <!-- Zero or more PDUs -->\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "As noted above, the outermost XML element is encapsulated in a signed CMS message. Query messages are signed by the client, and reply messages are signed by the server.",
+      "zh": "如上所述，最外层的 XML 元素封装在已签名的 CMS 信息中。查询信息由客户端签名，回复信息由服务器签名。"
+    },
+    {
+      "indent": 3,
+      "text": "Common attributes:",
+      "zh": "共同属性："
+    },
+    {
+      "indent": 3,
+      "text": "version: The value of this attribute is the version of this protocol. This document describes version 4.",
+      "zh": "版本：该属性的值是该协议的版本。本文件描述的是版本 4。"
+    },
+    {
+      "indent": 3,
+      "text": "type: The possible values of this attribute are \"reply\" and \"query\".",
+      "zh": "类型：该属性的可能值为 \"回复 \"和 \"查询\"。"
+    },
+    {
+      "indent": 3,
+      "text": "A query PDU may be one of three types: <publish/>, <withdraw/>, or <list/>.",
+      "zh": "查询 PDU 有三种类型：<发布/>、<撤回/> 或 <列表/>。"
+    },
+    {
+      "indent": 3,
+      "text": "A reply PDU may be one of three types: <success/>, <list/>, or <report_error/>.",
+      "zh": "回复 PDU 可以是三种类型之一：<成功/>、<列表/> 或 <报告错误/>。"
+    },
+    {
+      "indent": 3,
+      "text": "The <publish/> and <withdraw/> PDUs include a \"tag\" attribute to facilitate bulk operation. When performing bulk operations, a CA engine will probably find it useful to specify a distinct tag value for each <publish/> or <withdraw/> PDU, to simplify matching an error with the PDU which triggered it. The tag attribute is mandatory, to simplify parsing, but a CA engine which has no particular use for tagging MAY use any syntactically legal value, including simply using the empty string for all tag fields.",
+      "zh": "<publish/> 和 <withdraw/> PDU 包括一个 \"tag \"属性，以方便批量操作。在执行批量操作时，CA 引擎可能会发现为每个 <publish/> 或 <withdraw/> PDU 指定一个不同的标记值很有用，这样可以简化错误与触发错误的 PDU 的匹配。标签属性是强制性的，以简化解析，但对标签没有特殊用途的 CA 引擎可以使用任何语法上合法的值，包括简单地对所有标签字段使用空字符串。"
+    },
+    {
+      "indent": 3,
+      "text": "This document describes version 4 of this protocol. An implementation which understands only this version of the protocol MUST reject messages with a different protocol version attribute, signaling the error as described in Section 2.4. Since \"4\" is currently the only value allowed for the version attribute in the schema (Section 2.6), an incorrect protocol version can be detected either by checking the version attribute directly or as a schema validation error. Any future update to this protocol which is either syntactically or semantically incompatible with the current version will need to increment the protocol version number.",
+      "zh": "本文件描述了该协议的第 4 版。只理解该版本协议的实现必须拒绝带有不同协议版本属性的报文，并发出第 2.4 节所述的错误信号。由于 \"4 \"是目前模式中版本属性唯一允许的值（第 2.6 节），因此可通过直接检查版本属性或模式验证错误来检测协议版本是否正确。本协议今后的任何更新，如果在语法或语义上与当前版本不兼容，都需要递增协议版本号。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2. Publication and Withdrawal",
+      "section_title": true,
+      "zh": "2.2. 公布和撤销"
+    },
+    {
+      "indent": 3,
+      "text": "The publication protocol uses a common message format to request publication of any RPKI object. This format was chosen specifically to allow this protocol to accommodate new types of RPKI objects without needing changes to this protocol.",
+      "zh": "发布协议使用通用的消息格式来请求发布任何 RPKI 对象。之所以选择这种格式，是为了让本协议在无需修改本协议的情况下，也能容纳新类型的 RPKI 对象。"
+    },
+    {
+      "indent": 3,
+      "text": "Both the <publish/> and <withdraw/> PDUs have a payload of a tag and an rsync URI [RFC3986] [RFC5781]. The <publish/> query also contains the DER object to be published, encoded in Base64 ([RFC4648], Section 4, with line breaks within the Base64 text permitted but not required).",
+      "zh": "<publish/> 和 <withdraw/> PDU 的有效载荷都包括一个标记和一个 rsync URI [RFC3986] [RFC5781]。<publish/> 查询还包含要发布的 DER 对象，以 Base64 编码（[RFC4648]，第 4 节，允许但不要求在 Base64 文本中换行）。"
+    },
+    {
+      "indent": 3,
+      "text": "Both the <publish/> and <withdraw/> PDUs also have a \"hash\" attribute, which carries a hash of an existing object at the specified repository URI, encoded as a hexadecimal string. For <withdraw/> PDUs, the hash MUST be present, as this operation makes no sense if there is no existing object to withdraw. For <publish/> PDUs, the hash MUST be present if the publication operation is overwriting an existing object, and it MUST NOT be present if this publication operation is writing to a new URI where no prior object exists. Presence of an object when no \"hash\" attribute has been specified is an error, as is absence of an object or an incorrect hash value when a \"hash\" attribute has been specified. Any such errors MUST be reported using the <report_error/> PDU.",
+      "zh": "<publish/> 和 <withdraw/> PDU 也都有一个 \"hash \"属性，它包含指定版本库 URI 中现有对象的哈希值，以十六进制字符串编码。对于 <withdraw/> PDU，哈希值必须存在，因为如果没有要撤回的现有对象，此操作就没有意义。对于 <publish/>（发布/>）PDU，如果发布操作要覆盖现有对象，则必须存在哈希值；如果发布操作要写入一个新的 URI，而之前不存在对象，则必须不存在哈希值。如果没有指定 \"哈希 \"属性，则对象的存在就是错误；如果指定了 \"哈希 \"属性，则对象不存在或哈希值不正确也是错误。必须使用 <report_error/> PDU 报告任何此类错误。"
+    },
+    {
+      "indent": 3,
+      "text": "The hash algorithm is SHA-256 [SHS], to simplify comparison of publication protocol hashes with RPKI manifest hashes.",
+      "zh": "哈希算法为 SHA-256 [SHS]，以简化发布协议哈希值与 RPKI 清单哈希值的比较。"
+    },
+    {
+      "indent": 3,
+      "text": "The intent behind the \"hash\" attribute is to allow the client and server to detect any disagreements about the effect that a <publish/> or <withdraw/> PDU will have on the repository.",
+      "zh": "哈希 \"属性背后的意图是让客户端和服务器能够检测出 <publish/> 或 <withdraw/> PDU 对版本库影响的任何分歧。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that every publish and withdraw action requires a new manifest, thus every publish or withdraw action will involve at least two objects.",
+      "zh": "请注意，每个发布和撤回操作都需要一个新的清单，因此每个发布或撤回操作都至少涉及两个对象。"
+    },
+    {
+      "indent": 3,
+      "text": "Processing of a query message is handled atomically: either the entire query succeeds or none of it does. When a query message contains multiple PDUs, failure of any PDU may require the server to roll back actions triggered by earlier PDUs.",
+      "zh": "对查询报文的处理是原子式的：要么整个查询成功，要么没有一个查询成功。当查询信息包含多个 PDU 时，任何一个 PDU 的失败都可能要求服务器回滚之前 PDU 触发的操作。"
+    },
+    {
+      "indent": 3,
+      "text": "When a query message containing <publish/> or <withdraw/> PDUs succeeds, the server returns a single <success/> reply.",
+      "zh": "当包含 <publish/> 或 <withdraw/> PDU 的查询消息成功时，服务器会返回一个 <success/> 回复。"
+    },
+    {
+      "indent": 3,
+      "text": "When a query fails, the server returns one or more <report_error/> reply PDUs. Typically, a server will only generate one <report_error/> corresponding to the first query PDU that failed, but servers MAY return multiple <report_error/> PDUs at the implementer's discretion.",
+      "zh": "当查询失败时，服务器会返回一个或多个 <report_error/> 回复 PDU。通常，服务器只会生成一个 <report_error/> 与第一个查询失败的 PDU 相对应，但服务器可以根据实现者的判断返回多个 <report_error/> PDU。"
+    },
+    {
+      "indent": 0,
+      "text": "2.3. Listing the Repository",
+      "section_title": true,
+      "zh": "2.3. 列出存储库"
+    },
+    {
+      "indent": 3,
+      "text": "The <list/> operation allows the client to ask the server for a complete listing of objects which the server believes the client has published. This is intended primarily to allow the client to recover upon detecting (probably via use of the \"hash\" attribute; see Section 2.2) that they have somehow lost synchronization.",
+      "zh": "<list/> 操作允许客户端向服务器索取服务器认为客户端已发布的对象的完整列表。这样做的主要目的是让客户端在发现（可能是通过使用 \"哈希 \"属性；见第 2.2 节）自己丢失同步时能够恢复。"
+    },
+    {
+      "indent": 3,
+      "text": "The <list/> query consists of a single PDU. A <list/> query MUST be the only PDU in a query -- it may not be combined with any <publish/> or <withdraw/> queries.",
+      "zh": "<list/> 查询由一个 PDU 组成。<list/> 查询必须是查询中唯一的 PDU，不得与任何 <publish/> 或 <withdraw/> 查询组合。"
+    },
+    {
+      "indent": 3,
+      "text": "The <list/> reply consists of zero or more PDUs, one per object published in this repository by this client, each PDU conveying the URI and hash of one published object.",
+      "zh": "<list/> 回复由零个或多个 PDU 组成，该客户机在该版本库中发布的每个对象一个 PDU，每个 PDU 传达一个已发布对象的 URI 和哈希值。"
+    },
+    {
+      "indent": 0,
+      "text": "2.4. Error Handling",
+      "section_title": true,
+      "zh": "2.4. 错误处理"
+    },
+    {
+      "indent": 3,
+      "text": "Errors are handled at two levels.",
+      "zh": "错误在两个层面上进行处理。"
+    },
+    {
+      "indent": 3,
+      "text": "Errors that make it impossible to decode a query or encode a response are handled at the HTTP layer. 4xx and 5xx HTTP response codes indicate that something bad happened.",
+      "zh": "无法解码查询或编码响应的错误由 HTTP 层处理。4xx 和 5xx HTTP 响应代码表示发生了错误。"
+    },
+    {
+      "indent": 3,
+      "text": "In all other cases, errors result in an XML <report_error/> PDU. Like the rest of this protocol, <report_error/> PDUs are CMS-signed XML messages and thus can be archived to provide an audit trail.",
+      "zh": "在所有其他情况下，错误会产生一个 XML <report_error/> PDU。与本协议的其他部分一样，<report_error/> PDU 也是 CMS 签名的 XML 信息，因此可以存档以提供审计跟踪。"
+    },
+    {
+      "indent": 3,
+      "text": "<report_error/> PDUs only appear in replies, never in queries.",
+      "zh": "<report_error/> PDU 只出现在回复中，从不出现在查询中。"
+    },
+    {
+      "indent": 3,
+      "text": "The \"tag\" attribute of the <report_error/> PDU associated with a <publish/> or <withdraw/> PDU MUST be set to the same value as the \"tag\" attribute in the PDU which generated the error. A client can use the \"tag\" attribute to determine which PDU caused processing of an update to fail.",
+      "zh": "与 <publish/> 或 <withdraw/> PDU 相关联的 <report_error/> PDU 的 \"tag \"属性必须设置为与产生错误的 PDU 中的 \"tag \"属性相同的值。客户机可使用 \"tag \"属性来确定是哪个 PDU 导致更新处理失败。"
+    },
+    {
+      "indent": 3,
+      "text": "The error itself is conveyed in the \"error_code\" attribute. The value of this attribute is a token indicating the specific error that occurred.",
+      "zh": "错误本身通过 \"error_code \"属性传达。该属性的值是一个标记，表示发生的具体错误。"
+    },
+    {
+      "indent": 3,
+      "text": "The body of the <report_error/> element contains two sub-elements:",
+      "zh": "<report_error/> 元素的主体包含两个子元素："
+    },
+    {
+      "indent": 3,
+      "text": "1. An optional text element <error_text/>, which, if present, contains a text string with debugging information intended for human consumption.",
+      "zh": "1. 一个可选的文本元素 <error_text/>，如果存在，则包含一个文本字符串，其中包含供人阅读的调试信息。"
+    },
+    {
+      "indent": 3,
+      "text": "2. An optional element <failed_pdu/>, which, if present, contains a verbatim copy of the query PDU whose failure triggered the <report_error/> PDU. The quoted element must be syntactically valid.",
+      "zh": "2. 可选元素 <failed_pdu/>，如果存在，它包含查询 PDU 的逐字副本，该 PDU 的失败触发了 <report_error/> PDU。引用的元素必须在语法上有效。"
+    },
+    {
+      "indent": 3,
+      "text": "See Section 3.7 for examples of a multi-element query and responses.",
+      "zh": "有关多元素查询和响应的示例，请参见第 3.7 节。"
+    },
+    {
+      "indent": 0,
+      "text": "2.5. Error Codes",
+      "section_title": true,
+      "zh": "2.5. 错误代码"
+    },
+    {
+      "indent": 3,
+      "text": "These are the defined error codes as well as some discussion of each. Text similar to these descriptions may be sent in an <error_text/> element to help explain the error encountered.",
+      "zh": "这些是已定义的错误代码，以及对每个错误代码的一些讨论。可在 <error_text/> 元素中发送与这些描述类似的文本，以帮助解释所遇到的错误。"
+    },
+    {
+      "indent": 3,
+      "text": "xml_error: Encountered an XML problem. Note that some XML errors may be severe enough to require error reporting at the HTTP layer, instead. Implementations MAY choose to report any or all XML errors at the HTTP layer.",
+      "zh": "xml_error：遇到 XML 问题。请注意，某些 XML 错误可能非常严重，需要在 HTTP 层进行错误报告。实现可以选择在 HTTP 层报告任何或所有 XML 错误。"
+    },
+    {
+      "indent": 3,
+      "text": "permission_failure: Client does not have permission to update this URI.",
+      "zh": "permission_failure：客户端没有更新此 URI 的权限。"
+    },
+    {
+      "indent": 3,
+      "text": "bad_cms_signature: Bad CMS signature.",
+      "zh": "bad_cms_signature：不良 CMS 签名。"
+    },
+    {
+      "indent": 3,
+      "text": "object_already_present: An object is already present at this URI, yet a \"hash\" attribute was not specified. A \"hash\" attribute must be specified when overwriting or deleting an object. Perhaps client and server are out of sync?",
+      "zh": "object_already_present：该 URI 上已经存在一个对象，但没有指定 \"hash \"属性。覆盖或删除对象时必须指定 \"哈希 \"属性。也许客户端和服务器不同步？"
+    },
+    {
+      "indent": 3,
+      "text": "no_object_present: There is no object present at this URI, yet a \"hash\" attribute was specified. Perhaps client and server are out of sync?",
+      "zh": "no_object_present：该 URI 上没有对象，但指定了 \"哈希 \"属性。也许客户端和服务器不同步？"
+    },
+    {
+      "indent": 3,
+      "text": "no_object_matching_hash: The \"hash\" attribute supplied does not match the \"hash\" attribute of the object at this URI. Perhaps client and server are out of sync?",
+      "zh": "no_object_matching_hash：提供的 \"哈希 \"属性与此 URI 中对象的 \"哈希 \"属性不匹配。也许客户端和服务器不同步？"
+    },
+    {
+      "indent": 3,
+      "text": "consistency_problem: Server detected an update that looks like it will cause a consistency problem (e.g., an object was deleted, but the manifest was not updated). Note that a server is not required to make such checks. Indeed, it may be unwise for a server to do so. This error code just provides a way for the server to explain its (in-)action.",
+      "zh": "consistency_problem： 服务器检测到的更新看起来会导致一致性问题（例如，删除了一个对象，但清单没有更新）。请注意，服务器并不需要进行此类检查。事实上，服务器这样做可能是不明智的。该错误代码只是为服务器解释其（不）行为提供了一种方式。"
+    },
+    {
+      "indent": 3,
+      "text": "other_error: A meteor fell on the server.",
+      "zh": "其他错误：一颗流星坠落在服务器上。"
+    },
+    {
+      "indent": 0,
+      "text": "2.6. XML Schema",
+      "section_title": true,
+      "zh": "2.6. XML 模式"
+    },
+    {
+      "indent": 3,
+      "text": "The following is a [RELAX-NG] compact form schema describing the publication protocol.",
+      "zh": "以下是描述出版协议的[RELAX-NG]紧凑格式模式。"
+    },
+    {
+      "indent": 3,
+      "text": "This schema is normative: in the event of a disagreement between this schema and the document text above, this schema is authoritative.",
+      "zh": "本模式具有规范性：如果本模式与上述文件文本之间存在分歧，则本模式具有权威性。"
+    },
+    {
+      "indent": 3,
+      "text": "# RELAX NG schema for RPKI publication protocol.",
+      "zh": "# RPKI 发布协议的 RELAX NG 模式。"
+    },
+    {
+      "indent": 3,
+      "text": "default namespace = \"http://www.hactrn.net/uris/rpki/publication-spec/\"",
+      "zh": "默认命名空间 = \"http://www.hactrn.net/uris/rpki/publication-spec/\""
+    },
+    {
+      "indent": 3,
+      "text": "# This is version 4 of the protocol.",
+      "zh": "# 这是协议的第 4 版。"
+    },
+    {
+      "indent": 3,
+      "text": "version = \"4\"",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "# Top-level PDU is either a query or a reply.",
+      "zh": "# 顶层 PDU 要么是查询，要么是回复。"
+    },
+    {
+      "indent": 3,
+      "text": "start |= element msg {\n  attribute version { version },\n  attribute type    { \"query\" },\n  query_elt\n}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "start |= element msg {\n  attribute version { version },\n  attribute type    { \"reply\" },\n  reply_elt\n}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "# Tag attributes for bulk operations.",
+      "zh": "# 批量操作的标签属性。"
+    },
+    {
+      "indent": 3,
+      "text": "tag = attribute tag { xsd:token { maxLength=\"1024\" } }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "# Base64-encoded DER stuff.",
+      "zh": "# Base64-encoded DER stuff."
+    },
+    {
+      "indent": 3,
+      "text": "base64 = xsd:base64Binary",
+      "zh": "base64 = xsd:base64Binary"
+    },
+    {
+      "indent": 3,
+      "text": "# Publication URIs.",
+      "zh": "# 出版物 URI。"
+    },
+    {
+      "indent": 3,
+      "text": "uri = attribute uri { xsd:anyURI { maxLength=\"4096\" } }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "# Digest of an existing object (hexadecimal).",
+      "zh": "# 现有对象的摘要（十六进制）。"
+    },
+    {
+      "indent": 3,
+      "text": "hash = attribute hash { xsd:string { pattern = \"[0-9a-fA-F]+\" } }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "# Error codes.",
+      "zh": "# 错误代码。"
+    },
+    {
+      "indent": 3,
+      "text": "error |= \"xml_error\" error |= \"permission_failure\" error |= \"bad_cms_signature\" error |= \"object_already_present\" error |= \"no_object_present\" error |= \"no_object_matching_hash\" error |= \"consistency_problem\" error |= \"other_error\"",
+      "zh": "error |= \"xml_error\" error |= \"permission_failure\" error |= \"bad_cms_signature\" error |= \"object_already_present\" error |= \"no_object_present\" error |= \"no_object_matching_hash\" error |= \"consistency_problem\" error |= \"other_error\""
+    },
+    {
+      "indent": 3,
+      "text": "# <publish/> and <withdraw/> query elements",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "query_elt |= (\n  element publish  { tag, uri, hash?, base64 } |\n  element withdraw { tag, uri, hash          }\n)*",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "# <success/> reply",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "reply_elt |= element success { empty }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "# <list/> query and reply",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "query_elt |= element list { empty }\nreply_elt |= element list { uri, hash }*",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "# <report_error/> reply",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "reply_elt |= element report_error {\n  tag?,\n  attribute error_code { error },\n  element   error_text { xsd:string { maxLength=\"512000\" }}?,\n  element   failed_pdu { query_elt }?\n}*",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3. Examples",
+      "section_title": true,
+      "zh": "3. 实例"
+    },
+    {
+      "indent": 3,
+      "text": "Following are examples of various queries and the corresponding replies for the RPKI publication protocol.",
+      "zh": "以下是 RPKI 发布协议的各种查询和相应回复的示例。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that the authors have taken liberties with the Base64, hash, and URI text in these examples in the interest of making the examples fit nicely into RFC text format. Similarly, these examples do not show the CMS signature wrapper around the XML, just the XML payload.",
+      "zh": "请注意，作者对这些示例中的 Base64、哈希值和 URI 文本进行了自由处理，以便使这些示例能很好地适应 RFC 文本格式。同样，这些示例也没有显示围绕 XML 的 CMS 签名封装，只是显示了 XML 有效载荷。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1. <publish/> Query, No Existing Object",
+      "section_title": true,
+      "zh": "3.1. <publish/> 查询，无现有对象"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"query\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <!-- body is base64(new-object) -->\n  <publish\n      tag=\"\"\n      uri=\"rsync://wombat.example/Alice/01a97a70ac477f06.cer\">\n      SGVsbG8sIG15IG5hbWUgaXMgQWxpY2U=\n    </publish>\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.2. <publish/> Query, Overwriting Existing Object",
+      "section_title": true,
+      "zh": "3.2. <publish/> 查询，覆盖现有对象"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"query\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <!-- hash is hex(SHA-256(old-object)) -->\n  <!-- body is base64(new-object) -->\n  <publish\n      hash=\"01a97a70ac477f06\"\n      tag=\"foo\"\n      uri=\"rsync://wombat.example/Alice/01a97a70ac477f06.cer\">\n      SGVsbG8sIG15IG5hbWUgaXMgQWxpY2U=\n    </publish>\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.3. <withdraw/> Query",
+      "section_title": true,
+      "zh": "3.3. <撤回/> 查询"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"query\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <!-- hash is hex(SHA-256(old-object)) -->\n  <withdraw\n      hash=\"01a97a70ac477f06\"\n      tag=\"foo\"\n      uri=\"rsync://wombat.example/Alice/01a97a70ac477f06.cer\"/>\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.4. <success/> Reply",
+      "section_title": true,
+      "zh": "3.4. <success/> 答复"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"reply\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <success/>\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.5. <report_error/> with Optional Elements",
+      "section_title": true,
+      "zh": "3.5. 带有可选元素的 <report_error/>"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"reply\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <report_error\n      error_code=\"no_object_matching_hash\"\n      tag=\"foo\">\n    <error_text>\n      Can't delete an object I don't have\n    </error_text>\n    <failed_pdu>\n      <publish\n          hash=\"01a97a70ac477f06\"\n          tag=\"foo\"\n          uri=\"rsync://wombat.example/Alice/01a97a70ac477f06.cer\">\n      SGVsbG8sIG15IG5hbWUgaXMgQWxpY2U=\n    </publish>\n    </failed_pdu>\n  </report_error>\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.6. <report_error/> without Optional Elements",
+      "section_title": true,
+      "zh": "3.6. <report_error/> 不含可选元素"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"reply\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <report_error\n      error_code=\"object_already_present\"\n      tag=\"foo\"/>\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.7. Error Handling with Multi-Element Queries",
+      "section_title": true,
+      "zh": "3.7. 多元素查询的错误处理"
+    },
+    {
+      "indent": 0,
+      "text": "3.7.1. Multi-Element Query",
+      "section_title": true,
+      "zh": "3.7.1. 多元素查询"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"query\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <publish\n      tag=\"Alice\"\n      uri=\"rsync://wombat.example/Alice/01a97a70ac477f06.cer\">\n      SGVsbG8sIG15IG5hbWUgaXMgQWxpY2U=\n    </publish>\n  <withdraw\n      hash=\"f46a4198efa3070e\"\n      tag=\"Bob\"\n      uri=\"rsync://wombat.example/Bob/f46a4198efa3070e.cer\"/>\n  <publish\n      tag=\"Carol\"\n      uri=\"rsync://wombat.example/Carol/32e0544eeb510ec0.cer\">\n      SGVsbG8sIG15IG5hbWUgaXMgQ2Fyb2w=\n    </publish>\n  <withdraw\n      hash=\"421ee4ac65732d72\"\n      tag=\"Dave\"\n      uri=\"rsync://wombat.example/Dave/421ee4ac65732d72.cer\"/>\n  <publish\n      tag=\"Eve\"\n      uri=\"rsync://wombat.example/Eve/9dd859b01e5c2ebd.cer\">\n      SGVsbG8sIG15IG5hbWUgaXMgRXZl\n    </publish>\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.7.2. Successful Multi-Element Response",
+      "section_title": true,
+      "zh": "3.7.2. 成功的多元素响应"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"reply\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <success/>\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.7.3. Failure Multi-Element Response, First Error Only",
+      "section_title": true,
+      "zh": "3.7.3. 故障多元素响应，仅限第一次错误"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"reply\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <report_error\n      error_code=\"no_object_matching_hash\"\n      tag=\"Dave\">\n    <failed_pdu>\n      <withdraw\n          hash=\"421ee4ac65732d72\"\n          tag=\"Dave\"\n          uri=\"rsync://wombat.example/Dave/421ee4ac65732d72.cer\"/>\n    </failed_pdu>\n  </report_error>\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.7.4. Failure Multi-Element Response, All Errors",
+      "section_title": true,
+      "zh": "3.7.4. 故障多元素响应，所有错误"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"reply\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <report_error\n      error_code=\"no_object_matching_hash\"\n      tag=\"Dave\">\n    <failed_pdu>\n      <withdraw\n          hash=\"421ee4ac65732d72\"\n          tag=\"Dave\"\n          uri=\"rsync://wombat.example/Dave/421ee4ac65732d72.cer\"/>\n    </failed_pdu>\n  </report_error>\n  <report_error\n      error_code=\"object_already_present\"\n      tag=\"Eve\">\n    <failed_pdu>\n      <publish\n          tag=\"Eve\"\n          uri=\"rsync://wombat.example/Eve/9dd859b01e5c2ebd.cer\">\n      SGVsbG8sIG15IG5hbWUgaXMgRXZl\n    </publish>\n    </failed_pdu>\n  </report_error>\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.8. <list/> Query",
+      "section_title": true,
+      "zh": "3.8. <list/> 查询"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"query\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <list/>\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.9. <list/> Reply",
+      "section_title": true,
+      "zh": "3.9. <list/> 回复"
+    },
+    {
+      "indent": 3,
+      "text": "<msg\n    type=\"reply\"\n    version=\"4\"\n    xmlns=\"http://www.hactrn.net/uris/rpki/publication-spec/\">\n  <list\n      hash=\"eb719b72f0648cf4\"\n      uri=\"rsync://wombat.example/Fee/eb719b72f0648cf4.cer\"/>\n  <list\n      hash=\"c7c50a68b7aa50bf\"\n      uri=\"rsync://wombat.example/Fie/c7c50a68b7aa50bf.cer\"/>\n  <list\n      hash=\"f222481ded47445d\"\n      uri=\"rsync://wombat.example/Foe/f222481ded47445d.cer\"/>\n  <list\n      hash=\"15b94e08713275bc\"\n      uri=\"rsync://wombat.example/Fum/15b94e08713275bc.cer\"/>\n</msg>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "4. IANA Considerations",
+      "section_title": true,
+      "zh": "4. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has registered the \"application/rpki-publication\" media type as follows:",
+      "zh": "IANA 已将 \"application/rpki-publication \"媒体类型注册如下："
+    },
+    {
+      "indent": 6,
+      "text": "Type name:  application\nSubtype name:  rpki-publication\nRequired parameters:  None\nOptional parameters:  None\nEncoding considerations:  binary\nSecurity considerations:  Carries an RPKI publication protocol\n   message, as defined in RFC 8181.\nInteroperability considerations:  None\nPublished specification:  RFC 8181\nApplications which use this media type: HTTP\nAdditional information:\n   Magic number(s):  None\n   File extension(s):  None\n   Macintosh File Type Code(s):  None\nPerson & email address to contact for further information:\n   Rob Austein <sra@hactrn.net>\nIntended usage:  COMMON\nAuthor/Change controller: IETF",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "5. Security Considerations",
+      "section_title": true,
+      "zh": "5. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "The RPKI publication protocol and the data it publishes use entirely separate PKIs for authentication. The published data is authenticated within the RPKI, and this protocol has nothing to do with that authentication, nor does it require that the published objects be valid in the RPKI. The publication protocol uses a separate BPKI to authenticate its messages.",
+      "zh": "RPKI 发布协议及其发布的数据使用完全独立的 PKI 进行身份验证。发布的数据在 RPKI 中进行验证，本协议与验证无关，也不要求发布的对象在 RPKI 中有效。发布协议使用单独的 BPKI 对其信息进行验证。"
+    },
+    {
+      "indent": 3,
+      "text": "Each RPKI publication protocol message is wrapped in a signed CMS message, which provides message integrity protection and an auditable form of message authentication. Because of these protections at the application layer, and because all the data being published are intended to be public information in any case, this protocol does not, strictly speaking, require the use of HTTPS or other transport security mechanisms. There may, however, be circumstances in which a particular publication operator may prefer HTTPS over HTTP anyway, as a matter of (BPKI) CA policy. Use of HTTP versus HTTPS here is, essentially, a private matter between the repository operator and its clients. Note, however, that even if a client/server pair uses HTTPS for this protocol, message authentication for this protocol is still based on the CMS signatures, not HTTPS.",
+      "zh": "每个 RPKI 发布协议报文都包裹在一个已签名的 CMS 报文中，它提供了报文完整性保护和一种可审计的报文验证形式。由于在应用层提供了这些保护，而且所有发布的数据在任何情况下都是公开信息，因此严格来说，本协议并不要求使用 HTTPS 或其他传输安全机制。不过，在某些情况下，作为（BPKI）CA 政策的一部分，特定的发布运营商可能更倾向于使用 HTTPS 而不是 HTTP。这里使用 HTTP 还是 HTTPS 基本上是存储库操作员与其客户之间的私事。但请注意，即使客户机/服务器对使用 HTTPS 协议，该协议的消息验证仍基于 CMS 签名，而非 HTTPS。"
+    },
+    {
+      "indent": 3,
+      "text": "Although the hashes used in the <publish/> and <withdraw/> PDUs are cryptographically strong, the digest algorithm was selected for convenience in comparing these hashes with the hashes that appear in RPKI manifests. The hashes used in the <publish/> and <withdraw/> PDUs are not particularly security sensitive because these PDUs are protected by the CMS signatures. Because of this, the most likely reason for a change to this digest algorithm would be to track a corresponding change in the digest algorithm used in RPKI manifests. If and when such a change happens, it will require incrementing the version number of this publication protocol, but given that the most likely implementation of a publication server uses these hashes as lookup keys in a database, bumping the protocol version number would be a relatively minor portion of the effort of changing the algorithm.",
+      "zh": "虽然 <publish/> 和 <withdraw/> PDU 中使用的哈希值在密码学上很强，但选择摘要算法是为了方便将这些哈希值与 RPKI 清单中出现的哈希值进行比较。<publish/> 和 <withdraw/> PDU 中使用的哈希值对安全并不特别敏感，因为这些 PDU 受到 CMS 签名的保护。因此，更改摘要算法的最可能原因是跟踪 RPKI 清单中使用的摘要算法的相应更改。如果出现这种变化，就需要增加该发布协议的版本号，但鉴于发布服务器最有可能使用这些哈希值作为数据库中的查找密钥，因此增加协议版本号只是更改算法中相对较小的一部分工作。"
+    },
+    {
+      "indent": 3,
+      "text": "Compromise of a publication server, perhaps through mismanagement of BPKI private keys, could lead to a denial-of-service attack on the RPKI. An attacker gaining access to BPKI private keys could use this protocol to delete (withdraw) RPKI objects, leading to routing changes or failures. Accordingly, as in most PKIs, good key management practices are important.",
+      "zh": "如果 BPKI 私钥管理不善，导致发布服务器受损，就可能对 RPKI 发起拒绝服务攻击。获得 BPKI 私钥的攻击者可以使用该协议删除（撤回）RPKI 对象，从而导致路由更改或故障。因此，与大多数 PKI 一样，良好的密钥管理实践非常重要。"
+    },
+    {
+      "indent": 0,
+      "text": "6. References",
+      "section_title": true,
+      "zh": "6. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "6.1. Normative References",
+      "section_title": true,
+      "zh": "6.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RELAX-NG] Clark, J., \"RELAX NG Compact Syntax\", OASIS Committee Specification, November 2002, <https://www.oasis-open.org/committees/relax-ng/ compact-20021121.html>.",
+      "zh": "[RELAX-NG] Clark, J., \"RELAX NG Compact Syntax\", OASIS Committee Specification, November 2002, <https://www.oasis-open.org/committees/relax-ng/ compact-20021121.html>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <http://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <http://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3986] Berners-Lee, T., Fielding, R., and L. Masinter, \"Uniform Resource Identifier (URI): Generic Syntax\", STD 66, RFC 3986, DOI 10.17487/RFC3986, January 2005, <http://www.rfc-editor.org/info/rfc3986>.",
+      "zh": "[RFC3986] Berners-Lee, T., Fielding, R., and L. Masinter, \"Uniform Resource Identifier (URI): Generic Syntax\", STD 66, RFC 3986, DOI 10.17487/RFC3986, January 2005, <http://www.rfc-editor.org/info/rfc3986>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4648] Josefsson, S., \"The Base16, Base32, and Base64 Data Encodings\", RFC 4648, DOI 10.17487/RFC4648, October 2006, <http://www.rfc-editor.org/info/rfc4648>.",
+      "zh": "[RFC4648] Josefsson, S., \"The Base16, Base32, and Base64 Data Encodings\", RFC 4648, DOI 10.17487/RFC4648, October 2006, <http://www.rfc-editor.org/info/rfc4648>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5652] Housley, R., \"Cryptographic Message Syntax (CMS)\", STD 70, RFC 5652, DOI 10.17487/RFC5652, September 2009, <http://www.rfc-editor.org/info/rfc5652>.",
+      "zh": "[RFC5652] Housley, R., \"Cryptographic Message Syntax (CMS)\", STD 70, RFC 5652, DOI 10.17487/RFC5652, September 2009, <http://www.rfc-editor.org/info/rfc5652>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"The rsync URI Scheme\", RFC 5781, DOI 10.17487/RFC5781, February 2010, <http://www.rfc-editor.org/info/rfc5781>.",
+      "zh": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"The rsync URI Scheme\", RFC 5781, DOI 10.17487/RFC5781, February 2010, <http://www.rfc-editor.org/info/rfc5781>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6492] Huston, G., Loomans, R., Ellacott, B., and R. Austein, \"A Protocol for Provisioning Resource Certificates\", RFC 6492, DOI 10.17487/RFC6492, February 2012, <http://www.rfc-editor.org/info/rfc6492>.",
+      "zh": "[RFC6492] Huston, G., Loomans, R., Ellacott, B., and R. Austein, \"A Protocol for Provisioning Resource Certificates\", RFC 6492, DOI 10.17487/RFC6492, February 2012, <http://www.rfc-editor.org/info/rfc6492>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7230] Fielding, R., Ed. and J. Reschke, Ed., \"Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing\", RFC 7230, DOI 10.17487/RFC7230, June 2014, <http://www.rfc-editor.org/info/rfc7230>.",
+      "zh": "[RFC7230] Fielding, R., Ed. 和 J. Reschke, Ed., \"超文本传输协议（HTTP/1.1）：消息语法和路由\"，RFC 7230，DOI 10.17487/RFC7230，2014 年 6 月，<http://www.rfc-editor.org/info/rfc7230>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <http://www.rfc-editor.org/info/rfc8174>.",
+      "zh": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <http://www.rfc-editor.org/info/rfc8174>。"
+    },
+    {
+      "indent": 3,
+      "text": "[SHS] National Institute of Standards and Technology, \"Secure Hash Standard (SHS)\", FIPS PUB 180-4, DOI 10.6028/NIST.FIPS.180-4, August 2015, <http://nvlpubs.nist.gov/nistpubs/FIPS/ NIST.FIPS.180-4.pdf>.",
+      "zh": "[SHS] 美国国家标准与技术研究院，\"安全散列标准（SHS）\"，FIPS PUB 180-4，DOI 10.6028/NIST.FIPS.180-4，2015 年 8 月，<http://nvlpubs.nist.gov/nistpubs/FIPS/ NIST.FIPS.180-4.pdf>。"
+    },
+    {
+      "indent": 3,
+      "text": "[XML] Cowan, J., \"Extensible Markup Language (XML) 1.1\", W3C Consortium Recommendation REC-xml11-20060816, October 2002, <http://www.w3.org/TR/2002/CR-xml11-20021015>.",
+      "zh": "[XML] Cowan, J., \"Extensible Markup Language (XML) 1.1\", W3C Consortium Recommendation REC-xml11-20060816, October 2002, <http://www.w3.org/TR/2002/CR-xml11-20021015>."
+    },
+    {
+      "indent": 0,
+      "text": "6.2. Informative References",
+      "section_title": true,
+      "zh": "6.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <http://www.rfc-editor.org/info/rfc6480>.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <http://www.rfc-editor.org/info/rfc6480>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8182] Bruijnzeels, T., Muravskiy, O., Weber, B., and R. Austein, \"The RPKI Repository Delta Protocol (RRDP)\", RFC 8182, DOI 10.17487/RFC8182, July 2017, <http://www.rfc-editor.org/info/rfc8182>.",
+      "zh": "[RFC8182] Bruijnzeels, T., Muravskiy, O., Weber, B., and R. Austein, \"The RPKI Repository Delta Protocol (RRDP)\", RFC 8182, DOI 10.17487/RFC8182, July 2017, <http://www.rfc-editor.org/info/rfc8182>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8183] Austein, R., \"An Out-of-Band Setup Protocol for Resource Public Key Infrastructure (RPKI) Production Services\", RFC 8183, DOI 10.17487/RFC8183, July 2017, <http://www.rfc-editor.org/info/rfc8183>.",
+      "zh": "[RFC8183] Austein, R., \"An Out-of-Band Setup Protocol for Resource Public Key Infrastructure (RPKI) Production Services\", RFC 8183, DOI 10.17487/RFC8183, July 2017, <http://www.rfc-editor.org/info/rfc8183>。"
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgements",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors would like to thank: Geoff Huston, George Michaelson, Oleg Muravskiy, Paul Wouters, Randy Bush, Rob Loomans, Robert Kisteleki, Tim Bruijnzeels, Tom Petch, and anybody else who helped along the way but whose name(s) the authors have temporarily forgotten.",
+      "zh": "作者在此表示感谢：Geoff Huston、George Michaelson、Oleg Muravskiy、Paul Wouters、Randy Bush、Rob Loomans、Robert Kisteleki、Tim Bruijnzeels、Tom Petch，以及其他曾经提供过帮助但作者暂时忘记其名字的人。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Samuel Weiler W3C / MIT",
+      "zh": "塞缪尔-韦勒 万维网联盟/麻省理工学院"
+    },
+    {
+      "indent": 3,
+      "text": "Email: weiler@csail.mit.edu",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Anuja Sonalker STEER Tech",
+      "zh": "Anuja Sonalker STEER Tech"
+    },
+    {
+      "indent": 3,
+      "text": "Email: anuja@steer-tech.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Rob Austein Dragon Research Labs",
+      "zh": "Rob Austein 龙研究实验室"
+    },
+    {
+      "indent": 3,
+      "text": "Email: sra@hactrn.net",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

@@ -1,0 +1,1369 @@
+{
+  "title": {
+    "text": "RFC 3779 - X.509 Extensions for IP Addresses and AS Identifiers",
+    "zh": "RFC 3779 - X.509 扩展 IP 地址和 AS 标识符"
+  },
+  "number": 3779,
+  "created_at": "2023-12-04 21:52:21.236528+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Network Working Group                                            C. Lynn\nRequest for Comments: 3779                                       S. Kent\nCategory: Standards Track                                         K. Seo\n                                                        BBN Technologies\n                                                               June 2004",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 10,
+      "text": "X.509 Extensions for IP Addresses and AS Identifiers",
+      "zh": "X.509 扩展 IP 地址和 AS 标识符"
+    },
+    {
+      "indent": 0,
+      "text": "Status of this Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This document specifies an Internet standards track protocol for the Internet community, and requests discussion and suggestions for improvements. Please refer to the current edition of the \"Internet Official Protocol Standards\" (STD 1) for the standardization state and status of this protocol. Distribution of this memo is unlimited.",
+      "zh": "本文件为互联网社区规定了一个互联网标准跟踪协议，并请求讨论和提出改进建议。有关本协议的标准化状况和状态，请参阅当前版本的 \"互联网官方协议标准\"（STD 1）。本备忘录的分发不受限制。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (C) The Internet Society (2004).",
+      "zh": "版权所有 (C) 互联网协会 (2004)。"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines two X.509 v3 certificate extensions. The first binds a list of IP address blocks, or prefixes, to the subject of a certificate. The second binds a list of autonomous system identifiers to the subject of a certificate. These extensions may be used to convey the authorization of the subject to use the IP addresses and autonomous system identifiers contained in the extensions.",
+      "zh": "本文件定义了两个 X.509 v3 证书扩展。第一个扩展将 IP 地址块或前缀列表与证书主体绑定。第二个扩展将自治系统标识符列表与证书主体绑定。这些扩展可用于传达主体对使用扩展中包含的 IP 地址和自治系统标识符的授权。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction . . . . . . . . . . . . . . . . . . . . . . . . .  3\n    1.1.  Terminology. . . . . . . . . . . . . . . . . . . . . . .  3\n2.  IP Address Delegation Extension. . . . . . . . . . . . . . . .  5\n    2.1.  Context. . . . . . . . . . . . . . . . . . . . . . . . .  5\n          2.1.1.  Encoding of an IP Address or Prefix. . . . . . .  5\n          2.1.2.  Encoding of a Range of IP Addresses. . . . . . .  7\n    2.2.  Specification. . . . . . . . . . . . . . . . . . . . . .  8\n          2.2.1.  OID. . . . . . . . . . . . . . . . . . . . . . .  8\n          2.2.2.  Criticality. . . . . . . . . . . . . . . . . . .  9\n          2.2.3.  Syntax . . . . . . . . . . . . . . . . . . . . .  9\n                  2.2.3.1.  Type IPAddrBlocks. . . . . . . . . . .  9\n                  2.2.3.2.  Type IPAddressFamily . . . . . . . . .  9\n                  2.2.3.3.  Element addressFamily. . . . . . . . . 10\n                  2.2.3.4.  Element ipAddressChoice and Type\n                            IPAddressChoice. . . . . . . . . . . . 10",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "                  2.2.3.5.  Element inherit. . . . . . . . . . . . 10\n                  2.2.3.6.  Element addressesOrRanges. . . . . . . 10\n                  2.2.3.7.  Type IPAddressOrRange. . . . . . . . . 11\n                  2.2.3.8.  Element addressPrefix and Type\n                            IPAddress. . . . . . . . . . . . . . . 11\n                  2.2.3.9.  Element addressRange and Type\n                            IPAddressRange . . . . . . . . . . . . 12\n    2.3.  IP Address Delegation Extension Certification Path\n          Validation . . . . . . . . . . . . . . . . . . . . . . . 12\n3.  Autonomous System Identifier Delegation Extension. . . . . . . 13\n    3.1.  Context  . . . . . . . . . . . . . . . . . . . . . . . . 13\n    3.2.  Specification. . . . . . . . . . . . . . . . . . . . . . 13\n          3.2.1.  OID. . . . . . . . . . . . . . . . . . . . . . . 13\n          3.2.2.  Criticality. . . . . . . . . . . . . . . . . . . 14\n          3.2.3.  Syntax . . . . . . . . . . . . . . . . . . . . . 14\n                  3.2.3.1.  Type ASIdentifiers . . . . . . . . . . 14\n                  3.2.3.2.  Elements asnum, rdi, and Type\n                            ASIdentifierChoice . . . . . . . . . . 14\n                  3.2.3.3.  Element inherit. . . . . . . . . . . . 15\n                  3.2.3.4.  Element asIdsOrRanges. . . . . . . . . 15\n                  3.2.3.5.  Type ASIdOrRange . . . . . . . . . . . 15\n                  3.2.3.6.  Element id . . . . . . . . . . . . . . 15\n                  3.2.3.7.  Element range. . . . . . . . . . . . . 15\n                  3.2.3.8.  Type ASRange . . . . . . . . . . . . . 15\n                  3.2.3.9.  Elements min and max . . . . . . . . . 15\n                  3.2.3.10. Type ASId. . . . . . . . . . . . . . . 15\n3.3.  Autonomous System Identifier Delegation Extension\n      Certification Path Validation. . . . . . . . . . . . . . . . 16\n4.  Security Considerations. . . . . . . . . . . . . . . . . . . . 16\n5.  Acknowledgments. . . . . . . . . . . . . . . . . . . . . . . . 16\nAppendix A -- ASN.1 Module . . . . . . . . . . . . . . . . . . . . 17\nAppendix B -- Examples of IP Address Delegation Extensions . . . . 18\nAppendix C -- Example of an AS Identifier Delegation Extension . . 21\nAppendix D -- Use of X.509 Attribute Certificates. . . . . . . . . 21\nReferences . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24\nNormative References . . . . . . . . . . . . . . . . . . . . . . . 24\nInformative References . . . . . . . . . . . . . . . . . . . . . . 25\nAuthors' Address . . . . . . . . . . . . . . . . . . . . . . . . . 26\nFull Copyright Statement . . . . . . . . . . . . . . . . . . . . . 27",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines two X.509 v3 certificate extensions that authorize the transfer of the right-to-use for a set of IP addresses and autonomous system identifiers from IANA through the regional Internet registries (RIRs) to Internet service providers (ISPs) and user organizations. The first binds a list of IP address blocks, often represented as IP address prefixes, to the subject (private key holder) of a certificate. The second binds a list of autonomous system (AS) identifiers to the subject (private key holder) of a certificate. The issuer of the certificate is an entity (e.g., the IANA, a regional Internet registry, or an ISP) that has the authority to transfer custodianship of (\"allocate\") the set of IP address blocks and AS identifiers to the subject of the certificate. These certificates provide a scalable means of verifying the right-to-use for a set of IP address prefixes and AS identifiers. They may be used by routing protocols, such as Secure BGP [S-BGP], to verify legitimacy and correctness of routing information, or by Internet routing registries to verify data that they receive.",
+      "zh": "本文件定义了两个 X.509 v3 证书扩展，授权将一组 IP 地址和自治系统标识符的使用权从 IANA 通过地区互联网注册管理机构（RIR）转让给互联网服务提供商（ISP）和用户组织。第一种是将 IP 地址块列表（通常表示为 IP 地址前缀）与证书主体（私钥持有者）绑定。第二种是将自治系统（AS）标识符列表与证书主体（私钥持有者）绑定。证书签发者是一个实体（如 IANA、地区互联网注册机构或互联网服务提供商），它有权将 IP 地址块和自治系统标识符的托管权（\"分配\"）转让给证书主体。这些证书提供了一种可扩展的方式，用于验证一组 IP 地址前缀和 AS 标识符的使用权。路由协议（如安全 BGP [S-BGP]）可使用它们来验证路由信息的合法性和正确性，互联网路由注册机构也可使用它们来验证收到的数据。"
+    },
+    {
+      "indent": 3,
+      "text": "Sections 2 and 3 specify several rules about the encoding of the extensions defined in this specification that MUST be followed. These encoding rules serve the following purposes. First, they result in a unique encoding of the extension's value; two instances of an extension can be compared for equality octet-by-octet. Second, they achieve the minimal size encoding of the information. Third, they allow relying parties to use one-pass algorithms when performing certification path validation; in particular, the relying parties do not need to sort the information, or to implement extra code in the subset checking algorithms to handle several boundary cases (adjacent, overlapping, or subsumed ranges).",
+      "zh": "第 2 节和第 3 节规定了本规范中定义的扩展必须遵守的几条编码规则。这些编码规则有以下作用。首先，它们为扩展的值提供了唯一的编码；扩展的两个实例可以逐个八位字节进行比较，以确定是否相等。其次，它们实现了信息的最小尺寸编码。第三，它们允许依赖方在执行认证路径验证时使用一次通过算法；特别是，依赖方无需对信息进行排序，也无需在子集检查算法中执行额外代码来处理多种边界情况（相邻、重叠或包含的范围）。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Terminology",
+      "section_title": true,
+      "zh": "1.1. 用语"
+    },
+    {
+      "indent": 3,
+      "text": "It is assumed that the reader is familiar with the terms and concepts described in \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\" [RFC3280], \"INTERNET PROTOCOL\" [RFC791], \"Internet Protocol Version 6 (IPv6) Addressing Architecture\" [RFC3513], \"INTERNET REGISTRY IP ALLOCATION GUIDELINES\" [RFC2050], and related regional Internet registry address management policy documents. Some relevant terms include:",
+      "zh": "假定读者熟悉《互联网 X.509 公钥基础设施证书和证书吊销列表 (CRL) 简介》[RFC3280]、《互联网协议》[RFC791]、《互联网协议第 6 版 (IPv6) 地址体系结构》[RFC3513]、《互联网注册机构 IP 分配指南》[RFC2050]以及相关地区互联网注册机构地址管理政策文件中描述的术语和概念。一些相关术语包括"
+    },
+    {
+      "indent": 3,
+      "text": "allocate - the transfer of custodianship of a resource to an intermediate organization (see [RFC2050]).",
+      "zh": "分配--将资源的监护权移交给中间机构（见 [RFC2050]）。"
+    },
+    {
+      "indent": 3,
+      "text": "assign - the transfer of custodianship of a resource to an end organization (see [RFC2050]).",
+      "zh": "转让--将资源的监护权转让给终端组织（见 [RFC2050]）。"
+    },
+    {
+      "indent": 3,
+      "text": "Autonomous System (AS) - a set of routers under a single technical administration with a uniform policy, using one or more interior gateway protocols and metrics to determine how to route packets within the autonomous system, and using an exterior gateway protocol to determine how to route packets to other autonomous systems.",
+      "zh": "自治系统 (AS) - 在单一技术管理下的一组路由器，具有统一的策略，使用一个或多个内部网关协议和指标来确定如何在自治系统内路由数据包，并使用外部网关协议来确定如何将数据包路由到其他自治系统。"
+    },
+    {
+      "indent": 3,
+      "text": "Autonomous System number - a 32-bit number that identifies an autonomous system.",
+      "zh": "自治系统编号 - 用于标识自治系统的 32 位编号。"
+    },
+    {
+      "indent": 3,
+      "text": "delegate - transfer of custodianship (that is, the right-to-use) of an IP address block or AS identifier through issuance of a certificate to an entity.",
+      "zh": "委托--通过向某一实体颁发证书，转让 IP 地址块或 AS 标识符的托管权（即使用权）。"
+    },
+    {
+      "indent": 3,
+      "text": "initial octet - the first octet in the value of a DER encoded BIT STRING [X.690].",
+      "zh": "初始八位字节 - DER 编码 BIT STRING [X.690] 值中的第一个八位字节。"
+    },
+    {
+      "indent": 3,
+      "text": "IP v4 address - a 32-bit identifier written as four decimal numbers, each in the range 0 to 255, separated by a \".\". 10.5.0.5 is an example of an IPv4 address.",
+      "zh": "IP v4 地址 - 一个 32 位标识符，用四个十进制数字表示，每个数字的范围为 0 至 255，中间用\". \"分隔。10.5.0.5 就是 IPv4 地址的一个例子。"
+    },
+    {
+      "indent": 3,
+      "text": "IP v6 address - a 128-bit identifier written as eight hexadecimal quantities, each in the range 0 to ffff, separated by a \":\". 2001:0:200:3:0:0:0:1 is an example of an IPv6 address. One string of :0: fields may be replaced by \"::\", thus 2001:0:200:3::1 represents the same address as the immediately preceding example. (See [RFC3513]).",
+      "zh": "IP v6 地址 - 128 位标识符，写成 8 个十六进制数，每个数的范围从 0 到 ffff，中间用\": \"分隔。2001:0:200:3:0:0:0:1 就是 IPv6 地址的一个例子。其中一个 :0: 字段字符串可以用\":: \"代替，因此 2001:0:200:3::1 表示的地址与前面的例子相同。(参见 [RFC3513]）。"
+    },
+    {
+      "indent": 3,
+      "text": "prefix - a bit string that consists of some number of initial bits of an address, written as an address followed by a \"/\", and the number of initial bits. 10.5.0.0/16 and 2001:0:200:3:0:0:0:0/64 (or 2001:0:200:3::/64) are examples of prefixes. A prefix is often abbreviated by omitting the less-significant zero fields, but there should be enough fields to contain the indicated number of initial bits. 10.5/16 and 2001:0:200:3/64 are examples of abbreviated prefixes.",
+      "zh": "前缀 - 由地址的某些初始位数组成的位字符串，写成地址后跟一个\"/\"，以及初始位数。10.5.0.0/16 和 2001:0:200:3:0:0:0/64（或 2001:0:200:3::/64）就是前缀的例子。前缀通常通过省略意义较小的 0 字段来缩写，但应该有足够的字段来包含指定的初始比特数。10.5/16 和 2001:0:200:3/64 就是缩写前缀的例子。"
+    },
+    {
+      "indent": 3,
+      "text": "Regional Internet Registry (RIR) - any of the bodies recognized by IANA as the regional authorities for management of IP addresses and AS identifiers. At the time of writing, these include AfriNIC, APNIC, ARIN, LACNIC, and RIPE NCC.",
+      "zh": "地区互联网注册机构 (RIR)--IANA 认可的管理 IP 地址和 AS 标识符的地区机构。在撰写本文时，这些机构包括 AfriNIC、APNIC、ARIN、LACNIC 和 RIPE NCC。"
+    },
+    {
+      "indent": 3,
+      "text": "right-to-use - for an IP address prefix, being authorized to specify the AS that may originate advertisements of the prefix throughout the Internet. For an autonomous system identifier, being authorized to operate a network(s) that identifies itself to other network operators using that autonomous system identifier.",
+      "zh": "使用权--对于 IP 地址前缀而言，指有权指定在整个互联网上发布该前缀广告的 AS。对于自治系统标识符，授权运营一个（多个）网络，并使用该自治系统标识符向其他网络运营商表明自己的身份。"
+    },
+    {
+      "indent": 3,
+      "text": "subsequent octets - the second through last octets in the value of a DER encoded BIT STRING [X.690].",
+      "zh": "后续八位字节 - DER 编码 BIT STRING [X.690] 值中的第二个到最后一个八位字节。"
+    },
+    {
+      "indent": 3,
+      "text": "trust anchor - a certificate that is to be trusted when performing certification path validation (see [RFC3280]).",
+      "zh": "信任锚 - 在进行认证路径验证时要信任的证书（见 [RFC3280]）。"
+    },
+    {
+      "indent": 3,
+      "text": "The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, and MAY, and OPTIONAL, when they appear in this document, are to be interpreted as described in [RFC2119].",
+      "zh": "本文档中出现的关键字 MUST、MUST NOT、REQUIRED、SHALL、SHALL NOT、SHOULD、SHOULD NOT、RECOMMENDED 和 MAY 以及 OPTIONAL 应按照 [RFC2119] 中的描述进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. IP Address Delegation Extension",
+      "section_title": true,
+      "zh": "2. IP 地址授权扩展"
+    },
+    {
+      "indent": 3,
+      "text": "This extension conveys the allocation of IP addresses to an entity by binding those addresses to a public key belonging to the entity.",
+      "zh": "该扩展通过将 IP 地址与属于某个实体的公钥绑定，将 IP 地址分配给该实体。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1. Context",
+      "section_title": true,
+      "zh": "2.1. 背景"
+    },
+    {
+      "indent": 3,
+      "text": "IP address space is currently managed by a hierarchy nominally rooted at IANA, but managed by the RIRs. IANA allocates IP address space to the RIRs, who in turn allocate IP address space to Internet service providers (ISPs), who may allocate IP address space to down stream providers, customers, etc. The RIRs also may assign IP address space to organizations who are end entities, i.e., organizations who will not be reassigning any of their space to other organizations. (See [RFC2050] and related RIR policy documents for the guidelines on the allocation and assignment process).",
+      "zh": "IP 地址空间目前由一个等级体系管理，名义上以 IANA 为根基，但由区域互联网注册管理机构管理。IANA 将 IP 地址空间分配给区域互联网注册管理机构，后者再将 IP 地址空间分配给互联网服务提供商 (ISP)，后者可将 IP 地址空间分配给下游提供商、客户等。区域互联网注册管理机构还可以将 IP 地址空间分配给作为终端实体的组织，即不会将其任何空间重新分配给其他组织的组织。(有关分配和指派过程的指导原则，请参见 [RFC2050] 和相关的区域互联网注册管理机构政策文件）。"
+    },
+    {
+      "indent": 3,
+      "text": "The IP address delegation extension is intended to enable verification of the proper delegation of IP address blocks, i.e., of the authorization of an entity to use or sub-allocate IP address space. Accordingly, it makes sense to take advantage of the inherent authoritativeness of the existing administrative framework for allocating IP address space. As described in Section 1 above, this will be achieved by issuing certificates carrying the extension described in this section. An example of one use of the information in this extension is an entity using it to verify the authorization of an organization to originate a BGP UPDATE advertising a path to a particular IP address block; see, e.g., [RFC1771], [S-BGP].",
+      "zh": "IP 地址授权扩展的目的是验证 IP 地址块的正确授权，即验证实体使用或分 配 IP 地址空间的授权。因此，利用现有管理框架的固有授权来分配 IP 地址空间是合理的。如上文第 1 节所述，这将通过签发带有本节所述扩展的证书来实现。该扩展中的信息的一个使用实例是，实体使用该扩展来验证某个组织对发起 BGP UPDATE 的授权，该 UPDATE 为通往特定 IP 地址块的路径做广告；例如，请参见 [RFC1771]、[S-BGP]。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.1. Encoding of an IP Address or Prefix",
+      "section_title": true,
+      "zh": "2.1.1. IP 地址或前缀的编码"
+    },
+    {
+      "indent": 3,
+      "text": "There are two families of IP addresses: IPv4 and IPv6.",
+      "zh": "IP 地址有两个系列：IPv4 和 IPv6。"
+    },
+    {
+      "indent": 3,
+      "text": "An IPv4 address is a 32-bit quantity that is written as four decimal numbers, each in the range 0 through 255, separated by a dot (\".\"). 10.5.0.5 is an example of an IPv4 address.",
+      "zh": "IPv4 地址是一个 32 位数，写成四个十进制数，每个数的范围是 0 到 255，中间用点（\".\"）隔开。10.5.0.5 就是一个 IPv4 地址的例子。"
+    },
+    {
+      "indent": 3,
+      "text": "An IPv6 address is a 128-bit quantity that is written as eight hexadecimal numbers, each in the range 0 through ffff, separated by a semicolon (\":\"); 2001:0:200:3:0:0:0:1 is an example of an IPv6 address. IPv6 addresses frequently have adjacent fields whose value is 0. One such group of 0 fields may be abbreviated by two semicolons (\"::\"). The previous example may thus be represented by 2001:0:200:3::1.",
+      "zh": "IPv6 地址是一个 128 位数，写成 8 个十六进制数，每个数的范围从 0 到 ffff，中间用分号 （\":\"）隔开；2001:0:200:3:0:0:0:1 就是 IPv6 地址的一个例子。IPv6 地址经常有一些相邻字段的值为 0。因此，前面的例子可以用 2001:0:200:3:1 表示。"
+    },
+    {
+      "indent": 3,
+      "text": "An address prefix is a set of 2^k continuous addresses whose most-significant bits are identical. For example, the set of 512 IPv4 addresses from 10.5.0.0 through 10.5.1.255 all have the same 23 most-significant bits. The set of addresses is written by appending a slash (\"/\") and the number of constant bits to the lowest address in the set. The prefix for the example set is 10.5.0.0/23, and contains 2^(32-23) = 2^9 addresses. The set of IPv6 addresses 2001:0:200:0:0:0:0:0 through 2001:0:3ff:ffff:ffff:ffff:ffff:ffff (2^89 addresses) is represented by 2001:0:200:0:0:0:0:0/39 or equivalently 2001:0:200::/39. A prefix may be abbreviated by omitting the least-significant zero fields, but there should be enough fields to contain the indicated number of constant bits. The abbreviated forms of the example IPv4 prefix is 10.5.0/23, and of the example IPv6 prefix is 2001:0:200/39.",
+      "zh": "地址前缀是一组 2^k 连续地址，其最重要比特相同。例如，从 10.5.0.0 到 10.5.1.255 的 512 个 IPv4 地址都有相同的 23 个最重要位。地址集的写法是在地址集的最低位上添加斜线（\"/\"）和常量位数。示例地址集的前缀为 10.5.0.0/23，包含 2^(32-23) = 2^9 个地址。IPv6 地址集 2001:0:200:0:0:0:0:0 至 2001:0:3ff:fffff:fffff:fffff:fffff:fffff（2^89 个地址）用 2001:0:200:0:0:0:0:0/39 或等价的 2001:0:200::/39 表示。前缀可以通过省略最小有效零字段来缩写，但必须有足够的字段来包含指定数量的常量比特。示例 IPv4 前缀的缩写形式为 10.5.0/23，示例 IPv6 前缀的缩写形式为 2001:0:200/39。"
+    },
+    {
+      "indent": 3,
+      "text": "An IP address or prefix is encoded in the IP address delegation extension as a DER-encoded ASN.1 BIT STRING containing the constant most-significant bits. Recall [X.690] that the DER encoding of a BIT STRING consists of the BIT STRING type (0x03), followed by (an encoding of) the number of value octets, followed by the value. The value consists of an \"initial octet\" that specifies the number of unused bits in the last value octet, followed by the \"subsequent octets\" that contain the octets of the bit string. (For IP addresses, the encoding of the length will be just the length.)",
+      "zh": "IP 地址或前缀在 IP 地址授权扩展中编码为包含常量最重要位的 DER 编码 ASN.1 BIT STRING。回顾 [X.690] BIT STRING 的 DER 编码包括 BIT STRING 类型 (0x03)、值八位位组数（编码）和值。值由 \"初始八位位组 \"和 \"后续八位位组 \"组成，\"初始八位位组 \"指定最后一个值八位位组中未使用的比特位数，\"后续八位位组 \"包含比特字串的八位位组。(对于 IP 地址，长度的编码仅为长度）。"
+    },
+    {
+      "indent": 3,
+      "text": "In the case of a single address, all the bits are constant, so the bit string for an IPv4 address contains 32 bits. The subsequent octets in the DER-encoding of the address 10.5.0.4 are 0x0a 0x05 0x00 0x04. Since all the bits in the last octet are used, the initial octet is 0x00. The octets in the DER-encoded BIT STRING is thus:",
+      "zh": "在单个地址中，所有比特都是常数，因此 IPv4 地址的比特串包含 32 比特。地址 10.5.0.4 的 DER 编码的后续八位位组为 0x0a 0x05 0x00 0x04。由于使用了最后一个八位位组中的所有位，因此初始八位位组为 0x00。因此，DER 编码 BIT STRING 中的八位位组为"
+    },
+    {
+      "indent": 9,
+      "text": "Type Len Unused Bits ... 0x03 0x05 0x00 0x0a 0x05 0x00 0x04",
+      "zh": "类型 长度 未用位 ... 0x03 0x05 0x00 0x0a 0x05 0x00 0x04"
+    },
+    {
+      "indent": 3,
+      "text": "Similarly, the DER-encoding of the prefix 10.5.0/23 is:",
+      "zh": "同样，前缀 10.5.0/23 的 DER 编码为"
+    },
+    {
+      "indent": 9,
+      "text": "Type Len Unused Bits ... 0x03 0x04 0x01 0x0a 0x05 0x00",
+      "zh": "类型 长度 未用位 ... 0x03 0x04 0x01 0x0a 0x05 0x00"
+    },
+    {
+      "indent": 3,
+      "text": "In this case, the three subsequent octets contain 24 bits, but the prefix only uses 23, so there is one unused bit in the last octet, thus the initial octet is 1 (the DER require that all unused bits MUST be set to zero-bits).",
+      "zh": "在这种情况下，随后的三个八位位组包含 24 位，但前缀只使用了 23 位，所以最后一个八位位组中有一位未使用，因此初始八位位组为 1（DER 要求所有未使用的位必须设置为 0 位）。"
+    },
+    {
+      "indent": 3,
+      "text": "The DER-encoding of the IPv6 address 2001:0:200:3:0:0:0:1 is:",
+      "zh": "IPv6 地址 2001:0:200:3:0:0:0:1 的 DER 编码为"
+    },
+    {
+      "indent": 9,
+      "text": "Type Len Unused Bits ... 0x03 0x11 0x00 0x20 0x01 0x00 0x00 0x02 0x00 0x00 0x03 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x01",
+      "zh": "类型 长度 未用位 ... 0x03 0x11 0x00 0x20 0x01 0x00 0x00 0x02 0x00 0x00 0x03 0x00 0x00 0x00 0x00 0x00 0x01"
+    },
+    {
+      "indent": 3,
+      "text": "and the DER-encoding of the prefix 2001:0:200/39, which has one unused bit in the last octet, is:",
+      "zh": "而前缀 2001:0:200/39 的 DER 编码（在最后一个八位位组中有一个未使用的位）为"
+    },
+    {
+      "indent": 9,
+      "text": "Type Len Unused Bits ... 0x03 0x06 0x01 0x20 0x01 0x00 0x00 0x02",
+      "zh": "类型 长度 未用位 ... 0x03 0x06 0x01 0x20 0x01 0x00 0x00 0x02"
+    },
+    {
+      "indent": 0,
+      "text": "2.1.2. Encoding of a Range of IP Addresses",
+      "section_title": true,
+      "zh": "2.1.2. IP 地址范围的编码"
+    },
+    {
+      "indent": 3,
+      "text": "While any contiguous range of IP addresses can be represented by a set of contiguous prefixes, a more concise representation is achieved by encoding the range as a SEQUENCE containing the lowest address and the highest address, where each address is encoded as a BIT STRING. Within the SEQUENCE, the bit string representing the lowest address in the range is formed by removing all the least-significant zero-bits from the address, and the bit string representing the highest address in the range is formed by removing all the least-significant one-bits. The DER BIT STRING encoding requires that all the unused bits in the last octet MUST be set to zero-bits. Note that a prefix can always be expressed as a range, but a range cannot always be expressed as a prefix.",
+      "zh": "虽然任何连续的 IP 地址范围都可以用一组连续的前缀来表示，但将地址范围编码为一个包含最低地址和最高地址的序列（SEQUENCE），其中每个地址都编码为一个比特字串（BIT STRING），就能获得更简洁的表示方法。在 SEQUENCE 中，表示范围内最低地址的位字符串是通过删除地址中所有意义最小的 0 位形成的，而表示范围内最高地址的位字符串是通过删除地址中所有意义最小的 1 位形成的。DER BIT STRING 编码要求最后一个八位位组中所有未使用的位都必须设置为 0 位。请注意，前缀总是可以表示为范围，但范围却不能总是表示为前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "The range of addresses represented by the prefix 10.5.0/23 is 10.5.0.0 through 10.5.1.255. The lowest address ends in sixteen zero-bits that are removed. The DER-encoding of the resulting sixteen-bit string is:",
+      "zh": "前缀 10.5.0/23 代表的地址范围是 10.5.0.0 至 10.5.1.255。最低地址以 16 个 0 位结束，这些 0 位被删除。由此得到的十六位字符串的 DER 编码为"
+    },
+    {
+      "indent": 9,
+      "text": "Type Len Unused Bits ... 0x03 0x03 0x00 0x0a 0x05",
+      "zh": "类型 长度 未用位 ... 0x03 0x03 0x00 0x0a 0x05"
+    },
+    {
+      "indent": 3,
+      "text": "The highest address ends in nine one-bits that are removed. The DER-encoding of the resulting twenty-three-bit string is:",
+      "zh": "最高地址末尾的九个 1 位被删除。由此得到的 23 位字符串的 DER 编码为"
+    },
+    {
+      "indent": 9,
+      "text": "Type Len Unused Bits ... 0x03 0x04 0x01 0x0a 0x05 0x00",
+      "zh": "类型 长度 未用位 ... 0x03 0x04 0x01 0x0a 0x05 0x00"
+    },
+    {
+      "indent": 3,
+      "text": "The prefix 2001:0:200/39 can be encoded as a range where the DER-encoding of the lowest address (2001:0:200::) is:",
+      "zh": "前缀 2001:0:200/39 可以编码为一个范围，其中最低地址（2001:0:200::）的 DER 编码为"
+    },
+    {
+      "indent": 9,
+      "text": "Type Len Unused Bits ... 0x03 0x06 0x01 0x20 0x01 0x00 0x00 0x02",
+      "zh": "类型 长度 未用位 ... 0x03 0x06 0x01 0x20 0x01 0x00 0x00 0x02"
+    },
+    {
+      "indent": 3,
+      "text": "and the largest address (2001:0:3ff:ffff:ffff:ffff:ffff:ffff), which, after removal of the ninety least-significant one-bits leaves a thirty-eight bit string, is encoded as:",
+      "zh": "和最大地址（2001:0:3ff:fffff:fffff:fffff:fffff:fffff），去掉九十个最小有效一位后，剩下三十八位字符串，编码为"
+    },
+    {
+      "indent": 9,
+      "text": "Type Len Unused Bits ... 0x03 0x06 0x02 0x20 0x01 0x00 0x00 0x00",
+      "zh": "类型 长度 未用位 ... 0x03 0x06 0x02 0x20 0x01 0x00 0x00 0x00"
+    },
+    {
+      "indent": 3,
+      "text": "The special case of all IP address blocks, i.e., a prefix of all zero-bits -- \"0/0\", MUST be encoded per the DER with a length octet of one, an initial octet of zero, and no subsequent octets:",
+      "zh": "所有 IP 地址块的特殊情况，即全部为零位的前缀--\"0/0\"，必须按 DER 编码，长度为一个八位位组，初始八位位组为零，没有后续八位位组："
+    },
+    {
+      "indent": 9,
+      "text": "Type Len Unused Bits ... 0x03 0x01 0x00",
+      "zh": "类型 Len 未用位 ... 0x03 0x01 0x00"
+    },
+    {
+      "indent": 3,
+      "text": "Note that for IP addresses the number of trailing zero-bits is significant. For example, the DER-encoding of 10.64/12:",
+      "zh": "请注意，对于 IP 地址来说，尾部零位的数量非常重要。例如，10.64/12.X 的 DER 编码为 10.64/12.X："
+    },
+    {
+      "indent": 9,
+      "text": "Type Len Unused Bits ... 0x03 0x03 0x04 0x0a 0x40",
+      "zh": "类型 长度 未用位 ... 0x03 0x03 0x04 0x0a 0x40"
+    },
+    {
+      "indent": 3,
+      "text": "is different than the DER-encoding of 10.64.0/20:",
+      "zh": "与 10.64.0/20 的 DER 编码不同："
+    },
+    {
+      "indent": 9,
+      "text": "Type Len Unused Bits ... 0x03 0x04 0x04 0x0a 0x40 0x00",
+      "zh": "类型 长度 未用位 ... 0x03 0x04 0x04 0x0a 0x40 0x00"
+    },
+    {
+      "indent": 0,
+      "text": "2.2. Specification",
+      "section_title": true,
+      "zh": "2.2. 规范"
+    },
+    {
+      "indent": 0,
+      "text": "2.2.1. OID",
+      "section_title": true,
+      "zh": "2.2.1. OID"
+    },
+    {
+      "indent": 3,
+      "text": "The OID for this extension is id-pe-ipAddrBlocks.",
+      "zh": "该扩展的 OID 是 id-pe-ipAddrBlocks。"
+    },
+    {
+      "indent": 6,
+      "text": "id-pe-ipAddrBlocks  OBJECT IDENTIFIER ::= { id-pe 7 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "where [RFC3280] defines:",
+      "zh": "其中 [RFC3280] 定义："
+    },
+    {
+      "indent": 6,
+      "text": "id-pkix  OBJECT IDENTIFIER ::= { iso(1) identified-organization(3)\n         dod(6) internet(1) security(5) mechanisms(5) pkix(7) }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "id-pe    OBJECT IDENTIFIER ::= { id-pkix 1 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "2.2.2. Criticality",
+      "section_title": true,
+      "zh": "2.2.2. 关键性"
+    },
+    {
+      "indent": 3,
+      "text": "This extension SHOULD be CRITICAL. The intended use of this extension is to connote a right-to-use for the block(s) of IP addresses identified in the extension. A CA marks the extension as CRITICAL to convey the notion that a relying party MUST understand the semantics of the extension to make use of the certificate for the purpose it was issued. Newly created applications that use certificates containing this extension are expected to recognize the extension.",
+      "zh": "该扩展名应为 \"关键\"（CRITICAL）。该扩展的预期用途是表示扩展中标识的 IP 地址块的使用权。CA 将扩展名标记为 \"关键\"（CRITICAL），是为了表达这样一个概念，即依赖方必须理解扩展名的语义，才能按签发目的使用证书。使用包含该扩展名的证书的新创建应用程序应能识别该扩展名。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2.3. Syntax",
+      "section_title": true,
+      "zh": "2.2.3. 语法"
+    },
+    {
+      "indent": 3,
+      "text": "id-pe-ipAddrBlocks      OBJECT IDENTIFIER ::= { id-pe 7 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "IPAddrBlocks        ::= SEQUENCE OF IPAddressFamily",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "IPAddressFamily     ::= SEQUENCE {    -- AFI & optional SAFI --\n   addressFamily        OCTET STRING (SIZE (2..3)),\n   ipAddressChoice      IPAddressChoice }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "IPAddressChoice     ::= CHOICE {\n   inherit              NULL, -- inherit from issuer --\n   addressesOrRanges    SEQUENCE OF IPAddressOrRange }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "IPAddressOrRange    ::= CHOICE {\n   addressPrefix        IPAddress,\n   addressRange         IPAddressRange }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "IPAddressRange      ::= SEQUENCE {\n   min                  IPAddress,\n   max                  IPAddress }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "IPAddress           ::= BIT STRING",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "2.2.3.1. Type IPAddrBlocks",
+      "section_title": true,
+      "zh": "2.2.3.1. 类型 IPAddrBlocks"
+    },
+    {
+      "indent": 3,
+      "text": "The IPAddrBlocks type is a SEQUENCE OF IPAddressFamily types.",
+      "zh": "IPAddrBlocks 类型是 IPAddressFamily 类型的序列。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2.3.2. Type IPAddressFamily",
+      "section_title": true,
+      "zh": "2.2.3.2. 类型 IPAddressFamily"
+    },
+    {
+      "indent": 3,
+      "text": "The IPAddressFamily type is a SEQUENCE containing an addressFamily and ipAddressChoice element.",
+      "zh": "IPAddressFamily 类型是一个 SEQUENCE，包含 addressFamily 和 ipAddressChoice 元素。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2.3.3. Element addressFamily",
+      "section_title": true,
+      "zh": "2.2.3.3. 元素 addressFamily"
+    },
+    {
+      "indent": 3,
+      "text": "The addressFamily element is an OCTET STRING containing a two-octet Address Family Identifier (AFI), in network byte order, optionally followed by a one-octet Subsequent Address Family Identifier (SAFI). AFIs and SAFIs are specified in [IANA-AFI] and [IANA-SAFI], respectively.",
+      "zh": "addressFamily 元素是一个 OCTET STRING，包含一个按网络字节顺序排列的两个八位字节的地址族标识符（AFI），其后可选择添加一个八位字节的后续地址族标识符（SAFI）。AFI 和 SAFI 分别在 [IANA-AFI] 和 [IANA-SAFI] 中指定。"
+    },
+    {
+      "indent": 3,
+      "text": "If no authorization is being granted for a particular AFI and optional SAFI, then there MUST NOT be an IPAddressFamily member for that AFI/SAFI in the IPAddrBlocks SEQUENCE.",
+      "zh": "如果未对特定 AFI 和可选 SAFI 授权，则 IPAddrBlocks SEQUENCE 中必须没有该 AFI/SAFI 的 IPAddressFamily 成员。"
+    },
+    {
+      "indent": 3,
+      "text": "There MUST be only one IPAddressFamily SEQUENCE per unique combination of AFI and SAFI. Each SEQUENCE MUST be ordered by ascending addressFamily values (treating the octets as unsigned quantities). An addressFamily without a SAFI MUST precede one that contains an SAFI. When both IPv4 and IPv6 addresses are specified, the IPv4 addresses MUST precede the IPv6 addresses (since the IPv4 AFI of 0001 is less than the IPv6 AFI of 0002).",
+      "zh": "每个 AFI 和 SAFI 的唯一组合只能有一个 IPAddressFamily SEQUENCE。每个 SEQUENCE 必须按地址族值升序排列（将八进制数视为无符号量）。不含 SAFI 的地址族必须排在包含 SAFI 的地址族之前。同时指定 IPv4 和 IPv6 地址时，IPv4 地址必须排在 IPv6 地址之前（因为 0001 的 IPv4 AFI 小于 0002 的 IPv6 AFI）。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2.3.4. Element ipAddressChoice and Type IPAddressChoice",
+      "section_title": true,
+      "zh": "2.2.3.4. 元素 ipAddressChoice 和类型 IPAddressChoice"
+    },
+    {
+      "indent": 3,
+      "text": "The ipAddressChoice element is of type IPAddressChoice. The IPAddressChoice type is a CHOICE of either an inherit or addressesOrRanges element.",
+      "zh": "ipAddressChoice 元素属于 IPAddressChoice 类型。IPAddressChoice 类型是继承或 addressesOrRanges 元素的选择。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2.3.5. Element inherit",
+      "section_title": true,
+      "zh": "2.2.3.5. 元素继承"
+    },
+    {
+      "indent": 3,
+      "text": "If the IPAddressChoice CHOICE contains the inherit element, then the set of authorized IP addresses for the specified AFI and optional SAFI is taken from the issuer's certificate, or from the issuer's issuer's certificate, recursively, until a certificate containing an IPAddressChoice containing an addressesOrRanges element is located.",
+      "zh": "如果 IPAddressChoice CHOICE 包含继承元素，那么指定 AFI 和可选 SAFI 的授权 IP 地址集将从签发者证书或签发者的签发者证书中获取，直至找到包含 addressesOrRanges 元素的 IPAddressChoice 证书。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2.3.6. Element addressesOrRanges",
+      "section_title": true,
+      "zh": "2.2.3.6. 地址或范围元素"
+    },
+    {
+      "indent": 3,
+      "text": "The addressesOrRanges element is a SEQUENCE OF IPAddressOrRange types. The addressPrefix and addressRange elements MUST be sorted using the binary representation of:",
+      "zh": "地址或范围元素是 IPAddressOrRange 类型的序列。地址前缀（addressPrefix）和地址范围（addressRange）元素必须使用以下二进制表示法进行排序："
+    },
+    {
+      "indent": 6,
+      "text": "<lowest IP address in range> | <prefix length>",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "where \"|\" represents concatenation. Note that the octets in this representation (a.b.c.d | length for IPv4 or s:t:u:v:w:x:y:z | length for IPv6) are not the octets that are in the DER-encoded BIT STRING value. For example, given two addressPrefix:",
+      "zh": "其中\"|\"表示连接。请注意，此表示法中的八位位组（IPv4 为 a.b.c.d | 长度，IPv6 为 s:t:u:v:w:x:y:z | 长度）不是 DER 编码 BIT STRING 值中的八位位组。例如，给定两个 addressPrefix："
+    },
+    {
+      "indent": 6,
+      "text": "IP addr | length  DER encoding\n----------------  ------------------------\n                  Type Len  Unused Bits...\n10.32.0.0 | 12     03   03    04   0a 20\n10.64.0.0 | 16     03   03    00   0a 40",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "the prefix 10.32.0.0/12 MUST come before the prefix 10.64.0.0/16 since 32 is less than 64; whereas if one were to sort by the DER BIT STRINGs, the order would be reversed as the unused bits octet would sort in the opposite order. Any pair of IPAddressOrRange choices in an extension MUST NOT overlap each other. Any contiguous address prefixes or ranges MUST be combined into a single range or, whenever possible, a single prefix.",
+      "zh": "前缀 10.32.0.0/12 必须排在前缀 10.64.0.0/16 之前，因为 32 小于 64；而如果按 DER BIT 字符串排序，则顺序会颠倒，因为未使用的比特八位位组排序会相反。扩展中的任何一对 IPAddressOrRange 选项都不得相互重叠。任何连续的地址前缀或范围必须合并为一个范围，或尽可能合并为一个前缀。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2.3.7. Type IPAddressOrRange",
+      "section_title": true,
+      "zh": "2.2.3.7. 类型 IPAddressOrRange"
+    },
+    {
+      "indent": 3,
+      "text": "The IPAddressOrRange type is a CHOICE of either an addressPrefix (an IP prefix or address) or an addressRange (an IP address range) element.",
+      "zh": "IPAddressOrRange 类型可以选择 addressPrefix（IP 前缀或地址）或 addressRange（IP 地址范围）元素。"
+    },
+    {
+      "indent": 3,
+      "text": "This specification requires that any range of addresses that can be encoded as a prefix MUST be encoded using an IPAddress element (a BIT STRING), and any range that cannot be encoded as a prefix MUST be encoded using an IPAddressRange (a SEQUENCE containing two BIT STRINGs). The following pseudo code illustrates how to select the encoding of a given range of addresses.",
+      "zh": "本规范要求，任何可以编码为前缀的地址范围都必须使用 IPAddress 元素（一个 BIT STRING）进行编码，而任何不能编码为前缀的地址范围都必须使用 IPAddressRange（一个包含两个 BIT STRING 的序列）进行编码。下面的伪代码说明了如何选择给定地址范围的编码。"
+    },
+    {
+      "indent": 9,
+      "text": "LET N = the number of matching most-significant bits in the lowest and highest addresses of the range IF all the remaining bits in the lowest address are zero-bits AND all the remaining bits in the highest address are one-bits THEN the range MUST be encoded as an N-bit IPAddress ELSE the range MUST be encoded as an IPAddressRange",
+      "zh": "如果最低地址中的所有剩余位都是 0 位，且最高地址中的所有剩余位都是 1 位，则必须将范围编码为 N 位 IPAddress；否则，必须将范围编码为 IPAddressRange。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2.3.8. Element addressPrefix and Type IPAddress",
+      "section_title": true,
+      "zh": "2.2.3.8. 元素 addressPrefix 和 IPAddress 类型"
+    },
+    {
+      "indent": 3,
+      "text": "The addressPrefix element is an IPAddress type. The IPAddress type defines a range of IP addresses in which the most-significant (left-most) N bits of the address remain constant, while the remaining bits (32 - N bits for IPv4, or 128 - N bits for IPv6) may be either zero or one. For example, the IPv4 prefix 10.64/12 corresponds to the addresses 10.64.0.0 to 10.79.255.255, while 10.64/11 corresponds to 10.64.0.0 to 10.95.255.255. The IPv6 prefix 2001:0:2/48 represents addresses 2001:0:2:: to 2001:0:2:ffff:ffff:ffff:ffff:ffff.",
+      "zh": "addressPrefix 元素是 IPAddress 类型。IPAddress 类型定义了一个 IP 地址范围，其中最重要的（最左边）N 位地址保持不变，其余位（IPv4 为 32 - N 位，IPv6 为 128 - N 位）可以为 0 或 1。例如，IPv4 前缀 10.64/12 对应地址 10.64.0.0 至 10.79.255.255，而 10.64/11 对应地址 10.64.0.0 至 10.95.255.255。IPv6 前缀 2001:0:2/48 代表地址 2001:0:2::至 2001:0:2:fffff:fffff:fffff:fffff。"
+    },
+    {
+      "indent": 3,
+      "text": "An IP address prefix is encoded as a BIT STRING. The DER encoding of a BIT STRING uses the initial octet of the string to specify how many of the least-significant bits of the last subsequent octet are unused. The DER encoding specifies that these unused bits MUST be set to zero-bits.",
+      "zh": "IP 地址前缀编码为 BIT STRING。BIT STRING 的 DER 编码使用字符串的第一个八位位组来指定最后一个八位位组的最小有效位中有多少位未使用。DER 编码规定，这些未使用的位必须设置为零位。"
+    },
+    {
+      "indent": 3,
+      "text": "Example: 128.0.0.0 = 1000 0000.0000 0000.0000 0000.0000 0000 to 143.255 255 255 = 1000 1111.1111 1111.1111 1111.1111 1111 bit string to encode = 1000 Type Len Unused Bits ... Encoding = 0x03 0x02 0x04 0x80",
+      "zh": "示例： 128.0.0.0 = 1000 0000.0000 0000.0000 0000.0000 至 143.255 255 255 = 1000 1111.1111 1111.1111 1111.1111 1111 要编码的位字符串 = 1000 类型 长度 未用位 ...编码 = 0x03 0x02 0x04 0x80"
+    },
+    {
+      "indent": 0,
+      "text": "2.2.3.9. Element addressRange and Type IPAddressRange",
+      "section_title": true,
+      "zh": "2.2.3.9. 元素 addressRange 和类型 IPAddressRange"
+    },
+    {
+      "indent": 3,
+      "text": "The addressRange element is of type IPAddressRange. The IPAddressRange type consists of a SEQUENCE containing a minimum (element min) and maximum (element max) IP address. Each IP address is encoded as a BIT STRING. The semantic interpretation of the minimum address in an IPAddressRange is that all the unspecified bits (for the full length of the IP address) are zero-bits. The semantic interpretation of the maximum address is that all the unspecified bits are one-bits. The BIT STRING for the minimum address results from removing all the least-significant zero-bits from the minimum address. The BIT STRING for the maximum address results from removing all the least-significant one-bits from the maximum address.",
+      "zh": "addressRange 元素属于 IPAddressRange 类型。IPAddressRange 类型由包含最小（元素 min）和最大（元素 max） IP 地址的序列组成。每个 IP 地址都编码为位字符串。IPAddressRange 中最小地址的语义解释是：所有未指定位（IP 地址全长）均为 0 位。最大地址的语义解释是所有未指定的位都是 1 位。最小地址的 BIT STRING 是将最小地址中所有意义最小的零位去除后得到的。最大地址的 BIT 字符串是从最大地址中去除所有意义最小的一位后得到的。"
+    },
+    {
+      "indent": 3,
+      "text": "Example:\n          129.64.0.0       = 1000 0001.0100 0000.0000 0000.0000 0000\n       to 143.255.255.255  = 1000 1111.1111 1111.1111 1111.1111 1111\n        minimum bit string = 1000 0001.01\n        maximum bit string = 1000\nEncoding = SEQUENCE {\n            Type Len  Unused Bits ...\n     min    0x03 0x03  0x06  0x81      0x40\n     max    0x03 0x02  0x04  0x80\n           }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "To simplify the comparison of IP address blocks when performing certification path validation, a maximum IP address MUST contain at least one bit whose value is 1, i.e., the subsequent octets may not be omitted nor all zero.",
+      "zh": "为简化认证路径验证时 IP 地址块的比较，最大 IP 地址必须至少包含一个值为 1 的位，即后面的八位位组不能省略，也不能全为 0。"
+    },
+    {
+      "indent": 0,
+      "text": "2.3. IP Address Delegation Extension Certification Path Validation",
+      "section_title": true,
+      "zh": "2.3. IP 地址授权扩展认证路径验证"
+    },
+    {
+      "indent": 3,
+      "text": "Certification path validation of a certificate containing the IP address delegation extension requires additional processing. As each certificate in a path is validated, the IP addresses in the IP address delegation extension of that certificate MUST be subsumed by IP addresses in the IP address delegation extension in the issuer's certificate. Validation MUST fail when this is not the case. A certificate that is a trust anchor for certification path validation of certificates containing the IP address delegation extension, as well as all certificates along the path, MUST each contain the IP address delegation extension. The initial set of allowed address ranges is taken from the trust anchor certificate.",
+      "zh": "包含 IP 地址授权扩展名的证书的认证路径验证需要额外处理。在验证路径中的每个证书时，该证书 IP 地址授权扩展中的 IP 地址必须被签发者证书 IP 地址授权扩展中的 IP 地址所包含。否则，验证必须失败。作为包含 IP 地址委托扩展名的证书验证路径信任锚的证书，以及路径上的所有证书，都必须包含 IP 地址委托扩展名。允许地址范围的初始集合取自信任锚证书。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Autonomous System Identifier Delegation Extension",
+      "section_title": true,
+      "zh": "3. 自治系统标识符授权扩展"
+    },
+    {
+      "indent": 3,
+      "text": "This extension conveys the allocation of autonomous system (AS) identifiers to an entity by binding those AS identifiers to a public key belonging to the entity.",
+      "zh": "该扩展通过将自治系统（AS）标识符与属于实体的公钥绑定，为实体分配自治系统（AS）标识符。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1. Context",
+      "section_title": true,
+      "zh": "3.1. 背景"
+    },
+    {
+      "indent": 3,
+      "text": "AS identifier delegation is currently managed by a hierarchy nominally rooted at IANA, but managed by the RIRs. IANA allocates AS identifiers to the RIRs, who in turn assign AS identifiers to organizations who are end entities, i.e., will not be re-allocating any of their AS identifiers to other organizations. The AS identifier delegation extension is intended to enable verification of the proper delegation of AS identifiers, i.e., of the authorization of an entity to use these AS identifiers. Accordingly, it makes sense to take advantage of the inherent authoritativeness of the existing administrative framework for management of AS identifiers. As described in Section 1 above, this will be achieved by issuing certificates carrying the extension described in this section. An example of one use of the information in this extension is an entity using it to verify the authorization of an organization to manage the AS identified by an AS identifier in the extension. The use of this extension to represent assignment of AS identifiers is not intended to alter the procedures by which AS identifiers are managed, or when an AS should be used c.f., [RFC1930].",
+      "zh": "AS标识符的授权目前由一个层次结构管理，该层次结构名义上根植于IANA，但由区域互联网注册管理机构管理。IANA 将 AS 标识符分配给区域互联网注册管理机构，后者再将 AS 标识符分配给作为终端实体的组织，即不会将其任何 AS 标识符再分配给其他组织。AS 识别符授权扩展的目的是核实 AS 识别符的适当授权，即核实实体使用这些 AS 识别符的授权。因此，利用现有管理框架的固有权威性来管理 AS 标识符是有意义的。如上文第 1 节所述，这将通过签发带有本节所述扩展功能的证书来实现。该扩展中信息的一个使用例子是，一个实体用它来验证一个组织管理扩展中的 AS 标识符所标识的 AS 的授权。使用本扩展来表示 AS 标识符的分配，并不是要改变管理 AS 标识符的程序，也不是要改变何时应使用 AS 的程序，参见 [RFC1930]。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2. Specification",
+      "section_title": true,
+      "zh": "3.2. 规范"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.1. OID",
+      "section_title": true,
+      "zh": "3.2.1. OID"
+    },
+    {
+      "indent": 3,
+      "text": "The OID for this extension is id-pe-autonomousSysIds.",
+      "zh": "该扩展的 OID 是 id-pe-autonomousSysIds。"
+    },
+    {
+      "indent": 6,
+      "text": "id-pe-autonomousSysIds  OBJECT IDENTIFIER ::= { id-pe 8 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "where [RFC3280] defines:",
+      "zh": "其中 [RFC3280] 定义："
+    },
+    {
+      "indent": 6,
+      "text": "id-pkix  OBJECT IDENTIFIER ::= { iso(1) identified-organization(3)\n         dod(6) internet(1) security(5) mechanisms(5) pkix(7) }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "id-pe    OBJECT IDENTIFIER ::= { id-pkix 1 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.2.2. Criticality",
+      "section_title": true,
+      "zh": "3.2.2. 关键性"
+    },
+    {
+      "indent": 3,
+      "text": "This extension SHOULD be CRITICAL. The intended use of this extension is to connote a right-to-use for the AS identifiers in the extension. A CA marks the extension as CRITICAL to convey the notion that a relying party must understand the semantics of the extension to make use of the certificate for the purpose it was issued. Newly created applications that use certificates containing this extension are expected to recognize the extension.",
+      "zh": "该扩展应为 CRITICAL。该扩展的预期用途是表示扩展中的 AS 标识符的使用权。CA 将扩展名标记为 \"关键\"（CRITICAL），以表达依赖方必须理解扩展名的语义，才能按签发目的使用证书的概念。使用包含该扩展名的证书的新创建应用程序应能识别该扩展名。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.3. Syntax",
+      "section_title": true,
+      "zh": "3.2.3. 语法"
+    },
+    {
+      "indent": 3,
+      "text": "id-pe-autonomousSysIds  OBJECT IDENTIFIER ::= { id-pe 8 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ASIdentifiers       ::= SEQUENCE {\n    asnum               [0] EXPLICIT ASIdentifierChoice OPTIONAL,\n    rdi                 [1] EXPLICIT ASIdentifierChoice OPTIONAL}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ASIdentifierChoice  ::= CHOICE {\n   inherit              NULL, -- inherit from issuer --\n   asIdsOrRanges        SEQUENCE OF ASIdOrRange }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ASIdOrRange         ::= CHOICE {\n    id                  ASId,\n    range               ASRange }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ASRange             ::= SEQUENCE {\n    min                 ASId,\n    max                 ASId }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ASId                ::= INTEGER",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.2.3.1. Type ASIdentifiers",
+      "section_title": true,
+      "zh": "3.2.3.1. ASI 标识符类型"
+    },
+    {
+      "indent": 3,
+      "text": "The ASIdentifiers type is a SEQUENCE containing one or more forms of autonomous system identifiers -- AS numbers (in the asnum element) or routing domain identifiers (in the rdi element). When the ASIdentifiers type contains multiple forms of identifiers, the asnum entry MUST precede the rdi entry. AS numbers are used by BGP, and routing domain identifiers are specified in the IDRP [RFC1142].",
+      "zh": "ASIdentifiers 类型是一个 SEQUENCE，包含一种或多种自治系统标识符形式--AS 号码（在 asnum 元素中）或路由域标识符（在 rdi 元素中）。当 ASIdentifiers 类型包含多种形式的标识符时，asnum 条目必须在 rdi 条目之前。AS 号由 BGP 使用，路由域标识符在 IDRP [RFC1142] 中指定。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.3.2. Elements asnum, rdi, and Type ASIdentifierChoice",
+      "section_title": true,
+      "zh": "3.2.3.2. 元素 asnum、rdi 和 ASIdentifierChoice 类型"
+    },
+    {
+      "indent": 3,
+      "text": "The asnum and rdi elements are both of type ASIdentifierChoice. The ASIdentifierChoice type is a CHOICE of either the inherit or asIdsOrRanges element.",
+      "zh": "asnum 和 rdi 元素都属于 ASIdentifierChoice 类型。ASIdentifierChoice 类型是继承元素或 asIdsOrRanges 元素的选择。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.3.3. Element inherit",
+      "section_title": true,
+      "zh": "3.2.3.3. 元素继承"
+    },
+    {
+      "indent": 3,
+      "text": "If the ASIdentifierChoice choice contains the inherit element, then the set of authorized AS identifiers is taken from the issuer's certificate, or from the issuer's issuer's certificate, recursively, until a certificate containing an ASIdentifierChoice containing an asIdsOrRanges element is located. If no authorization is being granted for a particular form of AS identifier, then there MUST NOT be a corresponding asnum/rdi member in the ASIdentifiers sequence.",
+      "zh": "如果 ASIdentifierChoice 选择包含继承元素，则授权 AS 标识符集将从签发者证书或签发者的签发者证书中递归提取，直到找到包含 asIdsOrRanges 元素的 ASIdentifierChoice 证书为止。如果不对特定形式的 AS 标识符授权，则 ASIdentifiers 序列中不得有相应的 asnum/rdi 成员。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.3.4. Element asIdsOrRanges",
+      "section_title": true,
+      "zh": "3.2.3.4. 元素 asIdsOrRanges"
+    },
+    {
+      "indent": 3,
+      "text": "The asIdsOrRanges element is a SEQUENCE of ASIdOrRange types. Any pair of items in the asIdsOrRanges SEQUENCE MUST NOT overlap. Any contiguous series of AS identifiers MUST be combined into a single range whenever possible. The AS identifiers in the asIdsOrRanges element MUST be sorted by increasing numeric value.",
+      "zh": "asIdsOrRanges 元素是 ASIdOrRange 类型的序列。asIdsOrRanges SEQUENCE 中的任何一对项目都不得重叠。任何连续的 AS 标识符系列都必须尽可能合并为一个范围。asIdsOrRanges 元素中的 AS 标识符必须按数值递增排序。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.3.5. Type ASIdOrRange",
+      "section_title": true,
+      "zh": "3.2.3.5. 类型 ASIdOrRange"
+    },
+    {
+      "indent": 3,
+      "text": "The ASIdOrRange type is a CHOICE of either a single integer (ASId) or a single sequence (ASRange).",
+      "zh": "ASIdOrRange 类型可选择单个整数（ASId）或单个序列（ASRange）。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.3.6. Element id",
+      "section_title": true,
+      "zh": "3.2.3.6. 元素 id"
+    },
+    {
+      "indent": 3,
+      "text": "The id element has type ASId.",
+      "zh": "id 元素的类型为 ASId。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.3.7. Element range",
+      "section_title": true,
+      "zh": "3.2.3.7. 元件范围"
+    },
+    {
+      "indent": 3,
+      "text": "The range element has type ASRange.",
+      "zh": "范围元素的类型为 ASRange。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.3.8. Type ASRange",
+      "section_title": true,
+      "zh": "3.2.3.8. 类型 ASRange"
+    },
+    {
+      "indent": 3,
+      "text": "The ASRange type is a SEQUENCE consisting of a min and a max element, and is used to specify a range of AS identifier values.",
+      "zh": "ASRange 类型是一个 SEQUENCE，由一个最小元素和一个最大元素组成，用于指定 AS 标识符值的范围。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.3.9. Elements min and max",
+      "section_title": true,
+      "zh": "3.2.3.9. 元素最小值和最大值"
+    },
+    {
+      "indent": 3,
+      "text": "The min and max elements have type ASId. The min element is used to specify the value of the minimum AS identifier in the range, and the max element specifies the value of the maximum AS identifier in the range.",
+      "zh": "min 和 max 元素的类型为 ASId。min 元素用于指定范围内最小 AS 标识符的值，max 元素用于指定范围内最大 AS 标识符的值。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2.3.10. Type ASId",
+      "section_title": true,
+      "zh": "3.2.3.10. ASId 型"
+    },
+    {
+      "indent": 3,
+      "text": "The ASId type is an INTEGER.",
+      "zh": "ASId 类型是一个 INTEGER。"
+    },
+    {
+      "indent": 0,
+      "text": "3.3. Autonomous System Identifier Delegation Extension Certification Path Validation",
+      "section_title": true,
+      "zh": "3.3. 自治系统标识符授权扩展认证路径验证"
+    },
+    {
+      "indent": 3,
+      "text": "Certification path validation of a certificate containing the autonomous system identifier delegation extension requires additional processing. As each certificate in a path is validated, the AS identifiers in the autonomous system identifier delegation extension of that certificate MUST be subsumed by the AS identifiers in the autonomous system identifier delegation extension in the issuer's certificate. Validation MUST fail when this is not the case. A certificate that is a trust anchor for certification path validation of certificates containing the autonomous system identifier delegation extension, as well as all certificates along the path, MUST each contain the autonomous system identifier delegation extension. The initial set of allowed AS identifiers is taken from the trust anchor certificate.",
+      "zh": "包含自治系统标识符委托扩展名的证书的认证路径验证需要额外处理。在验证路径中的每个证书时，该证书的自治系统标识符委托扩展中的自治系统标识符必须被签发者证书的自治系统标识符委托扩展中的自治系统标识符所包含。否则，验证必须失败。作为包含自治系统标识符扩展名的证书验证路径信任锚的证书，以及路径上的所有证书，都必须包含自治系统标识符扩展名。允许的自治系统标识符初始集合取自信任锚证书。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Security Considerations",
+      "section_title": true,
+      "zh": "4. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This specification describes two X.509 extensions. Since X.509 certificates are digitally signed, no additional integrity service is necessary. Certificates with these extensions need not be kept secret, and unrestricted and anonymous access to these certificates has no security implications.",
+      "zh": "本规范描述了两个 X.509 扩展。由于 X.509 证书是数字签名的，因此不需要额外的完整性服务。带有这些扩展的证书无需保密，不受限制地匿名访问这些证书也不会产生安全问题。"
+    },
+    {
+      "indent": 3,
+      "text": "However, security factors outside the scope of this specification will affect the assurance provided to certificate users. This section highlights critical issues that should be considered by implementors, administrators, and users.",
+      "zh": "然而，本规范范围之外的安全因素也会影响为证书用户提供的保证。本节强调了实施者、管理员和用户应考虑的关键问题。"
+    },
+    {
+      "indent": 3,
+      "text": "These extensions represent authorization information, i.e., a right-to-use for IP addresses or AS identifiers. They were developed to support a secure version of BGP [S-BGP], but may be employed in other contexts. In the secure BGP context, certificates containing these extensions function as capabilities: the certificate asserts that the holder of the private key (the Subject) is authorized to use the IP addresses or AS identifiers represented in the extension(s). As a result of this capability model, the Subject field is largely irrelevant for security purposes, contrary to common PKI conventions.",
+      "zh": "这些扩展表示授权信息，即 IP 地址或 AS 标识符的使用权。开发这些扩展是为了支持安全版本的 BGP [S-BGP]，但也可用于其他情况。在安全 BGP 环境中，包含这些扩展的证书作为能力发挥作用：证书证明私钥持有者（主体）有权使用扩展中代表的 IP 地址或 AS 标识符。由于采用了这种能力模式，主体字段在很大程度上与安全目的无关，这与常见的 PKI 惯例相反。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Acknowledgments",
+      "section_title": true,
+      "zh": "5. 致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors would like to acknowledge the contributions to this specification by Charles Gardiner, Russ Housley, James Manger, and Jim Schaad.",
+      "zh": "作者感谢 Charles Gardiner、Russ Housley、James Manger 和 Jim Schaad 对本规范的贡献。"
+    },
+    {
+      "indent": 0,
+      "text": "Appendix A -- ASN.1 Module",
+      "zh": "附录 A -- ASN.1 模块"
+    },
+    {
+      "indent": 3,
+      "text": "This normative appendix describes the IP address and AS identifiers extensions used by conforming PKI components in ASN.1 syntax.",
+      "zh": "本规范性附录以 ASN.1 语法描述了符合要求的 PKI 组件所使用的 IP 地址和 AS 标识符扩展。"
+    },
+    {
+      "indent": 3,
+      "text": "IPAddrAndASCertExtn { iso(1) identified-organization(3) dod(6)\n         internet(1) security(5) mechanisms(5) pkix(7) mod(0)\n         id-mod-ip-addr-and-as-ident(30) }\n    DEFINITIONS EXPLICIT TAGS ::=\nBEGIN\n     -- Copyright (C) The Internet Society (2004). This    --\n     -- version of this ASN.1 module is part of RFC 3779;  --\n     -- see the RFC itself for full legal notices.         --",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "-- EXPORTS ALL --",
+      "zh": "-- 全部出口"
+    },
+    {
+      "indent": 3,
+      "text": "IMPORTS",
+      "zh": "进口"
+    },
+    {
+      "indent": 3,
+      "text": "-- PKIX specific OIDs and arcs --\n    id-pe FROM PKIX1Explicit88 { iso(1) identified-organization(3)\n               dod(6) internet(1) security(5) mechanisms(5) pkix(7)\n               id-mod(0) id-pkix1-explicit(18) };",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "-- IP Address Delegation Extension OID --",
+      "zh": "-- IP 地址授权扩展 OID --"
+    },
+    {
+      "indent": 3,
+      "text": "id-pe-ipAddrBlocks  OBJECT IDENTIFIER ::= { id-pe 7 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "-- IP Address Delegation Extension Syntax --",
+      "zh": "-- IP 地址授权扩展语法 --"
+    },
+    {
+      "indent": 3,
+      "text": "IPAddrBlocks        ::= SEQUENCE OF IPAddressFamily",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "IPAddressFamily     ::= SEQUENCE { -- AFI & opt SAFI --\n   addressFamily        OCTET STRING (SIZE (2..3)),\n   ipAddressChoice      IPAddressChoice }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "IPAddressChoice     ::= CHOICE {\n   inherit              NULL, -- inherit from issuer --\n   addressesOrRanges    SEQUENCE OF IPAddressOrRange }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "IPAddressOrRange    ::= CHOICE {\n   addressPrefix        IPAddress,\n   addressRange         IPAddressRange }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "IPAddressRange      ::= SEQUENCE {\n   min                  IPAddress,\n   max                  IPAddress }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "IPAddress           ::= BIT STRING",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "-- Autonomous System Identifier Delegation Extension OID --",
+      "zh": "-- 自治系统标识符授权扩展 OID --"
+    },
+    {
+      "indent": 3,
+      "text": "id-pe-autonomousSysIds  OBJECT IDENTIFIER ::= { id-pe 8 }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "-- Autonomous System Identifier Delegation Extension Syntax --",
+      "zh": "-- 自治系统标识符授权扩展语法 --"
+    },
+    {
+      "indent": 3,
+      "text": "ASIdentifiers       ::= SEQUENCE {\n    asnum               [0] ASIdentifierChoice OPTIONAL,\n    rdi                 [1] ASIdentifierChoice OPTIONAL }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ASIdentifierChoice  ::= CHOICE {\n   inherit              NULL, -- inherit from issuer --\n   asIdsOrRanges        SEQUENCE OF ASIdOrRange }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ASIdOrRange         ::= CHOICE {\n    id                  ASId,\n    range               ASRange }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ASRange             ::= SEQUENCE {\n    min                 ASId,\n    max                 ASId }",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ASId                ::= INTEGER",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "END",
+      "zh": "结束"
+    },
+    {
+      "indent": 0,
+      "text": "Appendix B -- Examples of IP Address Delegation Extensions",
+      "zh": "附录 B -- IP 地址授权扩展示例"
+    },
+    {
+      "indent": 3,
+      "text": "A critical X.509 v3 certificate extension that specifies: IPv4 unicast address prefixes 1) 10.0.32/20 i.e., 10.0.32.0 to 10.0.47.255 2) 10.0.64/24 i.e., 10.0.64.0 to 10.0.64.255 3) 10.1/16 i.e., 10.1.0.0 to 10.1.255.255 4) 10.2.48/20 i.e., 10.2.48.0 to 10.2.63.255 5) 10.2.64/24 i.e., 10.2.64.0 to 10.2.64.255 6) 10.3/16 i.e., 10.3.0.0 to 10.3.255.255, and 7) inherits all IPv6 addresses from the issuer's certificate would be (in hexadecimal):",
+      "zh": "关键 X.509 v3 证书扩展，指定IPv4 单播地址前缀 1) 10.0.32/20 即：10.0.32.0 至 10.0.47.255 2) 10.0.64/24 即：10.0.64.0 至 10.0.64.255 3) 10.1/16 即：10.1.0.0 至 10.1.255.255 4) 10.2.48/20 即：10.2.48.0 至 10.2.63.255 5) 10.2.64/24 即：10.2.64.0 至 10.2.63.2554) 10.2.48/20 即 10.2.48.0 至 10.2.63.255 5) 10.2.64/24 即 10.2.64.0 至 10.2.64.255 6) 10.3/16 即 10.3.0.0 至 10.3.255.255，以及 7) 继承签发人证书的所有 IPv6 地址（十六进制）："
+    },
+    {
+      "indent": 3,
+      "text": "30 46                       Extension {\n   06 08 2b06010505070107     extnID        1.3.6.1.5.5.7.1.7\n   01 01 ff                   critical\n   04 37                      extnValue {\n      30 35                     IPAddrBlocks {\n         30 2b                    IPAddressFamily {\n            04 03 0001  01          addressFamily: IPv4 Unicast\n                                    IPAddressChoice\n            30 24                     addressesOrRanges {",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 12,
+      "text": "                               IPAddressOrRange\n      03 04 04 0a0020            addressPrefix 10.0.32/20\n                               IPAddressOrRange\n      03 04 00 0a0040            addressPrefix 10.0.64/24\n                               IPAddressOrRange\n      03 03 00 0a01              addressPrefix    10.1/16\n                               IPAddressOrRange\n      30 0c                      addressRange {\n         03 04 04 0a0230           min        10.2.48.0\n         03 04 00 0a0240           max        10.2.64.255\n                                 } -- addressRange\n                               IPAddressOrRange\n      03 03 00 0a03              addressPrefix    10.3/16\n                             } -- addressesOrRanges\n                         } -- IPAddressFamily\n30 06                    IPAddressFamily {\n   04 02 0002              addressFamily: IPv6\n                           IPAddressChoice\n   05 00                     inherit from issuer\n                         } -- IPAddressFamily\n                       } -- IPAddrBlocks\n                     } -- extnValue\n                   } -- Extension",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "This example illustrates how the prefixes and ranges are sorted.",
+      "zh": "本例说明了如何对前缀和范围进行排序。"
+    },
+    {
+      "indent": 3,
+      "text": "+ Prefix 1 MUST precede prefix 2, even though the number of unused bits (4) in prefix 1 is larger than the number of unused bits (0) in prefix 2.",
+      "zh": "+ 尽管前缀 1 中未使用的比特数（4）多于前缀 2 中未使用的比特数（0），但前缀 1 必须优先于前缀 2。"
+    },
+    {
+      "indent": 3,
+      "text": "+ Prefix 2 MUST precede prefix 3 even though the number of octets (4) in the BIT STRING encoding of prefix 2 is larger than the number of octets (3) in the BIT STRING encoding of prefix 3.",
+      "zh": "+ 即使前缀 2 的 BIT STRING 编码中的八进制数 (4) 大于前缀 3 的 BIT STRING 编码中的八进制数 (3)，前缀 2 也必须在前缀 3 之前。"
+    },
+    {
+      "indent": 3,
+      "text": "+ Prefixes 4 and 5 are adjacent (representing the range of addresses from 10.2.48.0 to 10.2.64.255), so MUST be combined into a range (since the range cannot be encoded by a single prefix).",
+      "zh": "+ 前缀 4 和 5 相邻（代表从 10.2.48.0 到 10.2.64.255 的地址范围），因此必须合并为一个范围（因为该范围不能由单个前缀编码）。"
+    },
+    {
+      "indent": 3,
+      "text": "+ Note that the six trailing zero bits in the max element of the range are significant to the semantic interpretation of the value (as all unused bits are interpreted to be 1's, not 0's). The four trailing zero bits in the min element are not significant and MUST be removed (thus the (4) unused bits in the encoding of the min element). (DER encoding requires that any unused bits in the last subsequent octet MUST be set to zero.)",
+      "zh": "+ 请注意，范围最大元素中的 6 个尾随 0 位对数值的语义解释很重要（因为所有未使用的位都被解释为 1，而不是 0）。最小元素中的 4 个尾部 0 位不重要，必须删除（因此，在最小元素的编码中，有（4）个未使用位）。(DER 编码要求必须将最后一个八位位组中任何未使用的位设置为 0）。"
+    },
+    {
+      "indent": 3,
+      "text": "+ The range formed by prefixes 4 and 5 MUST precede prefix 6 even though the SEQUENCE tag for a range (30) is larger than the tag for the BIT STRING (03) used to encode prefix 6.",
+      "zh": "+ 由前缀 4 和 5 形成的范围必须先于前缀 6，即使范围的 SEQUENCE 标记 (30) 大于用于编码前缀 6 的 BIT STRING 标记 (03)。"
+    },
+    {
+      "indent": 3,
+      "text": "+ The IPv4 information MUST precede the IPv6 information since the address family identifier for IPv4 (0001) is less than the identifier for IPv6 (0002).",
+      "zh": "+ IPv4 信息必须先于 IPv6 信息，因为 IPv4 的地址族标识符（0001）小于 IPv6 的标识符（0002）。"
+    },
+    {
+      "indent": 3,
+      "text": "An extension specifying the IPv6 prefix 2001:0:2/48 and the IPv4 prefixes 10/8 and 172.16/12, and which inherits all IPv4 multicast addresses from the issuer's certificate would be (in hexadecimal):",
+      "zh": "指定 IPv6 前缀 2001:0:2/48 和 IPv4 前缀 10/8 和 172.16/12 并从签发人证书中继承所有 IPv4 多播地址的扩展名为（十六进制）："
+    },
+    {
+      "indent": 3,
+      "text": "30 3d                       Extension {\n   06 08 2b06010505070107     extnID        1.3.6.1.5.5.7.1.7\n   01 01 ff                   critical\n   04 2e                      extnValue {\n      30 2c                     IPAddrBlocks {\n         30 10                    IPAddressFamily {\n            04 03 0001 01           addressFamily: IPv4 Unicast\n                                    IPAddressChoice\n            30 09                     addressesOrRanges {\n                                        IPAddressOrRange\n               03 02 00 0a                addressPrefix    10/8\n                                        IPAddressOrRange\n               03 03 04 b010              addressPrefix    172.16/12\n                                      } -- addressesOrRanges\n                                  } -- IPAddressFamily\n         30 07                    IPAddressFamily {\n            04 03 0001 02           addressFamily: IPv4 Multicast\n                                    IPAddressChoice\n            05 00                     inherit from issuer\n                                  } -- IPAddressFamily\n         30 0f                    IPAddressFamily {\n            04 02 0002              addressFamily: IPv6\n                                    IPAddressChoice\n            30 09                     addressesOrRanges {\n                                        IPAddressOrRange\n               03 07 00 200100000002      addressPrefix   2001:0:2/47\n                                      } -- addressesOrRanges\n                                  } -- IPAddressFamily\n                                } -- IPAddrBlocks\n                              } -- extnValue\n                               } -- Extension",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "Appendix C -- Example of an AS Identifier Delegation Extension",
+      "zh": "附录 C -- AS 标识符授权扩展示例"
+    },
+    {
+      "indent": 3,
+      "text": "An extension that specifies AS numbers 135, 3000 to 3999, and 5001, and which inherits all routing domain identifiers from the issuer's certificate would be (in hexadecimal):",
+      "zh": "指定 AS 号 135、3000 至 3999 和 5001 的扩展名，继承了签发者证书中的所有路由域标识符（十六进制）："
+    },
+    {
+      "indent": 3,
+      "text": "30 2b                       Extension {\n   06 08 2b06010505070108     extnID        1.3.6.1.5.5.7.1.8\n   01 01 ff                   critical\n   04 1c                      extnValue {\n      30 1a                     ASIdentifiers {\n         a0 14                    asnum\n                                    ASIdentifierChoice\n            30 12                     asIdsOrRanges {\n                                        ASIdOrRange\n               02 02 0087                 ASId\n                                        ASIdOrRange\n               30 08                      ASRange {\n                  02 02 0bb8                min\n                  02 02 0f9f                max\n                                          } -- ASRange\n                                        ASIdOrRange\n               02 02 1389                 ASId\n                                      } -- asIdsOrRanges\n                                  } -- asnum\n         a1 02                    rdi {\n                                    ASIdentifierChoice\n            05 00                     inherit from issuer\n                                  } -- rdi\n                                } -- ASIdentifiers\n                              } -- extnValue\n                            } -- Extension",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "Appendix D -- Use of X.509 Attribute Certificates",
+      "zh": "附录 D -- X.509 属性证书的使用"
+    },
+    {
+      "indent": 3,
+      "text": "This appendix discusses issues arising from a proposal to use attribute certificates (ACs, as specified in [RFC3281]) to convey, from the Regional Internet Registries (RIRs) to the end-user organizations, the \"right-to-use\" for IP address blocks or AS identifiers.",
+      "zh": "本附录讨论了使用属性证书（AC，如 [RFC3281] 中所述）将 IP 地址块或 AS 标识符的 \"使用权 \"从区域互联网注册管理机构（RIR）传递给最终用户组织的建议所引起的问题。"
+    },
+    {
+      "indent": 3,
+      "text": "The two resources, AS identifiers and IP address blocks, are currently managed differently. All organizations with the right-to-use for an AS identifier receive the authorization directly from an RIR. Organizations with a right-to-use for an IP address block receive the authorization either directly from an RIR, or indirectly, e.g., from a down stream service provider, who might receive its authorization from an Internet service provider, who in turn gets its authorization from a RIR. Note that AS identifiers might be sub-allocated in the future, so the mechanisms used should not rely upon a three level hierarchy.",
+      "zh": "目前，AS 标识符和 IP 地址块这两种资源的管理方式不同。所有有权使用 AS 标识符的组织都直接从区域互联网注册管理机构获得授权。有权使用 IP 地址块的组织直接从区域互联网注册管理机构获得授权，或间接从下游服务提供商获得授权，下游服务提供商可能从互联网服务提供商获得授权，而互联网服务提供商又从区域互联网注册管理机构获得授权。需要注意的是，AS 识别符将来可能会再分配，因此所使用的机制不应依赖于三级层次结构。"
+    },
+    {
+      "indent": 3,
+      "text": "In section 1 of RFC 3281, two reasons are given for why the use of ACs might be preferable to the use of public key certificates (PKCs) with extensions that convey the authorization information:",
+      "zh": "RFC 3281 第 1 节给出了两个理由，说明为什么使用 AC 可能比使用带有传递授权信息扩展的公钥证书（PKC）更可取："
+    },
+    {
+      "indent": 6,
+      "text": "\"Authorization information may be placed in a PKC extension or placed in a separate attribute certificate (AC). The placement of authorization information in PKCs is usually undesirable for two reasons. First, authorization information often does not have the same lifetime as the binding of the identity and the public key. When authorization information is placed in a PKC extension, the general result is the shortening of the PKC useful lifetime. Second, the PKC issuer is not usually authoritative for the authorization information. This results in additional steps for the PKC issuer to obtain authorization information from the authoritative source.\"",
+      "zh": "\"授权信息可以放在 PKC 扩展名中，也可以放在单独的属性证书（AC）中。在 PKC 中放置授权信息通常是不可取的，原因有二。首先，授权信息的有效期通常与身份和公开密钥绑定的有效期不同。如果把授权信息放在 PKC 扩展名中，一般会缩短 PKC 的有效期。其次，PKC 签发者通常不是授权信息的权威。这导致 PKC 签发者需要额外的步骤才能从权威来源获得授权信息\"。"
+    },
+    {
+      "indent": 6,
+      "text": "\"For these reasons, it is often better to separate authorization information from the PKC. Yet, authorization information also needs to be bound to an identity. An AC provides this binding; it is simply a digitally signed (or certified) identity and set of attributes.\"",
+      "zh": "\"由于这些原因，通常最好将授权信息与 PKC 分离开来。然而，授权信息也需要与身份绑定。AC 提供了这种绑定；它只是一个数字签名（或认证）的身份和一组属性\"。"
+    },
+    {
+      "indent": 3,
+      "text": "In the case of the IP address and AS identifier authorizations, these reasons do not apply. First, the public key certificates are issued exclusively for authorization, so the certificate lifetime corresponds exactly to the authorization lifetime, which is often tied to a contractual relationship between the issuer and entity receiving the authorization. The Subject and Issuer names are only used for chaining during certification path validation, and the names need not correspond to any physical entity. The Subject name in the PKCs may actually be randomly assigned by the issuing CA, allowing the resource holder limited anonymity. Second, the certificate hierarchy is constructed so that the certificate issuer is authoritative for the authorization information.",
+      "zh": "就 IP 地址和 AS 标识符授权而言，这些原因并不适用。首先，公钥证书是专门为授权而签发的，因此证书的有效期与授权的有效期完全一致，而授权的有效期往往与签发者和接受授权的实体之间的合同关系有关。主体和签发人名称仅用于认证路径验证过程中的链式连接，这些名称不必与任何物理实体相对应。PKC 中的主体名称实际上可能是由签发 CA 随机分配的，从而允许资源持有者有限度地匿名。其次，证书层次结构的构建使证书签发者对授权信息具有权威性。"
+    },
+    {
+      "indent": 3,
+      "text": "Thus the two points in the first cited paragraph above are not true in the case of AS number and IP address block allocations. The point of the second cited paragraph is also not applicable as the resources are not being bound to an identity but to the holder of the private key corresponding to the public key in the PKC.",
+      "zh": "因此，上述第一段中的两点在 AS 号码和 IP 地址块分配的情况下是不正确的。第二段的观点也不适用，因为资源不是与某个身份绑定，而是与 PKC 中公钥对应的私钥持有者绑定。"
+    },
+    {
+      "indent": 3,
+      "text": "RFC 3281 specifies several requirements that a conformant Attribute Certificate must meet. In relation to S-BGP, the more-significant requirements are:",
+      "zh": "RFC 3281 规定了符合要求的属性证书必须满足的几项要求。对于 S-BGP，比较重要的要求是"
+    },
+    {
+      "indent": 3,
+      "text": "1 from section 1: \"this specification does NOT RECOMMEND the use of AC chains. Other (future) specifications may address the use of AC chains.\"",
+      "zh": "第 1 节中的 1：\"本规范不推荐使用交流链。其他（未来的）规范可能会涉及交流链的使用\"。"
+    },
+    {
+      "indent": 6,
+      "text": "Allocation from IANA to RIRs to ISPs to DSPs and assignment to end organizations would require the use of chains, at least for IP address blocks. A description of how the superior's AC should be located and how it should be processed would have to be provided. Readers of this document are encouraged to propose ways the chaining might be avoided.",
+      "zh": "从 IANA 到 RIR 到 ISP 到 DSP 的分配以及到终端组织的分配都需要使用链，至少对 IP 地址块是这样。必须说明上级 AC 应如何定位以及应如何处理。我们鼓励本文件的读者提出避免链的方法。"
+    },
+    {
+      "indent": 3,
+      "text": "2 from section 4.2.9: \"section 4.3 defines the extensions that MAY be used with this profile, and whether or not they may be marked critical. If any other critical extension is used, the AC does not conform to this profile. However, if any other non-critical extension is used, the AC does conform to this profile.\"",
+      "zh": "2 摘自第 4.2.9 节：\"第 4.3 节定义了可与本规范一起使用的扩展，以及这些扩展是否可标记为关键扩展。如果使用了任何其他关键扩展，则 AC 不符合本规范。但是，如果使用了任何其他非关键扩展，则 AC 符合本规范\"。"
+    },
+    {
+      "indent": 6,
+      "text": "This means that the delegation extensions defined in this specification, which are critical, could not be simply placed into an AC. They could be used if not marked critical, but the intended use requires that the extensions be critical so that the certificates containing them cannot be used as identity certificates by an unsuspecting application.",
+      "zh": "这意味着，本规范中定义的授权扩展是关键性的，不能简单地放入 AC 中。如果不标记为关键，它们也可以使用，但预期用途要求扩展必须是关键的，这样包含这些扩展的证书就不能被不知情的应用程序用作身份证书。"
+    },
+    {
+      "indent": 3,
+      "text": "3 from section 4.5: \"an AC issuer, MUST NOT also be a PKC issuer. That is, an AC issuer cannot be a CA as well.\"",
+      "zh": "3 摘自第 4.5 节：\"AC 签发者不得同时也是 PKC 签发者。也就是说，AC 签发人不能同时也是 CA\"。"
+    },
+    {
+      "indent": 6,
+      "text": "This means that for each AC issuer there would need to be a separate CA to issue the PKC that contains the public key of the AC holder. The AC issuer cannot issue the PKC of the holder, and the PKC issuer cannot sign the AC. Thus, each entity in the PKI would need to operate an AC issuer in addition to its CA. There would be twice as many certificate issuers and CRLs to process to support Attribute certificates than are needed if PKCs are used. The possibility of mis-alignment also arises when there are two issuers issuing certificates for a single purpose.",
+      "zh": "这意味着每个 AC 签发者都需要有一个单独的 CA 来签发包含 AC 持有者公钥的 PKC。AC 签发者不能签发持有者的 PKC，而 PKC 签发者也不能签署 AC。因此，除 CA 外，PKI 中的每个实体都需要运行一个 AC 签发器。如果使用 PKC，需要处理的证书签发者和 CRL 将是支持属性证书的两倍。当有两个签发者为同一目的签发证书时，还可能出现错位。"
+    },
+    {
+      "indent": 6,
+      "text": "The AC model of RFC 3281 implies that the AC holder presents the AC to the AC verifier when the holder wants to substantiate an attribute or authorization. The intended usage for the extensions defined herein does not have a direct interaction between an AC verifier (a NOC) and the AC issuers (all RIRs and NOCs). Given a signature on a claimed right-to-use object, the \"AC verifier\" can locate the AC holder's PKC, but there is no direct way to locate the Subject's AC(s).",
+      "zh": "RFC 3281 的 AC 模型意味着，当 AC 持有者希望证实属性或授权时，AC 持有者会将 AC 提交给 AC 校验机。本文定义的扩展的预期用途是，在 AC 校验器（NOC）和 AC 签发者（所有 RIR 和 NOC）之间不进行直接交互。鉴于声称的使用权对象上有签名，\"AC 校验器 \"可以找到 AC 持有者的 PKC，但无法直接找到主体的 AC。"
+    },
+    {
+      "indent": 3,
+      "text": "4 from section 5: \"4. The AC issuer MUST be directly trusted as an AC issuer (by configuration or otherwise).\"",
+      "zh": "第 5 节中的 4：\"4.必须（通过配置或其他方式）直接信任 AC 签发器。"
+    },
+    {
+      "indent": 6,
+      "text": "This is not true in the case of a right-to-use for an IP address block, which is allocated through a hierarchy. Certification path validation of the AC will require chaining up through the delegation hierarchy. Having to configure each relying party (NOC) to \"trust\" every other NOC does not scale, and such \"trust\" has resulted in failures that the proposed security mechanisms are designed to prevent. A single PKI with a trusted root is used, not thousands of individually trusted per-ISP AC issuers.",
+      "zh": "而 IP 地址块的使用权则不同，它是通过层次结构分配的。要对 AC 进行认证路径验证，就必须通过授权层级进行链式扩展。必须将每个依赖方（NOC）配置为 \"信任 \"其他每个 NOC 的做法无法扩展，而且这种 \"信任 \"会导致失败，而建议的安全机制就是要防止这种情况发生。我们使用的是具有受信任根的单一 PKI，而不是数千个受信任的每个 ISP AC 签发者。"
+    },
+    {
+      "indent": 6,
+      "text": "The amount of work that would be required to properly validate an AC is larger than for the mechanism that places the certificate extensions defined in this document in the PKCs. There would be twice as many certificates to be validated, in addition to the ACs. There could be a considerable increase in the management burden required to support ACs.",
+      "zh": "与在 PKC 中放置本文件定义的证书扩展的机制相比，正确验证 AC 所需的工作量更大。除了 AC 外，需要验证的证书数量将是原来的两倍。支持 AC 所需的管理负担也会大大增加。"
+    },
+    {
+      "indent": 0,
+      "text": "References",
+      "zh": "参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "Normative References",
+      "zh": "规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[IANA-AFI] http://www.iana.org/assignments/address-family-numbers.",
+      "zh": "[IANA-AFI] http://www.iana.org/assignments/address-family-numbers。"
+    },
+    {
+      "indent": 3,
+      "text": "[IANA-SAFI] http://www.iana.org/assignments/safi-namespace.",
+      "zh": "[IANA-SAFI] http://www.iana.org/assignments/safi-namespace。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Level\", BCP 14, RFC 2119, March 1997.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Level\", BCP 14, RFC 2119, March 1997."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3280] Housley, R., Polk, W., Ford, W. and D. Solo, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 3280, April 2002.",
+      "zh": "[RFC3280] Housley, R., Polk, W., Ford, W. and D. Solo, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 3280, April 2002."
+    },
+    {
+      "indent": 3,
+      "text": "[X.690] ITU-T Recommendation X.690 (1997) | ISO/IEC 8825-1:1998, \"Information Technology - ASN.1 Encoding Rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)\".",
+      "zh": "[X.690] ITU-T Recommendation X.690 (1997) | ISO/IEC 8825-1:1998, \"Information Technology - ASN.1 Encoding Rules：基本编码规则（BER）、规范编码规则（CER）和区分编码规则（DER）的规范》。"
+    },
+    {
+      "indent": 0,
+      "text": "Informational References",
+      "zh": "信息参考"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC791] Postel, J., \"Internet Protocol -- DARPA Internet Program Protocol Specification\", RFC 791, September 1981.",
+      "zh": "[RFC791] Postel, J., \"Internet Protocol -- DARPA Internet Program Protocol Specification\", RFC 791, September 1981."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC1142] D. Oran, Ed., \"OSI IS-IS Intra-domain Routing Protocol\", RFC 1142, February 1990.",
+      "zh": "[RFC1142] D. Oran 编辑，\"OSI IS-IS 域内路由协议\"，RFC 1142，1990 年 2 月。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC1771] Rekhter, Y. and T. Li, Eds., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 1771, March 1995.",
+      "zh": "[RFC1771] Rekhter, Y. and T. Li, Eds., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 1771, March 1995."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC1930] Hawkinson, J. and T. Bates, \"Guidelines for creation, selection, and registration of an Autonomous System (AS)\", BCP 6, RFC 1930, March 1996.",
+      "zh": "[RFC1930] Hawkinson, J. and T. Bates, \"Guidelines for creation, selection, and registration of an Autonomous System (AS)\", BCP 6, RFC 1930, March 1996."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2050] Hubbard, K., Kosters, M., Conrad, D., Karrenberg, D. and J. Postel, \"Internet Registry IP Allocation Guidelines\", BCP 12, RFC 2050, November 1996.",
+      "zh": "[RFC2050] Hubbard, K., Kosters, M., Conrad, D., Karrenberg, D. and J. Postel, \"Internet Registry IP Allocation Guidelines\", BCP 12, RFC 2050, November 1996."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3513] Hinden, R. and S. Deering, \"Internet Protocol Version 6 (IPv6) Addressing Architecture\", RFC 3513, April 2003.",
+      "zh": "[RFC3513] Hinden, R. and S. Deering, \"Internet Protocol Version 6 (IPv6) Addressing Architecture\", RFC 3513, April 2003."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3281] Farrell, S. and R. Housley, \"An Internet Attribute Certificate Profile for Authorization\", RFC 3281, April 2002.",
+      "zh": "[RFC3281] Farrell, S. and R. Housley, \"An Internet Attribute Certificate Profile for Authorization\", RFC 3281, April 2002."
+    },
+    {
+      "indent": 3,
+      "text": "[S-BGP] S. Kent, C. Lynn, and K. Seo, \"Secure Border Gateway Protocol (S-BGP),\" IEEE JSAC Special Issue on Network Security, April 2000.",
+      "zh": "[S. Kent, C. Lynn, and K. Seo, \"Secure Border Gateway Protocol (S-BGP),\" IEEE JSAC Special Issue on Network Security, April 2000."
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Address",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Charles Lynn BBN Technologies 10 Moulton St. Cambridge, MA 02138 USA",
+      "zh": "Charles Lynn BBN Technologies 10 Moulton St."
+    },
+    {
+      "indent": 3,
+      "text": "Phone: +1 (617) 873-3367\nEMail: CLynn@BBN.Com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Stephen Kent BBN Technologies 10 Moulton St. Cambridge, MA 02138 USA",
+      "zh": "Stephen Kent BBN Technologies 10 Moulton St."
+    },
+    {
+      "indent": 3,
+      "text": "Phone: +1 (617) 873-3988\nEMail: Kent@BBN.Com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Karen Seo BBN Technologies 10 Moulton St. Cambridge, MA 02138 USA",
+      "zh": "Karen Seo BBN Technologies 10 Moulton St."
+    },
+    {
+      "indent": 3,
+      "text": "Phone: +1 (617) 873-3152\nEMail: KSeo@BBN.Com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "Full Copyright Statement",
+      "zh": "版权声明全文"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (C) The Internet Society (2004). This document is subject to the rights, licenses and restrictions contained in BCP 78, and except as set forth therein, the authors retain all their rights.",
+      "zh": "版权所有 (C) 互联网协会 (2004)。本文档受 BCP 78 中包含的权利、许可和限制的约束，除其中规定外，作者保留其所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document and the information contained herein are provided on an \"AS IS\" basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY AND THE INTERNET ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.",
+      "zh": "本文档和其中包含的信息按 \"原样 \"提供，撰稿人、其所代表或赞助的组织（如有）、互联网协会和互联网工程工作组不作任何保证、明示或默示保证，包括但不限于使用本网站信息不侵犯任何权利的保证或适销性或特定用途适用性的默示保证。"
+    },
+    {
+      "indent": 0,
+      "text": "Intellectual Property",
+      "zh": "知识产权"
+    },
+    {
+      "indent": 3,
+      "text": "The IETF takes no position regarding the validity or scope of any Intellectual Property Rights or other rights that might be claimed to pertain to the implementation or use of the technology described in this document or the extent to which any license under such rights might or might not be available; nor does it represent that it has made any independent effort to identify any such rights. Information on the procedures with respect to rights in RFC documents can be found in BCP 78 and BCP 79.",
+      "zh": "IETF 不对任何知识产权或其他权利的有效性或范围，或可能声称与本文档所述技术的实施或使用有关的权利，或在多大程度上可以或不可以获得此类权利下的任何许可采取任何立场；IETF 也不表示它已作出任何独立努力来确定任何此类权利。有关 RFC 文件中权利的程序信息，请参见 BCP 78 和 BCP 79。"
+    },
+    {
+      "indent": 3,
+      "text": "Copies of IPR disclosures made to the IETF Secretariat and any assurances of licenses to be made available, or the result of an attempt made to obtain a general license or permission for the use of such proprietary rights by implementers or users of this specification can be obtained from the IETF on-line IPR repository at http://www.ietf.org/ipr.",
+      "zh": "向 IETF 秘书处披露的知识产权副本、将提供的任何许可保证，或为本规范的实施者或用户使用此类专有权而试图获得一般许可或授权的结果，均可从 http://www.ietf.org/ipr 的 IETF 在线知识产权库中获取。"
+    },
+    {
+      "indent": 3,
+      "text": "The IETF invites any interested party to bring to its attention any copyrights, patents or patent applications, or other proprietary rights that may cover technology that may be required to implement this standard. Please address the information to the IETF at ietf-ipr@ietf.org.",
+      "zh": "IETF 邀请任何有关方面提请其注意可能涉及实施本标准所需技术的任何版权、专利或专利申请，或其他专有权利。请将信息发送至 IETF：ietf-ipr@ietf.org。"
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgement",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "Funding for the RFC Editor function is currently provided by the Internet Society.",
+      "zh": "RFC 编辑职能的经费目前由互联网协会提供。"
+    }
+  ]
+}

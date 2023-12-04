@@ -1,0 +1,1536 @@
+{
+  "title": {
+    "text": "RFC 8210 - The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1",
+    "zh": "RFC 8210 - 资源《公钥基础设施（RPKI）到路由器协议第 1 版"
+  },
+  "number": 8210,
+  "created_at": "2023-12-04 16:29:37.849380+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                           R. Bush\nRequest for Comments: 8210                     Internet Initiative Japan\nUpdates: 6810                                                 R. Austein\nCategory: Standards Track                           Dragon Research Labs\nISSN: 2070-1721                                           September 2017",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1",
+      "zh": "资源《公钥基础设施（RPKI）到路由器协议第 1 版"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "In order to verifiably validate the origin Autonomous Systems and Autonomous System Paths of BGP announcements, routers need a simple but reliable mechanism to receive Resource Public Key Infrastructure (RFC 6480) prefix origin data and router keys from a trusted cache. This document describes a protocol to deliver them.",
+      "zh": "为了可验证 BGP 公告的起源自治系统和自治系统路径，路由器需要一种简单但可靠的机制，以便从可信缓存中接收资源公钥基础设施（RFC 6480）前缀起源数据和路由器密钥。本文档介绍了传递这些数据和密钥的协议。"
+    },
+    {
+      "indent": 3,
+      "text": "This document describes version 1 of the RPKI-Router protocol. RFC 6810 describes version 0. This document updates RFC 6810.",
+      "zh": "本文档描述了 RPKI-Router 协议的第 1 版。本文档更新了 RFC 6810。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc8210.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc8210。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2017 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "版权所有 (c) 2017 IETF 信托基金会和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受BCP 78以及本文档发布之日有效的IETF信托基金关于IETF文档的法律规定（https://trustee.ietf.org/license-info）的约束。 请仔细阅读这些文档，因为它们描述了您对本文档的权利和限制。 从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中描述的简化 BSD 许可证文本，并且不提供简化 BSD 许可证中描述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   4\n  1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   4\n  1.2.  Changes from RFC 6810 . . . . . . . . . . . . . . . . . .   4\n2.  Glossary  . . . . . . . . . . . . . . . . . . . . . . . . . .   5\n3.  Deployment Structure  . . . . . . . . . . . . . . . . . . . .   5\n4.  Operational Overview  . . . . . . . . . . . . . . . . . . . .   6\n5.  Protocol Data Units (PDUs)  . . . . . . . . . . . . . . . . .   7\n  5.1.  Fields of a PDU . . . . . . . . . . . . . . . . . . . . .   7\n  5.2.  Serial Notify . . . . . . . . . . . . . . . . . . . . . .  10\n  5.3.  Serial Query  . . . . . . . . . . . . . . . . . . . . . .  10\n  5.4.  Reset Query . . . . . . . . . . . . . . . . . . . . . . .  12\n  5.5.  Cache Response  . . . . . . . . . . . . . . . . . . . . .  12\n  5.6.  IPv4 Prefix . . . . . . . . . . . . . . . . . . . . . . .  13\n  5.7.  IPv6 Prefix . . . . . . . . . . . . . . . . . . . . . . .  14\n  5.8.  End of Data . . . . . . . . . . . . . . . . . . . . . . .  15\n  5.9.  Cache Reset . . . . . . . . . . . . . . . . . . . . . . .  16\n  5.10. Router Key  . . . . . . . . . . . . . . . . . . . . . . .  16\n  5.11. Error Report  . . . . . . . . . . . . . . . . . . . . . .  17\n6.  Protocol Timing Parameters  . . . . . . . . . . . . . . . . .  18\n7.  Protocol Version Negotiation  . . . . . . . . . . . . . . . .  20\n8.  Protocol Sequences  . . . . . . . . . . . . . . . . . . . . .  21\n  8.1.  Start or Restart  . . . . . . . . . . . . . . . . . . . .  21\n  8.2.  Typical Exchange  . . . . . . . . . . . . . . . . . . . .  22\n  8.3.  No Incremental Update Available . . . . . . . . . . . . .  23\n  8.4.  Cache Has No Data Available . . . . . . . . . . . . . . .  23\n9.  Transport . . . . . . . . . . . . . . . . . . . . . . . . . .  24\n  9.1.  SSH Transport . . . . . . . . . . . . . . . . . . . . . .  25\n  9.2.  TLS Transport . . . . . . . . . . . . . . . . . . . . . .  26\n  9.3.  TCP MD5 Transport . . . . . . . . . . . . . . . . . . . .  26\n  9.4.  TCP-AO Transport  . . . . . . . . . . . . . . . . . . . .  27\n10. Router-Cache Setup  . . . . . . . . . . . . . . . . . . . . .  27\n11. Deployment Scenarios  . . . . . . . . . . . . . . . . . . . .  28\n12. Error Codes . . . . . . . . . . . . . . . . . . . . . . . . .  29\n13. Security Considerations . . . . . . . . . . . . . . . . . . .  30\n14. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  31\n15. References  . . . . . . . . . . . . . . . . . . . . . . . . .  32\n  15.1.  Normative References . . . . . . . . . . . . . . . . . .  32\n  15.2.  Informative References . . . . . . . . . . . . . . . . .  34\nAcknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  35\nAuthors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  35",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "In order to verifiably validate the origin Autonomous Systems (ASes) and AS paths of BGP announcements, routers need a simple but reliable mechanism to receive cryptographically validated Resource Public Key Infrastructure (RPKI) [RFC6480] prefix origin data and router keys from a trusted cache. This document describes a protocol to deliver them. The design is intentionally constrained to be usable on much of the current generation of ISP router platforms.",
+      "zh": "为了可验证 BGP 公告的起源自治系统（ASes）和 AS 路径，路由器需要一种简单但可靠的机制，以便从可信缓存接收经过加密验证的资源公钥基础设施（RPKI）[RFC6480] 前缀起源数据和路由器密钥。本文档描述了传递这些信息的协议。该设计有意受限，以便能在当前大多数 ISP 路由器平台上使用。"
+    },
+    {
+      "indent": 3,
+      "text": "This document updates [RFC6810].",
+      "zh": "本文件更新了 [RFC6810]。"
+    },
+    {
+      "indent": 3,
+      "text": "Section 3 describes the deployment structure, and Section 4 then presents an operational overview. The binary payloads of the protocol are formally described in Section 5, and the expected Protocol Data Unit (PDU) sequences are described in Section 8. The transport protocol options are described in Section 9. Section 10 details how routers and caches are configured to connect and authenticate. Section 11 describes likely deployment scenarios. The traditional security and IANA considerations end the document.",
+      "zh": "第 3 节介绍了部署结构，第 4 节介绍了运行概况。第 5 节正式介绍了协议的二进制有效载荷，第 8 节介绍了预期的协议数据单元（PDU）序列。第 9 节介绍了传输协议选项。第 10 节详细介绍如何配置路由器和缓存以进行连接和验证。第 11 节介绍了可能的部署方案。本文档的最后是传统的安全性和 IANA 注意事项。"
+    },
+    {
+      "indent": 3,
+      "text": "The protocol is extensible in order to support new PDUs with new semantics, if deployment experience indicates that they are needed. PDUs are versioned should deployment experience call for change.",
+      "zh": "该协议具有可扩展性，以便在部署经验表明需要时支持具有新语义的新 PDU。如果根据部署经验需要进行更改，PDU 将进行版本控制。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Requirements Language",
+      "section_title": true,
+      "zh": "1.1. 要求语言"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "1.2. Changes from RFC 6810",
+      "section_title": true,
+      "zh": "1.2. 与 RFC 6810 相比的变化"
+    },
+    {
+      "indent": 3,
+      "text": "This section summarizes the significant changes between [RFC6810] and the protocol described in this document.",
+      "zh": "本节总结了 [RFC6810] 与本文档所述协议之间的重大变化。"
+    },
+    {
+      "indent": 3,
+      "text": "o New Router Key PDU type (Section 5.10) added.",
+      "zh": "o 新增路由器密钥 PDU 类型（第 5.10 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "o Explicit timing parameters (Section 5.8, Section 6) added.",
+      "zh": "o 增加了明确的时序参数（第 5.8 节、第 6 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "o Protocol version number incremented from 0 (zero) to 1 (one).",
+      "zh": "o 协议版本号从 0（零）到 1（一）递增。"
+    },
+    {
+      "indent": 3,
+      "text": "o Protocol version number negotiation (Section 7) added.",
+      "zh": "o 新增协议版本号协商（第 7 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Glossary",
+      "section_title": true,
+      "zh": "2. 术语表"
+    },
+    {
+      "indent": 3,
+      "text": "The following terms are used with special meaning.",
+      "zh": "以下术语具有特殊含义。"
+    },
+    {
+      "indent": 3,
+      "text": "Global RPKI: The authoritative data of the RPKI are published in a distributed set of servers at the IANA, Regional Internet Registries (RIRs), National Internet Registries (NIRs), and ISPs; see [RFC6481].",
+      "zh": "全球 RPKI：RPKI 的权威数据发布在 IANA、地区互联网注册管理机构 (RIR)、国家互联网注册管理机构 (NIR) 和互联网服务提供商的一组分布式服务器中；参见 [RFC6481]。"
+    },
+    {
+      "indent": 3,
+      "text": "Cache: A cache is a coalesced copy of the published Global RPKI data, periodically fetched or refreshed, directly or indirectly, using the rsync protocol [RFC5781] or some successor. Relying Party software is used to gather and validate the distributed data of the RPKI into a cache. Trusting this cache further is a matter between the provider of the cache and a Relying Party.",
+      "zh": "缓存：缓存是已发布的全球 RPKI 数据的凝聚副本，使用 rsync 协议 [RFC5781] 或其他后续协议直接或间接地定期获取或刷新。依赖方软件用于将 RPKI 的分布式数据收集并验证到缓存中。进一步信任缓存是缓存提供者和依赖方之间的事。"
+    },
+    {
+      "indent": 3,
+      "text": "Serial Number: \"Serial Number\" is a 32-bit strictly increasing unsigned integer which wraps from 2^32-1 to 0. It denotes the logical version of a cache. A cache increments the value when it successfully updates its data from a parent cache or from primary RPKI data. While a cache is receiving updates, new incoming data and implicit deletes are associated with the new serial but MUST NOT be sent until the fetch is complete. A Serial Number is not commensurate between different caches or different protocol versions, nor need it be maintained across resets of the cache server. See [RFC1982] on DNS Serial Number Arithmetic for too much detail on the topic.",
+      "zh": "序列号：\"序列号 \"是一个从 2^32-1 到 0 的 32 位严格递增的无符号整数，表示缓存的逻辑版本。当高速缓存从父高速缓存或主 RPKI 数据中成功更新数据时，该值就会递增。当缓存接收更新时，新进入的数据和隐式删除都会与新的序列号相关联，但在获取完成之前不得发送。不同缓存或不同协议版本之间的序列号不相称，缓存服务器重置时也不需要维护序列号。有关该主题的更多详情，请参阅有关 DNS 序列号运算的 [RFC1982]。"
+    },
+    {
+      "indent": 3,
+      "text": "Session ID: When a cache server is started, it generates a Session ID to uniquely identify the instance of the cache and to bind it to the sequence of Serial Numbers that cache instance will generate. This allows the router to restart a failed session knowing that the Serial Number it is using is commensurate with that of the cache.",
+      "zh": "会话 ID：当缓存服务器启动时，它会生成一个会话 ID 以唯一标识缓存实例，并将其与缓存实例生成的序列号序列绑定。这样，路由器就能知道它所使用的序列号与高速缓存的序列号一致，从而重新启动失败的会话。"
+    },
+    {
+      "indent": 3,
+      "text": "Payload PDU: A payload PDU is a protocol message which contains data for use by the router, as opposed to a PDU which conveys the control mechanisms of this protocol. Prefixes and Router Keys are examples of payload PDUs.",
+      "zh": "有效载荷 PDU：有效载荷 PDU 是一种协议报文，包含供路由器使用的数据，而不是传递本协议控制机制的 PDU。前缀和路由器密钥就是有效载荷 PDU 的例子。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Deployment Structure",
+      "section_title": true,
+      "zh": "3. 部署结构"
+    },
+    {
+      "indent": 3,
+      "text": "Deployment of the RPKI to reach routers has a three-level structure as follows:",
+      "zh": "将 RPKI 部署到路由器有如下三级结构："
+    },
+    {
+      "indent": 3,
+      "text": "Global RPKI: The authoritative data of the RPKI are published in a distributed set of servers at the IANA, RIRs, NIRs, and ISPs (see [RFC6481]).",
+      "zh": "全球 RPKI：RPKI 的权威数据由 IANA、RIR、NIR 和 ISP 的一组分布式服务器发布（见 [RFC6481]）。"
+    },
+    {
+      "indent": 3,
+      "text": "Local Caches: Local caches are a local set of one or more collected and verified caches of RPKI data. A Relying Party, e.g., router or other client, MUST have a trust relationship with, and a trusted transport channel to, any cache(s) it uses.",
+      "zh": "本地缓存：本地缓存是由一个或多个收集和验证的 RPKI 数据缓存组成的本地集合。可信赖方（如路由器或其他客户端）必须与其使用的任何缓存建立信任关系和可信传输通道。"
+    },
+    {
+      "indent": 3,
+      "text": "Routers: A router fetches data from a local cache using the protocol described in this document. It is said to be a client of the cache. There MAY be mechanisms for the router to assure itself of the authenticity of the cache and to authenticate itself to the cache (see Section 9).",
+      "zh": "路由器：路由器使用本文档中描述的协议从本地缓存中获取数据。路由器是缓存的客户端。路由器可能有办法确保缓存的真实性，并对缓存进行身份验证（见第 9 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Operational Overview",
+      "section_title": true,
+      "zh": "4. 业务概览"
+    },
+    {
+      "indent": 3,
+      "text": "A router establishes and keeps open a connection to one or more caches with which it has client/server relationships. It is configured with a semi-ordered list of caches and establishes a connection to the most preferred cache, or set of caches, which accept the connections.",
+      "zh": "路由器与一个或多个高速缓存建立并保持开放连接，这些高速缓存与路由器有客户/服务器关系。路由器通过半排序的高速缓存列表进行配置，并与接受连接的最优先高速缓存或高速缓存集建立连接。"
+    },
+    {
+      "indent": 3,
+      "text": "The router MUST choose the most preferred, by configuration, cache or set of caches so that the operator may control load on their caches and the Global RPKI.",
+      "zh": "路由器必须根据配置选择最优先的缓存或缓存集，以便操作员控制其缓存和全球 RPKI 的负载。"
+    },
+    {
+      "indent": 3,
+      "text": "Periodically, the router sends to the cache the most recent Serial Number for which it has received data from that cache, i.e., the router's current Serial Number, in the form of a Serial Query. When a router establishes a new session with a cache or wishes to reset a current relationship, it sends a Reset Query.",
+      "zh": "路由器会定期以 \"序列查询\"（Serial Query）的形式向高速缓存发送它从该高速缓存接收到数据的最新序列号，即路由器的当前序列号。当路由器与高速缓存建立新会话或希望重置当前关系时，会发送重置查询。"
+    },
+    {
+      "indent": 3,
+      "text": "The cache responds to the Serial Query with all data changes which took place since the given Serial Number. This may be the null set, in which case the End of Data PDU (Section 5.8) is still sent. Note that the Serial Number comparison used to determine \"since the given Serial Number\" MUST take wrap-around into account; see [RFC1982].",
+      "zh": "高速缓存会响应序列查询，并提供给定序列号后发生的所有数据更改。在这种情况下，数据结束 PDU（第 5.8 节）仍将被发送。请注意，用于确定 \"自给定序列号以来 \"的序列号比较必须考虑到缠绕；请参阅 [RFC1982]。"
+    },
+    {
+      "indent": 3,
+      "text": "When the router has received all data records from the cache, it sets its current Serial Number to that of the Serial Number in the received End of Data PDU.",
+      "zh": "路由器收到缓存中的所有数据记录后，会将其当前序列号设置为收到的数据结束 PDU 中的序列号。"
+    },
+    {
+      "indent": 3,
+      "text": "When the cache updates its database, it sends a Notify PDU to every currently connected router. This is a hint that now would be a good time for the router to poll for an update, but it is only a hint. The protocol requires the router to poll for updates periodically in any case.",
+      "zh": "缓存更新数据库时，会向每个当前连接的路由器发送一个通知 PDU。这是一个提示，表明现在是路由器轮询更新的好时机，但这只是一个提示。协议要求路由器在任何情况下都要定期轮询更新。"
+    },
+    {
+      "indent": 3,
+      "text": "Strictly speaking, a router could track a cache simply by asking for a complete data set every time it updates, but this would be very inefficient. The Serial-Number-based incremental update mechanism allows an efficient transfer of just the data records which have changed since the last update. As with any update protocol based on incremental transfers, the router must be prepared to fall back to a full transfer if for any reason the cache is unable to provide the necessary incremental data. Unlike some incremental transfer protocols, this protocol requires the router to make an explicit request to start the fallback process; this is deliberate, as the cache has no way of knowing whether the router has also established sessions with other caches that may be able to provide better service.",
+      "zh": "严格说来，路由器可以在每次更新时要求提供完整的数据集来跟踪高速缓存，但这样做效率很低。基于序列号的增量更新机制只允许高效传输上次更新后发生变化的数据记录。与任何基于增量传输的更新协议一样，路由器必须做好准备，以便在高速缓存因故无法提供必要的增量数据时退回到完整传输。与某些增量传输协议不同的是，该协议要求路由器明确请求启动回退过程；这是有意为之，因为高速缓存无法知道路由器是否还与其他能提供更好服务的高速缓存建立了会话。"
+    },
+    {
+      "indent": 3,
+      "text": "As a cache server must evaluate certificates and ROAs (Route Origin Authorizations; see [RFC6480]), which are time dependent, servers' clocks MUST be correct to a tolerance of approximately an hour.",
+      "zh": "由于缓存服务器必须评估与时间相关的证书和 ROAs（路由起源授权，见 [RFC6480]），因此服务器的时钟必须精确到大约一小时。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Protocol Data Units (PDUs)",
+      "section_title": true,
+      "zh": "5. 协议数据单元 (PDU)"
+    },
+    {
+      "indent": 3,
+      "text": "The exchanges between the cache and the router are sequences of exchanges of the following PDUs according to the rules described in Section 8.",
+      "zh": "高速缓存和路由器之间的交换是根据第 8 节所述规则交换以下 PDU 的序列。"
+    },
+    {
+      "indent": 3,
+      "text": "Reserved fields (marked \"zero\" in PDU diagrams) MUST be zero on transmission and MUST be ignored on receipt.",
+      "zh": "保留字段（在 PDU 图表中标记为 \"零\"）在传输时必须为零，在接收时必须忽略。"
+    },
+    {
+      "indent": 0,
+      "text": "5.1. Fields of a PDU",
+      "section_title": true,
+      "zh": "5.1. PDU 字段"
+    },
+    {
+      "indent": 3,
+      "text": "PDUs contain the following data elements:",
+      "zh": "PDU 包含以下数据元素："
+    },
+    {
+      "indent": 3,
+      "text": "Protocol Version: An 8-bit unsigned integer, currently 1, denoting the version of this protocol.",
+      "zh": "协议版本：一个 8 位无符号整数，当前为 1，表示该协议的版本。"
+    },
+    {
+      "indent": 3,
+      "text": "PDU Type: An 8-bit unsigned integer, denoting the type of the PDU, e.g., IPv4 Prefix.",
+      "zh": "PDU 类型：一个 8 位无符号整数，表示 PDU 的类型，如 IPv4 前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "Serial Number: The Serial Number of the RPKI cache when this set of PDUs was received from an upstream cache server or gathered from the Global RPKI. A cache increments its Serial Number when completing a rigorously validated update from a parent cache or the Global RPKI.",
+      "zh": "序列号：RPKI 缓存从上游缓存服务器接收到这组 PDU 或从全球 RPKI 收集到这组 PDU 时的序列号。高速缓存从上级高速缓存或全球 RPKI 完成严格验证的更新时，会递增其序列号。"
+    },
+    {
+      "indent": 3,
+      "text": "Session ID: A 16-bit unsigned integer. When a cache server is started, it generates a Session ID to identify the instance of the cache and to bind it to the sequence of Serial Numbers that cache instance will generate. This allows the router to restart a failed session knowing that the Serial Number it is using is commensurate with that of the cache. If, at any time after the protocol version has been negotiated (Section 7), either the router or the cache finds that the value of the Session ID is not the same as the other's, the party which detects the mismatch MUST immediately terminate the session with an Error Report PDU with code 0 (\"Corrupt Data\"), and the router MUST flush all data learned from that cache.",
+      "zh": "会话 ID：一个 16 位无符号整数。当缓存服务器启动时，它会生成一个会话 ID 来标识缓存实例，并将其与该缓存实例将生成的序列号序列绑定。这样，路由器就能知道它使用的序列号与高速缓存的序列号一致，从而重新启动失败的会话。如果在协议版本协商（第 7 节）后的任何时候，路由器或高速缓存发现会话 ID 的值与对方的不一致，检测到不匹配的一方必须立即用代码为 0（\"损坏数据\"）的错误报告 PDU 终止会话，并且路由器必须清除从该高速缓存学到的所有数据。"
+    },
+    {
+      "indent": 6,
+      "text": "Note that sessions are specific to a particular protocol version. That is, if a cache server supports multiple versions of this protocol, happens to use the same Session ID value for multiple protocol versions, and further happens to use the same Serial Number values for two or more sessions using the same Session ID but different Protocol Version values, the Serial Numbers are not commensurate. The full test for whether Serial Numbers are commensurate requires comparing Protocol Version, Session ID, and Serial Number. To reduce the risk of confusion, cache servers SHOULD NOT use the same Session ID across multiple protocol versions, but even if they do, routers MUST treat sessions with different Protocol Version fields as separate sessions even if they do happen to have the same Session ID.",
+      "zh": "请注意，会话是针对特定协议版本的。也就是说，如果高速缓存服务器支持该协议的多个版本，恰好在多个协议版本中使用了相同的会话 ID 值，而且恰好在使用相同会话 ID 但协议版本值不同的两个或多个会话中使用了相同的序列号值，那么序列号就不一致。要全面检验序列号是否一致，需要比较协议版本、会话 ID 和序列号。为降低混淆风险，高速缓存服务器不应在多个协议版本中使用相同的会话 ID，但即使使用了相同的会话 ID，路由器也必须将具有不同协议版本字段的会话视为单独的会话，即使它们碰巧具有相同的会话 ID。"
+    },
+    {
+      "indent": 6,
+      "text": "Should a cache erroneously reuse a Session ID so that a router does not realize that the session has changed (old Session ID and new Session ID have the same numeric value), the router may become confused as to the content of the cache. The time it takes the router to discover that it is confused will depend on whether the Serial Numbers are also reused. If the Serial Numbers in the old and new sessions are different enough, the cache will respond to the router's Serial Query with a Cache Reset, which will solve the problem. If, however, the Serial Numbers are close, the cache may respond with a Cache Response, which may not be enough to bring the router into sync. In such cases, it's likely but not certain that the router will detect some discrepancy between the state that the cache expects and its own state. For example, the Cache Response may tell the router to drop a record which the router does not hold or may tell the router to add a record which the router already has. In such cases, a router will detect the error and reset the session. The one case in which the router may stay out of sync is when nothing in the Cache Response contradicts any data currently held by the router.",
+      "zh": "如果高速缓存错误地重复使用了会话 ID，导致路由器没有意识到会话已经改变（旧的会话 ID 和新的会话 ID 具有相同的数值），路由器可能会对高速缓存的内容感到困惑。路由器发现自己混淆的时间取决于序列号是否也被重复使用。如果新旧会话中的序列号有足够大的差异，缓存就会通过缓存重置来响应路由器的序列查询，从而解决问题。但是，如果序列号很接近，缓存可能会响应缓存响应，但这可能不足以使路由器同步。在这种情况下，路由器很可能会检测到缓存所期望的状态与其自身状态之间存在某些差异，但这并不确定。例如，\"缓存响应 \"可能会告诉路由器放弃一条路由器没有的记录，或者告诉路由器添加一条路由器已经有的记录。在这种情况下，路由器会检测到错误并重置会话。路由器可能保持不同步的一种情况是，缓存响应中没有任何内容与路由器当前持有的任何数据相矛盾。"
+    },
+    {
+      "indent": 6,
+      "text": "Using persistent storage for the Session ID or a clock-based scheme for generating Session IDs should avoid the risk of Session ID collisions.",
+      "zh": "使用会话 ID 的持久存储或基于时钟的会话 ID 生成方案，可以避免会话 ID 碰撞的风险。"
+    },
+    {
+      "indent": 6,
+      "text": "The Session ID might be a pseudorandom value, a strictly increasing value if the cache has reliable storage, et cetera. A seconds-since-epoch timestamp value such as the POSIX time() function makes a good Session ID value.",
+      "zh": "会话 ID 可以是一个伪随机值，如果缓存存储可靠，也可以是一个严格递增的值，等等。诸如 POSIX time() 函数之类的秒后时间戳值就是一个很好的会话 ID 值。"
+    },
+    {
+      "indent": 3,
+      "text": "Length: A 32-bit unsigned integer which has as its value the count of the bytes in the entire PDU, including the 8 bytes of header which includes the length field.",
+      "zh": "长度（Length）：一个 32 位无符号整数，其值为整个 PDU 的字节数，包括包含长度字段的 8 字节报头。"
+    },
+    {
+      "indent": 3,
+      "text": "Flags: The lowest-order bit of the Flags field is 1 for an announcement and 0 for a withdrawal. For a Prefix PDU (IPv4 or IPv6), the flag indicates whether this PDU announces a new right to announce the prefix or withdraws a previously announced right; a withdraw effectively deletes one previously announced Prefix PDU with the exact same Prefix, Length, Max-Len, and Autonomous System Number (ASN). Similarly, for a Router Key PDU, the flag indicates whether this PDU announces a new Router Key or deletes one previously announced Router Key PDU with the exact same AS Number, subjectKeyIdentifier, and subjectPublicKeyInfo.",
+      "zh": "标志：标志（Flags）字段的最低位为 1 表示公告，为 0 表示撤销。对于前缀 PDU（IPv4 或 IPv6），标志表示该 PDU 是宣布了宣布前缀的新权利，还是撤回了以前宣布的权利；撤回有效地删除了以前宣布的具有完全相同的前缀、长度、最大长度和自治系统编号（ASN）的前缀 PDU。同样，对于路由器密钥 PDU，标记表示该 PDU 是宣布了新的路由器密钥，还是删除了先前宣布的具有完全相同的 AS 编号、主题密钥标识符（subjectKeyIdentifier）和主题公钥信息（subjectPublicKeyInfo）的路由器密钥 PDU。"
+    },
+    {
+      "indent": 6,
+      "text": "The remaining bits in the Flags field are reserved for future use. In protocol version 1, they MUST be zero on transmission and MUST be ignored on receipt.",
+      "zh": "Flags 字段中的其余位保留供将来使用。在协议版本 1 中，它们在传输时必须为零，在接收时必须忽略。"
+    },
+    {
+      "indent": 3,
+      "text": "Prefix Length: An 8-bit unsigned integer denoting the shortest prefix allowed by the Prefix element.",
+      "zh": "前缀长度：一个 8 位无符号整数，表示前缀元素允许的最短前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "Max Length: An 8-bit unsigned integer denoting the longest prefix allowed by the Prefix element. This MUST NOT be less than the Prefix Length element.",
+      "zh": "最大长度：一个 8 位无符号整数，表示前缀元素允许的最长前缀。该值不得小于前缀长度元素。"
+    },
+    {
+      "indent": 3,
+      "text": "Prefix: The IPv4 or IPv6 prefix of the ROA.",
+      "zh": "前缀：ROA 的 IPv4 或 IPv6 前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "Autonomous System Number: A 32-bit unsigned integer representing an ASN allowed to announce a prefix or associated with a router key.",
+      "zh": "自治系统编号：一个 32 位无符号整数，代表允许宣布前缀或与路由器密钥相关联的 ASN。"
+    },
+    {
+      "indent": 3,
+      "text": "Subject Key Identifier: 20-octet Subject Key Identifier (SKI) value of a router key, as described in [RFC6487].",
+      "zh": "主题密钥标识符：[RFC6487] 中描述的路由器密钥的 20 字节主题密钥标识符 (SKI) 值。"
+    },
+    {
+      "indent": 3,
+      "text": "Subject Public Key Info: A router key's subjectPublicKeyInfo value, as described in [RFC8208]. This is the full ASN.1 DER encoding of the subjectPublicKeyInfo, including the ASN.1 tag and length values of the subjectPublicKeyInfo SEQUENCE.",
+      "zh": "主题公钥信息：路由器密钥的 subjectPublicKeyInfo 值，如 [RFC8208] 所述。这是 subjectPublicKeyInfo 的完整 ASN.1 DER 编码，包括 subjectPublicKeyInfo SEQUENCE 的 ASN.1 标记和长度值。"
+    },
+    {
+      "indent": 3,
+      "text": "Refresh Interval: Interval between normal cache polls. See Section 6.",
+      "zh": "刷新间隔：正常缓存轮询之间的间隔。参见第 6 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Retry Interval: Interval between cache poll retries after a failed cache poll. See Section 6.",
+      "zh": "重试间隔：缓存轮询失败后重试缓存轮询的间隔时间。参见第 6 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Expire Interval: Interval during which data fetched from a cache remains valid in the absence of a successful subsequent cache poll. See Section 6.",
+      "zh": "过期间隔：在没有成功的后续缓存轮询的情况下，从缓存获取的数据保持有效的时间间隔。参见第 6 节。"
+    },
+    {
+      "indent": 0,
+      "text": "5.2. Serial Notify",
+      "section_title": true,
+      "zh": "5.2. 串行通知"
+    },
+    {
+      "indent": 3,
+      "text": "The cache notifies the router that the cache has new data.",
+      "zh": "缓存会通知路由器缓存中有新数据。"
+    },
+    {
+      "indent": 3,
+      "text": "The Session ID reassures the router that the Serial Numbers are commensurate, i.e., the cache session has not been changed.",
+      "zh": "会话 ID 可使路由器确信序列号是一致的，即缓存会话未被更改。"
+    },
+    {
+      "indent": 3,
+      "text": "Upon receipt of a Serial Notify PDU, the router MAY issue an immediate Serial Query (Section 5.3) or Reset Query (Section 5.4) without waiting for the Refresh Interval timer (see Section 6) to expire.",
+      "zh": "收到串行通知 PDU 后，路由器可以立即发出串行查询（第 5.3 节）或重置查询（第 5.4 节），而无需等待刷新间隔计时器（见第 6 节）到期。"
+    },
+    {
+      "indent": 3,
+      "text": "Serial Notify is the only message that the cache can send that is not in response to a message from the router.",
+      "zh": "串行通知是高速缓存可以发送的唯一信息，它不是对路由器信息的回应。"
+    },
+    {
+      "indent": 3,
+      "text": "If the router receives a Serial Notify PDU during the initial startup period where the router and cache are still negotiating to agree on a protocol version, the router MUST simply ignore the Serial Notify PDU, even if the Serial Notify PDU is for an unexpected protocol version. See Section 7 for details.",
+      "zh": "如果路由器在初始启动期间收到串行通知 PDU，而路由器和高速缓存仍在协商协议版本，则路由器必须忽略该串行通知 PDU，即使该串行通知 PDU 的协议版本出乎意料。详情请参见第 7 节。"
+    },
+    {
+      "indent": 3,
+      "text": "0          8          16         24        31\n.-------------------------------------------.\n| Protocol |   PDU    |                     |\n| Version  |   Type   |     Session ID      |\n|    1     |    0     |                     |\n+-------------------------------------------+\n|                                           |\n|                Length=12                  |\n|                                           |\n+-------------------------------------------+\n|                                           |\n|               Serial Number               |\n|                                           |\n`-------------------------------------------'",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "5.3. Serial Query",
+      "section_title": true,
+      "zh": "5.3. 串行查询"
+    },
+    {
+      "indent": 3,
+      "text": "The router sends a Serial Query to ask the cache for all announcements and withdrawals which have occurred since the Serial Number specified in the Serial Query.",
+      "zh": "路由器发送序列查询，要求缓存提供自序列查询中指定的序列号以来发生的所有通告和撤销。"
+    },
+    {
+      "indent": 3,
+      "text": "The cache replies to this query with a Cache Response PDU (Section 5.5) if the cache has a (possibly null) record of the changes since the Serial Number specified by the router, followed by zero or more payload PDUs and an End Of Data PDU (Section 5.8).",
+      "zh": "如果高速缓存有自路由器指定的序列号以来的更改记录（可能为空），则高速缓存用高速缓存响应 PDU（第 5.5 节）回复该查询，随后是零个或多个有效负载 PDU 和数据结束 PDU（第 5.8 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "When replying to a Serial Query, the cache MUST return the minimum set of changes needed to bring the router into sync with the cache. That is, if a particular prefix or router key underwent multiple changes between the Serial Number specified by the router and the cache's current Serial Number, the cache MUST merge those changes to present the simplest possible view of those changes to the router. In general, this means that, for any particular prefix or router key, the data stream will include at most one withdrawal followed by at most one announcement, and if all of the changes cancel out, the data stream will not mention the prefix or router key at all.",
+      "zh": "在回复序列查询时，高速缓存必须返回使路由器与高速缓存同步所需的最小更改集。也就是说，如果一个特定的前缀或路由器密钥在路由器指定的序列号和高速缓存的当前序列号之间发生了多次变化，高速缓存必须合并这些变化，以便向路由器呈现这些变化的最简单视图。一般来说，这意味着对于任何特定的前缀或路由器密钥，数据流将最多包含一次撤回，随后最多包含一次公告，如果所有更改都抵消了，那么数据流将完全不提及该前缀或路由器密钥。"
+    },
+    {
+      "indent": 3,
+      "text": "The rationale for this approach is that the entire purpose of the RPKI-Router protocol is to offload work from the router to the cache, and it should therefore be the cache's job to simplify the change set, thus reducing work for the router.",
+      "zh": "这种方法的基本原理是，RPKI-路由器协议的全部目的是将路由器的工作卸载到高速缓存，因此高速缓存的工作应该是简化变更集，从而减少路由器的工作。"
+    },
+    {
+      "indent": 3,
+      "text": "If the cache does not have the data needed to update the router, perhaps because its records do not go back to the Serial Number in the Serial Query, then it responds with a Cache Reset PDU (Section 5.9).",
+      "zh": "如果缓存中没有更新路由器所需的数据，可能是因为其记录没有回到序列查询中的序列号，则缓存会响应缓存重置 PDU（第 5.9 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "The Session ID tells the cache what instance the router expects to ensure that the Serial Numbers are commensurate, i.e., the cache session has not been changed.",
+      "zh": "会话 ID 会告诉高速缓存路由器所期望的实例，以确保序列号一致，即高速缓存会话未被更改。"
+    },
+    {
+      "indent": 3,
+      "text": "0          8          16         24        31\n.-------------------------------------------.\n| Protocol |   PDU    |                     |\n| Version  |   Type   |     Session ID      |\n|    1     |    1     |                     |\n+-------------------------------------------+\n|                                           |\n|                 Length=12                 |\n|                                           |\n+-------------------------------------------+\n|                                           |\n|               Serial Number               |\n|                                           |\n`-------------------------------------------'",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "5.4. Reset Query",
+      "section_title": true,
+      "zh": "5.4. 重置查询"
+    },
+    {
+      "indent": 3,
+      "text": "The router tells the cache that it wants to receive the total active, current, non-withdrawn database. The cache responds with a Cache Response PDU (Section 5.5), followed by zero or more payload PDUs and an End of Data PDU (Section 5.8).",
+      "zh": "路由器告诉高速缓存，它想接收全部活动的、当前的、未撤回的数据库。高速缓存通过高速缓存响应 PDU（第 5.5 节）、零个或多个有效负载 PDU 和数据结束 PDU（第 5.8 节）做出响应。"
+    },
+    {
+      "indent": 3,
+      "text": "0          8          16         24        31\n.-------------------------------------------.\n| Protocol |   PDU    |                     |\n| Version  |   Type   |         zero        |\n|    1     |    2     |                     |\n+-------------------------------------------+\n|                                           |\n|                 Length=8                  |\n|                                           |\n`-------------------------------------------'",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "5.5. Cache Response",
+      "section_title": true,
+      "zh": "5.5. 缓存响应"
+    },
+    {
+      "indent": 3,
+      "text": "The cache responds to queries with zero or more payload PDUs. When replying to a Serial Query (Section 5.3), the cache sends the set of announcements and withdrawals that have occurred since the Serial Number sent by the client router. When replying to a Reset Query (Section 5.4), the cache sends the set of all data records it has; in this case, the withdraw/announce field in the payload PDUs MUST have the value 1 (announce).",
+      "zh": "高速缓存以零或更多有效载荷 PDU 回应查询。在回复序列查询（第 5.3 节）时，高速缓存会发送自客户端路由器发送序列号以来发生的公告和撤消。在回复重置查询（第 5.4 节）时，高速缓存会发送它拥有的所有数据记录；在这种情况下，有效载荷 PDU 中的 withdraw/announce 字段的值必须为 1（announce）。"
+    },
+    {
+      "indent": 3,
+      "text": "In response to a Reset Query, the new value of the Session ID tells the router the instance of the cache session for future confirmation. In response to a Serial Query, the Session ID being the same reassures the router that the Serial Numbers are commensurate, i.e., the cache session has not been changed.",
+      "zh": "在响应重置查询时，会话 ID 的新值会告诉路由器缓存会话的实例，以便将来确认。在响应序列查询时，会话 ID 相同可使路由器确信序列号是一致的，即缓存会话没有被更改。"
+    },
+    {
+      "indent": 3,
+      "text": "0          8          16         24        31\n.-------------------------------------------.\n| Protocol |   PDU    |                     |\n| Version  |   Type   |     Session ID      |\n|    1     |    3     |                     |\n+-------------------------------------------+\n|                                           |\n|                 Length=8                  |\n|                                           |\n`-------------------------------------------'",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "5.6. IPv4 Prefix",
+      "section_title": true,
+      "zh": "5.6. IPv4 前缀"
+    },
+    {
+      "indent": 3,
+      "text": "0          8          16         24        31\n.-------------------------------------------.\n| Protocol |   PDU    |                     |\n| Version  |   Type   |         zero        |\n|    1     |    4     |                     |\n+-------------------------------------------+\n|                                           |\n|                 Length=20                 |\n|                                           |\n+-------------------------------------------+\n|          |  Prefix  |   Max    |          |\n|  Flags   |  Length  |  Length  |   zero   |\n|          |   0..32  |   0..32  |          |\n+-------------------------------------------+\n|                                           |\n|                IPv4 Prefix                |\n|                                           |\n+-------------------------------------------+\n|                                           |\n|         Autonomous System Number          |\n|                                           |\n`-------------------------------------------'",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The lowest-order bit of the Flags field is 1 for an announcement and 0 for a withdrawal.",
+      "zh": "Flags 字段的最低阶位为 1 表示宣布，为 0 表示撤回。"
+    },
+    {
+      "indent": 3,
+      "text": "In the RPKI, nothing prevents a signing certificate from issuing two identical ROAs. In this case, there would be no semantic difference between the objects, merely a process redundancy.",
+      "zh": "在 RPKI 中，没有任何规定阻止签名证书签发两个相同的 ROA。在这种情况下，两个对象之间没有语义上的区别，只是程序上的冗余。"
+    },
+    {
+      "indent": 3,
+      "text": "In the RPKI, there is also an actual need for what might appear to a router as identical IPvX PDUs. This can occur when an upstream certificate is being reissued or there is an address ownership transfer up the validation chain. The ROA would be identical in the router sense, i.e., have the same {Prefix, Len, Max-Len, ASN}, but it would have a different validation path in the RPKI. This is important to the RPKI but not to the router.",
+      "zh": "在 RPKI 中，路由器实际需要的可能是相同的 IPvX PDU。这种情况可能发生在上游证书重新签发或验证链上的地址所有权转移时。ROA 在路由器意义上是相同的，即具有相同的 {Prefix, Len, Max-Len, ASN}，但在 RPKI 中会有不同的验证路径。这对 RPKI 很重要，但对路由器并不重要。"
+    },
+    {
+      "indent": 3,
+      "text": "The cache server MUST ensure that it has told the router client to have one and only one IPvX PDU for a unique {Prefix, Len, Max-Len, ASN} at any one point in time. Should the router client receive an IPvX PDU with a {Prefix, Len, Max-Len, ASN} identical to one it already has active, it SHOULD raise a Duplicate Announcement Received error.",
+      "zh": "缓存服务器必须确保它已告知路由器客户端，在任何一个时间点上都只有一个唯一的 {前缀、长度、最大长度、ASN}的 IPvX PDU。如果路由器客户端收到的 IPvX PDU 的 {Prefix, Len, Max-Len, ASN} 与它已激活的 PDU 相同，则应引发 \"收到重复公告\"（Duplicate Announcement Received）错误。"
+    },
+    {
+      "indent": 0,
+      "text": "5.7. IPv6 Prefix",
+      "section_title": true,
+      "zh": "5.7. IPv6 前缀"
+    },
+    {
+      "indent": 3,
+      "text": "0          8          16         24        31\n.-------------------------------------------.\n| Protocol |   PDU    |                     |\n| Version  |   Type   |         zero        |\n|    1     |    6     |                     |\n+-------------------------------------------+\n|                                           |\n|                 Length=32                 |\n|                                           |\n+-------------------------------------------+\n|          |  Prefix  |   Max    |          |\n|  Flags   |  Length  |  Length  |   zero   |\n|          |  0..128  |  0..128  |          |\n+-------------------------------------------+\n|                                           |\n+---                                     ---+\n|                                           |\n+---            IPv6 Prefix              ---+\n|                                           |\n+---                                     ---+\n|                                           |\n+-------------------------------------------+\n|                                           |\n|         Autonomous System Number          |\n|                                           |\n`-------------------------------------------'",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Analogous to the IPv4 Prefix PDU, it has 96 more bits and no magic.",
+      "zh": "与 IPv4 前缀 PDU 类似，它多了 96 个比特，没有魔法。"
+    },
+    {
+      "indent": 0,
+      "text": "5.8. End of Data",
+      "section_title": true,
+      "zh": "5.8. 数据结束"
+    },
+    {
+      "indent": 3,
+      "text": "The cache tells the router it has no more data for the request.",
+      "zh": "缓存会告诉路由器，它没有更多数据来满足请求。"
+    },
+    {
+      "indent": 3,
+      "text": "The Session ID and Protocol Version MUST be the same as that of the corresponding Cache Response which began the (possibly null) sequence of payload PDUs.",
+      "zh": "会话 ID 和协议版本必须与开始有效载荷 PDU（可能为空）序列的相应缓存响应相同。"
+    },
+    {
+      "indent": 3,
+      "text": "0          8          16         24        31\n.-------------------------------------------.\n| Protocol |   PDU    |                     |\n| Version  |   Type   |     Session ID      |\n|    1     |    7     |                     |\n+-------------------------------------------+\n|                                           |\n|                 Length=24                 |\n|                                           |\n+-------------------------------------------+\n|                                           |\n|               Serial Number               |\n|                                           |\n+-------------------------------------------+\n|                                           |\n|              Refresh Interval             |\n|                                           |\n+-------------------------------------------+\n|                                           |\n|               Retry Interval              |\n|                                           |\n+-------------------------------------------+\n|                                           |\n|              Expire Interval              |\n|                                           |\n`-------------------------------------------'",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The Refresh Interval, Retry Interval, and Expire Interval are all 32-bit elapsed times measured in seconds. They express the timing parameters which the cache expects the router to use in deciding when to send subsequent Serial Query or Reset Query PDUs to the cache. See Section 6 for an explanation of the use and the range of allowed values for these parameters.",
+      "zh": "刷新间隔（Refresh Interval）、重试间隔（Retry Interval）和过期间隔（Expire Interval）都是以秒为单位的 32 位经过时间。它们表示高速缓存希望路由器用于决定何时向高速缓存发送后续串行查询或重置查询 PDU 的定时参数。有关这些参数的用途和允许值范围的说明，请参见第 6 节。"
+    },
+    {
+      "indent": 0,
+      "text": "5.9. Cache Reset",
+      "section_title": true,
+      "zh": "5.9. 缓存重置"
+    },
+    {
+      "indent": 3,
+      "text": "The cache may respond to a Serial Query informing the router that the cache cannot provide an incremental update starting from the Serial Number specified by the router. The router must decide whether to issue a Reset Query or switch to a different cache.",
+      "zh": "缓存可能会响应序列查询，通知路由器缓存无法从路由器指定的序列号开始提供增量更新。路由器必须决定是发出重置查询（Reset Query）还是切换到其他缓存。"
+    },
+    {
+      "indent": 3,
+      "text": "0          8          16         24        31\n.-------------------------------------------.\n| Protocol |   PDU    |                     |\n| Version  |   Type   |         zero        |\n|    1     |    8     |                     |\n+-------------------------------------------+\n|                                           |\n|                 Length=8                  |\n|                                           |\n`-------------------------------------------'",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "5.10. Router Key",
+      "section_title": true,
+      "zh": "5.10. 路由器密钥"
+    },
+    {
+      "indent": 3,
+      "text": "0          8          16         24        31\n.-------------------------------------------.\n| Protocol |   PDU    |          |          |\n| Version  |   Type   |   Flags  |   zero   |\n|    1     |    9     |          |          |\n+-------------------------------------------+\n|                                           |\n|                  Length                   |\n|                                           |\n+-------------------------------------------+\n|                                           |\n+---                                     ---+\n|          Subject Key Identifier           |\n+---                                     ---+\n|                                           |\n+---                                     ---+\n|                (20 octets)                |\n+---                                     ---+\n|                                           |\n+-------------------------------------------+\n|                                           |\n|                 AS Number                 |\n|                                           |\n+-------------------------------------------+\n|                                           |\n|          Subject Public Key Info          |\n|                                           |\n`-------------------------------------------'\n   The lowest-order bit of the Flags field is 1 for an announcement and\n0 for a withdrawal.",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The cache server MUST ensure that it has told the router client to have one and only one Router Key PDU for a unique {SKI, ASN, Subject Public Key} at any one point in time. Should the router client receive a Router Key PDU with a {SKI, ASN, Subject Public Key} identical to one it already has active, it SHOULD raise a Duplicate Announcement Received error.",
+      "zh": "缓存服务器必须确保已告知路由器客户端，在任何一个时间点，唯一的 {SKI、ASN、主题公钥}只有一个路由器密钥 PDU。如果路由器客户端收到的{SKI、ASN、主题公钥}的路由器密钥 PDU 与它已激活的路由器密钥 PDU 相同，则应引发 \"收到重复公告 \"错误。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that a particular ASN may appear in multiple Router Key PDUs with different Subject Public Key values, while a particular Subject Public Key value may appear in multiple Router Key PDUs with different ASNs. In the interest of keeping the announcement and withdrawal semantics as simple as possible for the router, this protocol makes no attempt to compress either of these cases.",
+      "zh": "请注意，一个特定的 ASN 可能会出现在具有不同主体公钥值的多个路由器密钥 PDU 中，而一个特定的主体公钥值可能会出现在具有不同 ASN 的多个路由器密钥 PDU 中。为了让路由器尽可能简单地处理公告和撤回语义，本协议不试图压缩这两种情况。"
+    },
+    {
+      "indent": 3,
+      "text": "Also note that it is possible, albeit very unlikely, for multiple distinct Subject Public Key values to hash to the same SKI. For this reason, implementations MUST compare Subject Public Key values as well as SKIs when detecting duplicate PDUs.",
+      "zh": "还要注意的是，多个不同的主体公钥值有可能哈希到相同的 SKI，尽管这种可能性很小。因此，在检测重复 PDU 时，实施必须比较主体公钥值和 SKI。"
+    },
+    {
+      "indent": 0,
+      "text": "5.11. Error Report",
+      "section_title": true,
+      "zh": "5.11. 错误报告"
+    },
+    {
+      "indent": 3,
+      "text": "This PDU is used by either party to report an error to the other.",
+      "zh": "任何一方使用此 PDU 向另一方报告错误。"
+    },
+    {
+      "indent": 3,
+      "text": "Error reports are only sent as responses to other PDUs, not to report errors in Error Report PDUs.",
+      "zh": "错误报告仅作为对其他 PDU 的响应发送，而不是在错误报告 PDU 中报告错误。"
+    },
+    {
+      "indent": 3,
+      "text": "Error codes are described in Section 12.",
+      "zh": "第 12 节介绍了错误代码。"
+    },
+    {
+      "indent": 3,
+      "text": "If the error is generic (e.g., \"Internal Error\") and not associated with the PDU to which it is responding, the Erroneous PDU field MUST be empty and the Length of Encapsulated PDU field MUST be zero.",
+      "zh": "如果错误是一般错误（如 \"内部错误\"），且与响应的 PDU 无关，则错误 PDU 字段必须为空，封装 PDU 字段的长度必须为零。"
+    },
+    {
+      "indent": 3,
+      "text": "An Error Report PDU MUST NOT be sent for an Error Report PDU. If an erroneous Error Report PDU is received, the session SHOULD be dropped.",
+      "zh": "不得为错误报告 PDU 发送错误报告 PDU。如果收到错误的错误报告 PDU，则应放弃会话。"
+    },
+    {
+      "indent": 3,
+      "text": "If the error is associated with a PDU of excessive length, i.e., too long to be any legal PDU other than another Error Report, or a possibly corrupt length, the Erroneous PDU field MAY be truncated.",
+      "zh": "如果错误与长度过长的 PDU 相关联，即除了另一个错误报告外，PDU 长度过长而无法成为任何合法的 PDU，或长度可能已损坏，则错误 PDU 字段可能被截断。"
+    },
+    {
+      "indent": 3,
+      "text": "The diagnostic text is optional; if not present, the Length of Error Text field MUST be zero. If error text is present, it MUST be a string in UTF-8 encoding (see [RFC3629]).",
+      "zh": "诊断文本是可选项；如果不存在，错误文本字段的长度必须为零。如果存在错误文本，它必须是 UTF-8 编码的字符串（见 [RFC3629]）。"
+    },
+    {
+      "indent": 3,
+      "text": "0          8          16         24        31\n.-------------------------------------------.\n| Protocol |   PDU    |                     |\n| Version  |   Type   |     Error Code      |\n|    1     |    10    |                     |\n+-------------------------------------------+\n|                                           |\n|                  Length                   |\n|                                           |\n+-------------------------------------------+\n|                                           |\n|       Length of Encapsulated PDU          |\n|                                           |\n+-------------------------------------------+\n|                                           |\n~               Erroneous PDU               ~\n|                                           |\n+-------------------------------------------+\n|                                           |\n|           Length of Error Text            |\n|                                           |\n+-------------------------------------------+\n|                                           |\n|              Arbitrary Text               |\n|                    of                     |\n~          Error Diagnostic Message         ~\n|                                           |\n`-------------------------------------------'",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "6. Protocol Timing Parameters",
+      "section_title": true,
+      "zh": "6. 协议定时参数"
+    },
+    {
+      "indent": 3,
+      "text": "Since the data the cache distributes via the RPKI-Router protocol are retrieved from the Global RPKI system at intervals which are only known to the cache, only the cache can really know how frequently it makes sense for the router to poll the cache, or how long the data are likely to remain valid (or, at least, unchanged). For this reason, as well as to allow the cache some control over the load placed on it by its client routers, the End Of Data PDU includes three values that allow the cache to communicate timing parameters to the router:",
+      "zh": "由于高速缓存通过 RPKI-Router 协议从全局 RPKI 系统中获取的数据只有高速缓存知道时间间隔，因此只有高速缓存才能真正知道路由器轮询高速缓存的频率，或数据可能保持有效（或至少保持不变）的时间。因此，为了让高速缓存能够控制客户端路由器对其施加的负载，数据结束 PDU 包含三个值，允许高速缓存向路由器传送定时参数："
+    },
+    {
+      "indent": 3,
+      "text": "Refresh Interval: This parameter tells the router how long to wait before next attempting to poll the cache and between subsequent attempts, using a Serial Query or Reset Query PDU. The router SHOULD NOT poll the cache sooner than indicated by this parameter. Note that receipt of a Serial Notify PDU overrides this interval and suggests that the router issue an immediate query without waiting for the Refresh Interval to expire. Countdown for this timer starts upon receipt of the containing End Of Data PDU.",
+      "zh": "刷新间隔：此参数告诉路由器下次尝试轮询高速缓存前要等待多长时间，以及使用串行查询或重置查询 PDU 的后续尝试之间要等待多长时间。路由器轮询高速缓存的时间不应早于该参数的指示时间。请注意，收到串行通知 PDU 会覆盖此时间间隔，并建议路由器立即发出查询，而不必等待刷新时间间隔到期。该计时器的倒计时从收到包含 End Of Data PDU 时开始。"
+    },
+    {
+      "indent": 6,
+      "text": "Minimum allowed value: 1 second.",
+      "zh": "最小允许值：1 秒。"
+    },
+    {
+      "indent": 6,
+      "text": "Maximum allowed value: 86400 seconds (1 day).",
+      "zh": "最大允许值：86400 秒（1 天）。"
+    },
+    {
+      "indent": 6,
+      "text": "Recommended default: 3600 seconds (1 hour).",
+      "zh": "建议默认值：3600 秒（1 小时）。"
+    },
+    {
+      "indent": 3,
+      "text": "Retry Interval: This parameter tells the router how long to wait before retrying a failed Serial Query or Reset Query. The router SHOULD NOT retry sooner than indicated by this parameter. Note that a protocol version mismatch overrides this interval: if the router needs to downgrade to a lower protocol version number, it MAY send the first Serial Query or Reset Query immediately. Countdown for this timer starts upon failure of the query and restarts after each subsequent failure until a query succeeds.",
+      "zh": "重试间隔：该参数告诉路由器重试失败的串行查询或重置查询需要等待多长时间。路由器重试的时间不应早于该参数的指示时间。请注意，协议版本不匹配会覆盖此时间间隔：如果路由器需要降级到较低的协议版本号，它可以立即发送第一个串行查询或重置查询。该计时器的倒计时从查询失败时开始，以后每次失败后都会重新开始，直到查询成功为止。"
+    },
+    {
+      "indent": 6,
+      "text": "Minimum allowed value: 1 second.",
+      "zh": "最小允许值：1 秒。"
+    },
+    {
+      "indent": 6,
+      "text": "Maximum allowed value: 7200 seconds (2 hours).",
+      "zh": "最大允许值：7200 秒（2 小时）。"
+    },
+    {
+      "indent": 6,
+      "text": "Recommended default: 600 seconds (10 minutes).",
+      "zh": "建议默认值：600 秒（10 分钟）。"
+    },
+    {
+      "indent": 3,
+      "text": "Expire Interval: This parameter tells the router how long it can continue to use the current version of the data while unable to perform a successful subsequent query. The router MUST NOT retain the data past the time indicated by this parameter. Countdown for this timer starts upon receipt of the containing End Of Data PDU.",
+      "zh": "过期时间间隔：该参数告诉路由器，在无法成功执行后续查询的情况下，可以继续使用当前版本的数据多长时间。路由器保留数据的时间不得超过此参数所指示的时间。该计时器的倒计时从收到包含 End Of Data PDU 时开始。"
+    },
+    {
+      "indent": 6,
+      "text": "Minimum allowed value: 600 seconds (10 minutes).",
+      "zh": "最小允许值：600 秒（10 分钟）。"
+    },
+    {
+      "indent": 6,
+      "text": "Maximum allowed value: 172800 seconds (2 days).",
+      "zh": "最大允许值：172800 秒（2 天）。"
+    },
+    {
+      "indent": 6,
+      "text": "Recommended default: 7200 seconds (2 hours).",
+      "zh": "建议默认值：7200 秒（2 小时）。"
+    },
+    {
+      "indent": 3,
+      "text": "If the router has never issued a successful query against a particular cache, it SHOULD retry periodically using the default Retry Interval, above.",
+      "zh": "如果路由器从未对特定高速缓存成功发出过查询，则应使用上述默认重试间隔定期重试。"
+    },
+    {
+      "indent": 3,
+      "text": "Caches MUST set Expire Interval to a value larger than either Refresh Interval or Retry Interval.",
+      "zh": "缓存必须将 \"过期间隔 \"设置为大于 \"刷新间隔 \"或 \"重试间隔 \"的值。"
+    },
+    {
+      "indent": 0,
+      "text": "7. Protocol Version Negotiation",
+      "section_title": true,
+      "zh": "7. 协议版本协商"
+    },
+    {
+      "indent": 3,
+      "text": "A router MUST start each transport connection by issuing either a Reset Query or a Serial Query. This query will tell the cache which version of this protocol the router implements.",
+      "zh": "路由器必须通过发出重置查询（Reset Query）或串行查询（Serial Query）来启动每个传输连接。该查询将告诉高速缓存路由器执行的是该协议的哪个版本。"
+    },
+    {
+      "indent": 3,
+      "text": "If a cache which supports version 1 receives a query from a router which specifies version 0, the cache MUST downgrade to protocol version 0 [RFC6810] or send a version 1 Error Report PDU with Error Code 4 (\"Unsupported Protocol Version\") and terminate the connection.",
+      "zh": "如果支持版本 1 的高速缓存收到指定版本 0 的路由器的查询，高速缓存必须降级为协议版本 0 [RFC6810]，或发送带有错误代码 4（\"不支持的协议版本\"）的版本 1 错误报告 PDU 并终止连接。"
+    },
+    {
+      "indent": 3,
+      "text": "If a router which supports version 1 sends a query to a cache which only supports version 0, one of two things will happen:",
+      "zh": "如果支持版本 1 的路由器向只支持版本 0 的高速缓存发送查询，会出现两种情况之一："
+    },
+    {
+      "indent": 3,
+      "text": "1. The cache may terminate the connection, perhaps with a version 0 Error Report PDU. In this case, the router MAY retry the connection using protocol version 0.",
+      "zh": "1. 高速缓存可能会终止连接，也许会发出版本 0 错误报告 PDU。在这种情况下，路由器可以使用协议版本 0 重试连接。"
+    },
+    {
+      "indent": 3,
+      "text": "2. The cache may reply with a version 0 response. In this case, the router MUST either downgrade to version 0 or terminate the connection.",
+      "zh": "2. 缓存可能会回复版本 0。在这种情况下，路由器必须降级到版本 0 或终止连接。"
+    },
+    {
+      "indent": 3,
+      "text": "In any of the downgraded combinations above, the new features of version 1 will not be available, and all PDUs will have 0 in their version fields.",
+      "zh": "在上述任何降级组合中，版本 1 的新功能都将不可用，所有 PDU 的版本字段都将为 0。"
+    },
+    {
+      "indent": 3,
+      "text": "If either party receives a PDU containing an unrecognized Protocol Version (neither 0 nor 1) during this negotiation, it MUST either downgrade to a known version or terminate the connection, with an Error Report PDU unless the received PDU is itself an Error Report PDU.",
+      "zh": "如果任何一方在协商过程中接收到包含未识别协议版本（既非 0 也非 1）的 PDU，则必须降级到已知版本或终止连接，并发出错误报告 PDU，除非接收到的 PDU 本身就是错误报告 PDU。"
+    },
+    {
+      "indent": 3,
+      "text": "The router MUST ignore any Serial Notify PDUs it might receive from the cache during this initial startup period, regardless of the Protocol Version field in the Serial Notify PDU. Since Session ID and Serial Number values are specific to a particular protocol version, the values in the notification are not useful to the router. Even if these values were meaningful, the only effect that processing the notification would have would be to trigger exactly the same Reset Query or Serial Query that the router has already sent as part of the not-yet-complete version negotiation process, so there is nothing to be gained by processing notifications until version negotiation completes.",
+      "zh": "无论串行通知 PDU 中的协议版本字段如何，路由器都必须忽略在初始启动期间可能从高速缓存接收到的任何串行通知 PDU。由于会话 ID 和序列号值是特定协议版本所特有的，因此通知中的值对路由器并无用处。即使这些值有意义，处理通知的唯一效果也是触发路由器在尚未完成的版本协商过程中已经发送的完全相同的重置查询或串行查询，因此在版本协商完成之前处理通知没有任何益处。"
+    },
+    {
+      "indent": 3,
+      "text": "Caches SHOULD NOT send Serial Notify PDUs before version negotiation completes. Routers, however, MUST handle such notifications (by ignoring them) for backwards compatibility with caches serving protocol version 0.",
+      "zh": "缓存不应在版本协商完成前发送串行通知 PDU。但是，路由器必须处理此类通知（忽略它们），以便与提供协议版本 0 的缓存向后兼容。"
+    },
+    {
+      "indent": 3,
+      "text": "Once the cache and router have agreed upon a Protocol Version via the negotiation process above, that version is stable for the life of the session. See Section 5.1 for a discussion of the interaction between Protocol Version and Session ID.",
+      "zh": "一旦高速缓存和路由器通过上述协商过程商定了协议版本，该版本在会话期间将保持稳定。有关协议版本和会话 ID 之间交互的讨论，请参见第 5.1 节。"
+    },
+    {
+      "indent": 3,
+      "text": "If either party receives a PDU for a different Protocol Version once the above negotiation completes, that party MUST drop the session; unless the PDU containing the unexpected Protocol Version was itself an Error Report PDU, the party dropping the session SHOULD send an Error Report with an error code of 8 (\"Unexpected Protocol Version\").",
+      "zh": "除非包含意外协议版本的 PDU 本身是错误报告 PDU，否则放弃会话的一方应发送错误代码为 8（\"意外协议版本\"）的错误报告。"
+    },
+    {
+      "indent": 0,
+      "text": "8. Protocol Sequences",
+      "section_title": true,
+      "zh": "8. 协议序列"
+    },
+    {
+      "indent": 3,
+      "text": "The sequences of PDU transmissions fall into four conversations as follows:",
+      "zh": "PDU 传输序列分为以下四个会话："
+    },
+    {
+      "indent": 0,
+      "text": "8.1. Start or Restart",
+      "section_title": true,
+      "zh": "8.1. 启动或重启"
+    },
+    {
+      "indent": 3,
+      "text": "Cache                         Router\n  ~                             ~\n  | <----- Reset Query -------- | R requests data (or Serial Query)\n  |                             |\n  | ----- Cache Response -----> | C confirms request\n  | ------- Payload PDU ------> | C sends zero or more\n  | ------- Payload PDU ------> |   IPv4 Prefix, IPv6 Prefix,\n  | ------- Payload PDU ------> |   or Router Key PDUs\n  | ------- End of Data ------> | C sends End of Data\n  |                             |   and sends new serial\n  ~                             ~",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "When a transport connection is first established, the router MUST send either a Reset Query or a Serial Query. A Serial Query would be appropriate if the router has significant unexpired data from a broken session with the same cache and remembers the Session ID of that session, in which case a Serial Query containing the Session ID from the previous session will allow the router to bring itself up to date while ensuring that the Serial Numbers are commensurate and that the router and cache are speaking compatible versions of the protocol. In all other cases, the router lacks the necessary data for fast resynchronization and therefore MUST fall back to a Reset Query.",
+      "zh": "首次建立传输连接时，路由器必须发送重置查询（Reset Query）或串行查询（Serial Query）。如果路由器与同一高速缓存之间的会话中断时有大量未过期数据，并记住了该会话的会话 ID，那么发送串行查询将是合适的，在这种情况下，包含前一个会话的会话 ID 的串行查询将允许路由器更新自己，同时确保序列号一致，并确保路由器和高速缓存使用的是兼容的协议版本。在所有其他情况下，路由器缺乏快速重新同步所需的数据，因此必须退回到重置查询。"
+    },
+    {
+      "indent": 3,
+      "text": "The Reset Query sequence is also used when the router receives a Cache Reset, chooses a new cache, or fears that it has otherwise lost its way.",
+      "zh": "当路由器收到缓存重置、选择新缓存或担心自己迷失方向时，也会使用重置查询序列。"
+    },
+    {
+      "indent": 3,
+      "text": "See Section 7 for details on version negotiation.",
+      "zh": "有关版本协商的详细信息，请参见第 7 节。"
+    },
+    {
+      "indent": 3,
+      "text": "To limit the length of time a cache must keep the data necessary to generate incremental updates, a router MUST send either a Serial Query or a Reset Query periodically. This also acts as a keep-alive at the application layer. See Section 6 for details on the required polling frequency.",
+      "zh": "为了限制高速缓存必须保存生成增量更新所需的数据的时间，路由器必须定期发送串行查询或重置查询。这也是应用层的保持更新功能。有关所需轮询频率的详细信息，请参阅第 6 节。"
+    },
+    {
+      "indent": 0,
+      "text": "8.2. Typical Exchange",
+      "section_title": true,
+      "zh": "8.2. 典型交换"
+    },
+    {
+      "indent": 3,
+      "text": "Cache                         Router\n  ~                             ~\n  | -------- Notify ----------> |  (optional)\n  |                             |\n  | <----- Serial Query ------- | R requests data\n  |                             |\n  | ----- Cache Response -----> | C confirms request\n  | ------- Payload PDU ------> | C sends zero or more\n  | ------- Payload PDU ------> |   IPv4 Prefix, IPv6 Prefix,\n  | ------- Payload PDU ------> |   or Router Key PDUs\n  | ------- End of Data ------> | C sends End of Data\n  |                             |   and sends new serial\n  ~                             ~",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The cache server SHOULD send a Notify PDU with its current Serial Number when the cache's serial changes, with the expectation that the router MAY then issue a Serial Query earlier than it otherwise might. This is analogous to DNS NOTIFY in [RFC1996]. The cache MUST rate-limit Serial Notifies to no more frequently than one per minute.",
+      "zh": "当高速缓存的序列号发生变化时，高速缓存服务器应发送一个包含其当前序列号的通知 PDU，路由器可能会因此而提前发出序列查询。这类似于 [RFC1996] 中的 DNS NOTIFY。缓存必须限制串行通知的频率，不得超过每分钟一次。"
+    },
+    {
+      "indent": 3,
+      "text": "When the transport layer is up and either a timer has gone off in the router or the cache has sent a Notify PDU, the router queries for new data by sending a Serial Query, and the cache sends all data newer than the serial in the Serial Query.",
+      "zh": "当传输层启动，且路由器中的定时器已关闭或高速缓存已发送通知 PDU 时，路由器会通过发送串行查询来查询新数据，而高速缓存则会发送所有比串行查询中的串行数据更新的数据。"
+    },
+    {
+      "indent": 3,
+      "text": "To limit the length of time a cache must keep old withdraws, a router MUST send either a Serial Query or a Reset Query periodically. See Section 6 for details on the required polling frequency.",
+      "zh": "为了限制高速缓存必须保留旧撤回信息的时间，路由器必须定期发送串行查询或重置查询。有关所需轮询频率的详细信息，请参见第 6 节。"
+    },
+    {
+      "indent": 0,
+      "text": "8.3. No Incremental Update Available",
+      "section_title": true,
+      "zh": "8.3. 无增量更新"
+    },
+    {
+      "indent": 3,
+      "text": "Cache                         Router\n  ~                             ~\n  | <------ Serial Query ------ | R requests data\n  | ------- Cache Reset ------> | C cannot supply update\n  |                             |   from specified serial\n  | <------ Reset Query ------- | R requests new data\n  | ----- Cache Response -----> | C confirms request\n  | ------- Payload PDU ------> | C sends zero or more\n  | ------- Payload PDU ------> |   IPv4 Prefix, IPv6 Prefix,\n  | ------- Payload PDU ------> |   or Router Key PDUs\n  | ------- End of Data ------> | C sends End of Data\n  |                             |   and sends new serial\n  ~                             ~",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The cache may respond to a Serial Query with a Cache Reset, informing the router that the cache cannot supply an incremental update from the Serial Number specified by the router. This might be because the cache has lost state, or because the router has waited too long between polls and the cache has cleaned up old data that it no longer believes it needs, or because the cache has run out of storage space and had to expire some old data early. Regardless of how this state arose, the cache replies with a Cache Reset to tell the router that it cannot honor the request. When a router receives this, the router SHOULD attempt to connect to any more-preferred caches in its cache list. If there are no more-preferred caches, it MUST issue a Reset Query and get an entire new load from the cache.",
+      "zh": "缓存可能会以 \"缓存重置\"（Cache Reset）来响应序列查询，通知路由器缓存无法从路由器指定的序列号开始提供增量更新。这可能是因为高速缓存丢失了状态，或者是因为路由器在两次轮询之间等待的时间太长，高速缓存清理了它认为不再需要的旧数据，或者是因为高速缓存用完了存储空间，不得不让一些旧数据提前过期。无论这种状态是如何产生的，高速缓存都会回复一个 \"高速缓存重置\"（Cache Reset），告诉路由器它无法满足请求。当路由器收到该请求时，路由器应尝试连接其缓存列表中的更多首选缓存。如果没有更多首选高速缓存，路由器必须发出重置查询，并从高速缓存中获取新的负载。"
+    },
+    {
+      "indent": 0,
+      "text": "8.4. Cache Has No Data Available",
+      "section_title": true,
+      "zh": "8.4. 缓存中没有可用数据"
+    },
+    {
+      "indent": 3,
+      "text": "Cache                         Router\n  ~                             ~\n  | <------ Serial Query ------ | R requests data\n  | ---- Error Report PDU ----> | C No Data Available\n  ~                             ~",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Cache                         Router\n  ~                             ~\n  | <------ Reset Query ------- | R requests data\n  | ---- Error Report PDU ----> | C No Data Available\n  ~                             ~",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The cache may respond to either a Serial Query or a Reset Query informing the router that the cache cannot supply any update at all. The most likely cause is that the cache has lost state, perhaps due to a restart, and has not yet recovered. While it is possible that a cache might go into such a state without dropping any of its active sessions, a router is more likely to see this behavior when it initially connects and issues a Reset Query while the cache is still rebuilding its database.",
+      "zh": "高速缓存可能会响应串行查询或重置查询，告知路由器高速缓存根本无法提供任何更新。最可能的原因是高速缓存丢失了状态，可能是由于重新启动，而且尚未恢复。虽然高速缓存有可能在不丢弃任何活动会话的情况下进入这种状态，但路由器更有可能在高速缓存仍在重建数据库时，通过初始连接和发出重置查询看到这种行为。"
+    },
+    {
+      "indent": 3,
+      "text": "When a router receives this kind of error, the router SHOULD attempt to connect to any other caches in its cache list, in preference order. If no other caches are available, the router MUST issue periodic Reset Queries until it gets a new usable load from the cache.",
+      "zh": "当路由器收到此类错误时，路由器应按优先顺序尝试连接其缓存列表中的任何其他缓存。如果没有其他缓存可用，路由器必须定期发出重置查询，直到从缓存中获得新的可用负载。"
+    },
+    {
+      "indent": 0,
+      "text": "9. Transport",
+      "section_title": true,
+      "zh": "9. 运输"
+    },
+    {
+      "indent": 3,
+      "text": "The transport-layer session between a router and a cache carries the binary PDUs in a persistent session.",
+      "zh": "路由器和高速缓存之间的传输层会话以持久会话的方式传输二进制 PDU。"
+    },
+    {
+      "indent": 3,
+      "text": "To prevent cache spoofing and DoS attacks by illegitimate routers, it is highly desirable that the router and the cache be authenticated to each other. Integrity protection for payloads is also desirable to protect against monkey-in-the-middle (MITM) attacks. Unfortunately, there is no protocol to do so on all currently used platforms. Therefore, as of the writing of this document, there is no mandatory-to-implement transport which provides authentication and integrity protection.",
+      "zh": "为防止非法路由器的高速缓存欺骗和 DoS 攻击，路由器和高速缓存最好能相互验证。为防止中间人（MITM）攻击，还需要对有效载荷进行完整性保护。遗憾的是，目前使用的所有平台都没有这样的协议。因此，在撰写本文档时，还没有一种强制实施的传输方式可以提供身份验证和完整性保护。"
+    },
+    {
+      "indent": 3,
+      "text": "To reduce exposure to dropped but non-terminated sessions, both caches and routers SHOULD enable keep-alives when available in the chosen transport protocol.",
+      "zh": "为减少丢失但未终止会话的风险，缓存和路由器都应在所选传输协议可用时启用保持续传功能。"
+    },
+    {
+      "indent": 3,
+      "text": "It is expected that, when the TCP Authentication Option (TCP-AO) [RFC5925] is available on all platforms deployed by operators, it will become the mandatory-to-implement transport.",
+      "zh": "当运营商部署的所有平台都能使用 TCP 验证选项（TCP-AO）[RFC5925]时，预计它将成为强制实施的传输方式。"
+    },
+    {
+      "indent": 3,
+      "text": "Caches and routers MUST implement unprotected transport over TCP using a port, rpki-rtr (323); see Section 14. Operators SHOULD use procedural means, e.g., access control lists (ACLs), to reduce the exposure to authentication issues.",
+      "zh": "缓存和路由器必须使用端口 rpkii-rtr (323) 通过 TCP 实现无保护传输；请参见第 14 节。操作员应使用程序手段（如访问控制列表 (ACL)）来减少身份验证问题的风险。"
+    },
+    {
+      "indent": 3,
+      "text": "If unprotected TCP is the transport, the cache and routers MUST be on the same trusted and controlled network.",
+      "zh": "如果使用未受保护的 TCP 传输，高速缓存和路由器必须位于同一个受信任和受控制的网络上。"
+    },
+    {
+      "indent": 3,
+      "text": "If available to the operator, caches and routers MUST use one of the following more protected protocols:",
+      "zh": "如果操作员可以使用，高速缓存和路由器必须使用以下一种更受保护的协议："
+    },
+    {
+      "indent": 3,
+      "text": "o Caches and routers SHOULD use TCP-AO transport [RFC5925] over the rpki-rtr port.",
+      "zh": "o 缓存和路由器应通过 rpkii-rtr 端口使用 TCP-AO 传输 [RFC5925]。"
+    },
+    {
+      "indent": 3,
+      "text": "o Caches and routers MAY use Secure Shell version 2 (SSHv2) transport [RFC4252] using the normal SSH port. For an example, see Section 9.1.",
+      "zh": "o 缓存和路由器可以使用正常 SSH 端口，使用安全外壳版本 2 (SSHv2) 传输 [RFC4252]。有关示例，请参见第 9.1 节。"
+    },
+    {
+      "indent": 3,
+      "text": "o Caches and routers MAY use TCP MD5 transport [RFC2385] using the rpki-rtr port. Note that TCP MD5 has been obsoleted by TCP-AO [RFC5925].",
+      "zh": "o 缓存和路由器可以使用 rpkii-rtr 端口进行 TCP MD5 传输 [RFC2385]。请注意，TCP MD5 已被 TCP-AO [RFC5925] 所取代。"
+    },
+    {
+      "indent": 3,
+      "text": "o Caches and routers MAY use TCP over IPsec transport [RFC4301] using the rpki-rtr port.",
+      "zh": "o 缓存和路由器可以使用 rpkii-rtr 端口，通过 IPsec 传输 [RFC4301] 使用 TCP。"
+    },
+    {
+      "indent": 3,
+      "text": "o Caches and routers MAY use Transport Layer Security (TLS) transport [RFC5246] using port rpki-rtr-tls (324); see Section 14.",
+      "zh": "o 缓存和路由器可以使用端口 rpkii-rtr-tls (324) 进行传输层安全 (TLS) 传输 [RFC5246]；请参阅第 14 节。"
+    },
+    {
+      "indent": 0,
+      "text": "9.1. SSH Transport",
+      "section_title": true,
+      "zh": "9.1. SSH 传输"
+    },
+    {
+      "indent": 3,
+      "text": "To run over SSH, the client router first establishes an SSH transport connection using the SSHv2 transport protocol, and the client and server exchange keys for message integrity and encryption. The client then invokes the \"ssh-userauth\" service to authenticate the application, as described in the SSH authentication protocol [RFC4252]. Once the application has been successfully authenticated, the client invokes the \"ssh-connection\" service, also known as the SSH connection protocol.",
+      "zh": "要通过 SSH 运行，客户端路由器首先要使用 SSHv2 传输协议建立 SSH 传输连接，然后客户端和服务器交换密钥，以确保信息的完整性和加密。然后，客户端调用 \"ssh-userauth \"服务对应用程序进行身份验证，如 SSH 身份验证协议 [RFC4252] 所述。一旦应用程序认证成功，客户端就会调用 \"ssh-connection \"服务（也称为 SSH 连接协议）。"
+    },
+    {
+      "indent": 3,
+      "text": "After the ssh-connection service is established, the client opens a channel of type \"session\", which results in an SSH session.",
+      "zh": "ssh 连接服务建立后，客户端会打开一个 \"会话 \"类型的通道，从而形成 SSH 会话。"
+    },
+    {
+      "indent": 3,
+      "text": "Once the SSH session has been established, the application invokes the application transport as an SSH subsystem called \"rpki-rtr\". Subsystem support is a feature of SSHv2 and is not included in SSHv1. Running this protocol as an SSH subsystem avoids the need for the application to recognize shell prompts or skip over extraneous information, such as a system message that is sent at shell startup.",
+      "zh": "SSH 会话建立后，应用程序将作为 SSH 子系统 \"rpki-rtr \"调用应用程序传输。子系统支持是 SSHv2 的一项功能，不包括在 SSHv1 中。 将此协议作为 SSH 子系统运行可避免应用程序识别 shell 提示或跳过无关信息（如 shell 启动时发送的系统信息）。"
+    },
+    {
+      "indent": 3,
+      "text": "It is assumed that the router and cache have exchanged keys out of band by some reasonably secured means.",
+      "zh": "假设路由器和高速缓存已通过某种合理安全的方式在带外交换了密钥。"
+    },
+    {
+      "indent": 3,
+      "text": "Cache servers supporting SSH transport MUST accept RSA authentication and SHOULD accept Elliptic Curve Digital Signature Algorithm (ECDSA) authentication. User authentication MUST be supported; host authentication MAY be supported. Implementations MAY support password authentication. Client routers SHOULD verify the public key of the cache to avoid MITM attacks.",
+      "zh": "支持 SSH 传输的缓存服务器必须接受 RSA 身份验证，并应接受椭圆曲线数字签名算法 (ECDSA) 身份验证。必须支持用户身份验证；可以支持主机身份验证。实施可能支持密码验证。客户端路由器应验证高速缓存的公钥，以避免 MITM 攻击。"
+    },
+    {
+      "indent": 0,
+      "text": "9.2. TLS Transport",
+      "section_title": true,
+      "zh": "9.2. TLS 传输"
+    },
+    {
+      "indent": 3,
+      "text": "Client routers using TLS transport MUST present client-side certificates to authenticate themselves to the cache in order to allow the cache to manage the load by rejecting connections from unauthorized routers. In principle, any type of certificate and Certification Authority (CA) may be used; however, in general, cache operators will wish to create their own small-scale CA and issue certificates to each authorized router. This simplifies credential rollover; any unrevoked, unexpired certificate from the proper CA may be used.",
+      "zh": "使用 TLS 传输的客户端路由器必须出示客户端证书，以便向高速缓存进行身份验证，从而使高速缓存能够通过拒绝来自未经授权路由器的连接来管理负载。原则上，可以使用任何类型的证书和认证机构（CA）；但一般情况下，高速缓存运营商希望创建自己的小型 CA，并向每个授权路由器发放证书。这样可以简化证书的延期；可以使用适当 CA 颁发的任何未撤销、未过期的证书。"
+    },
+    {
+      "indent": 3,
+      "text": "Certificates used to authenticate client routers in this protocol MUST include a subjectAltName extension [RFC5280] containing one or more iPAddress identities; when authenticating the router's certificate, the cache MUST check the IP address of the TLS connection against these iPAddress identities and SHOULD reject the connection if none of the iPAddress identities match the connection.",
+      "zh": "本协议中用于验证客户端路由器的证书必须包括一个包含一个或多个 iPAddress 标识的 subjectAltName 扩展名 [RFC5280]；验证路由器证书时，缓存必须根据这些 iPAddress 标识检查 TLS 连接的 IP 地址，如果没有一个 iPAddress 标识与连接匹配，则应拒绝该连接。"
+    },
+    {
+      "indent": 3,
+      "text": "Routers MUST also verify the cache's TLS server certificate, using subjectAltName dNSName identities as described in [RFC6125], to avoid MITM attacks. The rules and guidelines defined in [RFC6125] apply here, with the following considerations:",
+      "zh": "路由器还必须使用 [RFC6125] 中描述的 subjectAltName dNSName 身份验证缓存的 TLS 服务器证书，以避免 MITM 攻击。此处适用 [RFC6125] 中定义的规则和指南，但需注意以下几点："
+    },
+    {
+      "indent": 3,
+      "text": "o Support for the DNS-ID identifier type (that is, the dNSName identity in the subjectAltName extension) is REQUIRED in rpki-rtr server and client implementations which use TLS. Certification authorities which issue rpki-rtr server certificates MUST support the DNS-ID identifier type, and the DNS-ID identifier type MUST be present in rpki-rtr server certificates.",
+      "zh": "o 使用 TLS 的 rpkii-rtr 服务器和客户端实现必须支持 DNS-ID 标识类型（即 subjectAltName 扩展中的 dNSName 标识）。签发 rpkii-rtr 服务器证书的认证机构必须支持 DNS-ID 标识符类型，而且 rpkii-rtr 服务器证书中必须包含 DNS-ID 标识符类型。"
+    },
+    {
+      "indent": 3,
+      "text": "o DNS names in rpki-rtr server certificates SHOULD NOT contain the wildcard character \"*\".",
+      "zh": "o rpkii-rtr 服务器证书中的 DNS 名称不应包含通配符 \"*\"。"
+    },
+    {
+      "indent": 3,
+      "text": "o rpki-rtr implementations which use TLS MUST NOT use Common Name (CN-ID) identifiers; a CN field may be present in the server certificate's subject name but MUST NOT be used for authentication within the rules described in [RFC6125].",
+      "zh": "o 使用 TLS 的 rpkii-rtr 实现不得使用通用名称 (CN-ID) 标识符；服务器证书的主题名称中可以有 CN 字段，但不得用于 [RFC6125] 所述规则范围内的身份验证。"
+    },
+    {
+      "indent": 3,
+      "text": "o The client router MUST set its \"reference identifier\" to the DNS name of the rpki-rtr cache.",
+      "zh": "o 客户路由器必须将其 \"引用标识符 \"设置为 rpkii-rtr 缓存的 DNS 名称。"
+    },
+    {
+      "indent": 0,
+      "text": "9.3. TCP MD5 Transport",
+      "section_title": true,
+      "zh": "9.3. TCP MD5 传输"
+    },
+    {
+      "indent": 3,
+      "text": "If TCP MD5 is used, implementations MUST support key lengths of at least 80 printable ASCII bytes, per Section 4.5 of [RFC2385]. Implementations MUST also support hexadecimal sequences of at least 32 characters, i.e., 128 bits.",
+      "zh": "如果使用 TCP MD5，根据 [RFC2385] 第 4.5 节，实施必须支持至少 80 个可打印 ASCII 字节的密钥长度。实施还必须支持至少 32 个字符的十六进制序列，即 128 位。"
+    },
+    {
+      "indent": 3,
+      "text": "Key rollover with TCP MD5 is problematic. Cache servers SHOULD support [RFC4808].",
+      "zh": "TCP MD5 的密钥翻转存在问题。缓存服务器应支持 [RFC4808]。"
+    },
+    {
+      "indent": 0,
+      "text": "9.4. TCP-AO Transport",
+      "section_title": true,
+      "zh": "9.4. TCP-AO 传输"
+    },
+    {
+      "indent": 3,
+      "text": "Implementations MUST support key lengths of at least 80 printable ASCII bytes. Implementations MUST also support hexadecimal sequences of at least 32 characters, i.e., 128 bits. Message Authentication Code (MAC) lengths of at least 96 bits MUST be supported, per Section 5.1 of [RFC5925].",
+      "zh": "实施必须支持至少 80 个可打印 ASCII 字节的密钥长度。实施还必须支持至少 32 个字符的十六进制序列，即 128 位。根据 [RFC5925] 第 5.1 节，必须支持至少 96 位的信息验证码 (MAC)。"
+    },
+    {
+      "indent": 3,
+      "text": "The cryptographic algorithms and associated parameters described in [RFC5926] MUST be supported.",
+      "zh": "必须支持 [RFC5926] 中描述的加密算法和相关参数。"
+    },
+    {
+      "indent": 0,
+      "text": "10. Router-Cache Setup",
+      "section_title": true,
+      "zh": "10. 路由器缓存设置"
+    },
+    {
+      "indent": 3,
+      "text": "A cache has the public authentication data for each router it is configured to support.",
+      "zh": "高速缓存为其配置支持的每个路由器都提供了公共身份验证数据。"
+    },
+    {
+      "indent": 3,
+      "text": "A router may be configured to peer with a selection of caches, and a cache may be configured to support a selection of routers. Each must have the name of, and authentication data for, each peer. In addition, in a router, this list has a non-unique preference value for each server. This preference merely denotes proximity, not trust, preferred belief, et cetera. The client router attempts to establish a session with each potential serving cache in preference order and then starts to load data from the most preferred cache to which it can connect and authenticate. The router's list of caches has the following elements:",
+      "zh": "路由器可配置为与选定的高速缓存对等，高速缓存可配置为支持选定的路由器。每个路由器都必须有每个对等程序的名称和验证数据。此外，在路由器中，该列表对每个服务器都有一个非唯一的偏好值。这种偏好仅表示接近程度，而不是信任度、首选信念等。客户端路由器会尝试按优先级顺序与每个潜在的服务缓存建立会话，然后开始从它可以连接和验证的最优先缓存加载数据。路由器的高速缓存列表包含以下要素："
+    },
+    {
+      "indent": 3,
+      "text": "Preference: An unsigned integer denoting the router's preference to connect to that cache; the lower the value, the more preferred.",
+      "zh": "首选项：一个无符号整数，表示路由器连接该高速缓存的优先级；值越小，优先级越高。"
+    },
+    {
+      "indent": 3,
+      "text": "Name: The IP address or fully qualified domain name of the cache.",
+      "zh": "名称：缓存的 IP 地址或完全合格域名。"
+    },
+    {
+      "indent": 3,
+      "text": "Cache Credential(s): Any credential (such as a public key) needed to authenticate the cache's identity to the router.",
+      "zh": "高速缓存凭证：向路由器验证高速缓存身份所需的任何凭证（如公钥）。"
+    },
+    {
+      "indent": 3,
+      "text": "Router Credential(s): Any credential (such as a private key or certificate) needed to authenticate the router's identity to the cache.",
+      "zh": "路由器凭证：向缓存验证路由器身份所需的任何凭证（如私钥或证书）。"
+    },
+    {
+      "indent": 3,
+      "text": "Due to the distributed nature of the RPKI, caches simply cannot be rigorously synchronous. A client may hold data from multiple caches but MUST keep the data marked as to source, as later updates MUST affect the correct data.",
+      "zh": "由于 RPKI 的分布式特性，缓存不可能严格同步。客户端可以持有多个缓存中的数据，但必须保留标明来源的数据，因为以后的更新必须影响正确的数据。"
+    },
+    {
+      "indent": 3,
+      "text": "Just as there may be more than one covering ROA from a single cache, there may be multiple covering ROAs from multiple caches. The results are as described in [RFC6811].",
+      "zh": "就像来自单个高速缓存的覆盖 ROA 可能不止一个一样，来自多个高速缓存的覆盖 ROA 也可能有多个。结果如 [RFC6811] 所述。"
+    },
+    {
+      "indent": 3,
+      "text": "If data from multiple caches are held, implementations MUST NOT distinguish between data sources when performing validation of BGP announcements.",
+      "zh": "如果持有来自多个缓存的数据，则在对 BGP 公告进行验证时，实现不得区分数据源。"
+    },
+    {
+      "indent": 3,
+      "text": "When a more-preferred cache becomes available, if resources allow, it would be prudent for the client to start fetching from that cache.",
+      "zh": "如果资源允许，当更优先的缓存可用时，客户端最好开始从该缓存获取数据。"
+    },
+    {
+      "indent": 3,
+      "text": "The client SHOULD attempt to maintain at least one set of data, regardless of whether it has chosen a different cache or established a new connection to the previous cache.",
+      "zh": "客户端应尝试维护至少一组数据，无论它是选择了不同的高速缓存，还是与先前的高速缓存建立了新的连接。"
+    },
+    {
+      "indent": 3,
+      "text": "A client MAY drop the data from a particular cache when it is fully in sync with one or more other caches.",
+      "zh": "当某个高速缓存与一个或多个其他高速缓存完全同步时，客户端可以放弃该高速缓存中的数据。"
+    },
+    {
+      "indent": 3,
+      "text": "See Section 6 for details on what to do when the client is not able to refresh from a particular cache.",
+      "zh": "有关客户端无法从特定缓存刷新时如何处理的详情，请参阅第 6 节。"
+    },
+    {
+      "indent": 3,
+      "text": "If a client loses connectivity to a cache it is using or otherwise decides to switch to a new cache, it SHOULD retain the data from the previous cache until it has a full set of data from one or more other caches. Note that this may already be true at the point of connection loss if the client has connections to more than one cache.",
+      "zh": "如果客户端与正在使用的高速缓存失去连接，或决定切换到新的高速缓存，则应保留前一个高速缓存中的数据，直到从一个或多个其他高速缓存中获得全套数据。需要注意的是，如果客户端与不止一个高速缓存有连接，那么在连接中断时可能就已经是这样了。"
+    },
+    {
+      "indent": 0,
+      "text": "11. Deployment Scenarios",
+      "section_title": true,
+      "zh": "11. 部署方案"
+    },
+    {
+      "indent": 3,
+      "text": "For illustration, we present three likely deployment scenarios:",
+      "zh": "为便于说明，我们提出了三种可能的部署方案："
+    },
+    {
+      "indent": 3,
+      "text": "Small End Site: The small multihomed end site may wish to outsource the RPKI cache to one or more of their upstream ISPs. They would exchange authentication material with the ISP using some out-of-band mechanism, and their router(s) would connect to the cache(s) of one or more upstream ISPs. The ISPs would likely deploy caches intended for customer use separately from the caches with which their own BGP speakers peer.",
+      "zh": "小型终端站点：小型多重组网终端站点可能希望将 RPKI 缓存外包给一个或多个上游 ISP。它们将使用某种带外机制与 ISP 交换验证材料，其路由器将连接到一个或多个上游 ISP 的高速缓存。ISP 可能会将客户使用的高速缓存与自己的 BGP 扬声器对等的高速缓存分开部署。"
+    },
+    {
+      "indent": 3,
+      "text": "Large End Site: A larger multihomed end site might run one or more caches, arranging them in a hierarchy of client caches, each fetching from a serving cache which is closer to the Global RPKI. They might configure fallback peerings to upstream ISP caches.",
+      "zh": "大型终端站点：较大的多重归属终端站点可能会运行一个或多个高速缓存，将它们排列成客户高速缓存的层次结构，每个高速缓存都从离全球 RPKI 较近的服务高速缓存获取数据。它们可能会配置与上游 ISP 缓存的后备对等。"
+    },
+    {
+      "indent": 3,
+      "text": "ISP Backbone: A large ISP would likely have one or more redundant caches in each major point of presence (PoP), and these caches would fetch from each other in an ISP-dependent topology so as not to place undue load on the Global RPKI.",
+      "zh": "ISP 主干网：大型 ISP 可能会在每个主要存在点 (PoP) 中设置一个或多个冗余高速缓存，这些高速缓存将以依赖 ISP 的拓扑结构相互获取，以避免给全球 RPKI 带来不必要的负载。"
+    },
+    {
+      "indent": 3,
+      "text": "Experience with large DNS cache deployments has shown that complex topologies are ill-advised, as it is easy to make errors in the graph, e.g., not maintain a loop-free condition.",
+      "zh": "大型 DNS 缓存部署的经验表明，复杂的拓扑结构并不可取，因为很容易在图中出现错误，例如无法保持无循环状态。"
+    },
+    {
+      "indent": 3,
+      "text": "Of course, these are illustrations, and there are other possible deployment strategies. It is expected that minimizing load on the Global RPKI servers will be a major consideration.",
+      "zh": "当然，这些只是示例，还有其他可能的部署策略。预计最大限度地减少全球 RPKI 服务器的负载将是一个主要考虑因素。"
+    },
+    {
+      "indent": 3,
+      "text": "To keep load on Global RPKI services from unnecessary peaks, it is recommended that primary caches which load from the distributed Global RPKI not do so all at the same times, e.g., on the hour. Choose a random time, perhaps the ISP's AS number modulo 60, and jitter the inter-fetch timing.",
+      "zh": "为避免全局 RPKI 服务的负载出现不必要的峰值，建议从分布式全局 RPKI 加载的主缓存不要在同一时间（如每小时）加载。选择一个随机的时间，也许是 ISP 的 AS 编号取模 60，然后对取数间隔时间进行抖动。"
+    },
+    {
+      "indent": 0,
+      "text": "12. Error Codes",
+      "section_title": true,
+      "zh": "12. 错误代码"
+    },
+    {
+      "indent": 3,
+      "text": "This section contains a preliminary list of error codes. The authors expect additions to the list during development of the initial implementations. There is an IANA registry where valid error codes are listed; see Section 14. Errors which are considered fatal MUST cause the session to be dropped.",
+      "zh": "本节包含错误代码的初步列表。作者希望在初步实施的开发过程中对该列表进行补充。IANA 注册表中列出了有效的错误代码，请参见第 14 节。被认为是致命的错误必须导致会话中断。"
+    },
+    {
+      "indent": 3,
+      "text": "0: Corrupt Data (fatal): The receiver believes the received PDU to be corrupt in a manner not specified by another error code.",
+      "zh": "0：数据损坏（致命）：接收方认为接收到的 PDU 损坏，损坏方式不属于其他错误代码。"
+    },
+    {
+      "indent": 3,
+      "text": "1: Internal Error (fatal): The party reporting the error experienced some kind of internal error unrelated to protocol operation (ran out of memory, a coding assertion failed, et cetera).",
+      "zh": "1：内部错误（致命）：报错方发生了与协议操作无关的内部错误（内存耗尽、编码断言失败等）。"
+    },
+    {
+      "indent": 3,
+      "text": "2: No Data Available: The cache believes itself to be in good working order but is unable to answer either a Serial Query or a Reset Query because it has no useful data available at this time. This is likely to be a temporary error and most likely indicates that the cache has not yet completed pulling down an initial current data set from the Global RPKI system after some kind of event that invalidated whatever data it might have previously held (reboot, network partition, et cetera).",
+      "zh": "2：无可用数据：高速缓存认为自己工作状态良好，但无法回答串行查询或重置查询，因为此时它没有可用的有用数据。这很可能是一个暂时性错误，最有可能的情况是高速缓存尚未完成从全局 RPKI 系统中提取当前初始数据集的工作，因为发生了某种事件（重启、网络分区等），导致高速缓存之前所保存的数据失效。"
+    },
+    {
+      "indent": 3,
+      "text": "3: Invalid Request (fatal): The cache server believes the client's request to be invalid.",
+      "zh": "3: 无效请求（致命）：缓存服务器认为客户端的请求无效。"
+    },
+    {
+      "indent": 3,
+      "text": "4: Unsupported Protocol Version (fatal): The Protocol Version is not known by the receiver of the PDU.",
+      "zh": "4: 协议版本不支持（致命）：PDU 接收方不知道协议版本。"
+    },
+    {
+      "indent": 3,
+      "text": "5: Unsupported PDU Type (fatal): The PDU Type is not known by the receiver of the PDU.",
+      "zh": "5：不支持的 PDU 类型（致命）：PDU 接收方不知道 PDU 类型。"
+    },
+    {
+      "indent": 3,
+      "text": "6: Withdrawal of Unknown Record (fatal): The received PDU has Flag=0, but a matching record ({Prefix, Len, Max-Len, ASN} tuple for an IPvX PDU or {SKI, ASN, Subject Public Key} tuple for a Router Key PDU) does not exist in the receiver's database.",
+      "zh": "6: 撤回未知记录（致命）：接收到的 PDU 有 Flag=0，但在接收方的数据库中不存在匹配记录（IPvX PDU 的 {Prefix, Len, Max-Len, ASN} 元组或路由器密钥 PDU 的 {SKI, ASN, Subject Public Key} 元组）。"
+    },
+    {
+      "indent": 3,
+      "text": "7: Duplicate Announcement Received (fatal): The received PDU has Flag=1, but a matching record ({Prefix, Len, Max-Len, ASN} tuple for an IPvX PDU or {SKI, ASN, Subject Public Key} tuple for a Router Key PDU) is already active in the router.",
+      "zh": "7：收到重复公告（致命）：接收的 PDU 有 Flag=1，但路由器中已有匹配记录（IPvX PDU 的 {前缀、长度、最大长度、ASN} 元组或路由器密钥 PDU 的 {SKI、ASN、主题公钥} 元组）。"
+    },
+    {
+      "indent": 3,
+      "text": "8: Unexpected Protocol Version (fatal): The received PDU has a Protocol Version field that differs from the protocol version negotiated in Section 7.",
+      "zh": "8：意外协议版本（致命）：接收的 PDU 的协议版本字段与第 7 节中协商的协议版本不同。"
+    },
+    {
+      "indent": 0,
+      "text": "13. Security Considerations",
+      "section_title": true,
+      "zh": "13. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "As this document describes a security protocol, many aspects of security interest are described in the relevant sections. This section points out issues which may not be obvious in other sections.",
+      "zh": "由于本文档描述的是一个安全协议，因此许多与安全有关的方面都在相关章节中进行了描述。本节指出了其他章节中可能不明显的问题。"
+    },
+    {
+      "indent": 3,
+      "text": "Cache Validation: In order for a collection of caches as described in Section 11 to guarantee a consistent view, they need to be given consistent trust anchors to use in their internal validation process. Distribution of a consistent trust anchor is assumed to be out of band.",
+      "zh": "缓存验证：为了让第 11 节所述的缓存集合保证一致的视图，需要为它们提供一致的信任锚，以便在内部验证过程中使用。一致信任锚的分布被假定为不在频带内。"
+    },
+    {
+      "indent": 3,
+      "text": "Cache Peer Identification: The router initiates a transport connection to a cache, which it identifies by either IP address or fully qualified domain name. Be aware that a DNS or address spoofing attack could make the correct cache unreachable. No session would be established, as the authorization keys would not match.",
+      "zh": "高速缓存对等识别：路由器启动与高速缓存的传输连接，并通过 IP 地址或完全合格域名来识别高速缓存。请注意，DNS 或地址欺骗攻击会导致无法到达正确的高速缓存。由于授权密钥不匹配，因此无法建立会话。"
+    },
+    {
+      "indent": 3,
+      "text": "Transport Security: The RPKI relies on object, not server or transport, trust. That is, the IANA root trust anchor is distributed to all caches through some out-of-band means and can then be used by each cache to validate certificates and ROAs all the way down the tree. The inter-cache relationships are based on this object security model; hence, the inter-cache transport can be lightly protected.",
+      "zh": "传输安全：RPKI 依赖的是对象信任，而不是服务器或传输信任。也就是说，IANA 根信任锚是通过某种带外方式分发给所有缓存的，然后每个缓存都可以用它来验证证书和 ROA，并一直向下延伸。高速缓存间的关系就是基于这种对象安全模型，因此，高速缓存间的传输可以受到轻度保护。"
+    },
+    {
+      "indent": 6,
+      "text": "However, this protocol document assumes that the routers cannot do the validation cryptography. Hence, the last link, from cache to router, is secured by server authentication and transport-level security. This is dangerous, as server authentication and transport have very different threat models than object security.",
+      "zh": "不过，本协议文件假定路由器无法进行验证加密。因此，从高速缓存到路由器的最后一环是通过服务器验证和传输级安全来保障的。这是很危险的，因为服务器验证和传输的威胁模型与对象安全的威胁模型截然不同。"
+    },
+    {
+      "indent": 6,
+      "text": "So the strength of the trust relationship and the transport between the router(s) and the cache(s) are critical. You're betting your routing on this.",
+      "zh": "因此，信任关系的强度以及路由器和高速缓存之间的传输至关重要。你的路由选择就取决于此。"
+    },
+    {
+      "indent": 6,
+      "text": "While we cannot say the cache must be on the same LAN, if only due to the issue of an enterprise wanting to offload the cache task to their upstream ISP(s), locality, trust, and control are very critical issues here. The cache(s) really SHOULD be as close, in the sense of controlled and protected (against DDoS, MITM) transport, to the router(s) as possible. It also SHOULD be topologically close so that a minimum of validated routing data are needed to bootstrap a router's access to a cache.",
+      "zh": "虽然我们不能说高速缓存必须在同一局域网内，但如果只是因为企业希望将高速缓存任务卸载给上游 ISP，那么本地性、信任和控制就是非常关键的问题。从受控和受保护（防 DDoS、MITM）传输的角度看，高速缓存应尽可能靠近路由器。高速缓存在拓扑结构上也应尽可能靠近路由器，以便路由器访问高速缓存时只需最少的验证路由数据。"
+    },
+    {
+      "indent": 6,
+      "text": "The identity of the cache server SHOULD be verified and authenticated by the router client, and vice versa, before any data are exchanged.",
+      "zh": "在交换任何数据之前，路由器客户端应核实和验证高速缓存服务器的身份，反之亦然。"
+    },
+    {
+      "indent": 6,
+      "text": "Transports which cannot provide the necessary authentication and integrity (see Section 9) must rely on network design and operational controls to provide protection against spoofing/ corruption attacks. As pointed out in Section 9, TCP-AO is the long-term plan. Protocols which provide integrity and authenticity SHOULD be used, and if they cannot, i.e., TCP is used as the transport, the router and cache MUST be on the same trusted, controlled network.",
+      "zh": "无法提供必要的验证和完整性（见第 9 节）的传输必须依靠网络设计和操作控制来防范欺骗/破坏攻击。如第 9 节所述，TCP-AO 是一项长期计划。应使用能提供完整性和真实性的协议，如果不能，即使用 TCP 作为传输，路由器和高速缓存必须位于同一受控可信网络上。"
+    },
+    {
+      "indent": 0,
+      "text": "14. IANA Considerations",
+      "section_title": true,
+      "zh": "14. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This section only discusses updates required in the existing IANA protocol registries to accommodate version 1 of this protocol. See [RFC6810] for IANA considerations from the original (version 0) protocol.",
+      "zh": "本节仅讨论为适应本协议第 1 版而需要对现有 IANA 协议注册进行的更新。有关原始（版本 0）协议的 IANA 注意事项，请参阅 [RFC6810]。"
+    },
+    {
+      "indent": 3,
+      "text": "All existing entries in the IANA \"rpki-rtr-pdu\" registry remain valid for protocol version 0. All of the PDU types allowed in protocol version 0 are also allowed in protocol version 1, with the addition of the new Router Key PDU. To reduce the likelihood of confusion, the PDU number used by the Router Key PDU in protocol version 1 is hereby registered as reserved (and unused) in protocol version 0.",
+      "zh": "除了新的路由器密钥 PDU 外，协议版本 0 中允许使用的所有 PDU 类型在协议版本 1 中也同样允许使用。为减少混淆的可能性，路由器密钥 PDU 在协议版本 1 中使用的 PDU 编号在此登记为协议版本 0 的保留（和未使用）编号。"
+    },
+    {
+      "indent": 3,
+      "text": "The policy for adding to the registry is RFC Required per [RFC8126]; the document must be either Standards Track or Experimental.",
+      "zh": "根据 [RFC8126]，添加到注册表的政策是 RFC Required；文件必须是标准轨或实验性的。"
+    },
+    {
+      "indent": 3,
+      "text": "The \"rpki-rtr-pdu\" registry has been updated as follows:",
+      "zh": "rpki-rtr-pdu \"注册表更新如下："
+    },
+    {
+      "indent": 14,
+      "text": "Protocol   PDU\nVersion    Type  Description\n--------   ----  ---------------\n   0-1       0   Serial Notify\n   0-1       1   Serial Query\n   0-1       2   Reset Query\n   0-1       3   Cache Response\n   0-1       4   IPv4 Prefix\n   0-1       6   IPv6 Prefix\n   0-1       7   End of Data\n   0-1       8   Cache Reset\n    0        9   Reserved\n    1        9   Router Key\n   0-1      10   Error Report\n   0-1     255   Reserved",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "All existing entries in the IANA \"rpki-rtr-error\" registry remain valid for all protocol versions. Protocol version 1 adds one new error code:",
+      "zh": "IANA \"rpki-rtr-error \"注册表中的所有现有条目对所有协议版本仍然有效。协议版本 1 增加了一个新的错误代码："
+    },
+    {
+      "indent": 14,
+      "text": "Error\nCode    Description\n-----   ---------------------------\n    8   Unexpected Protocol Version",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "15. References",
+      "section_title": true,
+      "zh": "15. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "15.1. Normative References",
+      "section_title": true,
+      "zh": "15.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC1982] Elz, R. and R. Bush, \"Serial Number Arithmetic\", RFC 1982, DOI 10.17487/RFC1982, August 1996, <https://www.rfc-editor.org/info/rfc1982>.",
+      "zh": "[RFC1982] Elz, R. and R. Bush, \"Serial Number Arithmetic\", RFC 1982, DOI 10.17487/RFC1982, August 1996, <https://www.rfc-editor.org/info/rfc1982>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2385] Heffernan, A., \"Protection of BGP Sessions via the TCP MD5 Signature Option\", RFC 2385, DOI 10.17487/RFC2385, August 1998, <https://www.rfc-editor.org/info/rfc2385>.",
+      "zh": "[RFC2385] Heffernan, A., \"Protection of BGP Sessions via the TCP MD5 Signature Option\", RFC 2385, DOI 10.17487/RFC2385, August 1998, <https://www.rfc-editor.org/info/rfc2385>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3629] Yergeau, F., \"UTF-8, a transformation format of ISO 10646\", STD 63, RFC 3629, DOI 10.17487/RFC3629, November 2003, <https://www.rfc-editor.org/info/rfc3629>.",
+      "zh": "[RFC3629] Yergeau, F., \"UTF-8, a transformation format of ISO 10646\", STD 63, RFC 3629, DOI 10.17487/RFC3629, November 2003, <https://www.rfc-editor.org/info/rfc3629>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4252] Ylonen, T. and C. Lonvick, Ed., \"The Secure Shell (SSH) Authentication Protocol\", RFC 4252, DOI 10.17487/RFC4252, January 2006, <https://www.rfc-editor.org/info/rfc4252>.",
+      "zh": "[RFC4252] Ylonen, T. and C. Lonvick, Ed., \"The Secure Shell (SSH) Authentication Protocol\", RFC 4252, DOI 10.17487/RFC4252, January 2006, <https://www.rfc-editor.org/info/rfc4252>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4301] Kent, S. and K. Seo, \"Security Architecture for the Internet Protocol\", RFC 4301, DOI 10.17487/RFC4301, December 2005, <https://www.rfc-editor.org/info/rfc4301>.",
+      "zh": "[RFC4301] Kent, S. and K. Seo, \"Security Architecture for the Internet Protocol\", RFC 4301, DOI 10.17487/RFC4301, December 2005, <https://www.rfc-editor.org/info/rfc4301>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5246] Dierks, T. and E. Rescorla, \"The Transport Layer Security (TLS) Protocol Version 1.2\", RFC 5246, DOI 10.17487/RFC5246, August 2008, <https://www.rfc-editor.org/info/rfc5246>.",
+      "zh": "[RFC5246] Dierks, T. and E. Rescorla, \"The Transport Layer Security (TLS) Protocol Version 1.2\", RFC 5246, DOI 10.17487/RFC5246, August 2008, <https://www.rfc-editor.org/info/rfc5246>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, DOI 10.17487/RFC5280, May 2008, <https://www.rfc-editor.org/info/rfc5280>.",
+      "zh": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, DOI 10.17487/RFC5280, May 2008, <https://www.rfc-editor.org/info/rfc5280>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5925] Touch, J., Mankin, A., and R. Bonica, \"The TCP Authentication Option\", RFC 5925, DOI 10.17487/RFC5925, June 2010, <https://www.rfc-editor.org/info/rfc5925>.",
+      "zh": "[RFC5925] Touch, J., Mankin, A., and R. Bonica, \"The TCP Authentication Option\", RFC 5925, DOI 10.17487/RFC5925, June 2010, <https://www.rfc-editor.org/info/rfc5925>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5926] Lebovitz, G. and E. Rescorla, \"Cryptographic Algorithms for the TCP Authentication Option (TCP-AO)\", RFC 5926, DOI 10.17487/RFC5926, June 2010, <https://www.rfc-editor.org/info/rfc5926>.",
+      "zh": "[RFC5926] Lebovitz, G. and E. Rescorla, \"Cryptographic Algorithms for the TCP Authentication Option (TCP-AO)\", RFC 5926, DOI 10.17487/RFC5926, June 2010, <https://www.rfc-editor.org/info/rfc5926>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6125] Saint-Andre, P. and J. Hodges, \"Representation and Verification of Domain-Based Application Service Identity within Internet Public Key Infrastructure Using X.509 (PKIX) Certificates in the Context of Transport Layer Security (TLS)\", RFC 6125, DOI 10.17487/RFC6125, March 2011, <https://www.rfc-editor.org/info/rfc6125>.",
+      "zh": "[RFC6125] Saint-Andre, P. and J. Hodges, \"Representation and Verification of Domain-Based Application Service Identity within Internet Public Key Infrastructure Using X.509 (PKIX) Certificates in the Context of Transport Layer Security (TLS)\", RFC 6125, DOI 10.17487/RFC6125, March 2011, <https://www.rfc-editor.org/info/rfc6125>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, DOI 10.17487/RFC6487, February 2012, <https://www.rfc-editor.org/info/rfc6487>.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, DOI 10.17487/RFC6487, February 2012, <https://www.rfc-editor.org/info/rfc6487>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6810] Bush, R. and R. Austein, \"The Resource Public Key Infrastructure (RPKI) to Router Protocol\", RFC 6810, DOI 10.17487/RFC6810, January 2013, <https://www.rfc-editor.org/info/rfc6810>.",
+      "zh": "[RFC6810] Bush, R. and R. Austein, \"The Resource Public Key Infrastructure (RPKI) to Router Protocol\", RFC 6810, DOI 10.17487/RFC6810, January 2013, <https://www.rfc-editor.org/info/rfc6810>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP Prefix Origin Validation\", RFC 6811, DOI 10.17487/RFC6811, January 2013, <https://www.rfc-editor.org/info/rfc6811>.",
+      "zh": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP Prefix Origin Validation\", RFC 6811, DOI 10.17487/RFC6811, January 2013, <https://www.rfc-editor.org/info/rfc6811>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8126] Cotton, M., Leiba, B., and T. Narten, \"Guidelines for Writing an IANA Considerations Section in RFCs\", BCP 26, RFC 8126, DOI 10.17487/RFC8126, June 2017, <https://www.rfc-editor.org/info/rfc8126>.",
+      "zh": "[RFC8126] Cotton, M., Leiba, B., and T. Narten, \"Guidelines for Writing an IANA Considerations Section in RFCs\", BCP 26, RFC 8126, DOI 10.17487/RFC8126, June 2017, <https://www.rfc-editor.org/info/rfc8126>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>.",
+      "zh": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8208] Turner, S. and O. Borchert, \"BGPsec Algorithms, Key Formats, and Signature Formats\", RFC 8208, DOI 10.17487/RFC8208, September 2017, <http://www.rfc-editor.org/info/rfc8208>.",
+      "zh": "[RFC8208] Turner, S. and O. Borchert, \"BGPsec Algorithms, Key Formats, and Signature Formats\", RFC 8208, DOI 10.17487/RFC8208, September 2017, <http://www.rfc-editor.org/info/rfc8208>。"
+    },
+    {
+      "indent": 0,
+      "text": "15.2. Informative References",
+      "section_title": true,
+      "zh": "15.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC1996] Vixie, P., \"A Mechanism for Prompt Notification of Zone Changes (DNS NOTIFY)\", RFC 1996, DOI 10.17487/RFC1996, August 1996, <https://www.rfc-editor.org/info/rfc1996>.",
+      "zh": "[RFC1996] Vixie, P., \"A Mechanism for Prompt Notification of Zone Changes (DNS NOTIFY)\", RFC 1996, DOI 10.17487/RFC1996, August 1996, <https://www.rfc-editor.org/info/rfc1996>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4808] Bellovin, S., \"Key Change Strategies for TCP-MD5\", RFC 4808, DOI 10.17487/RFC4808, March 2007, <https://www.rfc-editor.org/info/rfc4808>.",
+      "zh": "[RFC4808] Bellovin, S., \"Key Change Strategies for TCP-MD5\", RFC 4808, DOI 10.17487/RFC4808, March 2007, <https://www.rfc-editor.org/info/rfc4808>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"The rsync URI Scheme\", RFC 5781, DOI 10.17487/RFC5781, February 2010, <https://www.rfc-editor.org/info/rfc5781>.",
+      "zh": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"The rsync URI Scheme\", RFC 5781, DOI 10.17487/RFC5781, February 2010, <https://www.rfc-editor.org/info/rfc5781>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6481] Huston, G., Loomans, R., and G. Michaelson, \"A Profile for Resource Certificate Repository Structure\", RFC 6481, DOI 10.17487/RFC6481, February 2012, <https://www.rfc-editor.org/info/rfc6481>.",
+      "zh": "[RFC6481] Huston, G., Loomans, R., and G. Michaelson, \"A Profile for Resource Certificate Repository Structure\", RFC 6481, DOI 10.17487/RFC6481, February 2012, <https://www.rfc-editor.org/info/rfc6481>。"
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgements",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors wish to thank Nils Bars, Steve Bellovin, Tim Bruijnzeels, Rex Fernando, Richard Hansen, Paul Hoffman, Fabian Holler, Russ Housley, Pradosh Mohapatra, Keyur Patel, David Mandelberg, Sandy Murphy, Robert Raszuk, Andreas Reuter, Thomas C. Schmidt, John Scudder, Ruediger Volk, Matthias Waehlisch, and David Ward. Particular thanks go to Hannes Gredler for showing us the dangers of unnecessary fields.",
+      "zh": "作者感谢 Nils Bars、Steve Bellovin、Tim Bruijnzeels、Rex Fernando、Richard Hansen、Paul Hoffman、Fabian Holler、Russ Housley、Pradosh Mohapatra、Keyur Patel、David Mandelberg、Sandy Murphy、Robert Raszuk、Andreas Reuter、Thomas C. Schmidt、John Scudder、Ruediger Volk、Matthias Waehlisch 和 David Ward。特别感谢汉内斯-格雷德勒（Hannes Gredler）向我们展示了不必要字段的危险性。"
+    },
+    {
+      "indent": 3,
+      "text": "No doubt this list is incomplete. We apologize to any contributor whose name we missed.",
+      "zh": "毫无疑问，这份名单并不完整。如有遗漏，我们深表歉意。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Randy Bush Internet Initiative Japan 5147 Crystal Springs Bainbridge Island, Washington 98110 United States of America",
+      "zh": "Randy Bush Internet Initiative Japan 5147 Crystal Springs Bainbridge Island, Washington 98110 United States of America"
+    },
+    {
+      "indent": 3,
+      "text": "Email: randy@psg.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Rob Austein Dragon Research Labs",
+      "zh": "龙研究实验室"
+    },
+    {
+      "indent": 3,
+      "text": "Email: sra@hactrn.net",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

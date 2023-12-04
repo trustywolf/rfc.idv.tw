@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 7908 - Problem Definition and Classification of BGP Route Leaks 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">7908</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc7908">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 7908 - Problem Definition and Classification of BGP Route Leaks 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc7908">
+            https://datatracker.ietf.org/doc/html/rfc7908
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 7908 - BGP 路由泄漏的问题定义和分类</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                         K. Sriram
+Request for Comments: 7908                                 D. Montgomery
+Category: Informational                                          US NIST
+ISSN: 2070-1721                                             D. McPherson
+                                                            E. Osterweil
+                                                          Verisign, Inc.
+                                                              B. Dickson
+                                                               June 2016
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-8">
+Problem Definition and Classification of BGP Route Leaks
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-8">
+BGP 路由泄漏的问题定义和分类
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A systemic vulnerability of the Border Gateway Protocol routing system, known as &#34;route leaks&#34;, has received significant attention in recent years. Frequent incidents that result in significant disruptions to Internet routing are labeled route leaks, but to date a common definition of the term has been lacking. This document provides a working definition of route leaks while keeping in mind the real occurrences that have received significant attention. Further, this document attempts to enumerate (though not exhaustively) different types of route leaks based on observed events on the Internet. The aim is to provide a taxonomy that covers several forms of route leaks that have been observed and are of concern to the Internet user community as well as the network operator community.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+近年来，被称为 &#34;路由泄露 &#34;的边界网关协议路由系统的系统漏洞受到了广泛关注。导致互联网路由严重中断的频繁事件被称为路由泄露，但迄今为止，该术语一直缺乏通用定义。本文档提供了路由泄漏的工作定义，同时也考虑到了已引起极大关注的真实事件。此外，本文档还试图根据观察到的互联网事件，列举（尽管并非详尽无遗）不同类型的路由泄露。其目的是提供一种分类法，涵盖已观察到的路由泄露的几种形式，并引起互联网用户群体和网络运营商群体的关注。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is not an Internet Standards Track specification; it is published for informational purposes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件不是互联网标准轨道规范，仅为提供信息而发布。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Not all documents approved by the IESG are a candidate for any level of Internet Standard; see Section 2 of RFC 7841.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。并非所有经 IESG 批准的文件都能成为任何级别的互联网标准候选文件；请参见 RFC 7841 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc7908.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc7908。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2016 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2016 IETF Trust 和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
+   2.  Working Definition of Route Leaks . . . . . . . . . . . . . .   3
+   3.  Classification of Route Leaks Based on Documented Events  . .   4
+     3.1.  Type 1: Hairpin Turn with Full Prefix . . . . . . . . . .   4
+     3.2.  Type 2: Lateral ISP-ISP-ISP Leak  . . . . . . . . . . . .   5
+     3.3.  Type 3: Leak of Transit-Provider Prefixes to Peer . . . .   5
+     3.4.  Type 4: Leak of Peer Prefixes to Transit Provider . . . .   5
+     3.5.  Type 5: Prefix Re-origination with Data Path to
+           Legitimate Origin . . . . . . . . . . . . . . . . . . . .   6
+     3.6.  Type 6: Accidental Leak of Internal Prefixes and More-
+           Specific Prefixes . . . . . . . . . . . . . . . . . . . .   6
+   4.  Additional Comments about the Classification  . . . . . . . .   7
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+   6.  Informative References  . . . . . . . . . . . . . . . . . . .   7
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  11
+   Authors&#39; Addresses  . . . . . . . . . . . . . . . . . . . . . . .  11
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Frequent incidents [Huston2012] [Cowie2013] [Toonk2015-A]
+   [Toonk2015-B] [Cowie2010] [Madory] [Zmijewski] [Paseka] [LRL] [Khare]
+   that result in significant disruptions to Internet routing are
+   commonly called &#34;route leaks&#34;.  Examination of the details of some of
+   these incidents reveals that they vary in their form and technical
+   details.  In order to pursue solutions to &#34;the route-leak problem&#34; it
+   is important to first provide a clear, technical definition of the
+   problem and enumerate its most common forms.  Section 2 provides a
+   working definition of route leaks, keeping in view many recent
+   incidents that have received significant attention.  Section 3
+   attempts to enumerate (though not exhaustively) different types of
+   route leaks based on observed events on the Internet.  Further,
+   Section 3 provides a taxonomy that covers several forms of route
+   leaks that have been observed and are of concern to the Internet user
+   community as well as the network operator community.  This document
+   builds on and extends earlier work in the IETF [ROUTE-LEAK-DEF]
+   [ROUTE-LEAK-REQ].
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Working-Definition-of-Route-Leaks">
+2. Working Definition of Route Leaks
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 路线泄漏的工作定义
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A proposed working definition of &#34;route leak&#34; is as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路线泄漏 &#34;的拟议工作定义如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A route leak is the propagation of routing announcement(s) beyond their intended scope. That is, an announcement from an Autonomous System (AS) of a learned BGP route to another AS is in violation of the intended policies of the receiver, the sender, and/or one of the ASes along the preceding AS path. The intended scope is usually defined by a set of local redistribution/filtering policies distributed among the ASes involved. Often, these intended policies are defined in terms of the pair-wise peering business relationship between ASes (e.g., customer, transit provider, peer). For literature related to AS relationships and routing policies, see [Gao], [Luckie], and [Gill]. For measurements of valley-free violations in Internet routing, see [Anwar], [Giotsas], and [Wijchers].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由泄漏是指路由公告的传播超出了其预期范围。也就是说，从一个自治系统（AS）向另一个自治系统（AS）发布学习到的 BGP 路由公告，违反了接收方、发送方和/或前一个自治系统（AS）路径上的一个自治系统（AS）的预定策略。预定范围通常由分布在相关 AS 中的一组本地重新分配/过滤策略来定义。通常，这些预定策略是根据 AS 之间的成对对等业务关系（如客户、转接提供商、对等）来定义的。有关 AS 关系和路由策略的文献，请参阅 [Gao]、[Luckie] 和 [Gill]。关于互联网路由中无谷违规的测量，请参阅 [Anwar]、[Giotsas] 和 [Wijchers]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The result of a route leak can be redirection of traffic through an unintended path that may enable eavesdropping or traffic analysis and may or may not result in an overload or black hole. Route leaks can be accidental or malicious but most often arise from accidental misconfigurations.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由泄漏的结果可能是通过非预期路径重定向流量，这可能会导致窃听或流量分析，也可能不会导致过载或黑洞。路由泄漏可能是意外的，也可能是恶意的，但最常见的是意外的错误配置。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The above definition is not intended to be all encompassing. Our aim here is to have a working definition that fits enough observed incidents so that the IETF community has a basis for developing solutions for route-leak detection and mitigation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+上述定义并非包罗万象。我们在此的目的是制定一个能够充分满足所观察到的事件的工作定义，以便 IETF 社区在此基础上制定路由泄漏检测和缓解的解决方案。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Classification-of-Route-Leaks-Based-on-Documented-Events">
+3. Classification of Route Leaks Based on Documented Events
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 根据记录的事件对线路泄漏进行分类
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As illustrated in Figure 1, a common form of route leak occurs when a multihomed customer AS (such as AS3 in Figure 1) learns a prefix update from one transit provider (ISP1) and leaks the update to another transit provider (ISP2) in violation of intended routing policies, and further, the second transit provider does not detect the leak and propagates the leaked update to its customers, peers, and transit ISPs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如图 1 所示，一种常见的路由泄漏形式是，多归属客户 AS（如图 1 中的 AS3）从一个中转服务提供商（ISP1）处获取前缀更新，并违反预定路由策略将更新泄漏给另一个中转服务提供商（ISP2），而且第二个中转服务提供商没有检测到泄漏，并将泄漏的更新传播给其客户、对等方和中转 ISP。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+                                      /\              /\
+                                       \ route leak(P)/
+                                        \ propagated /
+                                         \          /
+              +------------+    peer    +------------+
+        ______| ISP1 (AS1) |-----------&gt;|  ISP2 (AS2)|----------&gt;
+       /       ------------+  prefix(P) +------------+ route leak(P)
+      | prefix |          \   update      /\        \  propagated
+       \  (P)  /           \              /          \
+        -------   prefix(P) \            /            \
+                     update  \          /              \
+                              \        /route leak(P)  \/
+                              \/      /
+                           +---------------+
+                           | customer(AS3) |
+                           +---------------+
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-18">
+Figure 1: Basic Notion of a Route Leak
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-18">
+图 1：线路泄漏的基本概念
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document proposes the following taxonomy to cover several types of observed route leaks while acknowledging that the list is not meant to be exhaustive. In what follows, the AS that announces a route that is in violation of the intended policies is referred to as the &#34;offending AS&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件提出了以下分类法，以涵盖几种已观察到的路由泄漏类型，同时承认该列表并非详尽无遗。在下文中，宣布违反预期政策的路由的 AS 被称为 &#34;违规 AS&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-1--Type-1-Hairpin-Turn-with-Full-Prefix">
+3.1. Type 1: Hairpin Turn with Full Prefix
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.1. 类型 1：带全前缀的发夹弯
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Description: A multihomed AS learns a route from one upstream ISP and simply propagates it to another upstream ISP (the turn essentially resembling a hairpin). Neither the prefix nor the AS path in the update is altered. This is similar to a straightforward path-poisoning attack [Kapela-Pilosov], but with full prefix. It should be noted that leaks of this type are often accidental (i.e., not malicious). The update basically makes a hairpin turn at the offending AS&#39;s multihomed AS. The leak often succeeds (i.e., the leaked update is accepted and propagated) because the second ISP prefers customer announcement over peer announcement of the same prefix. Data packets would reach the legitimate destination, albeit via the offending AS, unless they are dropped at the offending AS due to its inability to handle resulting large volumes of traffic.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+说明多重归属的 AS 从一个上游 ISP 获取路由后，会简单地将其传播到另一个上游 ISP（其转向本质上类似于发卡）。更新中的前缀和 AS 路径都不会改变。这类似于直接的路径中毒攻击 [Kapela-Pilosov]，但使用的是全前缀。需要注意的是，这种类型的泄漏通常是意外泄漏（即非恶意泄漏）。更新基本上是在违规 AS 的多归属 AS 处进行发夹式转弯。泄漏通常会成功（即泄漏的更新被接受并传播），因为第二个 ISP 更喜欢客户公告，而不是相同前缀的同行公告。数据包将通过违规 AS 到达合法目的地，除非违规 AS 因无法处理由此产生的大量流量而丢弃数据包。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o Example incidents: Examples of Type 1 route-leak incidents are (1) the Dodo-Telstra incident in March 2012 [Huston2012], (2) the VolumeDrive-Atrato incident in September 2014 [Madory], and (3) the massive Telekom Malaysia route leak of about 179,000 prefixes, which in turn Level3 accepted and propagated [Toonk2015-B].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 事件实例：第 1 类路由泄漏事件的例子有：(1) 2012 年 3 月的 Dodo-Telstra 事件 [Huston2012]；(2) 2014 年 9 月的 VolumeDrive-Atrato 事件 [Madory]；(3) 马来西亚电信公司大规模路由泄漏约 179,000 个前缀，而 Level3 又接受并传播了这些前缀 [Toonk2015-B]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-2--Type-2-Lateral-ISP-ISP-ISP-Leak">
+3.2. Type 2: Lateral ISP-ISP-ISP Leak
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.2. 类型 2：ISP-ISP-ISP 横向泄漏
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Description: The term &#34;lateral&#34; here is synonymous with &#34;non-transit&#34; or &#34;peer-to-peer&#34;. This type of route leak typically occurs when, for example, three sequential ISP peers (e.g., ISP-A, ISP-B, and ISP-C) are involved, and ISP-B receives a route from ISP-A and in turn leaks it to ISP-C. The typical routing policy between laterally (i.e., non-transit) peering ISPs is that they should only propagate to each other their respective customer prefixes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+说明这里的 &#34;横向 &#34;与 &#34;非传输 &#34;或 &#34;点对点 &#34;同义。例如，当涉及三个连续的 ISP 对等体（如 ISP-A、ISP-B 和 ISP-C）时，ISP-B 从 ISP-A 收到路由，并反过来将其泄漏给 ISP-C，就会发生这种类型的路由泄漏。横向（即非传输）对等 ISP 之间的典型路由选择策略是，它们只能相互传播各自的客户前缀。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o Example incidents: In [Mauch-nanog] and [Mauch], route leaks of this type are reported by monitoring updates in the global BGP system and finding three or more very large ISPs&#39; Autonomous System Numbers (ASNs) in a sequence in a BGP update&#39;s AS path. [Mauch] observes that its detection algorithm detects for these anomalies and potentially route leaks because very large ISPs do not, in general, buy transit services from each other. However, it also notes that there are exceptions when one very large ISP does indeed buy transit from another very large ISP, and accordingly, exceptions are made in its detection algorithm for known cases.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 事件实例：在[Mauch-nanog]和[Mauch]中，这类路由泄漏是通过监控全球 BGP 系统的更新，在 BGP 更新的 AS 路径中发现三个或更多超大型 ISP 的自治系统号（ASN）。[Mauch]指出，其检测算法可检测到这些异常情况和潜在的路由泄漏，因为超大型互联网服务提供商一般不会相互购买中转服务。不过，它也指出，当一个超大型互联网服务提供商确实从另一个超大型互联网服务提供商处购买中转服务时，也会出现例外情况，因此，其检测算法对已知情况做出了例外处理。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-3--Type-3-Leak-of-Transit-Provider-Prefixes-to-Peer">
+3.3. Type 3: Leak of Transit-Provider Prefixes to Peer
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.3. 类型 3：向对等方泄露转接提供商前缀
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Description: This type of route leak occurs when an offending AS leaks routes learned from its transit provider to a lateral (i.e., non-transit) peer.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+描述当违规 AS 将从其过境提供商处获得的路由泄漏给横向（即非过境）对等方时，就会发生此类路由泄漏。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o Example incidents: The incidents reported in [Mauch] include Type 3 leaks.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 事故实例：Mauch] 中报告的事件包括第 3 类泄漏。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-4--Type-4-Leak-of-Peer-Prefixes-to-Transit-Provider">
+3.4. Type 4: Leak of Peer Prefixes to Transit Provider
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.4. 类型 4：向转接提供商泄漏对等前缀
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Description: This type of route leak occurs when an offending AS leaks routes learned from a lateral (i.e., non-transit) peer to its (the AS&#39;s) own transit provider. These leaked routes typically originate from the customer cone of the lateral peer.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+说明：这类路由泄漏是指违规 AS 将从横向（即非过境）对等方获取的路由泄漏给它（该 AS）自己的过境提供商。这些泄漏路由通常来自侧向对等方的客户锥。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o Example incidents: Examples of Type 4 route-leak incidents are (1) the Axcelx-Hibernia route leak of Amazon Web Services (AWS) prefixes causing disruption of AWS and a variety of services that run on AWS [Kephart], (2) the Hathway-Airtel route leak of 336 Google prefixes causing widespread interruption of Google services in Europe and Asia [Toonk2015-A], (3) the Moratel-PCCW route leak of Google prefixes causing Google&#39;s services to go offline [Paseka], and (4) some of the example incidents cited for Type 1 route leaks above are also inclusive of Type 4 route leaks. For instance, in the Dodo-Telstra incident [Huston2012], the leaked routes from Dodo to Telstra included routes that Dodo learned from its transit providers as well as lateral peers.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 事件示例：第 4 类路由泄漏事件的例子有：(1) 亚马逊网络服务（AWS）前缀的 Axcelx-Hibernia 路由泄漏导致 AWS 和在 AWS 上运行的各种服务中断 [Kephart]；(2) 336 个 Google 前缀的 Hathway-Airtel 路由泄漏导致欧洲和亚洲的 Google 服务大面积中断 [Toonk2015-A]、(3) Moratel-PCCW 路由泄漏谷歌前缀导致谷歌服务离线[Paseka]，以及 (4) 上述第 1 类路由泄漏的一些示例事件也包括第 4 类路由泄漏。例如，在 Dodo-Telstra 事件[Huston2012]中，从 Dodo 到 Telstra 的泄漏路由包括 Dodo 从其转接提供商以及横向同行处了解到的路由。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-5--Type-5-Prefix-Re-origination-with-Data-Path-to-Legitimate-Origin">
+3.5. Type 5: Prefix Re-origination with Data Path to Legitimate Origin
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.5. 类型 5：带合法来源数据路径的前缀重定向
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Description: A multihomed AS learns a route from one upstream ISP and announces the prefix to another upstream ISP as if it is being originated by it (i.e., strips the received AS path and re-originates the prefix). This can be called re-origination or mis-origination. However, somehow a reverse path to the legitimate origination AS may be present and data packets reach the legitimate destination albeit via the offending AS. (Note: The presence of a reverse path here is not attributable to the use of a path-poisoning trick by the offending AS.) But sometimes the reverse path may not be present, and data packets destined for the leaked prefix may be simply discarded at the offending AS.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+描述多重归属的 AS 从一个上游 ISP 获取路由后，会向另一个上游 ISP 宣布该前缀，就好像该前缀是由它发起的（即删除接收到的 AS 路径并重新发起该前缀）。这可以称为重新发源或错误发源。但是，可能会出现通往合法发端 AS 的反向路径，数据包会通过违规 AS 到达合法目的地。(注：这里出现反向路径并不是因为违规 AS 使用了路径中毒技巧）。但有时反向路径可能并不存在，以泄漏前缀为目的地的数据包可能会在违规 AS 处被直接丢弃。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o Example incidents: Examples of Type 5 route leak include (1) the China Telecom incident in April 2010 [Hiran] [Cowie2010] [Labovitz], (2) the Belarusian GlobalOneBel route-leak incidents in February-March 2013 and May 2013 [Cowie2013], (3) the Icelandic Opin Kerfi-Simmin route-leak incidents in July-August 2013 [Cowie2013], and (4) the Indosat route-leak incident in April 2014 [Zmijewski]. The reverse paths (i.e., data paths from the offending AS to the legitimate destinations) were present in incidents #1, #2, and #3 cited above, but not in incident #4. In incident #4, the misrouted data packets were dropped at Indosat&#39;s AS.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 事件实例：第 5 类路由泄漏事件包括：(1) 2010 年 4 月的中国电信事件 [Hiran] [Cowie2010] [Labovitz]；(2) 2013 年 2 月至 3 月和 2013 年 5 月的白俄罗斯 GlobalOneBel 路由泄漏事件 [Cowie2013]；(3) 2013 年 7 月至 8 月的冰岛 Opin Kerfi-Simmin 路由泄漏事件 [Cowie2013]；以及 (4) 2014 年 4 月的 Indosat 路由泄漏事件 [Zmijewski]。反向路径（即从违规 AS 到合法目的地的数据路径）出现在上述 #1、#2 和 #3 事件中，但不出现在 #4 事件中。在事件 #4 中，错误路由的数据包在 Indosat 的 AS 上被丢弃。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3-6--Type-6-Accidental-Leak-of-Internal-Prefixes-and-More-Specific-Prefixes">
+3.6. Type 6: Accidental Leak of Internal Prefixes and More-Specific Prefixes
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3.6. 类型 6：意外泄漏内部前缀和更具体的前缀
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Description: An offending AS simply leaks its internal prefixes to one or more of its transit-provider ASes and/or ISP peers. The leaked internal prefixes are often more-specific prefixes subsumed by an already announced, less-specific prefix. The more-specific prefixes were not intended to be routed in External BGP (eBGP). Further, the AS receiving those leaks fails to filter them.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+说明：违规 AS 只需将其内部前缀泄露给一个或多个转接提供商 AS 和/或 ISP 对等方即可。泄漏的内部前缀通常是已公布的较小特定前缀所包含的更小特定前缀。更具体的前缀并不打算在外部 BGP (eBGP) 中路由。此外，接收这些泄漏的 AS 无法过滤它们。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Typically, these leaked announcements are due to some transient failures within the AS; they are short-lived and typically withdrawn quickly following the announcements. However, these more-specific prefixes may momentarily cause the routes to be preferred over other aggregate (i.e., less specific) route announcements, thus redirecting traffic from its normal best path.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+通常情况下，这些泄漏的公告是由于 AS 内的一些瞬时故障造成的；它们持续时间很短，通常在公告发布后很快就会撤销。不过，这些更具体的前缀可能会暂时导致路由优先于其他综合（即不太具体的）路由公告，从而使流量偏离正常的最佳路径。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o Example incidents: Leaks of internal routes occur frequently (e.g., multiple times in a week), and the number of prefixes leaked range from hundreds to thousands per incident. One highly conspicuous and widely disruptive leak of internal routes happened in August 2014 when AS701 and AS705 leaked about 22,000 more-specific prefixes of already-announced aggregates [Huston2014] [Toonk2014].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 事件实例：内部路由泄漏经常发生（例如一周内多次），每次泄漏的前缀数量从数百到数千不等。2014 年 8 月，AS701 和 AS705 泄露了已公布聚合的约 22,000 个更具体的前缀[Huston2014] [Toonk2014]，这起内部路由泄露事件非常引人注目，并造成了广泛的破坏。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Additional-Comments-about-the-Classification">
+4. Additional Comments about the Classification
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 关于分类的补充意见
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is worth noting that Types 1 through 4 are similar in that a route is leaked in violation of policy in each case, but what varies is the context of the leaked-route source AS and destination AS roles.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+值得注意的是，类型 1 到类型 4 的情况类似，都是路由泄露违反了政策，但不同的是泄露路由的源 AS 和目的 AS 角色的上下文。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A Type 5 route leak (i.e., prefix mis-origination with data path to legitimate origin) can also happen in conjunction with the AS relationship contexts in Types 2, 3, and 4. While these possibilities are acknowledged, simply enumerating more types to consider all such special cases does not add value as far as solution development for route leaks is concerned. Hence, the special cases mentioned here are not included in enumerating route-leak types.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+第 5 类路由泄漏（即前缀误发，数据路径指向合法来源）也可能与第 2、3 和 4 类中的 AS 关系上下文同时发生。我们承认存在这些可能性，但简单地列举更多类型以考虑所有这些特殊情况，并不能为路由泄漏解决方案的开发带来更多价值。因此，路由泄漏类型的枚举不包括这里提到的特殊情况。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Security-Considerations">
+5. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+No security considerations apply since this is a problem definition document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于这是一份问题定义文件，因此不适用任何安全考虑因素。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Informative-References">
+6. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Anwar] Anwar, R., Niaz, H., Choffnes, D., Cunha, I., Gill, P., and N. Katz-Bassett, &#34;Investigating Interdomain Routing Policies in the Wild&#34;, In Proceedings of the 2015 ACM Internet Measurement Conference (IMC), DOI 10.1145/2815675.2815712, October 2015, &lt;http://www.cs.usc.edu/assets/007/94928.pdf&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Anwar] Anwar, R., Niaz, H., Choffnes, D., Cunha, I., Gill, P., and N. Katz-Bassett, &#34;Investigating Interdomain Routing Policies in the Wild&#34;, In Proceedings of the 2015 ACM Internet Measurement Conference (IMC), DOI 10.1145/2815675.2815712, October 2015, &lt;http://www.cs.usc.edu/assets/007/94928.pdf&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Cowie2010] Cowie, J., &#34;China&#39;s 18 Minute Mystery&#34;, Dyn Research: The New Home of Renesys Blog, November 2010, &lt;http://research.dyn.com/2010/11/ chinas-18-minute-mystery/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Cowie2010] Cowie, J., &#34;China&#39;s 18 Minute Mystery&#34;, Dyn Research：The New Home of Renesys Blog，2010 年 11 月，&lt;http://research.dyn.com/2010/11/ chinas-18-minute-mystery/&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Cowie2013] Cowie, J., &#34;The New Threat: Targeted Internet Traffic Misdirection&#34;, Dyn Research: The New Home of Renesys Blog, November 2013, &lt;http://research.dyn.com/2013/11/ mitm-internet-hijacking/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Cowie2013] Cowie, J., &#34;The New Threat：Targeted Internet Traffic Misdirection&#34;, Dyn Research：The New Home of Renesys Blog，2013 年 11 月，&lt;http://research.dyn.com/2013/11/ mitm-internet-hijacking/&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Gao] Gao, L. and J. Rexford, &#34;Stable Internet Routing Without Global Coordination&#34;, IEEE/ACM Transactions on Networking (TON), Volume 9, Issue 6, pp 689-692, DOI 10.1109/90.974523, December 2001, &lt;http://www.cs.princeton.edu/~jrex/papers/ sigmetrics00.long.pdf&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Gao] Gao, L. and J. Rexford, &#34;Stable Internet Routing Without Global Coordination&#34;, IEEE/ACM Transactions on Networking (TON), Volume 9, Issue 6, pp 689-692, DOI 10.1109/90.974523, December 2001, &lt;http://www.cs.princeton.edu/~jrex/papers/ sigmetrics00.long.pdf&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Gill] Gill, P., Schapira, M., and S. Goldberg, &#34;A Survey of Interdomain Routing Policies&#34;, ACM SIGCOMM Computer Communication Review, Volume 44, Issue 1, pp 28-34, DOI 10.1145/2567561.2567566, January 2014, &lt;http://www.cs.bu.edu/~goldbe/papers/survey.pdf&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Gill] Gill, P., Schapira, M., and S. Goldberg, &#34;A Survey of Interdomain Routing Policies&#34;, ACM SIGCOMM Computer Communication Review, Volume 44, Issue 1, pp 28-34, DOI 10.1145/2567561.2567566, January 2014, &lt;http://www.cs.bu.edu/~goldbe/papers/survey.pdf&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Giotsas] Giotsas, V. and S. Zhou, &#34;Valley-free violation in Internet routing - Analysis based on BGP Community data&#34;, 2012 IEEE International Conference on Communications (ICC), DOI 10.1109/ICC.2012.6363987, June 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Giotsas] Giotsas, V. and S. Zhou, &#34;Valley-free violation in Internet routing - Analysis based on BGP Community data&#34;, 2012 IEEE International Conference on Communications (ICC), DOI 10.1109/ICC.2012.6363987, June 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Hiran] Hiran, R., Carlsson, N., and P. Gill, &#34;Characterizing Large-Scale Routing Anomalies: A Case Study of the China Telecom Incident&#34;, In Proceedings of the 14th International Conference on Passive and Active Measurement (PAM) 2013, DOI 10.1007/978-3-642-36516-4_23, March 2013, &lt;http://www3.cs.stonybrook.edu/~phillipa/papers/ CTelecom.html&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Hiran, R., Carlsson, N., and P. Gill, &#34;Characterizing Large-Scale Routing Anomalies：中国电信事件案例研究&#34;，2013 年第 14 届被动和主动测量（PAM）国际会议论文集，DOI 10.1007/978-3-642-36516-4_23，2013 年 3 月，&lt;http://www3.cs.stonybrook.edu/~phillipa/papers/ CTelecom.html&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Huston2012] Huston, G., &#34;Leaking Routes&#34;, Asia Pacific Network Information Centre (APNIC) Blog, March 2012, &lt;http://labs.apnic.net/blabs/?p=139/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Huston2012] Huston, G., &#34;Leaking Routes&#34;, Asia Pacific Network Information Centre (APNIC) Blog, March 2012, &lt;http://labs.apnic.net/blabs/?p=139/&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Huston2014] Huston, G., &#34;What&#39;s so special about 512?&#34;, Asia Pacific Network Information Centre (APNIC) Blog, September 2014, &lt;http://labs.apnic.net/blabs/?p=520/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Huston2014] Huston, G., &#34;What&#39;s so special about 512?&#34;, Asia Pacific Network Information Centre (APNIC) Blog, September 2014, &lt;http://labs.apnic.net/blabs/?p=520/&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Kapela-Pilosov] Pilosov, A. and T. Kapela, &#34;Stealing the Internet: An Internet-Scale Man in the Middle Attack&#34;, 16th Defcon Conference, August 2008, &lt;https://www.defcon.org/images/defcon-16/ dc16-presentations/defcon-16-pilosov-kapela.pdf&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Kapela-Pilosov] Pilosov, A. and T. Kapela, &#34;Stealing the Internet：An Internet-Scale Man in the Middle Attack&#34;, 16th Defcon Conference, August 2008, &lt;https://www.defcon.org/images/defcon-16/ dc16-presentations/defcon-16-pilosov-kapela.pdf&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Kephart] Kephart, N., &#34;Route Leak Causes Amazon and AWS Outage&#34;, ThousandEyes Blog, June 2015, &lt;https://blog.thousandeyes.com/ route-leak-causes-amazon-and-aws-outage&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Kephart] Kephart, N., &#34;Route Leak Causes Amazon and AWS Outage&#34;, ThousandEyes Blog, June 2015, &lt;https://blog.thousandeyes.com/ route-leak-causes-amazon-and-aws-outage&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Khare] Khare, V., Ju, Q., and B. Zhang, &#34;Concurrent Prefix Hijacks: Occurrence and Impacts&#34;, In Proceedings of the 2013 ACM Internet Measurement Conference (IMC), DOI 10.1145/2398776.2398780, November 2012, &lt;http://www.cs.arizona.edu/~bzhang/ paper/12-imc-hijack.pdf&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Khare] Khare, V., Ju, Q., and B. Zhang, &#34;Concurrent Prefix Hijacks：Occurrence and Impacts&#34;, In Proceedings of the 2013 ACM Internet Measurement Conference (IMC), DOI 10.1145/2398776.2398780, November 2012, &lt;http://www.cs.arizona.edu/~bzhang/ paper/12-imc-hijack.pdf&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Labovitz] Labovitz, C., &#34;Additional Discussion of the April China BGP Hijack Incident&#34;, Arbor Networks IT Security Blog, November 2010, &lt;http://www.arbornetworks.com/asert/2010/11/additional-discussion-of-the-april-china-bgp-hijack-incident/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Labovitz] Labovitz, C., &#34;Additional Discussion of the April China BGP Hijack Incident&#34;, Arbor Networks IT Security Blog, November 2010, &lt;http://www.arbornetworks.com/asert/2010/11/additional-discussion-of-the-april-china-bgp-hijack-incident/&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[LRL] Khare, V., Ju, Q., and B. Zhang, &#34;Large Route Leaks&#34;, University of Arizona (UA) Network Research Lab: Projects Webpage, 2012, &lt;http://nrl.cs.arizona.edu/projects/ lsrl-events-from-2003-to-2009/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[LRL] Khare, V., Ju, Q., and B. Zhang, &#34;Large Route Leaks&#34;, University of Arizona (UA) Network Research Lab：Projects Webpage, 2012, &lt;http://nrl.cs.arizona.edu/projects/ lsrl-events-from-2003-to-2009/&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Luckie] Luckie, M., Huffaker, B., Dhamdhere, A., Giotsas, V., and kc. claffy, &#34;AS Relationships, Customer Cones, and Validation&#34;, In Proceedings of the 2013 ACM Internet Measurement Conference (IMC), DOI 10.1145/2504730.2504735, October 2013, &lt;http://www.caida.org/~amogh/papers/asrank-IMC13.pdf&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Luckie] Luckie, M., Huffaker, B., Dhamdhere, A., Giotsas, V., and kc. claffy, &#34;AS Relationships, Customer Cones, and Validation&#34;, In Proceedings of the 2013 ACM Internet Measurement Conference (IMC), DOI 10.1145/2504730.2504735, October 2013, &lt;http://www.caida.org/~amogh/papers/asrank-IMC13.pdf&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Madory] Madory, D., &#34;Why Far-Flung Parts of the Internet Broke Today&#34;, Dyn Research: The New Home of Renesys Blog, September 2014, &lt;http://research.dyn.com/2014/09/ why-the-internet-broke-today/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Madory] Madory, D., &#34;Why Far-Flung Parts of the Internet Broke Today&#34;, Dyn Research：The New Home of Renesys Blog，2014 年 9 月，&lt;http://research.dyn.com/2014/09/ why-the-internet-broke-today/&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Mauch] Mauch, J., &#34;BGP Routing Leak Detection System&#34;, Project web page, 2014, &lt;http://puck.nether.net/bgp/leakinfo.cgi/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Mauch] Mauch, J.，&#34;BGP 路由泄漏检测系统&#34;，项目网页，2014 年，&lt;http://puck.nether.net/bgp/leakinfo.cgi/&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Mauch-nanog] Mauch, J., &#34;Detecting Routing Leaks by Counting&#34;, 41st NANOG Conference, October 2007, &lt;https://www.nanog.org/meetings/nanog41/presentations/ mauch-lightning.pdf&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Mauch-nanog] Mauch, J., &#34;Detecting Routing Leaks by Counting&#34;, 41st NANOG Conference, October 2007, &lt;https://www.nanog.org/meetings/nanog41/presentations/ mauch-lightning.pdf&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Paseka] Paseka, T., &#34;Why Google Went Offline Today and a Bit about How the Internet Works&#34;, CloudFlare Blog, November 2012, &lt;http://blog.cloudflare.com/ why-google-went-offline-today-and-a-bit-about/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Paseka] Paseka, T., &#34;Why Google Went Offline Today and a Bit about How the Internet Works&#34;, CloudFlare Blog, November 2012, &lt;http://blog.cloudflare.com/ why-google-went-offline-today-and-a-bit-about/&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[ROUTE-LEAK-DEF] Dickson, B., &#34;Route Leaks -- Definitions&#34;, Work in Progress, draft-dickson-sidr-route-leak-def-03, October 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[ROUTE-LEAK-DEF] Dickson, B., &#34;Route Leaks -- Definitions&#34;, Work in Progress, draft-dickson-sidr-route-leak-def-03, October 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[ROUTE-LEAK-REQ] Dickson, B., &#34;Route Leaks -- Requirements for Detection and Prevention thereof&#34;, Work in Progress, draft-dickson-sidr-route-leak-reqts-02, March 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[ROUTE-LEAK-REQ] Dickson, B., &#34;Route Leaks -- Requirements for Detection and Prevention Thereof&#34;, Work in Progress, draft-dickson-sidr-route-leak-reqts-02, March 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Toonk2014] Toonk, A., &#34;What caused today&#39;s Internet hiccup&#34;, BGPMON Blog, August 2014, &lt;http://www.bgpmon.net/ what-caused-todays-internet-hiccup/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Toonk2014] Toonk, A., &#34;What caused today&#39;s Internet hiccup&#34;, BGPMON Blog, August 2014, &lt;http://www.bgpmon.net/ what-caused-todays-internet-hiccup/&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Toonk2015-A] Toonk, A., &#34;What caused the Google service interruption&#34;, BGPMON Blog, March 2015, &lt;http://www.bgpmon.net/ what-caused-the-google-service-interruption/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Toonk2015-A] Toonk, A., &#34;What caused the Google service interruption&#34;, BGPMON Blog, March 2015, &lt;http://www.bgpmon.net/ what-caused-the-google-service-interruption/&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Toonk2015-B] Toonk, A., &#34;Massive route leak causes Internet slowdown&#34;, BGPMON Blog, June 2015, &lt;http://www.bgpmon.net/ massive-route-leak-cause-internet-slowdown/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Toonk2015-B] Toonk, A., &#34;Massive route leak causes Internet slowdown&#34;, BGPMON Blog, June 2015, &lt;http://www.bgpmon.net/ massive-route-leak-cause-internet-slowdown/&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Wijchers] Wijchers, B. and B. Overeinder, &#34;Quantitative Analysis of BGP Route Leaks&#34;, Reseaux IP Europeens (RIPE) 69th Meeting, November 2014, &lt;http://ripe69.ripe.net/ presentations/157-RIPE-69-Routing-WG.pdf&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Wijchers] Wijchers, B. and B. Overeinder, &#34;Quantitative Analysis of BGP Route Leaks&#34;, Reseaux IP Europeens (RIPE) 69th Meeting, November 2014, &lt;http://ripe69.ripe.net/ presentations/157-RIPE-69-Routing-WG.pdf&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Zmijewski] Zmijewski, E., &#34;Indonesia Hijacks the World&#34;, Dyn Research: The New Home of Renesys Blog, April 2014, &lt;http://research.dyn.com/2014/04/ indonesia-hijacks-world/&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[Zmijewski] Zmijewski, E., &#34;Indonesia Hijacks the World&#34;, Dyn Research：The New Home of Renesys Blog，2014 年 4 月，&lt;http://research.dyn.com/2014/04/ indonesia-hijacks-world/&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Acknowledgements
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+致谢
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors wish to thank Jared Mauch, Jeff Haas, Warren Kumari, Amogh Dhamdhere, Jakob Heitz, Geoff Huston, Randy Bush, Job Snijders, Ruediger Volk, Andrei Robachevsky, Charles van Niman, Chris Morrow, and Sandy Murphy for comments, suggestions, and critique. The authors are also thankful to Padma Krishnaswamy, Oliver Borchert, and Okhee Kim for their comments and review.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢 Jared Mauch、Jeff Haas、Warren Kumari、Amogh Dhamdhere、Jakob Heitz、Geoff Huston、Randy Bush、Job Snijders、Ruediger Volk、Andrei Robachevsky、Charles van Niman、Chris Morrow 和 Sandy Murphy 的评论、建议和批评。作者还要感谢 Padma Krishnaswamy、Oliver Borchert 和 Okhee Kim 的评论和审查。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Kotikalapudi Sriram US NIST
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+科蒂卡拉普迪-斯里拉姆 美国国家标准与技术研究院
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: ksriram@nist.gov
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Doug Montgomery US NIST
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Doug Montgomery 美国 NIST
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: dougm@nist.gov
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Danny McPherson Verisign, Inc.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Danny McPherson Verisign, Inc.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: dmcpherson@verisign.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Eric Osterweil Verisign, Inc.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Eric Osterweil Verisign, Inc.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: eosterweil@verisign.com
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Brian Dickson
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+布莱恩-迪克森
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Email: brian.peter.dickson@gmail.com
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

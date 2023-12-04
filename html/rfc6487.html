@@ -1,0 +1,3473 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 6487 - A Profile for X.509 PKIX Resource Certificates 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">6487</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc6487">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 6487 - A Profile for X.509 PKIX Resource Certificates 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc6487">
+            https://datatracker.ietf.org/doc/html/rfc6487
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 6487 - X.509 PKIX 资源证书简介</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                         G. Huston
+Request for Comments: 6487                                 G. Michaelson
+Category: Standards Track                                     R. Loomans
+ISSN: 2070-1721                                                    APNIC
+                                                           February 2012
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-13">
+A Profile for X.509 PKIX Resource Certificates
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-13">
+X.509 PKIX 资源证书简介
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines a standard profile for X.509 certificates for the purpose of supporting validation of assertions of &#34;right-of-use&#34; of Internet Number Resources (INRs). The certificates issued under this profile are used to convey the issuer&#39;s authorization of the subject to be regarded as the current holder of a &#34;right-of-use&#34; of the INRs that are described in the certificate. This document contains the normative specification of Certificate and Certificate Revocation List (CRL) syntax in the Resource Public Key Infrastructure (RPKI). This document also specifies profiles for the format of certificate requests and specifies the Relying Party RPKI certificate path validation procedure.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件定义了 X.509 证书的标准配置文件，以支持对互联网号码资源（INR）&#34;使用权 &#34;声明的验证。根据该配置文件签发的证书用于传递签发者对主体的授权，使其被视为证书中描述的 INR &#34;使用权 &#34;的当前持有者。本文档包含资源公钥基础设施 (RPKI) 中证书和证书废止列表 (CRL) 语法的规范性说明。本文件还规定了证书请求格式的配置文件，并规定了依赖方 RPKI 证书路径验证程序。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This is an Internet Standards Track document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这是一份互联网标准跟踪文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 5741.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 5741 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6487.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6487。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2012 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+版权所有 (c) 2012 IETF 信托基金会和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction . . . . . . . . . . . . . . . . . . . . . . . . .  4
+     1.1.  Terminology  . . . . . . . . . . . . . . . . . . . . . . .  5
+   2.  Describing Resources in Certificates . . . . . . . . . . . . .  5
+   3.  End-Entity (EE) Certificates and Signing Functions in the RPKI  5
+   4.  Resource Certificates  . . . . . . . . . . . . . . . . . . . .  6
+     4.1.  Version  . . . . . . . . . . . . . . . . . . . . . . . . .  6
+     4.2.  Serial Number  . . . . . . . . . . . . . . . . . . . . . .  6
+     4.3.  Signature Algorithm  . . . . . . . . . . . . . . . . . . .  6
+     4.4.  Issuer . . . . . . . . . . . . . . . . . . . . . . . . . .  7
+     4.5.  Subject  . . . . . . . . . . . . . . . . . . . . . . . . .  7
+     4.6.  Validity . . . . . . . . . . . . . . . . . . . . . . . . .  7
+       4.6.1.  notBefore  . . . . . . . . . . . . . . . . . . . . . .  8
+       4.6.2.  notAfter . . . . . . . . . . . . . . . . . . . . . . .  8
+     4.7.  Subject Public Key Info  . . . . . . . . . . . . . . . . .  8
+     4.8.  Resource Certificate Extensions  . . . . . . . . . . . . .  8
+       4.8.1.  Basic Constraints  . . . . . . . . . . . . . . . . . .  8
+       4.8.2.  Subject Key Identifier . . . . . . . . . . . . . . . .  9
+       4.8.3.  Authority Key Identifier . . . . . . . . . . . . . . .  9
+       4.8.4.  Key Usage  . . . . . . . . . . . . . . . . . . . . . .  9
+       4.8.5.  Extended Key Usage . . . . . . . . . . . . . . . . . .  9
+       4.8.6.  CRL Distribution Points  . . . . . . . . . . . . . . . 10
+       4.8.7.  Authority Information Access . . . . . . . . . . . . . 10
+       4.8.8.  Subject Information Access . . . . . . . . . . . . . . 11
+       4.8.9.  Certificate Policies . . . . . . . . . . . . . . . . . 12
+       4.8.10. IP Resources . . . . . . . . . . . . . . . . . . . . . 12
+       4.8.11. AS Resources . . . . . . . . . . . . . . . . . . . . . 12
+   5.  Resource Certificate Revocation Lists  . . . . . . . . . . . . 13
+   6.  Resource Certificate Requests  . . . . . . . . . . . . . . . . 13
+     6.1.  PCKS#10 Profile  . . . . . . . . . . . . . . . . . . . . . 14
+       6.1.1.  PKCS#10 Resource Certificate Request Template Fields . 14
+     6.2.  CRMF Profile . . . . . . . . . . . . . . . . . . . . . . . 15
+       6.2.1.  CRMF Resource Certificate Request Template Fields  . . 15
+       6.2.2.  Resource Certificate Request Control Fields  . . . . . 16
+     6.3.  Certificate Extension Attributes in Certificate Requests . 16
+   7.  Resource Certificate Validation  . . . . . . . . . . . . . . . 17
+     7.1.  Resource Extension Validation  . . . . . . . . . . . . . . 17
+     7.2.  Resource Certification Path Validation . . . . . . . . . . 18
+   8.  Design Notes . . . . . . . . . . . . . . . . . . . . . . . . . 19
+   9.  Operational Considerations for Profile Agility . . . . . . . . 22
+   10. Security Considerations  . . . . . . . . . . . . . . . . . . . 24
+   11. Acknowledgements . . . . . . . . . . . . . . . . . . . . . . . 25
+   12. References . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+     12.1. Normative References . . . . . . . . . . . . . . . . . . . 25
+     12.2. Informative References . . . . . . . . . . . . . . . . . . 26
+   Appendix A.  Example Resource Certificate  . . . . . . . . . . . . 27
+   Appendix B.  Example Certificate Revocation List . . . . . . . . . 31
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document defines a standard profile for X.509 certificates [X.509] for use in the context of certification of Internet Number Resources (INRs), i.e., IP Addresses and Autonomous System (AS) numbers. Such certificates are termed &#34;resource certificates&#34;. A resource certificate is a certificate that conforms to the PKIX profile [RFC5280], and that conforms to the constraints specified in this profile. A resource certificate attests that the issuer has granted the subject a &#34;right-of-use&#34; for a listed set of IP addresses and/or Autonomous System numbers.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件定义了 X.509 证书[X.509]的标准配置文件，用于互联网号码资源（INR）（即 IP 地址和自治系统（AS）号码）的认证。此类证书称为 &#34;资源证书&#34;。资源证书是一种符合 PKIX 配置文件 [RFC5280]，并符合该配置文件规定的约束条件的证书。资源证书证明签发者已授予主体对所列出的一组 IP 地址和/或自治系统号码的 &#34;使用权&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is referenced by Section 7 of the &#34;Certificate Policy (CP) for the Resource Public Key Infrastructure (RPKI)&#34; [RFC6484]. It is an integral part of that policy and the normative specification for certificate and Certificate Revocation List (CRL) syntax used in the RPKI. The document also specifies profiles for the format of certificate requests, and the relying party (RP) RPKI certificate path validation procedure.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档由 &#34;资源公钥基础设施（RPKI）证书策略（CP）&#34;[RFC6484] 第 7 节引用。它是该政策不可分割的一部分，也是 RPKI 中使用的证书和证书废止列表 (CRL) 语法的规范。该文件还规定了证书请求格式和依赖方 (RP) RPKI 证书路径验证程序。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Resource certificates are to be used in a manner that is consistent with the RPKI Certificate Policy (CP) [RFC6484]. They are issued by entities that assign and/or allocate public INRs, and thus the RPKI is aligned with the public INR distribution function. When an INR is allocated or assigned by a number registry to an entity, this allocation can be described by an associated resource certificate. This certificate is issued by the number registry, and it binds the certificate subject&#39;s key to the INRs enumerated in the certificate. One or two critical extensions, the IP Address Delegation or AS Identifier Delegation Extensions [RFC3779], enumerate the INRs that were allocated or assigned by the issuer to the subject.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源证书的使用方式应符合 RPKI 证书策略 (CP) [RFC6484]。资源证书由分配和/或分配公共 INR 的实体签发，因此 RPKI 与公共 INR 分配功能一致。当号码注册机构将 INR 分配或指派给某个实体时，可通过相关的资源证书来描述这种分配。该证书由号码注册机构签发，它将证书主体的密钥与证书中列举的 INR 绑定。IP 地址授权或 AS 标识符授权扩展[RFC3779]中的一个或两个关键扩展列举了由签发者分配或指派给主体的 INR。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Relying party (RP) validation of a resource certificate is performed in the manner specified in Section 7.1. This validation procedure differs from that described in Section 6 of [RFC5280], such that:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源证书的依赖方 (RP) 验证按第 7.1 节规定的方式进行。该验证程序与 [RFC5280] 第 6 节中描述的程序不同，例如
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o additional validation processing imposed by the INR extensions is required,
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 需要进行 INR 扩展所规定的额外验证处理、
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o a confirmation of a public key match between the CRL issuer and the resource certificate issuer is required, and
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 必须确认证书发放程序和资源证书发放程序之间的公用密钥匹配，以及
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o the resource certificate is required to conform to this profile.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 资源证书必须符合本规范。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This profile defines those fields that are used in a resource certificate that MUST be present for the certificate to be valid. Any extensions not explicitly mentioned MUST be absent. The same applies to the CRLs used in the RPKI, that are also profiled in this document. A Certification Authority (CA) conforming to the RPKI CP MUST issue certificates and CRLs consistent with this profile.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本规范定义了资源证书中使用的字段，这些字段必须存在证书才能有效。任何未明确提及的扩展都必须缺失。这同样适用于 RPKI 中使用的 CRL，本文档也对其进行了描述。符合 RPKI CP 的认证机构（CA）必须签发与本简介一致的证书和 CRL。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-1--Terminology">
+1.1. Terminology
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.1. 用语
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is assumed that the reader is familiar with the terms and concepts described in &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34; [RFC5280], and &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34; [RFC3779].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+假定读者已熟悉 &#34;互联网 X.509 公钥基础设施证书和证书吊销列表 (CRL) 配置文件&#34; [RFC5280] 和 &#34;IP 地址和 AS 标识符的 X.509 扩展&#34; [RFC3779] 中描述的术语和概念。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in [RFC2119].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;、&#34;MUST NOT&#34;、&#34;REQUIRED&#34;、&#34;SHALL&#34;、&#34;SHALL NOT&#34;、&#34;SHOULD&#34;、&#34;SHOULD NOT&#34;、&#34;RECOMMENDED&#34;、&#34;MAY &#34;和 &#34;OPTIONAL &#34;应按照 [RFC2119] 中的描述进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Describing-Resources-in-Certificates">
+2. Describing Resources in Certificates
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 在证书中描述资源
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The framework for describing an association between the subject of a certificate and the INRs currently under the subject&#39;s control is described in [RFC3779]. This profile further requires that:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+描述证书主体与当前由主体控制的 INR 之间关联的框架见 [RFC3779]。本规范进一步要求
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o Every resource certificate MUST contain either the IP Address Delegation or the Autonomous System Identifier Delegation extension, or both.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 每个资源证书必须包含 IP 地址授权或自治系统标识符授权扩展，或两者兼有。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o These extensions MUST be marked as critical.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 这些扩展必须标记为关键。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o The sorted canonical format describing INRs, with maximal spanning ranges and maximal spanning prefix masks, as defined in [RFC3779], MUST be used for the resource extension field, except where the &#34;inherit&#34; construct is used instead.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+o 除非使用 &#34;继承 &#34;结构，否则 [RFC3779] 中定义的描述 INR（具有最大跨度范围和最大跨度前缀掩码）的排序规范格式必须用于资源扩展字段。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When validating a resource certificate, an RP MUST verify that the INRs described in the issuer&#39;s resource certificate encompass the INRs of the resource certificate being validated. In this context, &#34;encompass&#34; allows for the issuer&#39;s INRs to be the same as, or a strict superset of, the subject&#39;s INRs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在验证资源证书时，RP 必须验证签发者资源证书中描述的 INR 是否包含正在验证的资源证书的 INR。在这种情况下，&#34;包含 &#34;允许签发者的 INR 与主体的 INR 相同或严格超集。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--End-Entity-EE-Certificates-and-Signing-Functions-in-the-RPKI">
+3. End-Entity (EE) Certificates and Signing Functions in the RPKI
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. RPKI 中的最终实体 (EE) 证书和签名功能
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As noted in [RFC6480], the primary function of end-entity (EE) certificates in the RPKI is the verification of signed objects that relate to the usage of the INRs described in the certificate, e.g., Route Origin Authorizations (ROAs) and manifests.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如 [RFC6480] 所述，RPKI 中终端实体 (EE) 证书的主要功能是验证与证书中描述的 INR 的使用有关的签名对象，如路由起源授权 (ROAs) 和清单。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The private key associated with an EE certificate is used to sign a single RPKI signed object, i.e., the EE certificate is used to validate only one object. The EE certificate is embedded in the object as part of a Cryptographic Message Syntax (CMS) signed-data structure [RFC6488]. Because of the one-to-one relationship between the EE certificate and the signed object, revocation of the certificate effectively revokes the corresponding signed object.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+与 EE 证书关联的私钥用于签署单个 RPKI 签名对象，即 EE 证书仅用于验证一个对象。EE 证书作为加密信息语法（CMS）签名数据结构 [RFC6488] 的一部分嵌入对象中。由于 EE 证书和签名对象之间是一一对应的关系，因此证书的撤销会有效地撤销相应的签名对象。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An EE certificate may be used to validate a sequence of signed objects, where each signed object in the sequence overwrites the previous instance of the signed object in the repository publication point, such that only one instance of the signed object is published at any point in time (e.g., an EE certificate MAY be used to sign a sequence of manifests [RFC6486]). Such EE certificates are termed &#34;sequential use&#34; EE certificates.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+EE 证书可用于验证已签名对象的序列，其中序列中的每个已签名对象都会覆盖存储库发布点中已签名对象的前一个实例，从而在任何时间点都只发布一个已签名对象的实例（例如，EE 证书可用于签署清单序列[RFC6486]）。此类 EE 证书称为 &#34;顺序使用 &#34;EE 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+EE certificates used to validate only one instance of a signed object, and are not used thereafter or in any other validation context, are termed &#34;one-time-use&#34; EE certificates.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+EE 证书只用于验证一个已签名对象的一个实例，此后不再使用或在任何其他验证环境中使用，这种证书被称为 &#34;一次性使用 &#34;EE 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Resource-Certificates">
+4. Resource Certificates
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 资源证书
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A resource certificate is a valid X.509 public key certificate, consistent with the PKIX profile [RFC5280], containing the fields listed in this section. Only the differences from [RFC5280] are noted below.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源证书是有效的 X.509 公钥证书，符合 PKIX 配置文件 [RFC5280]，包含本节所列字段。下文仅指出与 [RFC5280] 的不同之处。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Unless specifically noted as being OPTIONAL, all the fields listed here MUST be present, and any other fields MUST NOT appear in a conforming resource certificate. Where a field value is specified here, this value MUST be used in conforming resource certificates.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+除非特别注明是可选的，否则此处列出的所有字段都必须存在，任何其他字段都不得 出现在符合规定的资源证书中。此处指定的字段值必须在符合规定的资源证书中使用。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-1--Version">
+4.1. Version
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.1. 版本
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As resource certificates are X.509 version 3 certificates, the version MUST be 3 (i.e., the value of this field is 2).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于资源证书是 X.509 第 3 版证书，因此版本必须为 3（即该字段的值为 2）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPs need not process version 1 or version 2 certificates (in contrast to [RFC5280]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RP 无需处理版本 1 或版本 2 证书（与 [RFC5280] 相反）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-2--Serial-Number">
+4.2. Serial Number
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.2. 序列号
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The serial number value is a positive integer that is unique for each certificate issued by a given CA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+序列号值是一个正整数，对于指定 CA 签发的每张证书都是唯一的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-3--Signature-Algorithm">
+4.3. Signature Algorithm
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.3. 签名算法
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The algorithm used in this profile is specified in [RFC6485].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本配置文件中使用的算法在 [RFC6485] 中进行了说明。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-4--Issuer">
+4.4. Issuer
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.4. 发行人
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The value of this field is a valid X.501 distinguished name.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该字段值为有效的 X.501 区分名称。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An issuer name MUST contain one instance of the CommonName attribute and MAY contain one instance of the serialNumber attribute. If both attributes are present, it is RECOMMENDED that they appear as a set. The CommonName attribute MUST be encoded using the ASN.1 type PrintableString [X.680]. Issuer names are not intended to be descriptive of the identity of issuer.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+签发人名称必须包含 CommonName 属性的一个实例，也可以包含 serialNumber 属性的一个实例。如果这两个属性都存在，建议它们作为一组出现。CommonName 属性必须使用 ASN.1 类型 PrintableString [X.680] 编码。签发人名称无意描述签发人的身份。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RPKI does not rely on issuer names being globally unique, for reasons of security. However, it is RECOMMENDED that issuer names be generated in a fashion that minimizes the likelihood of collisions. See Section 8 for (non-normative) suggested name-generation mechanisms that fulfill this recommendation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+出于安全考虑，RPKI 并不依赖于签发人名称的全球唯一性。不过，我们建议发行人名称的生成方式应能最大限度地降低碰撞的可能性。有关符合此建议的建议名称生成机制（非规范性），请参见第 8 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-5--Subject">
+4.5. Subject
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.5. 主题
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The value of this field is a valid X.501 distinguished name [RFC4514], and is subject to the same constraints as the issuer name.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该字段值为有效的 X.501 区分名称 [RFC4514]，并受与签发人名称相同的限制。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the RPKI, the subject name is determined by the issuer, not proposed by the subject [RFC6481]. Each distinct subordinate CA and EE certified by the issuer MUST be identified using a subject name that is unique per issuer. In this context, &#34;distinct&#34; is defined as an entity and a given public key. An issuer SHOULD use a different subject name if the subject&#39;s key pair has changed (i.e., when the CA issues a certificate as part of re-keying the subject.) Subject names are not intended to be descriptive of the identity of subject.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 RPKI 中，主体名称由签发者决定，而不是由主体提出 [RFC6481]。由签发者认证的每个不同的下属 CA 和 EE 必须使用每个签发者唯一的主体名称来标识。在此上下文中，&#34;不同 &#34;被定义为一个实体和一个给定的公钥。如果主体的配对密钥发生变化（即 CA 签发证书时作为主体重配密钥的一部分），签发者应使用不同的主体名称。主体名称无意描述主体的身份。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-6--Validity">
+4.6. Validity
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.6. 有效性
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The certificate validity period is represented as a SEQUENCE of two dates: the date on which the certificate validity period begins (notBefore) and the date on which the certificate validity period ends (notAfter).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+证书有效期用两个日期的序列表示：证书有效期开始日期（notBefore）和证书有效期结束日期（notAfter）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+While a CA is typically advised against issuing a certificate with a validity period that spans a greater period of time than the validity period of the CA&#39;s certificate that will be used to validate the issued certificate, in the context of this profile, a CA MAY have valid grounds to issue a subordinate certificate with a validity period that exceeds the validity period of the CA&#39;s certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+虽然通常建议 CA 不要签发有效期超过用于验证所签发证书的 CA 证书有效期的证书，但在本规范中，CA 可能有正当理由签发有效期超过 CA 证书有效期的下级证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-6-1--notBefore">
+4.6.1. notBefore
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.6.1. 不早于
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &#34;notBefore&#34; time SHOULD be no earlier than the time of certificate generation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+不早于 &#34;时间不应早于证书生成时间。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the RPKI, it is valid for a certificate to have a value for this field that pre-dates the same field value in any superior certificate. Relying Parties SHOULD NOT attempt to infer from this time information that a certificate was valid at a time in the past, or that it will be valid at a time in the future, as the scope of an RP&#39;s test of validity of a certificate refers specifically to validity at the current time.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 RPKI 中，如果证书的该字段值早于任何上级证书的同一字段值，则该证书有效。依赖方不应试图从这一时间信息推断证书在过去某一时间有效或在未来某一时间有效，因为 RP 对证书有效性的检验范围是指当前时间的有效性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-6-2--notAfter">
+4.6.2. notAfter
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.6.2. notAfter
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &#34;notAfter&#34; time represents the anticipated lifetime of the current resource allocation or assignment arrangement between the issuer and the subject.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+notAfter &#34;时间表示签发人与主体之间当前资源分配或指派安排的预期有效期。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is valid for a certificate to have a value for this field that post-dates the same field value in any superior certificate. The same caveats apply to RP&#39;s assumptions relating to the certificate&#39;s validity at any time other than the current time.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果证书中该字段的值晚于任何上级证书中同一字段的值，则该证书有效。同样的注意事项也适用于 RP 有关证书在当前时间以外任何时间有效性的假设。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-7--Subject-Public-Key-Info">
+4.7. Subject Public Key Info
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.7. 主题 公钥信息
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The algorithm used in this profile is specified in [RFC6485].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本配置文件中使用的算法在 [RFC6485] 中进行了说明。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8--Resource-Certificate-Extensions">
+4.8. Resource Certificate Extensions
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8. 资源证书扩展
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following X.509 v3 extensions MUST be present in a conforming resource certificate, except where explicitly noted otherwise. Each extension in a resource certificate is designated as either critical or non-critical. A certificate-using system MUST reject the certificate if it encounters a critical extension it does not recognize; however, a non-critical extension MAY be ignored if it is not recognized [RFC5280].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+符合要求的资源证书中必须包含以下 X.509 v3 扩展，另有明确说明的除外。资源证书中的每个扩展名都被指定为关键或非关键。如果证书使用系统遇到它不能识别的关键扩展，则必须拒绝该证书；但是，如果不能识别非关键扩展，则可以忽略该扩展 [RFC5280]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-1--Basic-Constraints">
+4.8.1. Basic Constraints
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.1. 基本制约因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Basic Constraints extension field is a critical extension in the resource certificate profile, and MUST be present when the subject is a CA, and MUST NOT be present otherwise.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+基本约束扩展字段是资源证书配置文件中的一个重要扩展字段，当主体是 CA 时必须出现，否则不得出现。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The issuer determines whether the &#34;cA&#34; boolean is set.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+签发人决定是否设置 &#34;cA &#34;布尔值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Path Length Constraint is not specified for RPKI certificates, and MUST NOT be present.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 证书未指定路径长度限制，因此不得存在。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-2--Subject-Key-Identifier">
+4.8.2. Subject Key Identifier
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.2. 主题关键标识符
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension MUST appear in all resource certificates. This extension is non-critical.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展名必须出现在所有资源证书中。该扩展名不重要。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Key Identifier used for resource certificates is the 160-bit SHA-1 hash of the value of the DER-encoded ASN.1 bit string of the Subject Public Key, as described in Section 4.2.1.2 of [RFC5280].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如 [RFC5280] 第 4.2.1.2 节所述，资源证书使用的密钥标识符是主体公钥的 DER 编码 ASN.1 位字符串值的 160 位 SHA-1 哈希值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-3--Authority-Key-Identifier">
+4.8.3. Authority Key Identifier
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.3. 授权密钥标识符
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension MUST appear in all resource certificates, with the exception of a CA who issues a &#34;self-signed&#34; certificate. In a self-signed certificate, a CA MAY include this extension, and set it equal to the Subject Key Identifier. The authorityCertIssuer and authorityCertSerialNumber fields MUST NOT be present. This extension is non-critical.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展名必须出现在所有资源证书中，但签发 &#34;自签 &#34;证书的 CA 除外。在自签证书中，CA 可以包含此扩展名，并将其设置为等同于主题密钥标识符。授权证书颁发者（authorityCertIssuer）和授权证书序列号（authorityCertSerialNumber）字段不得出现。此扩展名不重要。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Key Identifier used for resource certificates is the 160-bit SHA-1 hash of the value of the DER-encoded ASN.1 bit string of the issuer&#39;s public key, as described in Section 4.2.1.1 of [RFC5280].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源证书使用的密钥标识符是签发者公钥的 DER 编码 ASN.1 位字符串值的 160 位 SHA-1 哈希值，如 [RFC5280] 第 4.2.1.1 节所述。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-4--Key-Usage">
+4.8.4. Key Usage
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.4. 主要用途
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension is a critical extension and MUST be present.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展名为关键扩展，必须存在。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In certificates issued to certification authorities only, the keyCertSign and CRLSign bits are set to TRUE, and these MUST be the only bits set to TRUE.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在仅向认证机构签发的证书中，keyCertSign 和 CRLSign 位被设置为 &#34;true&#34;，而且这两个位必须是唯一被设置为 &#34;true &#34;的位。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In EE certificates, the digitalSignature bit MUST be set to TRUE and MUST be the only bit set to TRUE.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 EE 证书中，digitalSignature 位必须设置为 &#34;true&#34;，而且必须是唯一设置为 &#34;true &#34;的位。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-5--Extended-Key-Usage">
+4.8.5. Extended Key Usage
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.5. 扩展密钥使用
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Extended Key Usage (EKU) extension MUST NOT appear in any CA certificate in the RPKI. This extension also MUST NOT appear in EE certificates used to verify RPKI objects (e.g., ROAs or manifests. The extension MUST NOT be marked critical.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+扩展密钥用法 (EKU) 扩展名不得出现在 RPKI 的任何 CA 证书中。该扩展也不得出现在用于验证 RPKI 对象（如 ROA 或清单）的 EE 证书中。扩展名不得标记为关键。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The EKU extension MAY appear in EE certificates issued to routers or other devices. Permitted values for the EKU OIDs will be specified in Standards Track RFCs issued by other IETF working groups that adopt the RPKI profile and that identify application-specific requirements that motivate the use of such EKUs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+EKU 扩展可能出现在向路由器或其他设备签发的 EE 证书中。EKU OID 的允许值将在采用 RPKI 配置文件的其他 IETF 工作组发布的标准跟踪 RFC 中指定，这些标准跟踪 RFC 将确定促使使用此类 EKU 的特定应用要求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-6--CRL-Distribution-Points">
+4.8.6. CRL Distribution Points
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.6. CRL 分发点
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension MUST be present, except in &#34;self-signed&#34; certificates, and it is non-critical. In a self-signed certificate, this extension MUST be omitted.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+除 &#34;自签 &#34;证书外，该扩展名必须存在，且不重要。在自签证书中，该扩展名必须省略。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In this profile, the scope of the CRL is specified to be all certificates issued by this CA issuer.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在此配置文件中，指定 CRL 的范围为该 CA 签发者签发的所有证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The CRL Distribution Points (CRLDP) extension identifies the location(s) of the CRL(s) associated with certificates issued by this issuer. The RPKI uses the URI [RFC3986] form of object identification. The preferred URI access mechanism is a single rsync URI (&#34;rsync://&#34;) [RFC5781] that references a single inclusive CRL for each issuer.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+证书废止列表分发点（CRLDP）扩展标识了与该签发机构签发的证书相关的证书废止列表的位置。RPKI 使用 URI [RFC3986] 形式的对象标识。首选的 URI 访问机制是单个 rsync URI（&#34;rsync://&#34;）[RFC5781]，用于引用每个签发者的单个包容性 CRL。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In this profile, the certificate issuer is also the CRL issuer, implying that the CRLIssuer field MUST be omitted, and the distributionPoint field MUST be present. The Reasons field MUST be omitted.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在此配置文件中，证书签发者也是 CRL 签发者，这意味着 CRLIssuer 字段必须省略，而 distributionPoint 字段必须存在。原因字段必须省略。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The distributionPoint MUST contain the fullName field, and MUST NOT contain a nameRelativeToCRLIssuer. The form of the generalName MUST be of type URI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+分发点必须包含 fullName 字段，且不得包含 nameRelativeToCRLIssuer。generalName 的形式必须是 URI 类型。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The sequence of distributionPoint values MUST contain only a single DistributionPoint. The DistributionPoint MAY contain more than one URI value. An rsync URI [RFC5781] MUST be present in the DistributionPoint and MUST reference the most recent instance of this issuer&#39;s CRL. Other access form URIs MAY be used in addition to the rsync URI, representing alternate access mechanisms for this CRL.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+DistributionPoint 值序列必须只包含一个 DistributionPoint。分发点可以包含一个以上的 URI 值。分发点中必须有一个 rsync URI [RFC5781]，并且必须引用该签发人 CRL 的最新实例。除 rsync URI 外，还可使用其他访问形式 URI，代表该 CRL 的替代访问机制。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-7--Authority-Information-Access">
+4.8.7. Authority Information Access
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.7. 权威信息访问
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the context of the RPKI, this extension identifies the publication point of the certificate of the issuer of the certificate in which the extension appears. In this profile, a single reference to the publication point of the immediate superior certificate MUST be present, except for a &#34;self-signed&#34; certificate, in which case the extension MUST be omitted. This extension is non-critical.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 RPKI 中，该扩展名标识了出现该扩展名的证书签发者的证书发布点。在本规范中，必须包含对直接上级证书公布点的单个引用，但 &#34;自签 &#34;证书除外，在这种情况下，扩展名必须省略。该扩展名不重要。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This profile uses a URI form of object identification. The preferred URI access mechanisms is &#34;rsync&#34;, and an rsync URI [RFC5781] MUST be specified with an accessMethod value of id-ad-caIssuers. The URI MUST reference the point of publication of the certificate where this Issuer is the subject (the issuer&#39;s immediate superior certificate). Other accessMethod URIs referencing the same object MAY also be included in the value sequence of this extension.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本配置文件使用 URI 形式的对象标识。首选的 URI 访问机制是 &#34;rsync&#34;，必须指定一个访问方法值为 id-ad-caIssuers 的 rsync URI [RFC5781]。URI 必须引用以该签发人为主体的证书发布点（签发人的直接上级证书）。其它引用同一对象的 accessMethod URI 也可包含在此扩展的值序列中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A CA MUST use a persistent URL name scheme for CA certificates that it issues [RFC6481]. This implies that a reissued certificate overwrites a previously issued certificate (to the same subject) in the publication repository. In this way, certificates subordinate to the reissued (CA) certificate can maintain a constant Authority Information Access (AIA) extension pointer and thus need not be reissued when the parent certificate is reissued.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CA 必须对其签发的 CA 证书使用持久 URL 名称方案 [RFC6481]。这意味着重新签发的证书会覆盖发布库中以前签发的证书（对同一主体）。这样，从属于重新签发的（CA）证书的证书就可以保持恒定的机构信息访问（AIA）扩展指针，因此在重新签发父证书时无需重新签发。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-8--Subject-Information-Access">
+4.8.8. Subject Information Access
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.8. 主题信息获取
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the context of the RPKI, this Subject Information Access (SIA) extension identifies the publication point of products signed by the subject of the certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 RPKI 中，主体信息访问 (SIA) 扩展标识了由证书主体签署的产品的发布点。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-8-1--SIA-for-CA-Certificates">
+4.8.8.1. SIA for CA Certificates
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.8.1. CA 证书的 SIA
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension MUST be present and MUST be marked non-critical.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展名必须存在，且必须标记为非关键扩展名。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension MUST have an instance of an accessMethod of id-ad-caRepository, with an accessLocation form of a URI that MUST specify an rsync URI [RFC5781]. This URI points to the directory containing all published material issued by this CA, i.e., all valid CA certificates, published EE certificates, the current CRL, manifest, and signed objects validated via EE certificates that have been issued by this CA [RFC6481]. Other accessDescription elements with an accessMethod of id-ad-caRepository MAY be present. In such cases, the accessLocation values describe alternate supported URI access mechanisms for the same directory. The ordering of URIs in this accessDescription sequence reflect the CA&#39;s relative preferences for access methods to be used by RPs, with the first element of the sequence being the most preferred by the CA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展必须有一个 id-ad-caRepository 的 accessMethod 实例，URI 的 accessLocation 形式必须指定 rsync URI [RFC5781]。该 URI 指向包含该 CA 签发的所有已发布材料的目录，即所有有效的 CA 证书、已发布的 EE 证书、当前 CRL、清单以及通过该 CA 签发的 EE 证书验证的签名对象 [RFC6481]。其他访问描述元素的访问方法可能是 id-ad-caRepository。在这种情况下，accessLocation 值描述的是同一目录的其他受支持 URI 访问机制。此 accessDescription 序列中 URI 的排序反映了 CA 对 RP 使用的访问方法的相对偏好，序列中的第一个元素是 CA 最偏好的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension MUST have an instance of an AccessDescription with an accessMethod of id-ad-rpkiManifest,
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展必须有一个 AccessDescription 实例，其 accessMethod 为 id-ad-rpkiManifest、
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+         id-ad OBJECT IDENTIFIER ::= { id-pkix 48 }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+         id-ad-rpkiManifest OBJECT IDENTIFIER ::= { id-ad 10 }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+with an rsync URI [RFC5781] form of accessLocation. The URI points to the CA&#39;s manifest of published objects [RFC6486] as an object URL. Other accessDescription elements MAY exist for the id-ad-rpkiManifest accessMethod, where the accessLocation value indicates alternate access mechanisms for the same manifest object.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+的 rsync URI [RFC5781] 形式的 accessLocation。URI 作为对象 URL 指向 CA 的已发布对象清单 [RFC6486]。id-ad-rpkiManifest accessMethod 可能存在其他 accessDescription 元素，其中 accessLocation 值表示同一清单对象的替代访问机制。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-8-2--SIA-for-EE-Certificates">
+4.8.8.2. SIA for EE Certificates
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.8.2. 环境工程师证书 SIA
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension MUST be present and MUST be marked non-critical.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展名必须存在，且必须标记为非关键扩展名。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension MUST have an instance of an accessMethod of id-ad-signedObject,
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展必须有一个 id-ad-signedObject 的 accessMethod 实例、
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+         id-ad-signedObject OBJECT IDENTIFIER ::= { id-ad 11 }
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+with an accessLocation form of a URI that MUST include an rsync URI [RFC5781]. This URI points to the signed object that is verified using this EE certificate [RFC6481]. Other accessDescription elements may exist for the id-ad-signedObject accessMethod, where the accessLocation value indicates alternate URI access mechanisms for the same object, ordered in terms of the EE&#39;s relative preference for supported access mechanisms.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+的 URI 的 accessLocation 形式，该 URI 必须包括 rsync URI [RFC5781]。该 URI 指向使用此 EE 证书[RFC6481]验证的签名对象。id-ad-signedObject accessMethod 可能存在其他 accessDescription 元素，其中 accessLocation 值表示同一对象的其他 URI 访问机制，按 EE 对支持的访问机制的相对偏好排序。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Other AccessMethods MUST NOT be used for an EE certificates&#39;s SIA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+其他访问方法不得用于 EE 证书的 SIA。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-9--Certificate-Policies">
+4.8.9. Certificate Policies
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.9. 证书政策
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension MUST be present and MUST be marked critical. It MUST include exactly one policy, as specified in the RPKI CP [RFC6484]
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展必须存在，并且必须标记为关键。它必须包含 RPKI CP [RFC6484] 中指定的一个策略。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-10--IP-Resources">
+4.8.10. IP Resources
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.10. 知识产权资源
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Either the IP Resources extension, or the AS Resources extension, or both, MUST be present in all RPKI certificates, and if present, MUST be marked critical.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+所有 RPKI 证书中必须包含 IP 资源扩展名或 AS 资源扩展名，或两者都有。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension contains the list of IP address resources as per [RFC3779]. The value may specify the &#34;inherit&#34; element for a particular Address Family Identifier (AFI) value. In the context of resource certificates describing public number resources for use in the public Internet, the Subsequent AFI (SAFI) value MUST NOT be used.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展包含 [RFC3779] 规定的 IP 地址资源列表。该值可指定特定地址族标识符 (AFI) 值的 &#34;继承 &#34;元素。在描述用于公共互联网的公共号码资源的资源证书中，不得使用后续 AFI (SAFI) 值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension MUST either specify a non-empty set of IP address records, or use the &#34;inherit&#34; setting to indicate that the IP address resource set of this certificate is inherited from that of the certificate&#39;s issuer.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展必须指定一组非空的 IP 地址记录，或使用 &#34;继承 &#34;设置来表示该证书的 IP 地址资源集继承自证书签发者的资源集。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4-8-11--AS-Resources">
+4.8.11. AS Resources
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4.8.11. AS 资源
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Either the AS Resources extension, or the IP Resources extension, or both, MUST be present in all RPKI certificates, and if present, MUST be marked critical.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在所有 RPKI 证书中，必须有 AS 资源扩展或 IP 资源扩展，或两者都有。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension contains the list of AS number resources as per [RFC3779], or it may specify the &#34;inherit&#34; element. Routing Domain Identifier (RDI) values are NOT supported in this profile and MUST NOT be used.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展包含 [RFC3779] 规定的 AS 号码资源列表，也可指定 &#34;继承 &#34;元素。本配置文件不支持路由域标识符 (RDI) 值，也不得使用。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This extension MUST either specify a non-empty set of AS number records, or use the &#34;inherit&#34; setting to indicate that the AS number resource set of this certificate is inherited from that of the certificate&#39;s issuer.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该扩展必须指定一组非空的 AS 号码记录，或使用 &#34;继承 &#34;设置表示该证书的 AS 号码资源集继承自证书签发者的 AS 号码资源集。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Resource-Certificate-Revocation-Lists">
+5. Resource Certificate Revocation Lists
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 资源证书吊销列表
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Each CA MUST issue a version 2 CRL that is consistent with [RFC5280]. RPs are NOT required to process version 1 CRLs (in contrast to [RFC5280]). The CRL issuer is the CA. CRLs conforming to this profile MUST NOT include Indirect or Delta CRLs. The scope of each CRL MUST be all certificates issued by this CA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+每个 CA 必须发布与 [RFC5280] 一致的第 2 版 CRL。不要求 RP 处理版本 1 CRL（与 [RFC5280] 相反）。CRL 签发者是 CA。符合本配置文件的 CRL 不得包括间接或德尔塔 CRL。每个 CRL 的范围必须是该 CA 签发的所有证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The issuer name is as in Section 4.4 above.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+发行人名称与上文第 4.4 节相同。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Where two or more CRLs are issued by the same CA, the CRL with the highest value of the &#34;CRL Number&#34; field supersedes all other CRLs issued by this CA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果同一 CA 签发了两个或多个 CRL，则 &#34;CRL 编号 &#34;字段值最高的 CRL 优先于该 CA 签发的所有其他 CRL。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The algorithm used in CRLs issued under this profile is specified in [RFC6485].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+根据本配置文件发布的 CRL 所使用的算法在 [RFC6485] 中进行了规定。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The contents of the CRL are a list of all non-expired certificates that have been revoked by the CA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CRL 的内容是 CA 已撤销的所有非过期证书的列表。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An RPKI CA MUST include the two extensions, Authority Key Identifier and CRL Number, in every CRL that it issues. RPs MUST be prepared to process CRLs with these extensions. No other CRL extensions are allowed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI CA 必须在其签发的每个 CRL 中包含两个扩展名：授权密钥标识符和 CRL 编号。RP 必须准备好处理带有这些扩展名的 CRL。不允许使用其他 CRL 扩展名。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For each revoked resource certificate, only the two fields, Serial Number and Revocation Date, MUST be present, and all other fields MUST NOT be present. No CRL entry extensions are supported in this profile, and CRL entry extensions MUST NOT be present in a CRL.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于每个废止的资源证书，必须只出现序列号和废止日期这两个字段，其他字段一律不出现。本配置文件不支持 CRL 条目扩展，CRL 条目扩展也不得出现在 CRL 中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Resource-Certificate-Requests">
+6. Resource Certificate Requests
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 资源证书申请
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A resource certificate request MAY use either of PKCS#10 or Certificate Request Message Format (CRMF). A CA MUST support certificate issuance in PKCS#10 and a CA MAY support CRMF requests.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源证书请求可使用 PKCS#10 或证书请求信息格式 (CRMF)。CA 必须支持 PKCS#10 证书签发，CA 可以支持 CRMF 请求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that there is no certificate response defined in this profile. For CA certificate requests, the CA places the resource certificate in the repository, as per [RFC6484]. No response is defined for EE certificate requests.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，本配置文件中没有定义证书响应。对于 CA 证书请求，CA 会根据 [RFC6484] 将资源证书放入资源库。EE 证书请求未定义响应。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-1--PCKS10-Profile">
+6.1. PCKS#10 Profile
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.1. PCKS#10 简介
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This profile refines the specification in [RFC2986], as it relates to resource certificates. A Certificate Request Message object, formatted according to PKCS#10, is passed to a CA as the initial step in issuing a certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本配置文件完善了 [RFC2986] 中与资源证书有关的规范。根据 PKCS#10 格式化的证书请求信息对象被传递给 CA，作为签发证书的第一步。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+With the exception of the SubjectPublicKeyinfo and the SIA extension request, the CA is permitted to alter any field in the request when issuing a certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+除了 SubjectPublicKeyinfo 和 SIA 扩展请求外，CA 在签发证书时可以更改请求中的任何字段。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-1-1--PKCS10-Resource-Certificate-Request-Template-Fields">
+6.1.1. PKCS#10 Resource Certificate Request Template Fields
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.1.1. PKCS#10 资源证书请求模板字段
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This profile applies the following additional requirements to fields that MAY appear in a CertificationRequestInfo:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本配置文件对可能出现在 CertificationRequestInfo 中的字段适用以下附加要求：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Version This field is mandatory and MUST have the value 0.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+版本 该字段为必填字段，其值必须为 0。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Subject This field MAY be omitted. If present, the value of this field SHOULD be empty (i.e., NULL), in which case the CA MUST generate a subject name that is unique in the context of certificates issued by this CA. This field is allowed to be non-empty only for a re-key/reissuance request, and only if the CA has adopted a policy (in its Certificate Practice Statement (CPS)) that permits reuse of names in these circumstances.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Subject 该字段可以省略。如果存在，该字段值应为空（即 NULL），在这种情况下，CA 必须生成一个在该 CA 签发的证书中唯一的主题名。只有在重新键入/签发请求时，并且只有在 CA 已采用允许在这些情况下重复使用名称的政策（在其证书业务规则（CPS）中）时，才允许此字段为非空。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+SubjectPublicKeyInfo This field specifies the subject&#39;s public key and the algorithm with which the key is used. The algorithm used in this profile is specified in [RFC6485].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+SubjectPublicKeyInfo 该字段指定了主体的公钥和使用该公钥的算法。此配置文件中使用的算法在 [RFC6485] 中指定。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Attributes [RFC2986] defines the attributes field as key-value pairs where the key is an OID and the value&#39;s structure depends on the key.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+属性 [RFC2986] 将属性字段定义为键值对，其中键是一个 OID，值的结构取决于键。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+The only attribute used in this profile is the extensionRequest attribute as defined in [RFC2985]. This attribute contains certificate extensions. The profile for extensions in certificate requests is specified in Section 6.3.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+本配置文件中使用的唯一属性是 [RFC2985] 中定义的 extensionRequest 属性。该属性包含证书扩展名。第 6.3 节规定了证书请求中的扩展属性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This profile applies the following additional constraint to fields that MAY appear in a CertificationRequest Object:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本规范对认证请求对象中可能出现的字段应用以下附加约束：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+signatureAlgorithm The signatureAlgorithm value is specified in [RFC6485].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+signatureAlgorithm 签名算法值在 [RFC6485] 中指定。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-2--CRMF-Profile">
+6.2. CRMF Profile
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.2. CRMF 简介
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This profile refines the Certificate Request Message Format (CRMF) specification in [RFC4211], as it relates to resource certificates. A Certificate Request Message object, formatted according to the CRMF, is passed to a CA as the initial step in certificate issuance.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本配置文件完善了 [RFC4211] 中与资源证书有关的证书请求信息格式 (CRMF) 规范。根据 CRMF 格式化的证书请求信息对象将作为证书签发的第一步传递给 CA。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+With the exception of the SubjectPublicKeyinfo and the SIA extension request, the CA is permitted to alter any requested field when issuing the certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+除了 SubjectPublicKeyinfo 和 SIA 扩展请求外，CA 在签发证书时可以更改任何请求的字段。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-2-1--CRMF-Resource-Certificate-Request-Template-Fields">
+6.2.1. CRMF Resource Certificate Request Template Fields
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.2.1. CRMF 资源证书申请模板字段
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This profile applies the following additional requirements to fields that may appear in a Certificate Request Template:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本配置文件对证书申请模板中可能出现的字段适用以下附加要求：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+version This field SHOULD be omitted. If present, it MUST specify a request for a version 3 Certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+版本 此字段应省略。如果存在，则必须指定对第 3 版证书的请求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+serialNumber This field MUST be omitted.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+序列号 此字段必须省略。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+signingAlgorithm This field MUST be omitted.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+signingAlgorithm 此字段必须省略。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+issuer This MUST be omitted in this profile.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+此配置文件中必须省略。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Validity This field MAY be omitted. If omitted, the CA will issue a Certificate with Validity dates as determined by the CA. If specified, then the CA MAY override the requested values with dates as determined by the CA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+有效期 此字段可以省略。如果省略，CA 将签发有效期由 CA 确定的证书。如果指定，则 CA 可以用 CA 确定的日期覆盖所请求的值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Subject This field MAY be omitted. If present, the value of this field SHOULD be empty (i.e., NULL), in which case the CA MUST generate a subject name that is unique in the context of certificates issued by this CA. This field is allowed to be non-empty only for a re-key/reissuance request, and only if the CA has adopted a policy (in its CPS) that permits the reuse of names in these circumstances.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Subject 该字段可以省略。如果存在，该字段值应为空（即 NULL），在这种情况下，CA 必须生成一个在该 CA 签发的证书中唯一的主题名。只有在重新键入/签发请求时，并且只有在 CA（在其 CPS 中）采用了允许在这些情况下重新使用名称的政策时，才允许此字段为非空。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+PublicKey This field MUST be present.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+PublicKey 此字段必须存在。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+extensions The profile for extensions in certificate requests is specified in Section 6.3.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+扩展名 证书请求中的扩展名配置文件见第 6.3 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-2-2--Resource-Certificate-Request-Control-Fields">
+6.2.2. Resource Certificate Request Control Fields
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.2.2. 资源证书请求控制字段
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following control fields are supported in this profile:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本配置文件支持以下控制字段：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Authenticator Control The intended model of authentication of the subject is a &#34;long term&#34; model, and the guidance offered in [RFC4211] is that the Authenticator Control field be used.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+验证者控制 目标验证模式是一种 &#34;长期 &#34;模式，[RFC4211] 提供的指导是使用验证者控制字段。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-3--Certificate-Extension-Attributes-in-Certificate-Requests">
+6.3. Certificate Extension Attributes in Certificate Requests
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.3. 证书请求中的证书扩展属性
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following extensions MAY appear in a PKCS#10 or CRMF Certificate Request. Any other extensions MUST NOT appear in a Certificate Request. This profile places the following additional constraints on these extensions:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下列扩展名可以出现在 PKCS#10 或 CRMF 证书请求中。任何其他扩展都不得出现在证书请求中。本配置文件对这些扩展设置了以下附加限制：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+BasicConstraints If this is omitted, then the CA will issue an EE certificate (hence no BasicConstraints extension will be included).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+BasicConstraints 如果省略此项，则 CA 将签发 EE 证书（因此不会包含 BasicConstraints 扩展名）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+The pathLengthConstraint is not supported in this profile, and this field MUST be omitted.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+本配置文件不支持 pathLengthConstraint，因此必须省略此字段。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+The CA MAY honor the cA boolean if set to TRUE (CA Certificate Request). If this bit is set, then it indicates that the subject is requesting a CA certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+如果 cA 布尔值被设置为 &#34;true&#34;（CA 证书请求），则 CA 可以接受该布尔值。如果该位被设置，则表明主体正在申请 CA 证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+The CA MUST honor the cA bit if set to FALSE (EE Certificate Request), in which case the corresponding EE certificate will not contain a Basic Constraints extension.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+如果 cA 位设置为 FALSE（EE 证书请求），则 CA 必须承认该位，在这种情况下，相应的 EE 证书将不包含基本约束扩展。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+KeyUsage The CA MAY honor KeyUsage extensions of keyCertSign and cRLSign if present, as long as this is consistent with the BasicConstraints SubjectType sub-field, when specified.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+KeyUsage CA 可以尊重 keyCertSign 和 cRLSign 的 KeyUsage 扩展（如果存在），只要在指定时与 BasicConstraints SubjectType 子字段一致。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+ExtendedKeyUsage The CA MAY honor ExtendedKeyUsage extensions of keyCertSign and cRLSign if present, as long as this is consistent with the BasicConstraints SubjectType sub-field, when specified.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+扩展密钥使用（ExtendedKeyUsage） 如果存在，CA 可以尊重 keyCertSign 和 cRLSign 的扩展密钥使用（ExtendedKeyUsage），只要在指定时与 BasicConstraints SubjectType 子字段一致。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+SubjectInformationAccess This field MUST be present, and the field value SHOULD be honored by the CA if it conforms to the requirements set forth in Section 4.8.8. If the CA is unable to honor the requested value for this field, then the CA MUST reject the Certificate Request.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+SubjectInformationAccess 该字段必须存在，如果该字段值符合第 4.8.8 节规定的要求，则 CA 应予以接受。如果 CA 无法接受此字段的请求值，则 CA 必须拒绝证书请求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--Resource-Certificate-Validation">
+7. Resource Certificate Validation
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 资源证书验证
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This section describes the resource certificate validation procedure. This refines the generic procedure described in Section 6 of [RFC5280].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本节介绍资源证书验证程序。它完善了 [RFC5280] 第 6 节中描述的通用程序。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7-1--Resource-Extension-Validation">
+7.1. Resource Extension Validation
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7.1. 资源扩展验证
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The IP Resources and AS Resources extensions [RFC3779] define critical extensions for INRs. These are ASN.1 encoded representations of the IPv4 and IPv6 address range and an AS number set.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+IP 资源和 AS 资源扩展[RFC3779]定义了 INR 的关键扩展。它们是 IPv4 和 IPv6 地址范围和 AS 号码集的 ASN.1 编码表示法。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Valid resource certificates MUST have a valid IP address and/or AS number resource extension. In order to validate a resource certificate, the resource extension MUST also be validated. This validation process relies on definitions of comparison of resource sets:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有效的资源证书必须具有有效的 IP 地址和/或 AS 号资源扩展名。为了验证资源证书，还必须验证资源扩展名。这一验证过程依赖于资源集比较的定义：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+more specific Given two contiguous IP address ranges or two contiguous AS number ranges, A and B, A is &#34;more specific&#34; than B if range B includes all IP addresses or AS numbers described by range A, and if range B is larger than range A.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+更具体 给定两个连续的 IP 地址范围或两个连续的 AS 号码范围 A 和 B，如果范围 B 包括范围 A 所描述的所有 IP 地址或 AS 号码，并且范围 B 比范围 A 大，则 A 比 B &#34;更具体&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+equal Given two contiguous IP address ranges or two contiguous AS number ranges, A and B, A is &#34;equal&#34; to B if range A describes precisely the same collection of IP addresses or AS numbers described by range B. The definition of &#34;inheritance&#34; in [RFC3779] is equivalent to this &#34;equality&#34; comparison.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+给定两个连续的 IP 地址范围或两个连续的 AS 号码范围 A 和 B，如果范围 A 所描述的 IP 地址集合或 AS 号码集合与范围 B 所描述的完全相同，则 A 与 B &#34;相等&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+encompass Given two IP address and AS number sets, X and Y, X &#34;encompasses&#34; Y if, for every contiguous range of IP addresses or AS numbers elements in set Y, the range element is either &#34;more specific&#34; than or &#34;equal&#34; to a contiguous range element within the set X.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+包含 给定两个 IP 地址和 AS 号码集 X 和 Y，如果对于集合 Y 中每个连续的 IP 地址范围或 AS 号码元素，该范围元素比集合 X 中的连续范围元素 &#34;更具体 &#34;或 &#34;等于&#34;，则 X &#34;包含 &#34;Y。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Validation of a certificate&#39;s resource extension in the context of a certification path (see Section 7.2 entails that for every adjacent pair of certificates in the certification path (certificates &#39;x&#39; and &#39;x + 1&#39;), the number resources described in certificate &#39;x&#39; &#34;encompass&#34; the number resources described in certificate &#39;x + 1&#39;, and the resources described in the trust anchor information &#34;encompass&#34; the resources described in the first certificate in the certification path.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在认证路径（见第 7.2 节）中对证书资源扩展的验证要求：对于认证路径中每一对相邻证书（证书 &#34;x &#34;和 &#34;x + 1&#34;），证书 &#34;x &#34;中描述的数字资源 &#34;包含 &#34;证书 &#34;x + 1 &#34;中描述的数字资源，信任锚信息中描述的资源 &#34;包含 &#34;认证路径中第一张证书中描述的资源。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7-2--Resource-Certification-Path-Validation">
+7.2. Resource Certification Path Validation
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7.2. 资源认证路径验证
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Validation of signed resource data using a target resource certificate consists of verifying that the digital signature of the signed resource data is valid, using the public key of the target resource certificate, and also validating the resource certificate in the context of the RPKI, using the path validation process. This path validation process verifies, among other things, that a prospective certification path (a sequence of n certificates) satisfies the following conditions:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+使用目标资源证书验证已签名资源数据包括使用目标资源证书的公钥验证已签名资源数据的数字签名是否有效，以及使用路径验证流程在 RPKI 环境中验证资源证书。路径验证过程主要验证预期认证路径（n 个证书的序列）是否满足以下条件：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+1. for all &#39;x&#39; in {1, ..., n-1}, the subject of certificate &#39;x&#39; is the issuer of certificate (&#39;x&#39; + 1);
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+1. 对于 {1, ..., n-1} 中的所有 &#39;x&#39;，证书 &#39;x&#39; 的主体是证书 (&#39;x&#39; + 1) 的签发者；
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+2. certificate &#39;1&#39; is issued by a trust anchor;
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+2. 证书&#39;1&#39;由信任锚签发；
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+3. certificate &#39;n&#39; is the certificate to be validated; and
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+3. 证书&#39;n&#39;是要验证的证书；以及
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+4. for all &#39;x&#39; in {1, ..., n}, certificate &#39;x&#39; is valid.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+4. 对于{1，...，n}中的所有&#39;x&#39;，证书&#39;x&#39;有效。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Certificate validation entails verifying that all of the following conditions hold, in addition to the certification path validation criteria specified in Section 6 of [RFC5280]:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+除了 [RFC5280] 第 6 节规定的认证路径验证标准外，证书验证还需要验证以下所有条件是否成立：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+1. The certificate can be verified using the issuer&#39;s public key and the signature algorithm
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+1. 可使用签发人的公开密钥和签名算法对证书进行验证
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+2. The current time lies within the certificate&#39;s Validity From and To values.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+2. 当前时间在证书的有效期起始值和截止值范围内。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+3. The certificate contains all fields that MUST be present, as defined by this specification, and contains values for selected fields that are defined as allowable values by this specification.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+3. 证书包含本规范定义的所有必须存在的字段，并包含本规范定义为允许值的选定字段的值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+4. No field, or field value, that this specification defines as MUST NOT be present is used in the certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+4. 证书中不使用本规范定义为必须不存在的字段或字段值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+5. The issuer has not revoked the certificate. A revoked certificate is identified by the certificate&#39;s serial number being listed on the issuer&#39;s current CRL, as identified by the CRLDP of the certificate, the CRL is itself valid, and the public key used to verify the signature on the CRL is the same public key used to verify the certificate itself.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+5. 签发者没有废止证书。如证书的 CRLDP 所示，证书的序列号列在签发者当前的证书废止列表（CRL）上，则表明证书已废止，CRL 本身有效，用于验证 CRL 上签名的公开密钥与用于验证证书本身的公开密钥相同。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+6. The resource extension data is &#34;encompassed&#34; by the resource extension data contained in a valid certificate where this issuer is the subject (the previous certificate in the context of the ordered sequence defined by the certification path).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+6. 资源扩展数据由有效证书中包含的资源扩展数据 &#34;包含&#34;，该签发人是主体（认证路径定义的有序序列中的前一个证书）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+7. The certification path originates with a certificate issued by a trust anchor, and there exists a signing chain across the certification path where the subject of Certificate &#39;x&#39; in the certification path matches the issuer in Certificate &#39;x + 1&#39; in the certification path, and the public key in Certificate &#39;x&#39; can verify the signature value in Certificate &#39;x+1&#39;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+7. 认证路径源于信任锚签发的证书，在认证路径中存在一个签名链，其中认证路径中证书&#39;x&#39;的主体与认证路径中证书&#39;x+1&#39;的签发者相匹配，证书&#39;x&#39;中的公钥可验证证书&#39;x+1&#39;中的签名值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A certificate validation algorithm MAY perform these tests in any chosen order.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+证书验证算法可按任意选择的顺序执行这些测试。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Certificates and CRLs used in this process MAY be found in a locally maintained cache, maintained by a regular synchronization across the distributed publication repository structure [RFC6481].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在此过程中使用的证书和 CRL 可以在本地维护的缓存中找到，缓存由分布式发布库结构 [RFC6481] 的定期同步维护。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+There exists the possibility of encountering certificate paths that are arbitrarily long, or attempting to generate paths with loops as means of creating a potential denial-of-service (DOS) attack on an RP. An RP executing this procedure MAY apply further heuristics to guide the certification path validation process to a halt in order to avoid some of the issues associated with attempts to validate such malformed certification path structures. Implementations of resource certificate validation MAY halt with a validation failure if the certification path length exceeds a locally defined configuration parameter.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+可能会遇到任意长的证书路径，或试图生成带有循环的路径，以此对 RP 进行潜在的拒绝服务（DOS）攻击。执行此程序的 RP 可进一步应用启发式方法，引导证书路径验证过程停止，以避免与尝试验证此类畸形证书路径结构相关的一些问题。如果认证路径长度超过本地定义的配置参数，资源证书验证实施可能会因验证失败而停止。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8--Design-Notes">
+8. Design Notes
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8. 设计说明
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following notes provide some additional commentary on the considerations that lie behind some of the design choices that were made in the design of this certificate profile. These notes are non-normative, i.e., this section of the document does not constitute a formal part of the profile specification, and the interpretation of key words as defined in RFC 2119 are not applicable in this section of the document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+以下注释对设计本证书配置文件时的一些设计选择背后的考虑因素作了一些补充说明。这些注释不具规范性，也就是说，文件的这一部分并不构成证书配置文件规范的正式部分，RFC 2119 中定义的关键词解释也不适用于文件的这一部分。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Certificate Extensions: This profile does not permit the use of any other critical or non-critical extensions. The rationale for this restriction is that the resource certificate profile is intended for a specific defined use. In this context, having certificates with additional non-critical extensions that RPs may see as valid certificates without understanding the extensions is inappropriate, because if the RP were in a position to understand the extensions, it would contradict or qualify this original judgment of validity in some way. This profile takes the position of minimalism over extensibility. The specific goal for the associated RPKI is to precisely match the INR allocation structure through an aligned certificate structure that describes the allocation and its context within the INR distribution hierarchy. The profile defines a resource certificate that is structured to meet these requirements.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+证书扩展：本配置文件不允许使用任何其他关键或非关键扩展。这一限制的理由是，资源证书配置文件旨在用于特定的定义用途。在这种情况下，使用带有附加非关键扩展的证书是不合适的，因为如果 RP 能够理解这些扩展，就会以某种方式与最初的有效性判断相矛盾或对其进行限定。本配置文件的立场是最小化而非扩展性。相关 RPKI 的具体目标是通过对齐的证书结构精确匹配 INR 分配结构，该结构描述了 INR 分配层次结构中的分配及其上下文。该配置文件定义了一种资源证书，其结构符合这些要求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Certification Authorities and Key Values: This profile uses a definition of an instance of a CA as a combination of a named entity and a key pair. Within this definition, a CA instance cannot rollover a key pair. However, the entity can generate a new instance of a CA with a new key pair and roll over all the signed subordinate products to the new CA [RFC6489].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+认证机构和密钥值：该配置文件将 CA 实例定义为命名实体和配对密钥的组合。在此定义中，CA 实例不能滚动密钥对。但是，实体可以用新的密钥对生成一个新的 CA 实例，并将所有已签名的附属产品转移到新的 CA [RFC6489]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+This has a number of implications in terms of subject name management, CRL Scope, and repository publication point management.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+这对主题名称管理、CRL 范围和存储库发布点管理有许多影响。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CRL Scope and Key Values: For CRL Scope, this profile specifies that a CA issues a single CRL at a time, and the scope of the CRL is all certificates issued by this CA. Because the CA instance is bound to a single key pair, this implies that the CA&#39;s public key, the key used to validate the CA&#39;s CRL, and the key used to validate the certificates revoked by that CRL are all the same key value.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CRL 范围和关键值：对于 CRL 范围，该配置文件规定 CA 每次只发布一个 CRL，CRL 的范围是该 CA 签发的所有证书。由于 CA 实例与单个密钥对绑定，这意味着 CA 的公钥、用于验证 CA CRL 的密钥以及用于验证 CRL 所撤销证书的密钥都是相同的密钥值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Repository Publication Point: The definition of a CA affects the design of the repository publication system. In order to minimize the amount of forced re-certification on key rollover events, a repository publication regime that uses the same repository publication point for all CA instances that refers to the same entity, but with different key values, will minimize the extent of re-generation of certificates to only immediate subordinate certificates. This is described in [RFC6489].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+存储库发布点：CA 的定义会影响存储库发布系统的设计。为了最大限度地减少在密钥展期事件中强制重新认证的数量，存储库发布系统如果对指向同一实体但密钥值不同的所有 CA 实例使用相同的存储库发布点，就能最大限度地减少证书的重新生成，只生成直接从属证书。这在 [RFC6489] 中有描述。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Subject Name: This profile specifies that subject names must be unique per issuer, and does not specify that subject names must be globally unique (in terms of assured uniqueness). This is due to the nature of the RPKI as a distributed PKI, implying that there is no ready ability for certification authorities to coordinate a simple RPKI-wide unique name space without resorting to additional critical external dependencies. CAs are advised to use subject name generation procedures that minimize the potential for name clashes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+主体名称：本规范规定每个签发人的主题名称必须是唯一的，但没有规定主题名称必须是全球唯一的（就确保唯一性而言）。这是因为 RPKI 具有分布式 PKI 的性质，这意味着认证机构无法在不借助额外的关键外部依赖性的情况下协调简单的 RPKI 范围内的唯一名称空间。建议 CA 使用主体名称生成程序，尽量减少名称冲突的可能性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+One way to achieve this is for a CA to use a subject name practice that uses the CommonName component of the Distinguished Name as a constant value for any given entity that is the subject of CA-issued certificates, and set the serialNumber component of the Distinguished Name to a value that is derived from the hash of the subject public key value.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+实现这一点的方法之一是 CA 使用主体名称实践，将区分名称中的 CommonName 部分作为 CA 签发证书主体的任何给定实体的常量值，并将区分名称中的 serialNumber 部分设置为从主体公钥值的哈希值中导出的值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+If the CA elects not to use the serialNumber component of the DistinguishedName, then it is considered beneficial that a CA generates CommonNames that have themselves a random component that includes significantly more than 40 bits of entropy in the name. Some non-normative recommendations to achieve this include:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+如果 CA 选择不使用 DistinguishedName 中的 serialNumber 组件，那么 CA 生成的 CommonNames 本身应具有一个随机组件，在名称中包含明显多于 40 位的熵，这被认为是有益的。为此提出的一些非规范性建议包括
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+1) Hash of the subject public key (encoded as ASCII HEX). example: cn=&#34;999d99d564de366a29cd8468c45ede1848e2cc14&#34;
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+1) 主题公钥的哈希值（以 ASCII 十六进制编码）。例如：cn=&#34;999d99d564de366a29cd8468c45ede1848e2cc14&#34;
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+2) A Universally Unique IDentifier (UUID) [RFC4122] example: cn=&#34;6437d442-6fb5-49ba-bbdb-19c260652098&#34;
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+2) 通用唯一标识符 (UUID) [RFC4122] 示例：cn=&#34;6437d442-6fb5-49ba-bdb-19c260652098&#34;
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+3) A randomly generated ASCII HEX encoded string of length 20 or greater: example: cn=&#34;0f8fcc28e3be4869bc5f8fa114db05e1&#34;&gt; (A string of 20 ASCII HEX digits would have 80-bits of entropy)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+3) 随机生成的长度为 20 或更长的 ASCII HEX 编码字符串：例如：cn=&#34;0f8fcc28e3be4869bc5f8fa114db05e1&#34;&gt;（20 个 ASCII HEX 数字的字符串有 80 位熵）
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+4) An internal database key or subscriber ID combined with one of the above example: cn=&#34;&lt;DBkey1&gt; (6437d442-6fb5-49ba-bbdb-19c2606520980)&#34; (The issuing CA may wish to be able to extract the database key or subscriber ID from the commonName. Since only the issuing CA would need to be able to parse the commonName, the database key and the source of entropy (e.g., a UUID) could be separated in any way that the CA wants, as long as it conforms to the rules for PrintableString. The separator could be a space character, parenthesis, hyphen, slash, question mark, etc.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-9">
+4) 内部数据库密钥或订户 ID 与上述示例之一相结合：cn=&#34;&lt;DBkey1&gt; (6437d442-6fb5-49ba-bbdb-19c2606520980)&#34; （签发 CA 可能希望能够从 commonName 中提取数据库密钥或订户 ID。由于只有签发 CA 才能解析 commonName，因此数据库密钥和熵源（如 UUID）可以 CA 希望的任何方式分隔，只要符合 PrintableString 的规则即可。分隔符可以是空格、括号、连字符、斜线、问号等。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9--Operational-Considerations-for-Profile-Agility">
+9. Operational Considerations for Profile Agility
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9. 配置文件灵活性的操作注意事项
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This profile requires that relying parties reject certificates or CRLs that do not conform to the profile. (Through the remainder of this section, the term &#34;certificate&#34; is used to refer to both certificates and CRLs.) This includes certificates that contain extensions that are prohibited, but that are otherwise valid as per [RFC5280]. This means that any change in the profile (e.g., extensions, permitted attributes or optional fields, or field encodings) for certificates used in the RPKI will not be backward compatible. In a general PKI context, this constraint probably would cause serious problems. In the RPKI, several factors minimize the difficulty of effecting changes of this sort.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该配置文件要求依赖方拒绝接受不符合配置文件的证书或 CRL。(在本节其余部分，&#34;证书 &#34;一词既指证书，也指 CRL）。这包括含有被禁止的扩展名，但根据 [RFC5280] 在其他方面是有效的证书。这意味着 RPKI 中使用的证书的配置文件（如扩展名、允许的属性或可选字段或字段编码）的任何更改都不能向后兼容。在一般 PKI 环境中，这种限制可能会造成严重问题。在 RPKI 中，有几个因素可以最大限度地降低进行此类更改的难度。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that the RPKI is unique in that every relying party (RP) requires access to every certificate issued by the CAs in this system. An important update of the certificates used in the RPKI must be supported by all CAs and RPs in the system, lest views of the RPKI data differ across RPs. Thus, incremental changes require very careful coordination. It would not be appropriate to introduce a new extension, or authorize use of an extant, standard extension, for a security-relevant purpose on a piecemeal basis.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，RPKI 是独一无二的，因为每个依赖方 (RP) 都需要访问本系统中 CA 签发的每张证书。RPKI 中使用的证书的重要更新必须得到系统中所有 CA 和 RP 的支持，以免各 RP 对 RPKI 数据的看法不同。因此，渐进式更改需要非常谨慎的协调。为了与安全相关的目的，不宜零敲碎打地引入新的扩展或授权使用现有的标准扩展。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+One might imagine that the &#34;critical&#34; flag in X.509 certificate extensions could be used to ameliorate this problem. However, this solution is not comprehensive and does not address the problem of adding a new, security-critical extension. (This is because such an extension needs to be supported universally, by all CAs and RPs.) Also, while some standard extensions can be marked either critical or non-critical, at the discretion of the issuer, not all have this property, i.e., some standard extensions are always non-critical. Moreover, there is no notion of criticality for attributes within a name or optional fields within a field or an extension. Thus, the critical flag is not a solution to this problem.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+我们可以想象，X.509 证书扩展中的 &#34;关键 &#34;标志可以用来改善这个问题。然而，这种解决方案并不全面，也不能解决增加新的安全关键扩展的问题。(这是因为这种扩展需要得到所有 CA 和 RP 的普遍支持）。另外，虽然有些标准扩展可以由签发者自行决定标记为关键或非关键，但并非所有扩展都具有这种特性，也就是说，有些标准扩展总是非关键的。此外，对于名称中的属性或字段或扩展名中的可选字段，也没有临界的概念。因此，临界标记并不能解决这个问题。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In typical PKI deployments, there are few CAs and many RPs. However, in the RPKI, essentially every CA in the RPKI is also an RP. Thus the set of entities that will need to change in order to issue certificates under a new format is the same set of entities that will need to change to accept these new certificates. To the extent that this is literally true, it says that CA/RP coordination for a change is tightly linked anyway. In reality, there is an important exception to this general observation. Small ISPs and holders of provider-independent allocations are expected to use managed CA services, offered by Regional Internet Registries (RIRs) and potentially by wholesale Internet Service Providers (ISPs). This reduces the number of distinct CA implementations that are needed and makes it easier to effect changes for certificate issuance. It seems very likely that these entities also will make use of RP software provided by their managed CA service provider, which reduces the number of distinct RP software implementations. Also note that many small ISPs (and holders of provider-independent allocations) employ default routes, and thus need not perform RP validation of RPKI data, eliminating these entities as RPs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在典型的 PKI 部署中，CA 很少，RP 却很多。但在 RPKI 中，RPKI 中的每个 CA 基本上都是 RP。因此，为签发新格式证书而需要改变的实体也是为接受这些新证书而需要改变的实体。从字面上看，这种说法是正确的，它说明 CA/RP 对变更的协调无论如何都是紧密联系在一起的。实际上，这种普遍看法有一个重要的例外。小型互联网服务提供商和独立于提供商的分配持有者预计会使用区域互联网注册管理机构 (RIR) 提供的托管 CA 服务，也有可能使用批发互联网服务提供商 (ISP) 提供的托管 CA 服务。这将减少所需的不同 CA 实施的数量，并使证书签发的变更更容易实现。这些实体似乎也很有可能使用其托管 CA 服务提供商提供的 RP 软件，从而减少不同 RP 软件实施的数量。还要注意的是，许多小型 ISP（以及独立于提供商的分配的持有者）采用默认路由，因此无需对 RPKI 数据进行 RP 验证，从而消除了这些实体作为 RP 的可能性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Widely available PKI RP software does not cache large numbers of certificates, an essential strategy for the RPKI. It does not process manifest or ROA data structures, essential elements of the RPKI repository system. Experience shows that such software deals poorly with revocation status data. Thus, extant RP software is not adequate for the RPKI, although some open source tools (e.g., OpenSSL and cryptlib) can be used as building blocks for an RPKI RP implementation. Thus, it is anticipated that RPs will make use of software that is designed specifically for the RPKI environment and is available from a limited number of open sources. Several RIRs and two companies are providing such software today. Thus it is feasible to coordinate change to this software among the small number of developers/maintainers.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+广泛使用的 PKI RP 软件无法缓存大量证书，而缓存是 RPKI 的一项基本策略。它不处理清单或 ROA 数据结构，而这些都是 RPKI 资源库系统的基本要素。经验表明，这类软件对废止状态数据的处理能力很差。因此，尽管一些开源工具（如 OpenSSL 和 cryptlib）可用作 RPKI RP 实现的构件，但现有的 RP 软件并不适合 RPKI。因此，预计注册程序将使用专门为 RPKI 环境设计的软件，这些软件可从数量有限的开放源代码中获得。目前有几个区域互联网注册管理机构和两家公司正在提供此类软件。因此，在少数开发者/维护者之间协调对该软件的修改是可行的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the resource certificate profile is changed in the future, e.g., by adding a new extension or changing the allowed set of name attributes or encoding of these attributes, the following procedure will be employed to effect deployment in the RPKI. The model is analogous to that described in [RPKI-ALG], but is simpler.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果将来资源证书配置文件发生变化，例如增加了新的扩展名或改变了允许的名称属性集或这些属性的编码，将采用以下程序在 RPKI 中进行部署。该模型类似于 [RPKI-ALG] 中描述的模型，但更为简单。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A new document will be issued as an update to this RFC. The CP for the RPKI [RFC6484] will be updated to reference the new certificate profile. The new CP will define a new policy OID for certificates issued under the new certificate profile. The updated CP also will define a timeline for transition to the new certificate (CRL) format. This timeline will define 3 phases and associated dates:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+将发布一份新文件作为本 RFC 的更新。RPKI 的 CP [RFC6484] 将进行更新，以引用新的证书配置文件。新的 CP 将为根据新证书配置文件签发的证书定义新的策略 OID。更新后的 CP 还将定义向新证书（CRL）格式过渡的时间表。该时间表将定义三个阶段和相关日期：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+1. At the end of phase 1, all RPKI CAs MUST be capable of issuing certificates under the new profile, if requested by a subject. Any certificate issued under the new format will contain the new policy OID.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+1. 在第 1 阶段结束时，如果主体提出要求，所有 RPKI CA 必须能够根据新的配置文件签发证书。根据新格式签发的任何证书都将包含新策略 OID。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+2. During phase 2, CAs MUST issue certificates under the new profile, and these certificates MUST coexist with certificates issued under the old format. (CAs will continue to issue certificates under the old OID/format as well.) The old and new certificates MUST be identical, except for the policy OID and any new extensions, encodings, etc. The new certificates, and associated signed objects, will coexist in the RPKI repository system during this phase, analogous to what is required by an algorithm transition for the RPKI [RPKI-ALG]. Relying parties MAY make use of the old or the new certificate formats when processing signed objects retrieved from the RPKI repository system. During this phase, a relying party that elects to process both formats will acquire the same values for all certificate fields that overlap between the old and new formats. Thus if either certificate format is verifiable, the relying party accepts the data from that certificate. This allows CAs to issue certificates under the new format before all relying parties are prepared to process that format.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+2. 在第 2 阶段，CA 必须根据新的配置文件签发证书，这些证书必须与根据旧格式签发的证书共存。(除了策略 OID 和任何新的扩展名、编码等之外，新旧证书必须完全相同。在此阶段，新证书和相关签名对象将在 RPKI 资源库系统中并存，类似于 RPKI [RPKI-ALG] 算法过渡所要求的那样。依赖方在处理从 RPKI 资源库系统检索的签名对象时，可使用新旧证书格式。在此阶段，选择处理两种格式的依赖方将为新旧格式重叠的所有证书字段获取相同的值。因此，如果任一证书格式都可验证，依赖方就会接受该证书的数据。这样，在所有依赖方都准备好处理新格式之前，核证机构就可以根据新格式签发证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+3. At the beginning of phase 3, all relying parties MUST be capable of processing certificates under the new format. During this phase, CAs will issue new certificates ONLY under the new format. Certificates issued under the old OID will be replaced with certificates containing the new policy OID. The repository system will no longer require matching old and new certificates under the different formats.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+3. 在第 3 阶段开始时，所有依赖方必须能够根据新格式处理证书。在此阶段，CA 将只根据新格式签发新证书。以旧 OID 签发的证书将被包含新策略 OID 的证书取代。存储库系统将不再要求匹配不同格式下的新旧证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+At the end of phase 3, all certificates under the old OID will have been replaced. The resource certificate profile RFC will be replaced to remove support for the old certificate format, and the CP will be replaced to remove reference to the old policy OID and to the old resource certificate profile RFC. The system will have returned to a new, steady state.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在第 3 阶段结束时，旧 OID 下的所有证书都将被替换。资源证书配置文件 RFC 将被替换，以删除对旧证书格式的支持，CP 也将被替换，以删除对旧策略 OID 和旧资源证书配置文件 RFC 的引用。系统将恢复到新的稳定状态。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="10--Security-Considerations">
+10. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+10. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Security Considerations of [RFC5280] and [RFC3779] apply to resource certificates. The Security Considerations of [RFC2986] and [RFC4211] apply to resource certificate certification requests.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] 和 [RFC3779] 的安全注意事项适用于资源证书。RFC2986] 和 [RFC4211] 的安全考虑因素适用于资源证书认证请求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A resource certificate PKI cannot in and of itself resolve any forms of ambiguity relating to uniqueness of assertions of rights of use in the event that two or more valid certificates encompass the same resource. If the issuance of resource certificates is aligned to the status of resource allocations and assignments, then the information conveyed in a certificate is no better than the information in the allocation and assignment databases.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源证书公用钥匙基础结构本身无法解决在两个或两个以上有效证书包含相同资源的情况下与使用权声明的唯一性有关的任何形式的模糊问题。如果资源证书的签发与资源分配和指派的状况一致，那么证书中传递的信息并不比分配和指派数据库中的信息更好。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This profile requires that the key used to sign an issued certificate be the same key used to sign the CRL that can revoke the certificate, implying that the certification path used to validate the signature on a certificate is the same as that used to validate the signature of the CRL that can revoke the certificate. It is noted that this is a tighter constraint than required in X.509 PKIs, and there may be a risk in using a path validation implementation that is capable of using separate validation paths for a certificate and the corresponding CRL. If there are subject name collisions in the RPKI as a result of CAs not following the guidelines provided here relating to ensuring sufficient entropy in constructing subject names, and this is combined with the situation that an RP uses an implementation of validation path construction that is not in conformance with this RPKI profile, then it is possible that the subject name collisions can cause an RP to conclude that an otherwise valid certificate has been revoked.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该规范要求用于签署已签发证书的密钥与用于签署可撤销证书的证书废止令的密钥相同，这意味着用于验证证书签名的验证路径与用于验证可撤销证书的证书废止令签名的验证路径相同。这比 X.509 PKI 所要求的限制更严格，而且使用可对证书和相应的证书废止列表使用不同验证路径的路径验证实施可能会有风险。如果 RPKI 中由于 CA 不遵守此处提供的关于在构建主题名时确保足够熵的准则而造成主题名碰撞，再加上 RP 使用的验证路径构建实施与本 RPKI 配置文件不符，那么主题名碰撞就有可能导致 RP 认定原本有效的证书已被废止。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="11--Acknowledgements">
+11. Acknowledgements
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+11. 致谢
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors would like to particularly acknowledge the valued contribution from Stephen Kent in reviewing this document and proposing numerous sections of text that have been incorporated into the document. The authors also acknowledge the contributions of Sandy Murphy, Robert Kisteleki, Randy Bush, Russ Housley, Ricardo Patara, and Rob Austein in the preparation and subsequent review of this document. The document also reflects review comments received from Roque Gagliano, Sean Turner, and David Cooper.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者特别感谢斯蒂芬-肯特（Stephen Kent）在审阅本文件时所做出的宝贵贡献，他提出的许多文本章节已被纳入本文件。作者还感谢桑迪-墨菲（Sandy Murphy）、罗伯特-基斯特莱基（Robert Kisteleki）、兰迪-布什（Randy Bush）、拉斯-豪斯利（Russ Housley）、里卡多-帕塔拉（Ricardo Patara）和罗布-奥斯汀（Rob Austein）在本文件的编写和后续审核过程中做出的贡献。本文件还反映了罗克-加利亚诺（Roque Gagliano）、肖恩-特纳（Sean Turner）和戴维-库珀（David Cooper）的审阅意见。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="12--References">
+12. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+12. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="12-1--Normative-References">
+12.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+12.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, March 1997.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2986] Nystrom, M. and B. Kaliski, &#34;PKCS #10: Certification Request Syntax Specification Version 1.7&#34;, RFC 2986, November 2000.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2986] Nystrom, M. 和 B. Kaliski，&#34;PKCS #10：认证请求语法规范 1.7 版&#34;，RFC 2986，2000 年 11 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3779] Lynn, C., Kent, S., and K. Seo, &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34;, RFC 3779, June 2004.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3779] Lynn, C., Kent, S., and K. Seo, &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34;, RFC 3779, June 2004.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4211] Schaad, J., &#34;Internet X.509 Public Key Infrastructure Certificate Request Message Format (CRMF)&#34;, RFC 4211, September 2005.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4211] Schaad, J., &#34;Internet X.509 Public Key Infrastructure Certificate Request Message Format (CRMF)&#34;，RFC 4211，2005 年 9 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, May 2008.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, May 2008.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5781] Weiler, S., Ward, D., and R. Housley, &#34;The rsync URI Scheme&#34;, RFC 5781, February 2010.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5781] Weiler, S., Ward, D., and R. Housley, &#34;rsync URI Scheme&#34;, RFC 5781, February 2010.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6484] Kent, S., Kong, D., Seo, K., and R. Watro, &#34;Certificate Policy (CP) for the Resource Public Key Infrastructure (RPKI)&#34;, BCP 173, RFC 6484, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6484] Kent, S., Kong, D., Seo, K., and R. Watro, &#34;Certificate Policy (CP) for the Resource Public Key Infrastructure (RPKI)&#34;, BCP 173, RFC 6484, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6485] Huston, G., &#34;The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6485, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6485] Huston, G., &#34;The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6485, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[X.509] ITU-T, &#34;Recommendation X.509: The Directory - Authentication Framework&#34;, 2000.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[X.509] ITU-T，&#34;X.509 建议：目录--身份验证框架&#34;，2000 年。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[X.680] ITU-T, &#34;Recommendation X.680 (2002) | ISO/IEC 8824- 1:2002, Information technology - Abstract Syntax Notation One (ASN.1): Specification of basic notation&#34;, 2002.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[X.680] ITU-T，&#34;Recommendation X.680 (2002) | ISO/IEC 8824-1:2002，Information technology - Abstract Syntax Notation One (ASN.1)：基本符号规范&#34;，2002 年。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="12-2--Informative-References">
+12.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+12.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2985] Nystrom, M. and B. Kaliski, &#34;PKCS #9: Selected Object Classes and Attribute Types Version 2.0&#34;, RFC 2985, November 2000.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2985] Nystrom, M. and B. Kaliski, &#34;PKCS #9: Selected Object Classes and Attribute Types Version 2.0&#34;, RFC 2985, November 2000.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3986] Berners-Lee, T., Fielding, R., and L. Masinter, &#34;Uniform Resource Identifier (URI): Generic Syntax&#34;, STD 66, RFC 3986, January 2005.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3986] Berners-Lee, T., Fielding, R., and L. Masinter, &#34;Uniform Resource Identifier (URI): Generic Syntax&#34;, STD 66, RFC 3986, January 2005.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4122] Leach, P., Mealling, M., and R. Salz, &#34;A Universally Unique IDentifier (UUID) URN Namespace&#34;, RFC 4122, July 2005.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4122] Leach, P., Mealling, M., and R. Salz, &#34;A Universally Unique IDentifier (UUID) URN Namespace&#34;, RFC 4122, July 2005.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4514] Zeilenga, K., &#34;Lightweight Directory Access Protocol (LDAP): String Representation of Distinguished Names&#34;, RFC 4514, June 2006.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4514] Zeilenga, K., &#34;Lightweight Directory Access Protocol (LDAP)：区分名称的字符串表示法&#34;，RFC 4514，2006 年 6 月。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, &#34;Manifests for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6486, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, &#34;Manifests for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6486, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6488] Lepinski, M., Chi, A., and S. Kent, &#34;Signed Object Template for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6488, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6488] Lepinski, M., Chi, A., and S. Kent, &#34;Signed Object Template for the Resource Public Key Infrastructure (RPKI)&#34;, RFC 6488, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6489] Huston, G., Michaelson, G., and S. Kent, &#34;Certification Authority (CA) Key Rollover in the Resource Public Key Infrastructure (RPKI)&#34;, BCP 174, RFC 6489, February 2012.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6489] Huston, G., Michaelson, G., and S. Kent, &#34;Certification Authority (CA) Key Rollover in the Resource Public Key Infrastructure (RPKI)&#34;, BCP 174, RFC 6489, February 2012.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RPKI-ALG] Gagliano, R., Kent, S., and S. Turner, &#34;Algorithm Agility Procedure for RPKI&#34;, Work in Progress, November 2011.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RPKI-ALG] Gagliano, R., Kent, S., and S. Turner, &#34;Algorithm Agility Procedure for RPKI&#34;, Work in Progress, November 2011.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="Appendix-A--Example-Resource-Certificate">
+Appendix A. Example Resource Certificate
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+附录A. 资源证书示例
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following is an example resource certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+以下是资源证书示例。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Certificate Name: 9JfgAEcq7Q-47IwMC5CJIJr6EJs.cer
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+证书名称：9JfgAEcq7Q-47IwMC5CJIJr6EJs.cer
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Data:
+     Version: 3 (0x2)
+     Serial: 1500 (0x5dc)
+     Signature Algorithm: SHA256WithRSAEncryption
+     Issuer: CN=APNIC Production-CVPQSgUkLy7pOXdNeVWGvnFX_0s
+     Validity
+      Not Before: Oct 25 12:50:00 2008 GMT
+       Not After : Jan 31 00:00:00 2010 GMT
+     Subject: CN=A91872ED
+     Subject Public Key Info:
+       Public Key Algorithm: rsaEncryption
+       RSA Public Key: (2048 bit)
+       Modulus (2048 bit):
+         00:bb:fb:4a:af:a4:b9:dc:d0:fa:6f:67:cc:27:39:
+         34:d1:80:40:37:de:88:d1:64:a2:f1:b3:fa:c6:7f:
+         bb:51:df:e1:c7:13:92:c3:c8:a2:aa:8c:d1:11:b3:
+         aa:99:c0:ac:54:d3:65:83:c6:13:bf:0d:9f:33:2d:
+         39:9f:ab:5f:cd:a3:e9:a1:fb:80:7d:1d:d0:2b:48:
+         a5:55:e6:24:1f:06:41:35:1d:00:da:1f:99:85:13:
+         26:39:24:c5:9a:81:15:98:fb:5f:f9:84:38:e5:d6:
+         70:ce:5a:02:ca:dd:61:85:b3:43:2d:0b:35:d5:91:
+         98:9d:da:1e:0f:c2:f6:97:b7:97:3e:e6:fc:c1:c4:
+         3f:30:c4:81:03:25:99:09:4c:e2:4a:85:e7:46:4b:
+         60:63:02:43:46:51:4d:ed:fd:a1:06:84:f1:4e:98:
+         32:da:27:ee:80:82:d4:6b:cf:31:ea:21:af:6f:bd:
+         70:34:e9:3f:d7:e4:24:cd:b8:e0:0f:8e:80:eb:11:
+         1f:bc:c5:7e:05:8e:5c:7b:96:26:f8:2c:17:30:7d:
+         08:9e:a4:72:66:f5:ca:23:2b:f2:ce:54:ec:4d:d9:
+         d9:81:72:80:19:95:57:da:91:00:d9:b1:e8:8c:33:
+         4a:9d:3c:4a:94:bf:74:4c:30:72:9b:1e:f5:8b:00:
+         4d:e3
+       Exponent: 65537 (0x10001)
+     X509v3 extensions:
+       X509v3 Subject Key Identifier:
+         F4:97:E0:00:47:2A:ED:0F:B8:EC:8C:0C:0B:90:89:
+         20:9A:FA:10:9B
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+       X509v3 Authority Key Identifier:
+         keyid:09:53:D0:4A:05:24:2F:2E:E9:39:77:4D:79:
+         55:86:BE:71:57:FF:4B
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+X509v3 Key Usage: critical Certificate Sign, CRL Sign
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+X509v3 密钥使用：关键证书签名、证书废止列表签名
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+X509v3 Basic Constraints: critical CA:TRUE
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+X509v3 基本约束：关键 CA:TRUE
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+X509v3 CRL Distribution Points: URI:rsync://rpki.apnic.net/repository/A3C38A24 D60311DCAB08F31979BDBE39/CVPQSgUkLy7pOXdNe VWGvnFX_0s.crl
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+X509v3 CRL 分布点：URI:rsync://rpki.apnic.net/repository/A3C38A24 D60311DCAB08F31979BDBE39/CVPQSgUkLy7pOXdNe VWGvnFX_0s.crl
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+Authority Information Access: CA Issuers - URI:rsync://rpki.apnic.net/repos itory/8BDFC7DED5FD11DCB14CF4B1A703F9B7/CVP QSgUkLy7pOXdNeVWGvnFX_0s.cer
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+授权信息访问：CA Issuers - URI:rsync://rpki.apnic.net/repos itory/8BDFC7DED5FD11DCB14CF4B1A703F9B7/CVP QSgUkLy7pOXdNeVWGvnFX_0s.cer
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+X509v3 Certificate Policies: critical Policy: 1.3.6.1.5.5.7.14.2
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+X509v3 证书策略：关键策略：1.3.6.1.5.5.7.14.2
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+Subject Information Access: CA Repository - URI:rsync://rpki.apnic.net/mem ber_repository/A91872ED/06A83982887911DD81 3F432B2086D636/ Manifest - URI:rsync://rpki.apnic.net/member_r epository/A91872ED/06A83982887911DD813F432 B2086D636/9JfgAEcq7Q-47IwMC5CJIJr6EJs.mft
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-7">
+主题信息访问：CA Repository - URI:rsync://rpki.apnic.net/mem ber_repository/A91872ED/06A83982887911DD81 3F432B2086D636/ Manifest - URI:rsync://rpki.apnic.net/member_r epository/A91872ED/06A83982887911DD813F432 B2086D636/9JfgAEcq7Q-47IwMC5CJIJr6EJs.mft
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-8">
+sbgp-autonomousSysNum: critical Autonomous System Numbers: 24021 38610 131072 131074
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-8">
+sbgp-autonomousSysNum：关键自治系统编号：24021 38610 131072 131074
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-8">
+sbgp-ipAddrBlock: critical IPv4: 203.133.248.0/22 203.147.108.0/23
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-8">
+sbgp-ipAddrBlock: critical IPv4: 203.133.248.0/22 203.147.108.0/23
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Signature Algorithm: sha256WithRSAEncryption
+       51:4c:77:e4:21:64:80:e9:35:30:20:9f:d8:4b:88:60:b8:1f:
+       73:24:9d:b5:17:60:65:6a:28:cc:43:4b:68:97:ca:76:07:eb:
+       dc:bd:a2:08:3c:8c:56:38:c6:0a:1e:a8:af:f5:b9:42:02:6b:
+       77:e0:b1:1c:4a:88:e6:6f:b6:17:d3:59:41:d7:a0:62:86:59:
+       29:79:26:76:34:d1:16:2d:75:05:cb:b2:99:bf:ca:c6:68:1b:
+       b6:a9:b0:f4:43:2e:df:e3:7f:3c:b3:72:1a:99:fa:5d:94:a1:
+       eb:57:9c:9a:2c:87:d6:40:32:c9:ff:a6:54:b8:91:87:fd:90:
+       55:ef:12:3e:1e:2e:cf:c5:ea:c3:4c:09:62:4f:88:00:a0:7f:
+       cd:67:83:bc:27:e1:74:2c:18:4e:3f:12:1d:ef:29:0f:e3:27:
+       00:ce:14:eb:f0:01:f0:36:25:a2:33:a8:c6:2f:31:18:22:30:
+       cf:ca:97:43:ed:84:75:53:ab:b7:6c:75:f7:2f:55:5c:2e:82:
+       0a:be:91:59:bf:c9:06:ef:bb:b4:a2:71:9e:03:b1:25:8e:29:
+       7a:30:88:66:b4:f2:16:6e:df:ad:78:ff:d3:b2:9c:29:48:e3:
+       be:87:5c:fc:20:2b:df:da:ca:30:58:c3:04:c9:63:72:48:8c:
+       0a:5f:97:71
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="Appendix-B--Example-Certificate-Revocation-List">
+Appendix B. Example Certificate Revocation List
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+附录B. 证书吊销列表示例
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following is an example Certificate Revocation List.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+下面是一个证书吊销列表示例。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   CRL Name: q66IrWSGuBE7jqx8PAUHAlHCqRw.crl
+   Data:
+     Version: 2
+     Signature Algorithm:
+       Hash: SHA256, Encryption: RSA
+     Issuer: CN=Demo Production APNIC CA - Not for real use,
+       E=ca@apnic.net
+     This Update: Thu Jul 27 06:30:34 2006 GMT
+     Next Update: Fri Jul 28 06:30:34 2006 GMT
+     Authority Key Identifier: Key Identifier:
+       ab:ae:88:ad:64:86:b8:11:3b:8e:ac:7c:3c:05:
+       07:02:51:c2:a9:1c
+     CRLNumber: 4
+     Revoked Certificates: 1
+       Serial Number: 1
+       Revocation Date: Mon Jul 17 05:10:19 2006 GMT
+       Serial Number: 2
+       Revocation Date: Mon Jul 17 05:12:25 2006 GMT
+       Serial Number: 4
+       Revocation Date: Mon Jul 17 05:40:39 2006 GMT
+     Signature:
+       b2:5a:e8:7c:bd:a8:00:0f:03:1a:17:fd:40:2c:46:
+       0e:d5:64:87:e7:e7:bc:10:7d:b6:3e:39:21:a9:12:
+       f4:5a:d8:b8:d4:bd:57:1a:7d:2f:7c:0d:c6:4f:27:
+       17:c8:0e:ae:8c:89:ff:00:f7:81:97:c3:a1:6a:0a:
+       f7:d2:46:06:9a:d1:d5:4d:78:e1:b7:b0:58:4d:09:
+       d6:7c:1e:a0:40:af:86:5d:8c:c9:48:f6:e6:20:2e:
+       b9:b6:81:03:0b:51:ac:23:db:9f:c1:8e:d6:94:54:
+       66:a5:68:52:ee:dd:0f:10:5d:21:b8:b8:19:ff:29:
+       6f:51:2e:c8:74:5c:2a:d2:c5:fa:99:eb:c5:c2:a2:
+       d0:96:fc:54:b3:ba:80:4b:92:7f:85:54:76:c9:12:
+       cb:32:ea:1d:12:7b:f8:f9:a2:5c:a1:b1:06:8e:d8:
+       c5:42:61:00:8c:f6:33:11:29:df:6e:b2:cc:c3:7c:
+       d3:f3:0c:8d:5c:49:a5:fb:49:fd:e7:c4:73:68:0a:
+       09:0e:6d:68:a9:06:52:3a:36:4f:19:47:83:59:da:
+       02:5b:2a:d0:8a:7a:33:0a:d5:ce:be:b5:a2:7d:8d:
+       59:a1:9d:ee:60:ce:77:3d:e1:86:9a:84:93:90:9f:
+       34:a7:02:40:59:3a:a5:d1:18:fb:6f:fc:af:d4:02:
+       d9
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Geoff Huston APNIC
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Geoff Huston APNIC
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: gih@apnic.net
+   URI:   http://www.apnic.net
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+George Michaelson APNIC
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+乔治-迈克尔逊 APNIC
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: ggm@apnic.net
+   URI:   http://www.apnic.net
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Robert Loomans APNIC
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+罗伯特-卢曼斯 APNIC
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   EMail: robertl@apnic.net
+   URI:   http://www.apnic.net
+        </pre>
+      </div>
+
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

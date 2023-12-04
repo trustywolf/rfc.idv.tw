@@ -1,0 +1,1751 @@
+{
+  "title": {
+    "text": "RFC 6907 - Use Cases and Interpretations of Resource Public Key Infrastructure (RPKI) Objects for Issuers and Relying Parties",
+    "zh": "RFC 6907 - 发行方和依赖方的资源公钥基础设施 (RPKI) 对象用例和释义"
+  },
+  "number": 6907,
+  "created_at": "2023-12-04 16:51:51.657124+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                      T. Manderson\nRequest for Comments: 6907                                         ICANN\nCategory: Informational                                        K. Sriram\nISSN: 2070-1721                                                  US NIST\n                                                                R. White\n                                                                Verisign\n                                                              March 2013",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 10,
+      "text": " Use Cases and Interpretations of Resource Public Key Infrastructure (RPKI) Objects for Issuers and Relying Parties",
+      "zh": "发行方和依赖方的资源公钥基础设施 (RPKI) 对象用例和释义"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document describes a number of use cases together with directions and interpretations for organizations and relying parties when creating or encountering Resource Public Key Infrastructure (RPKI) object scenarios in the public RPKI. All of these items are discussed here in relation to the Internet routing system.",
+      "zh": "本文件描述了一些使用案例，以及在公共 RPKI 中创建或遇到资源公钥基础架构 (RPKI) 对象场景时对组织和依赖方的指导和解释。本文将结合互联网路由系统讨论所有这些项目。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This document is not an Internet Standards Track specification; it is published for informational purposes.",
+      "zh": "本文件不是互联网标准轨道规范，仅为提供信息而发布。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Not all documents approved by the IESG are a candidate for any level of Internet Standard; see Section 2 of RFC 5741.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。并非所有经 IESG 批准的文件都能成为任何级别的互联网标准候选文件；请参见 RFC 5741 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6907.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6907。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2013 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "版权所有 (c) 2013 IETF 信托基金会和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1. Introduction ....................................................4\n   1.1. Terminology ................................................4\n   1.2. Documentation Prefixes .....................................4\n   1.3. Definitions ................................................4\n2. Overview ........................................................6\n   2.1. General Interpretation of RPKI Object Semantics ............6\n3. Origination Use Cases ...........................................7\n   3.1. Single Announcement ........................................8\n   3.2. Aggregate with a More Specific .............................8\n   3.3. Aggregate with a More Specific from a Different ASN ........9\n   3.4. Sub-Allocation to a Multi-Homed Customer ...................9\n   3.5. Restriction of a New Allocation ...........................10\n   3.6. Restriction of New ASN ....................................11\n   3.7. Restriction of a Part of an Allocation ....................11\n   3.8. Restriction of Prefix Length ..............................12\n   3.9. Restriction of Sub-Allocation Prefix Length ...............13\n   3.10. Aggregation and Origination by an Upstream Provider ......15\n   3.11. Rogue Aggregation and Origination by an Upstream\n         Provider .................................................16\n4. Adjacency or Path Validation Use Cases .........................17\n5. Partial Deployment Use Cases ...................................18\n   5.1. Parent Does Not Participate in RPKI .......................18\n   5.2. Only Some Children Participate in RPKI ....................18\n   5.3. Grandchild Does Not Participate in RPKI ...................19\n6. Transfer Use Cases .............................................20\n   6.1. Transfer of In-Use Prefix and Autonomous System Number ....20\n   6.2. Transfer of In-Use Prefix .................................21\n   6.3. Transfer of Unused Prefix .................................22",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "7. Relying Party Use Cases ........................................22\n   7.1. Prefix-Origin Validation Use Cases ........................22\n        7.1.1. Covering ROA Prefix, maxLength Satisfied,\n               and AS Match .......................................23\n        7.1.2. Covering ROA Prefix, maxLength Exceeded,\n               and AS Match .......................................23\n        7.1.3. Covering ROA Prefix, maxLength Satisfied,\n               and AS Mismatch ....................................23\n        7.1.4. Covering ROA Prefix, maxLength Exceeded,\n               and AS Mismatch ....................................24\n        7.1.5. Covering ROA Prefix Not Found ......................24\n        7.1.6. Covering ROA Prefix and the ROA Is an AS 0 ROA .....24\n        7.1.7. Covering ROA Prefix Not Found but ROAs\n               Exist for a Covering Set of More Specifics .........25\n        7.1.8. AS_SET in Route and Covering ROA Prefix Not Found ..25\n        7.1.9. Singleton AS in AS_SET (in the Route),\n               Covering ROA Prefix, and AS Match ..................26\n        7.1.10. Singleton AS in AS_SET (in the Route),\n                Covering ROA Prefix, and AS Mismatch ..............26\n        7.1.11. Multiple ASs in AS_SET (in the Route) and\n                Covering ROA Prefix ...............................26\n        7.1.12. Multiple ASs in AS_SET (in the Route) and\n                ROAs Exist for a Covering Set of More Specifics ...27\n   7.2. ROA Expiry or Receipt of a CRL Revoking a ROA .............27\n        7.2.1. ROA of Parent Prefix Is Revoked ....................27\n        7.2.2. ROA of Prefix Revoked while Parent Prefix\n               Has Covering ROA Prefix with Different ASN .........28\n        7.2.3. ROA of Prefix Revoked while That of Parent\n               Prefix Prevails ....................................28\n        7.2.4. ROA of Grandparent Prefix Revoked while\n               That of Parent Prefix Prevails .....................28\n        7.2.5. Expiry of ROA of Parent Prefix .....................29\n        7.2.6. Expiry of ROA of Prefix while Parent Prefix\n               Has Covering ROA with Different ASN ................29\n        7.2.7. Expiry of ROA of Prefix while That of\n               Parent Prefix Prevails .............................29\n        7.2.8. Expiry of ROA of Grandparent Prefix while\n               That of Parent Prefix Prevails .....................29\n8. Acknowledgements ...............................................30\n9. Security Considerations ........................................30\n10. References ....................................................30\n   10.1. Normative References .....................................30\n   10.2. Informative References ...................................30",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document describes a number of use cases together with directions and interpretations for organizations and relying parties when creating or encountering Resource Public Key Infrastructure (RPKI) object scenarios in the public RPKI. All of these items are discussed here in relation to the Internet routing system.",
+      "zh": "本文件描述了一些使用案例，以及在公共 RPKI 中创建或遇到资源公钥基础架构 (RPKI) 对象场景时对组织和依赖方的指导和解释。本文将结合互联网路由系统讨论所有这些项目。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Terminology",
+      "section_title": true,
+      "zh": "1.1. 用语"
+    },
+    {
+      "indent": 3,
+      "text": "It is assumed that the reader is familiar with the terms and concepts described in \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\" [RFC5280], \"A Profile for X.509 PKIX Resource Certificates\" [RFC6487], \"X.509 Extensions for IP Addresses and AS Identifiers\" [RFC3779], \"A Profile for Route Origin Authorizations (ROAs)\" [RFC6482], \"Validation of Route Origination Using the Resource Certificate Public Key Infrastructure (PKI) and Route Origin Authorizations (ROAs)\" [RFC6483], and \"BGP Prefix Origin Validation\" [RFC6811].",
+      "zh": "假定读者熟悉 \"互联网 X.509 公钥基础设施证书和证书吊销列表 (CRL) 简介\"[RFC5280]、\"X.509 PKIX 资源证书简介\"[RFC6487]、\"X.509IP 地址和 AS 标识符扩展\"[RFC3779]、\"路由起源授权 (ROAs) 简介\"[RFC6482]、\"使用资源证书公钥基础设施 (PKI) 和路由起源授权 (ROAs) 验证路由起源\"[RFC6483]，以及 \"BGP 前缀起源验证\"[RFC6811]。"
+    },
+    {
+      "indent": 0,
+      "text": "1.2. Documentation Prefixes",
+      "section_title": true,
+      "zh": "1.2. 文件前缀"
+    },
+    {
+      "indent": 3,
+      "text": "The documentation prefixes recommended in [RFC5737] are insufficient for use as example prefixes in this document. Therefore, this document uses RFC 1918 [RFC1918] address space for constructing example prefixes.",
+      "zh": "RFC5737] 中推荐的文档前缀不足以用作本文档中的示例前缀。因此，本文档使用 RFC 1918 [RFC1918] 地址空间来构建示例前缀。"
+    },
+    {
+      "indent": 0,
+      "text": "1.3. Definitions",
+      "section_title": true,
+      "zh": "1.3. 定义"
+    },
+    {
+      "indent": 3,
+      "text": "For all of the use cases in this document, it is assumed that RPKI objects (e.g., resource certificates, ROAs) validate in accordance with [RFC6487] and [RFC6480]. In other words, we assume that corrupted RPKI objects, if any, have been detected and eliminated.",
+      "zh": "对于本文档中的所有用例，我们假定 RPKI 对象（如资源证书、ROA）已根据 [RFC6487] 和 [RFC6480] 进行验证。换句话说，我们假定已检测并消除了损坏的 RPKI 对象（如果有的话）。"
+    },
+    {
+      "indent": 3,
+      "text": "The following definitions are in use in this document. Some of these definitions are reused or adapted from [RFC6811] with authors' permission.",
+      "zh": "本文档使用以下定义。经作者许可，其中部分定义重复使用或改编自 [RFC6811]。"
+    },
+    {
+      "indent": 3,
+      "text": "Resource: An IP address prefix (simply called prefix or subnet) or an Autonomous System Number (ASN).",
+      "zh": "资源：IP 地址前缀（简称前缀或子网）或自治系统编号（ASN）。"
+    },
+    {
+      "indent": 3,
+      "text": "Allocation: A set of resources provided to an entity or organization for its use.",
+      "zh": "分配：提供给实体或组织使用的一组资源。"
+    },
+    {
+      "indent": 3,
+      "text": "Sub-allocation: A set of resources subordinate to an allocation assigned to another entity or organization.",
+      "zh": "次级分配：从属于分配给另一个实体或组织的一组资源。"
+    },
+    {
+      "indent": 3,
+      "text": "Prefix: A prefix consists of a pair (IP address, prefix length), interpreted as is customary (see [RFC4632]).",
+      "zh": "前缀：前缀由一对（IP 地址、前缀长度）组成，按惯例解释（见 [RFC4632]）。"
+    },
+    {
+      "indent": 3,
+      "text": "Route: Data derived from a received BGP update, as defined in [RFC4271], Section 1.1. The route includes one prefix and an AS_PATH, among other things.",
+      "zh": "路由：根据 [RFC4271]，第 1.1 节中的定义，从接收到的 BGP 更新中得出的数据。路由包括一个前缀和一个 AS_PATH，等等。"
+    },
+    {
+      "indent": 3,
+      "text": "ROA: Route Origin Authorization (ROA) is an RPKI object signed by a prefix holder authorizing origination of said prefix from an origin AS specified in said ROA.",
+      "zh": "ROA：路由起源授权（ROA）是由前缀持有者签署的 RPKI 对象，授权从 ROA 中指定的起源 AS 发源所述前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "AS 0 ROA: A ROA with ASN value 0 (zero) in the AS ID field. AS 0 ROA is an attestation by a prefix holder that the prefix described in the ROA, and any more specific prefix, should not be used in a routing context [RFC6483].",
+      "zh": "AS 0 ROA：AS ID 字段中 ASN 值为 0（零）的 ROA。AS 0 ROA 是前缀持有者证明 ROA 中描述的前缀和任何更具体的前缀不应在路由上下文中使用的证明 [RFC6483]。"
+    },
+    {
+      "indent": 3,
+      "text": "ROA prefix: The prefix from a ROA.",
+      "zh": "ROA 前缀：ROA 的前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "ROA ASN: The origin ASN from a ROA.",
+      "zh": "ROA ASN：来自 ROA 的源 ASN。"
+    },
+    {
+      "indent": 3,
+      "text": "maxLength: The maximum length up to which more specific prefixes of a ROA prefix may be originated from the corresponding ROA ASN. The maxLength is specified in the ROA.",
+      "zh": "maxLength（最大长度）：最大长度，ROA 前缀的更多特定前缀可以从相应的 ROA ASN 开始。maxLength 在 ROA 中指定。"
+    },
+    {
+      "indent": 3,
+      "text": "Route prefix: A prefix derived from a route.",
+      "zh": "路由前缀：源自路由的前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "Route origin ASN: The origin AS number derived from a route. The origin AS number is:",
+      "zh": "路由起源 ASN：路由产生的起源 AS 号。源 AS 号为"
+    },
+    {
+      "indent": 6,
+      "text": "o the rightmost AS in the final segment of the AS_PATH attribute in the route if that segment is of type AS_SEQUENCE, or",
+      "zh": "o 路由中 AS_PATH 属性的最后一段中最右边的 AS（如果该段是 AS_SEQUENCE 类型），或"
+    },
+    {
+      "indent": 6,
+      "text": "o the BGP speaker's own AS number if that segment is of type AS_CONFED_SEQUENCE or AS_CONFED_SET or if the AS_PATH is empty, or",
+      "zh": "o BGP 发言者自己的 AS 号码（如果该段的类型是 AS_CONFED_SEQUENCE 或 AS_CONFED_SET，或者 AS_PATH 为空），或者"
+    },
+    {
+      "indent": 6,
+      "text": "o the distinguished value \"NONE\" if the final segment of the AS_PATH attribute is of any other type.",
+      "zh": "o 如果 AS_PATH 属性的最终段落是任何其他类型，则区分值为 \"NONE\"。"
+    },
+    {
+      "indent": 3,
+      "text": "Covering ROA prefix: A ROA prefix that is an exact match or a less specific when compared to the route prefix under consideration. In other words, the route prefix is said to have a covering ROA prefix when there exists a ROA such that the ROA prefix length is less than or equal to the route prefix length and the ROA prefix address matches the route prefix address for all bits specified by the ROA prefix length.",
+      "zh": "覆盖 ROA 前缀：与路由前缀完全匹配或不太特定的 ROA 前缀。换句话说，如果存在 ROA，且 ROA 前缀长度小于或等于路由前缀长度，且 ROA 前缀地址与路由前缀地址中 ROA 前缀长度指定的所有位相匹配，则称路由前缀具有覆盖 ROA 前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "Covering ROA: If a ROA contains a covering ROA prefix for a route prefix under consideration, then the ROA is said to be a covering ROA for the route prefix.",
+      "zh": "覆盖 ROA：如果一个 ROA 包含一个正在考虑的路由前缀的覆盖 ROA 前缀，则称该 ROA 为该路由前缀的覆盖 ROA。"
+    },
+    {
+      "indent": 3,
+      "text": "No covering ROA: No covering ROA exists for a route prefix under consideration.",
+      "zh": "无覆盖 ROA：考虑中的路由前缀不存在覆盖 ROA。"
+    },
+    {
+      "indent": 3,
+      "text": "No other covering ROA: No other covering ROA exists (besides what is (are) already cited) for a route prefix under consideration.",
+      "zh": "无其他覆盖 ROA：除已引用的 ROA 外，考虑中的路由前缀不存在其他覆盖 ROA。"
+    },
+    {
+      "indent": 3,
+      "text": "Multi-homed prefix or subnet: A prefix (i.e., subnet) for which a route is originated through two or more autonomous systems.",
+      "zh": "多归属前缀或子网：路由通过两个或两个以上自治系统产生的前缀（即子网）。"
+    },
+    {
+      "indent": 3,
+      "text": "Matched: A route's {prefix, origin AS} pair is said to be matched by a ROA when the route prefix has a covering ROA, and in addition, the route prefix length is less than or equal to the maxLength in said covering ROA and the route origin ASN is equal to the ASN in said covering ROA.",
+      "zh": "匹配：当路由前缀有一个覆盖 ROA，此外，路由前缀长度小于或等于所述覆盖 ROA 中的 maxLength，且路由来源 ASN 等于所述覆盖 ROA 中的 ASN 时，路由的 {前缀、来源 AS} 对即被 ROA 匹配。"
+    },
+    {
+      "indent": 3,
+      "text": "Given these definitions, any given BGP route will be found to have one of the following \"validation states\":",
+      "zh": "根据这些定义，任何给定的 BGP 路由都将处于以下 \"验证状态 \"之一："
+    },
+    {
+      "indent": 3,
+      "text": "o NotFound: The route prefix has no covering ROA.",
+      "zh": "o 未找到：路由前缀没有覆盖 ROA。"
+    },
+    {
+      "indent": 3,
+      "text": "o Valid: The route's {prefix, origin AS} pair is matched by at least one ROA.",
+      "zh": "o 有效：路由的 { 前缀、源 AS} 对至少与一个 ROA 匹配。"
+    },
+    {
+      "indent": 3,
+      "text": "o Invalid: The route prefix has at least one covering ROA and the route's {prefix, origin AS} pair is not matched by any ROA.",
+      "zh": "o 无效：路由前缀至少有一个覆盖 ROA，且路由的 { 前缀、源 AS} 对未被任何 ROA 匹配。"
+    },
+    {
+      "indent": 3,
+      "text": "It is to be noted that no ROA can have the value \"NONE\" as its ROA ASN. Thus, a route whose origin ASN is \"NONE\" cannot be matched by any ROA. Similarly, no valid route can have an origin ASN of zero [AS0-PROC]. Thus, no route can be matched by a ROA whose ASN is zero (i.e., an AS 0 ROA) [RFC6483].",
+      "zh": "需要注意的是，任何 ROA 的 ROA ASN 值都不能为 \"NONE\"。因此，任何 ROA 都不能匹配来源 ASN 为 \"NONE \"的路由。同样，任何有效路由的来源 ASN 都不能为 0 [AS0-PROC]。因此，ASN 为零的 ROA（即 AS 0 ROA）无法匹配任何路由 [RFC6483]。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Overview",
+      "section_title": true,
+      "zh": "2. 概述"
+    },
+    {
+      "indent": 0,
+      "text": "2.1. General Interpretation of RPKI Object Semantics",
+      "section_title": true,
+      "zh": "2.1. RPKI 对象语义的一般解释"
+    },
+    {
+      "indent": 3,
+      "text": "In the interpretation of relying parties (RPs), or relying party routing software, it is important that a 'make before break' operational policy be applied. In part, this means that an RP should implement a routing decision process where a route is assumed to be intended (i.e., considered unsuspicious) unless proven otherwise by the existence of a valid RPKI object that explicitly invalidates the route (see Section 7.1 for examples). Also, especially in cases when a prefix is newly acquired by allocation/sub-allocation or due to prefix-ownership transfer, a ROA should be registered in RPKI prior to advertisement of the prefix in BGP. This is highly recommended for the following reasons. Observe that in the transfer case (considering a prefix transfer from Org A to Org B), even though Org A's resource cert would be revoked before issuing a resource cert to Org B, there may be some latency before all relying parties discard the previously received ROA of Org A for that prefix. The latency may be due to CRL propagation delay in the RPKI system or due to periodic polling by RPs, etc. Also, observe that in the sub-allocation case (from parent Org A to child Org B), there may be an existing ROA registered by Org A (with their own origin ASN) for a covering aggregate prefix relative to the prefix in consideration. If the new prefix owner (Org B) has not already registered their own ROA (i.e., ROA with their origin ASN), then the presence of a different covering ROA (i.e., one with a different origin ASN) belonging to Org A would result in invalid assessment for the route advertised by the new owner (Org B). Thus, in both cases (transfer or sub-allocation), it is prudent for the new owner (Org B) to ensure that its route for the prefix will be valid by proactively issuing a ROA before advertising the route. The ROA should be issued with sufficient lead time taking into consideration the RPKI propagation delays.",
+      "zh": "在解释依赖方 (RP) 或依赖方路由软件时，必须采用 \"先做后断 \"的操作策略。在一定程度上，这意味着 RP 应实施路由决策流程，在此流程中，除非存在明确宣布路由无效的有效 RPKI 对象，否则路由将被假定为预期路由（即被视为不可靠路由）（示例请参见第 7.1 节）。此外，特别是当前缀是通过分配/子分配或由于前缀所有权转让而新获得时，应在 BGP 中发布前缀广告之前在 RPKI 中注册 ROA。强烈建议这样做，原因如下。请注意，在转让情况下（考虑到从 A 机构向 B 机构的前缀转让），即使 A 机构的资源证书在向 B 机构签发资源证书之前被撤销，但在所有依赖方丢弃之前收到的 A 机构关于该前缀的 ROA 之前可能会有一些延迟。延迟的原因可能是 RPKI 系统中的 CRL 传播延迟或 RP 的定期轮询等。另外，请注意，在子分配（从父机构 A 到子机构 B）情况下，机构 A 可能已为与所考虑的前缀相关的覆盖聚合前缀注册了现有 ROA（具有自己的源 ASN）。如果新的前缀所有者（B 组织）尚未注册自己的 ROA（即具有自己的来源 ASN 的 ROA），那么属于 A 组织的不同覆盖 ROA（即具有不同来源 ASN 的 ROA）的存在将导致对新所有者（B 组织）所宣传路由的无效评估。因此，在这两种情况下（转让或子分配），新所有者（B 组织）都应谨慎行事，在公布路由之前主动发布 ROA，以确保其路由对该前缀有效。考虑到 RPKI 的传播延迟，ROA 的发布应有足够的准备时间。"
+    },
+    {
+      "indent": 3,
+      "text": "As stated earlier in Section 1.3, for all of the use cases in this document, it is assumed that RPKI objects (e.g., resource certificates, ROAs) validate in accordance with [RFC6487] and [RFC6480]. In other words, we assume that corrupted RPKI objects, if any, have been detected and eliminated.",
+      "zh": "如前文第 1.3 节所述，对于本文档中的所有用例，我们假定 RPKI 对象（如资源证书、ROA）已根据 [RFC6487] 和 [RFC6480] 进行验证。换句话说，我们假定已检测并消除了损坏的 RPKI 对象（如果有的话）。"
+    },
+    {
+      "indent": 3,
+      "text": "While many of the examples provided here illustrate organizations using their own autonomous system numbers to originate routes, it should be recognized that a prefix holder need not necessarily be the holder of the autonomous system number used for the route origination.",
+      "zh": "虽然此处提供的许多示例都说明了组织使用自己的自治系统号码来创建路由，但应该认识到，前缀持有者不一定就是路由创建所使用的自治系统号码的持有者。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Origination Use Cases",
+      "section_title": true,
+      "zh": "3. 发端使用案例"
+    },
+    {
+      "indent": 3,
+      "text": "This section deals with the various use cases where an organization has Internet resources and will announce routes to the Internet. It is based on operational observations of the existing routing system. In the following use cases, the phrase \"relying parties interpret the route as intended\" is generally meant to indicate that \"relying parties interpret an announced route as having a valid origination AS\".",
+      "zh": "本节将讨论机构拥有互联网资源并将向互联网公布路由的各种使用情况。它基于对现有路由系统的运行观察。在以下用例中，\"依赖方按照意图解释路由 \"一般是指 \"依赖方将公布的路由解释为具有有效的发端 AS\"。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1. Single Announcement",
+      "section_title": true,
+      "zh": "3.1. 单项公告"
+    },
+    {
+      "indent": 3,
+      "text": "An organization (Org A with ASN 64496) has been allocated the prefix 10.1.2.0/24. It wishes to announce the /24 prefix from ASN 64496 such that relying parties interpret the route as intended.",
+      "zh": "某组织（A 组织，ASN 64496）被分配了前缀 10.1.2.0/24。它希望公布来自 ASN 64496 的 /24 前缀，以便依赖方按预期解释路由。"
+    },
+    {
+      "indent": 3,
+      "text": "The desired announcement (and organization) would be:",
+      "zh": "希望发布的公告（和组织机构）是"
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| Prefix          | Origin AS   | Organization |\n+----------------------------------------------+\n| 10.1.2.0/24     | AS 64496    |   Org A      |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The issuing party should create a ROA containing the following:",
+      "zh": "签发方应创建包含以下内容的 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.2.0/24       |    24         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.2. Aggregate with a More Specific",
+      "section_title": true,
+      "zh": "3.2. 更具体的汇总"
+    },
+    {
+      "indent": 3,
+      "text": "An organization (Org A with ASN 64496) has been allocated the prefix 10.1.0.0/16. It wishes to announce the more specific prefix 10.1.0.0/20 from ASN 64496 as well as the aggregate route such that relying parties interpret the routes as intended.",
+      "zh": "某机构（机构 A，ASN 64496）被分配了前缀 10.1.0.0/16。它希望公布来自 ASN 64496 的更具体的前缀 10.1.0.0/20，以及聚合路由，以便依赖方按照预期解释路由。"
+    },
+    {
+      "indent": 3,
+      "text": "The desired announcements (and organization) would be:",
+      "zh": "所希望的公告（和组织）将是"
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| Prefix          | Origin AS   | Organization |\n+----------------------------------------------+\n| 10.1.0.0/16     | AS 64496    |   Org A      |\n| 10.1.0.0/20     | AS 64496    |   Org A      |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The issuing party should create a ROA containing the following:",
+      "zh": "签发方应创建包含以下内容的 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/16       |    16         |\n|          |-----------------------------------+\n|          | 10.1.0.0/20       |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.3. Aggregate with a More Specific from a Different ASN",
+      "section_title": true,
+      "zh": "3.3. 与来自不同 ASN 的更具体信息聚合"
+    },
+    {
+      "indent": 3,
+      "text": "An organization (Org A with ASN 64496 and ASN 64511) has been allocated the prefix 10.1.0.0/16. It wishes to announce the more specific prefix 10.1.0.0/20 from ASN 64511 as well as the aggregate route from ASN 64496 such that relying parties interpret the routes as intended.",
+      "zh": "某机构（机构 A，拥有 ASN 64496 和 ASN 64511）已被分配了前缀 10.1.0.0/16。它希望公布来自 ASN 64511 的更具体的前缀 10.1.0.0/20，以及来自 ASN 64496 的聚合路由，以便依赖方按预期解释这些路由。"
+    },
+    {
+      "indent": 3,
+      "text": "The desired announcements (and organization) would be:",
+      "zh": "所希望的公告（和组织）将是"
+    },
+    {
+      "indent": 6,
+      "text": "+---------------------------------------------+\n| Prefix          | Origin AS   |Organization |\n+---------------------------------------------+\n| 10.1.0.0/16     | AS 64496    |  Org A      |\n| 10.1.0.0/20     | AS 64511    |  Org A      |\n+---------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The issuing party should create ROAs containing the following:",
+      "zh": "签发方应创建包含以下内容的 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/16       |    16         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64511    | 10.1.0.0/20       |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.4. Sub-Allocation to a Multi-Homed Customer",
+      "section_title": true,
+      "zh": "3.4. 向多重归属客户进行子分配"
+    },
+    {
+      "indent": 3,
+      "text": "An organization (Org A with ASN 64496) has been allocated the prefix 10.1.0.0/16; it wishes to announce the more specific prefix 10.1.0.0/20 from ASN 64496. It has further delegated 10.1.16.0/20 to a customer (Org B with ASN 64511) who is multi-homed and will originate the prefix route from ASN 64511. ASN 64496 will also announce the aggregate route such that relying parties interpret the routes as intended.",
+      "zh": "某机构（机构 A，ASN 64496）被分配了前缀 10.1.0.0/16；它希望从 ASN 64496 公告更具体的前缀 10.1.0.0/20。ASN 64496 还将 10.1.16.0/20 委托给一个多用户客户（B 组织，ASN 64511），该客户将从 ASN 64511 发起前缀路由。ASN 64496 还将公布聚合路由，以便依赖方按照预期解释路由。"
+    },
+    {
+      "indent": 3,
+      "text": "The desired announcements (and organizations) would be:",
+      "zh": "希望发布的公告（和组织）将是"
+    },
+    {
+      "indent": 6,
+      "text": "+---------------------------------------------+\n| Prefix          | Origin AS   |Organization |\n+---------------------------------------------+\n| 10.1.0.0/16     | AS 64496    |  Org A      |\n| 10.1.0.0/20     | AS 64496    |  Org A      |\n| 10.1.16.0/20    | AS 64511    |  Org B      |\n+---------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The issuing party should create ROAs containing the following:",
+      "zh": "签发方应创建包含以下内容的 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "Org A:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/16       |    16         |\n|          |-----------------------------------+\n|          | 10.1.0.0/20       |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Org B:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64511    | 10.1.16.0/20      |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.5. Restriction of a New Allocation",
+      "section_title": true,
+      "zh": "3.5. 新分配的限制"
+    },
+    {
+      "indent": 3,
+      "text": "An organization has recently been allocated the prefix 10.1.0.0/16. Its network deployment is not yet ready to announce the prefix and wishes to restrict all possible announcements of 10.1.0.0/16 and more specifics in routing using RPKI.",
+      "zh": "某机构最近被分配了前缀 10.1.0.0/16。其网络部署尚未准备好公布该前缀，希望限制所有可能公布的 10.1.0.0/16 以及使用 RPKI 进行路由选择的更多细节。"
+    },
+    {
+      "indent": 3,
+      "text": "The following announcements would be considered undesirable:",
+      "zh": "以下公告将被视为不可取："
+    },
+    {
+      "indent": 6,
+      "text": "+---------------------------------------------+\n| Prefix          | Origin AS   |Organization |\n+---------------------------------------------+\n| 10.1.0.0/16     | ANY AS      |  ANY        |\n| 10.1.0.0/20     | ANY AS      |  ANY        |\n| 10.1.17.0/24    | ANY AS      |  ANY        |\n+---------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The issuing party should create a ROA containing the following:",
+      "zh": "签发方应创建包含以下内容的 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n|    0     | 10.1.0.0/16       |    32         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "This is known as an AS 0 ROA [RFC6483]. Also, please see the definition and related comments in Section 1.3.",
+      "zh": "这被称为 AS 0 ROA [RFC6483]。另请参阅第 1.3 节中的定义和相关注释。"
+    },
+    {
+      "indent": 0,
+      "text": "3.6. Restriction of New ASN",
+      "section_title": true,
+      "zh": "3.6. 新 ASN 的限制"
+    },
+    {
+      "indent": 3,
+      "text": "An organization has recently been allocated an additional ASN 64511. Its network deployment is not yet ready to use this ASN and wishes to restrict all possible uses of ASN 64511 using RPKI.",
+      "zh": "某组织最近获得了一个额外的 ASN 64511。其网络部署尚未准备好使用该 ASN，希望使用 RPKI 限制 ASN 64511 的所有可能用途。"
+    },
+    {
+      "indent": 3,
+      "text": "The following announcement would be considered undesirable:",
+      "zh": "以下公告将被视为不可取："
+    },
+    {
+      "indent": 6,
+      "text": "+---------------------------------------------+\n| Prefix          | Origin AS   |Organization |\n+---------------------------------------------+\n| ANY             | AS 64511    |  ANY        |\n+---------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "It is currently not possible to restrict use of autonomous system numbers.",
+      "zh": "目前无法限制使用自治系统编号。"
+    },
+    {
+      "indent": 0,
+      "text": "3.7. Restriction of a Part of an Allocation",
+      "section_title": true,
+      "zh": "3.7. 对部分分配的限制"
+    },
+    {
+      "indent": 3,
+      "text": "An organization (Org A with ASN 64496) has been allocated the prefix 10.1.0.0/16. Its network topology permits the announcement of 10.1.0.0/17. Org A wishes to restrict any possible announcement of 10.1.128.0/17 or more specifics of that /17 using RPKI.",
+      "zh": "某机构（机构 A，ASN 64496）被分配了前缀 10.1.0.0/16。其网络拓扑结构允许公布 10.1.0.0/17。机构 A 希望使用 RPKI 限制任何可能的 10.1.128.0/17 公告或该 /17 的更多具体内容。"
+    },
+    {
+      "indent": 3,
+      "text": "The desired announcement (and organization) would be:",
+      "zh": "希望发布的公告（和组织机构）是"
+    },
+    {
+      "indent": 6,
+      "text": "+---------------------------------------------+\n| Prefix          | Origin AS   |Organization |\n+---------------------------------------------+\n| 10.1.0.0/17     | AS 64496    |  Org A      |\n+---------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The following announcements would be considered undesirable:",
+      "zh": "以下公告将被视为不可取："
+    },
+    {
+      "indent": 6,
+      "text": "+---------------------------------------------+\n| Prefix          | Origin AS   |Organization |\n+---------------------------------------------+\n| 10.1.128.0/17   | ANY AS      |  ANY        |\n| 10.1.128.0/24   | ANY AS      |  ANY        |\n+---------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The issuing party should create ROAs containing the following:",
+      "zh": "签发方应创建包含以下内容的 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/17       |    17         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n|    0     | 10.1.128.0/17     |    32         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.8. Restriction of Prefix Length",
+      "section_title": true,
+      "zh": "3.8. 限制前缀长度"
+    },
+    {
+      "indent": 3,
+      "text": "An organization (Org A with ASN 64496) has been allocated the prefix 10.1.0.0/16; it wishes to announce the aggregate and any or all more specific prefixes up to and including a maximum length of /20, but never any more specific than a /20.",
+      "zh": "某组织（A 组织，ASN 64496）被分配了前缀 10.1.0.0/16；该组织希望公告总前缀以及最大长度为 /20 的任何或所有更具体的前缀，但绝对不能公告比 /20 更具体的前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "Examples of the desired announcements (and organization) would be:",
+      "zh": "所需的公告（和组织）举例如下"
+    },
+    {
+      "indent": 6,
+      "text": "+---------------------------------------------+\n| Prefix          | Origin AS   |Organization |\n+---------------------------------------------+\n| 10.1.0.0/16     | AS 64496    |  Org A      |\n| 10.1.0.0/17     | AS 64496    |  Org A      |\n|     ...         | AS 64496    |  Org A      |\n| 10.1.128.0/20   | AS 64496    |  Org A      |\n+---------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The following announcements would be considered undesirable:",
+      "zh": "以下公告将被视为不可取："
+    },
+    {
+      "indent": 6,
+      "text": "+---------------------------------------------+\n| Prefix          | Origin AS   |Organization |\n+---------------------------------------------+\n| 10.1.0.0/21     | ANY AS      |  ANY        |\n| 10.1.0.0/22     | ANY AS      |  ANY        |\n|     ...         | ANY AS      |  ANY        |\n| 10.1.128.0/24   | ANY AS      |  ANY        |\n+---------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The issuing party should create a ROA containing the following:",
+      "zh": "签发方应创建包含以下内容的 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/16       |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.9. Restriction of Sub-Allocation Prefix Length",
+      "section_title": true,
+      "zh": "3.9. 子分配前缀长度限制"
+    },
+    {
+      "indent": 3,
+      "text": "An organization (Org A with ASN 64496) has been allocated the prefix 10.1.0.0/16. It sub-allocates several /20 prefixes to its multi-homed customers: Org B with ASN 64501 and Org C with ASN 64499, respectively. It wishes to restrict those customers from advertising any corresponding routes more specific than a /22.",
+      "zh": "某组织（A 组织，ASN 64496）被分配了前缀 10.1.0.0/16。它将多个 /20 前缀分配给其多归属客户：机构 B 的 ASN 号为 64501，机构 C 的 ASN 号为 64499。它希望限制这些客户发布任何比 /22 更具体的相应路由。"
+    },
+    {
+      "indent": 3,
+      "text": "The desired announcements (and organizations) would be:",
+      "zh": "希望发布的公告（和组织）将是"
+    },
+    {
+      "indent": 6,
+      "text": "+---------------------------------------------+\n| Prefix          | Origin AS   |Organization |\n+---------------------------------------------+\n| 10.1.0.0/16     | AS 64496    |  Org A      |\n| 10.1.0.0/20     | AS 64501    |  Org B      |\n| 10.1.128.0/20   | AS 64499    |  Org C      |\n| 10.1.4.0/22     | AS 64501    |  Org B      |\n+---------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The following example announcements (and organizations) would be considered undesirable:",
+      "zh": "以下公告（和组织）示例将被视为不可取："
+    },
+    {
+      "indent": 6,
+      "text": "+---------------------------------------------+\n| Prefix          | Origin AS   |Organization |\n+---------------------------------------------+\n| 10.1.0.0/24     | AS 64501    |  Org B      |\n| 10.1.128.0/24   | AS 64499    |  Org C      |\n|  .....          | ...         | ...         |\n| 10.1.0.0/23     | ANY AS      |  ANY        |\n+---------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The issuing party (Org A) should create ROAs containing the following:",
+      "zh": "签发方（机构 A）应创建包含以下内容的 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "For Org A:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/16       |    16         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "For Org B:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64501    | 10.1.0.0/20       |    22         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "For Org C:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64499    | 10.1.128.0/20     |    22         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.10. Aggregation and Origination by an Upstream Provider",
+      "section_title": true,
+      "zh": "3.10. 上游供应商的聚合和发端"
+    },
+    {
+      "indent": 3,
+      "text": "Consider four organizations with the following resources, which were acquired independently from any transit provider.",
+      "zh": "考虑拥有以下资源的四个组织，这些资源都是独立于任何运输提供商获得的。"
+    },
+    {
+      "indent": 6,
+      "text": "+-------------------------------------------------+\n| Organization     | ASN      |    Prefix         |\n+-------------------------------------------------+\n| Org A            | AS 64496 |  10.1.0.0/24      |\n| Org B            | AS 64505 |  10.1.3.0/24      |\n| Org C            | AS 64499 |  10.1.1.0/24      |\n| Org D            | AS 64511 |  10.1.2.0/24      |\n+-------------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "These organizations share a common upstream provider Transit X (ASN 64497) that originates an aggregate of these prefixes with the permission of all four organizations.",
+      "zh": "这些组织共享一个共同的上游提供商 Transit X（ASN 64497），该提供商在获得所有四个组织的许可后发出这些前缀的集合。"
+    },
+    {
+      "indent": 3,
+      "text": "The desired announcements (and organizations) would be:",
+      "zh": "希望发布的公告（和组织）将是"
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| Prefix          | Origin AS   | Organization |\n+----------------------------------------------+\n| 10.1.0.0/24     | AS 64496    |   Org A      |\n| 10.1.3.0/24     | AS 64505    |   Org B      |\n| 10.1.1.0/24     | AS 64499    |   Org C      |\n| 10.1.2.0/24     | AS 64511    |   Org D      |\n| 10.1.0.0/22     | AS 64497    |   Transit X  |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "It is currently not possible for an upstream provider to make a valid aggregate announcement of independent prefixes. However, the issuing parties should create ROAs containing the following:",
+      "zh": "目前，上游提供商不可能发布独立前缀的有效聚合公告。不过，发布方应创建包含以下内容的 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "Org A:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/24       |    24         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Org B:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64505    | 10.1.3.0/24       |    24         |\n+----------------------------------------------+\n      Org C:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64499    | 10.1.1.0/24       |    24         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Org D:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64511    | 10.1.2.0/24       |    24         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "3.11. Rogue Aggregation and Origination by an Upstream Provider",
+      "section_title": true,
+      "zh": "3.11. 上游提供商的流氓聚合和发端"
+    },
+    {
+      "indent": 3,
+      "text": "Consider four organizations with the following resources that were acquired independently from any transit provider.",
+      "zh": "考虑拥有以下资源的四个组织，它们都是独立于任何运输提供商而获得的。"
+    },
+    {
+      "indent": 6,
+      "text": "+-------------------------------------------------+\n| Organization     | ASN      |    Prefix         |\n+-------------------------------------------------+\n| Org A            | AS 64496 |  10.1.0.0/24      |\n| Org B            | AS 64503 |  10.1.3.0/24      |\n| Org C            | AS 64499 |  10.1.1.0/24      |\n| Org D            | AS 64511 |  10.1.2.0/24      |\n+-------------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "These organizations share a common upstream provider Transit X (ASN 64497) that originates an aggregate of these prefixes where possible. In this situation, Org B (ASN 64503, 10.1.3.0/24) does not wish for its prefix to be aggregated by the upstream provider.",
+      "zh": "这些机构共享一个共同的上游提供商 Transit X (ASN 64497)，该提供商会在可能的情况下聚合这些前缀。在这种情况下，机构 B（ASN 64503，10.1.3.0/24）不希望上游提供商聚合其前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "The desired announcements (and organizations) would be:",
+      "zh": "希望发布的公告（和组织）将是"
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| Prefix          | Origin AS   | Organization |\n+----------------------------------------------+\n| 10.1.0.0/24     | AS 64496    |   Org A      |\n| 10.1.3.0/24     | AS 64503    |   Org B      |\n| 10.1.1.0/24     | AS 64499    |   Org C      |\n| 10.1.2.0/24     | AS 64511    |   Org D      |\n| 10.1.0.0/23     | AS 64497    |   Transit X  |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The following announcement would be considered undesirable:",
+      "zh": "以下公告将被视为不可取："
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| Prefix          | Origin AS   | Organization |\n+----------------------------------------------+\n| 10.1.0.0/22     | AS 64497    |   Transit X  |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "It is currently not possible for an upstream provider to make a valid aggregate announcement of independent prefixes. However, the issuing parties should create ROAs containing the following:",
+      "zh": "目前，上游提供商不可能发布独立前缀的有效聚合公告。不过，发布方应创建包含以下内容的 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "Org A:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/24       |    24         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Org B:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64503    | 10.1.3.0/24       |    24         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Org C:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64499    | 10.1.1.0/24       |    24         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Org D:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64511    | 10.1.2.0/24       |    24         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "4. Adjacency or Path Validation Use Cases",
+      "section_title": true,
+      "zh": "4. 邻接或路径验证用例"
+    },
+    {
+      "indent": 3,
+      "text": "Use cases pertaining to adjacency or path validation are beyond the scope of this document and would be addressed in a separate document.",
+      "zh": "与邻接或路径验证有关的用例超出了本文件的范围，将在另一份文件中讨论。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Partial Deployment Use Cases",
+      "section_title": true,
+      "zh": "5. 部分部署用例"
+    },
+    {
+      "indent": 0,
+      "text": "5.1. Parent Does Not Participate in RPKI",
+      "section_title": true,
+      "zh": "5.1. 家长不参加 RPKI"
+    },
+    {
+      "indent": 3,
+      "text": "An organization (Org A with ASN 64511) is multi-homed and has been assigned the prefix 10.1.0.0/20 from its upstream (Transit X with ASN 64496). Org A wishes to announce the prefix 10.1.0.0/20 from ASN 64511 to its other upstream(s). Org A also wishes to create RPKI statements about the resource; however, Transit X (ASN 64496), which announces the aggregate 10.1.0.0/16, has not yet adopted RPKI.",
+      "zh": "某机构（机构 A，ASN 64511）是多主机连接，其上游（Transit X，ASN 64496）为其分配了前缀 10.1.0.0/20。机构 A 希望将 ASN 64511 的前缀 10.1.0.0/20 公告给其他上游。A 机构还希望创建有关该资源的 RPKI 声明；但是，宣布集合 10.1.0.0/16 的 Transit X（ASN 64496）尚未采用 RPKI。"
+    },
+    {
+      "indent": 3,
+      "text": "The desired announcements (and organization with RPKI adoption) would be:",
+      "zh": "理想的公告（和采用 RPKI 的组织）将是："
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------------+\n| Prefix          | Origin AS   |Organization | RPKI |\n+----------------------------------------------------+\n| 10.1.0.0/20     | AS 64511    |  Org A      | Yes  |\n| 10.1.0.0/16     | AS 64496    |  Transit X  | No   |\n+----------------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "RPKI is strictly hierarchical; therefore, if Transit X does not participate in RPKI, Org A is unable to validly issue RPKI objects.",
+      "zh": "RPKI 是严格分级的；因此，如果过境点 X 不参与 RPKI，则机关 A 无法有效签发 RPKI 对象。"
+    },
+    {
+      "indent": 0,
+      "text": "5.2. Only Some Children Participate in RPKI",
+      "section_title": true,
+      "zh": "5.2. 只有部分儿童参与 RPKI"
+    },
+    {
+      "indent": 3,
+      "text": "An organization (Org A with ASN 64496) has been allocated the prefix 10.1.0.0/16 and participates in RPKI; it wishes to announce the more specific prefix 10.1.0.0/20 from ASN 64496. It has further delegated 10.1.16.0/20 and 10.1.32.0/20 to customers Org B with ASN 64511 and Org C with ASN 64502 (respectively), who are multi-homed. Org B (ASN 64511) does not participate in RPKI. Org C (ASN 64502) participates in RPKI.",
+      "zh": "某机构（机构 A，ASN 64496）被分配了前缀 10.1.0.0/16，并参与了 RPKI；它希望从 ASN 64496 公告更具体的前缀 10.1.0.0/20。它还将 10.1.16.0/20 和 10.1.32.0/20 分别委托给 ASN 为 64511 的用户 B 和 ASN 为 64502 的用户 C，这两个用户是多重家庭用户。机关 B（ASN 64511）不参与 RPKI。C 机构（ASN 64502）参加了 RPKI。"
+    },
+    {
+      "indent": 3,
+      "text": "The desired announcements (and organizations with RPKI adoption) would be:",
+      "zh": "希望发布的公告（以及采用 RPKI 的组织）将是"
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------------+\n| Prefix          | Origin AS   |Organization | RPKI |\n+----------------------------------------------------+\n| 10.1.0.0/16     | AS 64496    |  Org A      | Yes  |\n| 10.1.0.0/20     | AS 64496    |  Org A      | Yes  |\n| 10.1.16.0/20    | AS 64511    |  Org B      | No   |\n| 10.1.32.0/20    | AS 64502    |  Org C      | Yes  |\n+----------------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The issuing parties should create ROAs containing the following:",
+      "zh": "签发方应创建包含以下内容的 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "Org A:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/16       |    16         |\n+----------------------------------------------+\n|          | 10.1.0.0/20       |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Org A issues for Org B:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64511    | 10.1.16.0/20      |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Org C:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64502    | 10.1.32.0/20      |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "5.3. Grandchild Does Not Participate in RPKI",
+      "section_title": true,
+      "zh": "5.3. 孙辈不参加 RPKI"
+    },
+    {
+      "indent": 3,
+      "text": "Consider the previous example, with an extension by which Org B, who does not participate in RPKI, further allocates 10.1.17.0/24 to Org X with ASN 64505. Org X does not participate in RPKI.",
+      "zh": "请看前面的例子，通过扩展，不参与 RPKI 的 B 机构进一步将 10.1.17.0/24 分配给了具有 ASN 64505 的 X 机构。X 机构不参与 RPKI。"
+    },
+    {
+      "indent": 3,
+      "text": "The desired announcements (and organizations with RPKI adoption) would be:",
+      "zh": "希望发布的公告（以及采用 RPKI 的组织）将是"
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------------+\n| Prefix          | Origin AS   |Organization | RPKI |\n+----------------------------------------------------+\n| 10.1.0.0/16     | AS 64496    |  Org A      | Yes  |\n| 10.1.0.0/20     | AS 64496    |  Org A      | Yes  |\n| 10.1.16.0/20    | AS 64511    |  Org B      | No   |\n| 10.1.32.0/20    | AS 64502    |  Org C      | Yes  |\n| 10.1.17.0/24    | AS 64505    |  Org X      | No   |\n+----------------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The issuing parties should create ROAs containing the following:",
+      "zh": "签发方应创建包含以下内容的 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "Org A:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/16       |    16         |\n+----------------------------------------------+\n|          | 10.1.0.0/20       |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Org A issues for Org B:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64511    | 10.1.16.0/20      |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Org A issues for Org B's customer Org X:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64505    | 10.1.17.0/24      |    24         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "Org C:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64502    | 10.1.32.0/20      |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "6. Transfer Use Cases",
+      "section_title": true,
+      "zh": "6. 转账用例"
+    },
+    {
+      "indent": 3,
+      "text": "For transfer use cases, based on the preceding sections, it should be easy to deduce what new ROAs need to be created and what existing ROAs need to be maintained (or revoked). The resource transfer and timing of revocation/creation of the ROAs need to be performed based on the make-before-break principle and using suitable Regional Internet Registry (RIR) procedures (see Section 2.1).",
+      "zh": "对于转让用例，根据前面的章节，应该很容易推断出哪些新的 ROA 需要创建，哪些现有的 ROA 需要维护（或撤销）。资源转移和区域互联网注册中心（RIR）的撤销/创建时间需要根据 \"先做后断 \"原则，并使用合适的区域互联网注册中心（RIR）程序来执行（见第 2.1 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "6.1. Transfer of In-Use Prefix and Autonomous System Number",
+      "section_title": true,
+      "zh": "6.1. 转让在用前缀和自治系统编号"
+    },
+    {
+      "indent": 3,
+      "text": "Org A holds the resource 10.1.0.0/20, and it is currently in use and originated from AS 64496 with valid RPKI objects in place. Org B has acquired both the prefix and ASN and desires an RPKI transfer on a particular date and time without adversely affecting the operational use of the resource.",
+      "zh": "机构 A 拥有资源 10.1.0.0/20，该资源目前正在使用，且来自 AS 64496，并有有效的 RPKI 对象。B 机构已获得前缀和 ASN，希望在特定日期和时间进行 RPKI 传输，但不会对资源的运行使用产生不利影响。"
+    },
+    {
+      "indent": 3,
+      "text": "The following RPKI objects would be created/revoked:",
+      "zh": "将创建/撤消以下 RPKI 对象："
+    },
+    {
+      "indent": 6,
+      "text": "For Org A, revoke the following ROA:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/20       |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "For Org B, add the following ROA:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/20       |    20         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "6.2. Transfer of In-Use Prefix",
+      "section_title": true,
+      "zh": "6.2. 转让在用前缀"
+    },
+    {
+      "indent": 3,
+      "text": "Org A holds the resource 10.1.0.0/16, and it is currently in use and originated from AS 64496 with valid RPKI objects in place. Org A has agreed to transfer the entire /16 address block to Org B and will no longer originate the prefix or more specifics of it. Consequently, Org B desires an RPKI transfer of this resource on a particular date and time. This prefix will be originated by AS 64511 as a result of this transfer.",
+      "zh": "机构 A 拥有 10.1.0.0/16 资源，该资源目前正在使用中，并源于 AS 64496 和有效的 RPKI 对象。A 机构已同意将整个 /16 地址块转让给 B 机构，并将不再使用该前缀或其更多细节。因此，B 机构希望在特定日期和时间对该资源进行 RPKI 传输。由于此次转移，该前缀将由 AS 64511 产生。"
+    },
+    {
+      "indent": 3,
+      "text": "The following RPKI objects would be created/revoked:",
+      "zh": "将创建/撤消以下 RPKI 对象："
+    },
+    {
+      "indent": 6,
+      "text": "For Org A, revoke the following ROA:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.0.0/16       |    16         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "For Org B, add the following ROA when the resource certificate for 10.1.0.0/16 is issued to them (Org B):",
+      "zh": "在向机构 B 签发 10.1.0.0/16 的资源证书时，为机构 B 添加以下 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64511    | 10.1.0.0/16       |    16         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "6.3. Transfer of Unused Prefix",
+      "section_title": true,
+      "zh": "6.3. 转让未使用的前缀"
+    },
+    {
+      "indent": 3,
+      "text": "Org A holds the resources 10.1.0.0/16 and AS 64507 (with RPKI objects). Org A currently announces 10.1.0.0/16 from AS 64507. Org B has acquired an unused portion (10.1.4.0/24) of the prefix from Org A and desires an RPKI transfer on a particular date and time. Org B will originate a route 10.1.4.0/24 from AS 64496.",
+      "zh": "机关 A 拥有 10.1.0.0/16 和 AS 64507 资源（带有 RPKI 对象）。机关 A 目前从 AS 64507 公告 10.1.0.0/16。B 机构从 A 机构获得了该前缀的未使用部分（10.1.4.0/24），并希望在特定日期和时间进行 RPKI 传输。B 机构将从 AS 64496 发起路由 10.1.4.0/24。"
+    },
+    {
+      "indent": 3,
+      "text": "The following RPKI objects would be created/sustained:",
+      "zh": "将创建/维持以下 RPKI 对象："
+    },
+    {
+      "indent": 6,
+      "text": "For Org A, leave the following ROA unchanged:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64507    | 10.1.0.0/16       |    16         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 6,
+      "text": "For Org B, add the following ROA when the resource certificate for 10.1.4.0/24 is issued to them (Org B):",
+      "zh": "在向机构 B 签发 10.1.4.0/24 的资源证书时，为机构 B 添加以下 ROA："
+    },
+    {
+      "indent": 6,
+      "text": "+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.4.0/24       |    24         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Org A may optionally provide ROA coverage for Org B by creating the following ROA preceding the RPKI transfer. The ROA itself is then naturally revoked when 10.1.4.0/24 is transferred to Org B's resource certificate.",
+      "zh": "机关 A 可以选择在 RPKI 传输之前创建以下 ROA，为机关 B 提供 ROA 覆盖。然后，当 10.1.4.0/24 转移到 B 机构的资源证书时，ROA 本身会自然撤销。"
+    },
+    {
+      "indent": 6,
+      "text": "Org A adds the following ROA:\n+----------------------------------------------+\n| asID     | address           | maxLength     |\n+----------------------------------------------+\n| 64496    | 10.1.4.0/24       |    24         |\n+----------------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "7. Relying Party Use Cases",
+      "section_title": true,
+      "zh": "7. 依赖方使用案例"
+    },
+    {
+      "indent": 0,
+      "text": "7.1. Prefix-Origin Validation Use Cases",
+      "section_title": true,
+      "zh": "7.1. 前缀-源验证用例"
+    },
+    {
+      "indent": 3,
+      "text": "These use cases try to systematically enumerate the situations a relying party may encounter while receiving a BGP update and making use of ROA information to interpret the validity of the prefix-origin information in the routes derived from the update. We enumerate the situations or scenarios and include a recommendation for the expected outcome of prefix-origin validation. For a description of prefix-origin validation algorithms, see [RFC6483] and [RFC6811]. We use the terms Valid, Invalid, and NotFound as defined in [RFC6811] and summarized earlier in Section 1.3. Also see [RFC6472] for a recommendation to deprecate AS_SETs in BGP updates. The use cases described here can be potentially used as test cases for testing and evaluation of prefix-origin validation in router implementations; see, for example, [BRITE].",
+      "zh": "这些用例试图系统地列举依赖方在接收 BGP 更新时可能遇到的情况，并利用 ROA 信息来解释从更新中生成的路由中前缀-原点信息的有效性。我们列举了这些情况或场景，并对前缀-源验证的预期结果提出了建议。有关前缀源验证算法的描述，请参阅 [RFC6483] 和 [RFC6811]。我们使用 [RFC6811] 中定义的术语 Valid、Invalid 和 NotFound，并在第 1.3 节中进行了总结。关于在 BGP 更新中弃用 AS_SET 的建议，请参阅 [RFC6472]。此处描述的用例可作为测试用例，用于测试和评估路由器实现中的前缀源验证；例如，请参阅 [BRITE]。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1.1. Covering ROA Prefix, maxLength Satisfied, and AS Match",
+      "section_title": true,
+      "zh": "7.1.1. 覆盖 ROA 前缀、最大长度满足和 AS 匹配"
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.0.0/16, maxLength = 20, AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Route has {10.1.0.0/17, Origin = AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Recommended RPKI prefix-origin validation interpretation: Route is Valid.",
+      "zh": "建议的 RPKI 前缀源验证解释：路由有效。"
+    },
+    {
+      "indent": 3,
+      "text": "Comment: The route prefix has a covering ROA prefix, and the route origin ASN matches the ROA ASN. This is a straightforward prefix-origin validation use case; it follows from the primary intention of creation of the ROA by a prefix holder.",
+      "zh": "评论：路由前缀包含 ROA 前缀，路由起源 ASN 与 ROA ASN 一致。这是一个简单明了的前缀-源验证用例；它源于前缀持有者创建 ROA 的主要目的。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1.2. Covering ROA Prefix, maxLength Exceeded, and AS Match",
+      "section_title": true,
+      "zh": "7.1.2. 覆盖 ROA 前缀、最大长度超出和 AS 匹配"
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.0.0/16, maxLength = 20, AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Route has {10.1.0.0/22, Origin = AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "No other covering ROA",
+      "zh": "没有其他覆盖 ROA"
+    },
+    {
+      "indent": 3,
+      "text": "Recommended RPKI prefix-origin validation interpretation: Route is Invalid.",
+      "zh": "建议的 RPKI 前缀源验证解释：路由无效。"
+    },
+    {
+      "indent": 3,
+      "text": "Comment: In this case, the maxLength specified in the ROA is exceeded by the route prefix.",
+      "zh": "评论：在这种情况下，路由前缀超出了 ROA 中指定的 maxLength。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1.3. Covering ROA Prefix, maxLength Satisfied, and AS Mismatch",
+      "section_title": true,
+      "zh": "7.1.3. 覆盖 ROA 前缀、最大长度满足和 AS 不匹配"
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.0.0/16, maxLength = 24, AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Route has {10.1.88.0/24, Origin = AS 64511}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "No other covering ROA Recommended RPKI prefix-origin validation interpretation: Route is Invalid.",
+      "zh": "无其他覆盖 ROA 建议的 RPKI 前缀源验证解释：路由无效。"
+    },
+    {
+      "indent": 3,
+      "text": "Comment: In this case, an AS other than the one specified in the ROA is originating the route. This may be a prefix or subprefix hijack situation.",
+      "zh": "评论：在这种情况下，发出路由的 AS 不是 ROA 中指定的 AS。这可能是前缀或子前缀劫持情况。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1.4. Covering ROA Prefix, maxLength Exceeded, and AS Mismatch",
+      "section_title": true,
+      "zh": "7.1.4. 覆盖 ROA 前缀、超过最大长度和 AS 不匹配"
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.0.0/16, maxLength = 22, AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Route has {10.1.88.0/24, Origin = AS 64511}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "No other covering ROA",
+      "zh": "没有其他覆盖 ROA"
+    },
+    {
+      "indent": 3,
+      "text": "Recommended RPKI prefix-origin validation interpretation: Route is Invalid.",
+      "zh": "建议的 RPKI 前缀源验证解释：路由无效。"
+    },
+    {
+      "indent": 3,
+      "text": "Comment: In this case, the maxLength specified in the ROA is exceeded by the route prefix, and also an AS other than the one specified in the ROA is originating the route. This may be a subprefix hijack situation.",
+      "zh": "评论：在这种情况下，路由前缀超过了 ROA 中指定的 maxLength，而且路由的发端 AS 不是 ROA 中指定的 AS。这可能是子前缀劫持情况。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1.5. Covering ROA Prefix Not Found",
+      "section_title": true,
+      "zh": "7.1.5. 未找到覆盖 ROA 前缀"
+    },
+    {
+      "indent": 3,
+      "text": "Route has {10.1.3.0/24, Origin = AS 64511}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "No covering ROA",
+      "zh": "不包括 ROA"
+    },
+    {
+      "indent": 3,
+      "text": "Recommended RPKI prefix-origin validation interpretation: Route's validation status is NotFound.",
+      "zh": "建议的 RPKI 前缀源验证解释：路由的验证状态为 NotFound。"
+    },
+    {
+      "indent": 3,
+      "text": "Comment: In this case, there is no covering ROA for the route prefix. It could be a prefix or subprefix hijack situation, but this announcement does not contradict any existing ROA. During partial deployment, there would be some legitimate prefix-origin announcements for which ROAs may not have been issued yet.",
+      "zh": "评论：在这种情况下，路由前缀没有覆盖 ROA。这可能是前缀或子前缀被劫持的情况，但此公告与任何现有 ROA 并不冲突。在部分部署期间，可能会有一些合法的前缀源公告，而这些公告的 ROA 可能尚未发布。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1.6. Covering ROA Prefix and the ROA Is an AS 0 ROA",
+      "section_title": true,
+      "zh": "7.1.6. 覆盖 ROA 前缀和 ROA 是 AS 0 ROA"
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.0.0/16, maxLength = 32, AS 0}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Route has {10.1.5.0/24, Origin = AS 64511}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Recommended RPKI prefix-origin validation interpretation: Route's validation status is Invalid.",
+      "zh": "建议的 RPKI 前缀源验证解释：路由的验证状态为无效。"
+    },
+    {
+      "indent": 3,
+      "text": "Comment: An AS 0 ROA implies by definition that the prefix listed in it and all of the more specifics of that prefix should not be used in a routing context [RFC6483] [AS0-PROC]. Also, please see related comments in Section 1.3.",
+      "zh": "评论：根据定义，AS 0 ROA 意味着其中列出的前缀以及该前缀的所有具体内容都不应在路由上下文中使用 [RFC6483] [AS0-PROC]。另请参见第 1.3 节中的相关注释。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1.7. Covering ROA Prefix Not Found but ROAs Exist for a Covering Set of More Specifics",
+      "section_title": true,
+      "zh": "7.1.7. 未找到覆盖 ROA 前缀，但存在覆盖更多具体内容的 ROA"
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.0.0/18, maxLength = 20, AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.64.0/18, maxLength = 20, AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.128.0/18, maxLength = 20, AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.192.0/18, maxLength = 20, AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Route has {10.1.0.0/16, Origin = AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "No covering ROA",
+      "zh": "不包括 ROA"
+    },
+    {
+      "indent": 3,
+      "text": "Recommended RPKI prefix-origin validation interpretation: Route's validation status is NotFound.",
+      "zh": "建议的 RPKI 前缀源验证解释：路由的验证状态为 NotFound。"
+    },
+    {
+      "indent": 3,
+      "text": "Comment: In this case, the route prefix is an aggregate (/16), and it turns out that there exist ROAs for more specifics (/18s) that, if combined, can help support validation of the announced prefix-origin pair. But it is very hard in general to break up an announced prefix into constituent more specifics and check for ROA coverage for those more specifics, and hence this type of accommodation is not recommended.",
+      "zh": "评论：在这种情况下，路由前缀是一个集合（/16），而事实证明存在更多具体内容（/18）的 ROA，如果将这些 ROA 结合起来，可以帮助支持已公布前缀-源配对的验证。但一般来说，很难将已公布的路由前缀分解为更多具体内容，并检查这些更多具体内容的 ROA 覆盖范围，因此不建议采用这种方法。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1.8. AS_SET in Route and Covering ROA Prefix Not Found",
+      "section_title": true,
+      "zh": "7.1.8. 未找到路由和覆盖 ROA 前缀中的 AS_SET"
+    },
+    {
+      "indent": 3,
+      "text": "Route has {10.1.0.0/16, AS_SET [AS 64496, AS 64497, AS 64498, AS 64499] appears in the rightmost position in the AS_PATH}",
+      "zh": "路由有 {10.1.0.0/16, AS_SET [AS 64496, AS 64497, AS 64498, AS 64499] 出现在 AS_PATH 的最右侧位置}。"
+    },
+    {
+      "indent": 3,
+      "text": "No covering ROA",
+      "zh": "不包括 ROA"
+    },
+    {
+      "indent": 3,
+      "text": "Recommended RPKI prefix-origin validation interpretation: Route's validation status is NotFound.",
+      "zh": "建议的 RPKI 前缀源验证解释：路由的验证状态为 NotFound。"
+    },
+    {
+      "indent": 3,
+      "text": "Comment: An extremely small percentage (~0.1%) of external BGP (eBGP) updates are seen to have an AS_SET in them; this is known as proxy aggregation. In this case, the route with the AS_SET does not conflict with any ROA (i.e., the route prefix has no covering ROA prefix). Therefore, the route gets NotFound validation status.",
+      "zh": "评论外部 BGP（eBGP）更新中有极少部分（约 0.1%）含有 AS_SET；这就是所谓的代理聚合（proxy aggregation）。在这种情况下，带有 AS_SET 的路由与任何 ROA 都不冲突（即路由前缀没有覆盖 ROA 前缀）。因此，路由会得到 NotFound 验证状态。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1.9. Singleton AS in AS_SET (in the Route), Covering ROA Prefix, and AS Match",
+      "section_title": true,
+      "zh": "7.1.9. AS_SET 中的单个 AS（在路由中）、覆盖 ROA 前缀和 AS 匹配"
+    },
+    {
+      "indent": 3,
+      "text": "Route has {10.1.0.0/24, AS_SET [AS 64496] appears in the rightmost position in the AS_PATH}",
+      "zh": "路由有 {10.1.0.0/24, AS_SET [AS 64496] 出现在 AS_PATH 的最右边位置}。"
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.0.0/22, maxLength = 24, AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Recommended RPKI prefix-origin validation interpretation: Route is Invalid.",
+      "zh": "建议的 RPKI 前缀源验证解释：路由无效。"
+    },
+    {
+      "indent": 3,
+      "text": "Comment: In the spirit of [RFC6472], any route with an AS_SET in it should not be considered valid (by ROA-based validation). If the route contains an AS_SET and a covering ROA prefix exists for the route prefix, then the route should get an Invalid status. (Note: AS match or mismatch consideration does not apply.)",
+      "zh": "评论：根据 [RFC6472] 的精神，任何含有 AS_SET 的路由都不应被视为有效（通过基于 ROA 的验证）。如果路由包含 AS_SET，且路由前缀存在覆盖 ROA 前缀，则路由应获得无效状态。(注：AS 匹配或不匹配考虑因素不适用）。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1.10. Singleton AS in AS_SET (in the Route), Covering ROA Prefix, and AS Mismatch",
+      "section_title": true,
+      "zh": "7.1.10. AS_SET（路由）中的单子 AS、覆盖 ROA 前缀和 AS 不匹配"
+    },
+    {
+      "indent": 3,
+      "text": "Route has {10.1.0.0/24, AS_SET [AS 64496] appears in the rightmost position in the AS_PATH}",
+      "zh": "路由有 {10.1.0.0/24, AS_SET [AS 64496] 出现在 AS_PATH 的最右边位置}。"
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.0.0/22, maxLength = 24, AS 64511}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Recommended RPKI prefix-origin validation interpretation: Route is Invalid.",
+      "zh": "建议的 RPKI 前缀源验证解释：路由无效。"
+    },
+    {
+      "indent": 3,
+      "text": "Comment: If the route contains an AS_SET and a covering ROA prefix exists for the route prefix, then the route should get an Invalid status. (Note: AS match or mismatch consideration does not apply.)",
+      "zh": "评论：如果路由包含 AS_SET，且路由前缀存在覆盖的 ROA 前缀，则路由应获得无效状态。(注：AS 匹配或不匹配考虑因素不适用）。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1.11. Multiple ASs in AS_SET (in the Route) and Covering ROA Prefix",
+      "section_title": true,
+      "zh": "7.1.11. AS_SET 中的多个 AS（在路由中）和覆盖 ROA 前缀"
+    },
+    {
+      "indent": 3,
+      "text": "Route has {10.1.0.0/22, AS_SET [AS 64496, AS 64497, AS 64498, AS 64499] appears in the rightmost position in the AS_PATH}",
+      "zh": "路由有 {10.1.0.0/22, AS_SET [AS 64496, AS 64497, AS 64498, AS 64499] 出现在 AS_PATH 的最右侧位置}。"
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.0.0/22, maxLength = 24, AS 64509}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "No other covering ROA",
+      "zh": "没有其他覆盖 ROA"
+    },
+    {
+      "indent": 3,
+      "text": "Recommended RPKI prefix-origin validation interpretation: Route is Invalid.",
+      "zh": "建议的 RPKI 前缀源验证解释：路由无效。"
+    },
+    {
+      "indent": 3,
+      "text": "Comment: If the route contains an AS_SET and a covering ROA prefix exists for the route prefix, then the route should get an Invalid status.",
+      "zh": "评论：如果路由包含 AS_SET，且路由前缀存在覆盖的 ROA 前缀，则路由应获得无效状态。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1.12. Multiple ASs in AS_SET (in the Route) and ROAs Exist for a Covering Set of More Specifics",
+      "section_title": true,
+      "zh": "7.1.12. AS_SET 中的多个 AS（在路由中）和 ROA 存在于覆盖更多具体内容的集合中"
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.0.0/18, maxLength = 20, AS 64496}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.64.0/18, maxLength = 20, AS 64497}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.128.0/18, maxLength = 20, AS 64498}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "ROA: {10.1.192.0/18, maxLength = 20, AS 64499}",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Route has {10.1.0.0/16, AS_SET [AS 64496, AS 64497, AS 64498, AS 64499] appears in the rightmost position in the AS_PATH}",
+      "zh": "路由有 {10.1.0.0/16, AS_SET [AS 64496, AS 64497, AS 64498, AS 64499] 出现在 AS_PATH 的最右侧位置}。"
+    },
+    {
+      "indent": 3,
+      "text": "No covering ROA",
+      "zh": "不包括 ROA"
+    },
+    {
+      "indent": 3,
+      "text": "Recommended RPKI prefix-origin validation interpretation: Route's validation status is NotFound.",
+      "zh": "建议的 RPKI 前缀源验证解释：路由的验证状态为 NotFound。"
+    },
+    {
+      "indent": 3,
+      "text": "Comment: In this case, the aggregate of the prefixes in the ROAs is a covering prefix (i.e., exact match or less specific) relative to the route prefix. The ASs in each of the contributing ROAs together form a set that matches the AS_SET in the route. But it is very hard in general to break up an announced prefix into constituent more specifics and check for ROA coverage for those more specifics. In any case, it may be noted once again that in the spirit of [RFC6472], any route with an AS_SET in it should not be considered valid (by ROA-based validation). In fact, the route under consideration would have received an Invalid status if the route prefix had at least one covering ROA prefix.",
+      "zh": "评论：在这种情况下，ROA 中的前缀集合是相对于路由前缀的覆盖前缀（即完全匹配或不太具体）。每个 ROA 中的 AS 共同组成一个集合，与路由中的 AS_SET 相匹配。但一般来说，很难将已公布的前缀分解成更具体的组成要素，并检查这些更具体要素的 ROA 覆盖情况。无论如何，需要再次指出的是，根据 [RFC6472] 的精神，任何含有 AS_SET 的路由都不应被视为有效（通过基于 ROA 的验证）。事实上，如果路由前缀至少有一个覆盖 ROA 前缀，那么正在考虑的路由就会收到无效状态。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2. ROA Expiry or Receipt of a CRL Revoking a ROA",
+      "section_title": true,
+      "zh": "7.2. ROA 过期或收到 CRL 撤销 ROA"
+    },
+    {
+      "indent": 3,
+      "text": "Here we enumerate use cases corresponding to router actions when RPKI objects expire or are revoked. In the cases that follow, the terms \"expired ROA\" or \"revoked ROA\" are shorthand and describe the expiry or revocation of the End Entity (EE) or resource certificate that causes a relying party to consider the corresponding ROA to have expired or been revoked, respectively.",
+      "zh": "在此，我们列举了 RPKI 对象过期或撤销时与路由器操作相对应的用例。在下面的案例中，术语 \"过期的 ROA \"或 \"被撤销的 ROA \"是速记词，描述的是终端实体（EE）或资源证书的过期或撤销分别导致依赖方认为相应的 ROA 已过期或被撤销。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2.1. ROA of Parent Prefix Is Revoked",
+      "section_title": true,
+      "zh": "7.2.1. 撤销母前缀的 ROA"
+    },
+    {
+      "indent": 3,
+      "text": "A certificate revocation list (CRL) is received that reveals that the ROA {10.1.0.0/22, maxLength = 24, ASN 64496} is revoked. Further, a route exists in the Internet routing system for 10.1.3.0/24 originated from ASN 64496. In the absence of said revoked ROA, no covering ROA prefix exists for the route prefix (i.e., 10.1.3.0/24).",
+      "zh": "收到的证书吊销列表（CRL）显示 ROA {10.1.0.0/22, maxLength = 24, ASN 64496} 已被吊销。此外，互联网路由系统中存在一条源自 ASN 64496 的 10.1.3.0/24 路由。在没有上述已撤销 ROA 的情况下，路由前缀（即 10.1.3.0/24）不存在覆盖 ROA 前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "The Relying Party interpretation would be: Route's validation status is NotFound.",
+      "zh": "依赖方的解释是路由的验证状态为 NotFound。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2.2. ROA of Prefix Revoked while Parent Prefix Has Covering ROA Prefix with Different ASN",
+      "section_title": true,
+      "zh": "7.2.2. 在父前缀具有不同 ASN 的覆盖 ROA 前缀的情况下，撤销前缀的 ROA"
+    },
+    {
+      "indent": 3,
+      "text": "A CRL is received that reveals that the ROA {10.1.3.0/24, maxLength = 24, ASN 64496} is revoked. Further, a route exists in the Internet routing system for 10.1.3.0/24 originated from ASN 64496. Additionally, a valid ROA exists for a parent prefix 10.1.0.0/22, and said ROA is {10.1.0.0/22, maxLength = 24, ASN 64511}. No other covering ROA exists for the 10.1.3.0/24 prefix.",
+      "zh": "收到的 CRL 显示 ROA {10.1.3.0/24, maxLength = 24, ASN 64496} 已被撤销。此外，互联网路由系统中存在一条源自 ASN 64496 的 10.1.3.0/24 路由。此外，父前缀 10.1.0.0/22 存在有效 ROA，所述 ROA 为 {10.1.0.0/22，maxLength = 24，ASN 64511}。10.1.3.0/24 前缀不存在其他覆盖 ROA。"
+    },
+    {
+      "indent": 3,
+      "text": "The Relying Party interpretation would be: Route is Invalid.",
+      "zh": "依赖方的解释是路由无效。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2.3. ROA of Prefix Revoked while That of Parent Prefix Prevails",
+      "section_title": true,
+      "zh": "7.2.3. 前缀的 ROA 被撤销，而母前缀的 ROA 占上风"
+    },
+    {
+      "indent": 3,
+      "text": "A CRL is received that reveals that the ROA {10.1.3.0/24, maxLength = 24, ASN 64496} is revoked. Further, a route exists in the Internet routing system for 10.1.3.0/24 originated from ASN 64496. Additionally, a valid ROA exists for a parent prefix 10.1.0.0/22, and said ROA is {10.1.0.0/22, maxLength = 24, ASN 64496}.",
+      "zh": "收到的 CRL 显示 ROA {10.1.3.0/24, maxLength = 24, ASN 64496} 已被撤销。此外，互联网路由系统中存在一条源自 ASN 64496 的 10.1.3.0/24 路由。此外，父前缀 10.1.0.0/22 存在有效 ROA，所述 ROA 为 {10.1.0.0/22，maxLength = 24，ASN 64496}。"
+    },
+    {
+      "indent": 3,
+      "text": "The Relying Party interpretation would be: Route is Valid.",
+      "zh": "依赖方的解释是路线有效。"
+    },
+    {
+      "indent": 3,
+      "text": "(Clarification: Perhaps the revocation of the ROA for prefix 10.1.3.0/24 was initiated just to eliminate redundancy.)",
+      "zh": "(澄清：也许撤销前缀 10.1.3.0/24 的 ROA 只是为了消除冗余）。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2.4. ROA of Grandparent Prefix Revoked while That of Parent Prefix Prevails",
+      "section_title": true,
+      "zh": "7.2.4. 祖辈前缀的 ROA 被撤销，父辈前缀的 ROA 占上风"
+    },
+    {
+      "indent": 3,
+      "text": "A CRL is received that reveals that the ROA {10.1.0.0/20, maxLength = 24, ASN 64496} is revoked. Further, a route exists in the Internet routing system for 10.1.3.0/24 originated from ASN 64496. Additionally, a valid ROA exists for a parent prefix 10.1.0.0/22, and said ROA is {10.1.0.0/22, maxLength = 24, ASN 64496}.",
+      "zh": "收到的 CRL 显示 ROA {10.1.0.0/20, maxLength = 24, ASN 64496} 已被撤销。此外，互联网路由系统中存在一条源自 ASN 64496 的 10.1.3.0/24 路由。此外，父前缀 10.1.0.0/22 存在有效 ROA，所述 ROA 为 {10.1.0.0/22，maxLength = 24，ASN 64496}。"
+    },
+    {
+      "indent": 3,
+      "text": "The Relying Party interpretation would be: Route is Valid.",
+      "zh": "依赖方的解释是路线有效。"
+    },
+    {
+      "indent": 3,
+      "text": "(Clarification: The ROA for less specific grandparent prefix 10.1.0.0/20 was revoked or withdrawn.)",
+      "zh": "(澄清：10.1.0.0/20 的 ROA 已被撤销或撤回）。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2.5. Expiry of ROA of Parent Prefix",
+      "section_title": true,
+      "zh": "7.2.5. 母公司 ROA 到期 前缀"
+    },
+    {
+      "indent": 3,
+      "text": "A scan of the ROA list reveals that the ROA {10.1.0.0/22, maxLength = 24, ASN 64496} has expired. Further, a route exists in the Internet routing system for 10.1.3.0/24 originated from ASN 64496. In the absence of said expired ROA, no covering ROA prefix exists for the route prefix (i.e., 10.1.3.0/24).",
+      "zh": "ROA 列表扫描显示，ROA {10.1.0.0/22, maxLength = 24, ASN 64496} 已过期。此外，互联网路由系统中存在一条源自 ASN 64496 的 10.1.3.0/24 路由。在没有上述过期 ROA 的情况下，路由前缀（即 10.1.3.0/24）不存在覆盖 ROA 前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "The Relying Party interpretation would be: Route's validation status is NotFound.",
+      "zh": "依赖方的解释是路由的验证状态为 NotFound。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2.6. Expiry of ROA of Prefix while Parent Prefix Has Covering ROA with Different ASN",
+      "section_title": true,
+      "zh": "7.2.6. 当父系前缀具有不同 ASN 的覆盖 ROA 时，该前缀的 ROA 到期"
+    },
+    {
+      "indent": 3,
+      "text": "A scan of the ROA list reveals that the ROA {10.1.3.0/24, maxLength = 24, ASN 64496} has expired. Further, a route exists in the Internet routing system for 10.1.3.0/24 originated from ASN 64496. Additionally, a valid ROA exists for a parent prefix 10.1.0.0/22, and said ROA is {10.1.0.0/22, maxLength = 24, ASN 64511}. No other covering ROA exists for the prefix (i.e., 10.1.3.0/24).",
+      "zh": "扫描 ROA 列表后发现，ROA {10.1.3.0/24, maxLength = 24, ASN 64496} 已过期。此外，互联网路由系统中存在一条源自 ASN 64496 的 10.1.3.0/24 路由。此外，父前缀 10.1.0.0/22 存在有效 ROA，所述 ROA 为 {10.1.0.0/22，maxLength = 24，ASN 64511}。该前缀（即 10.1.3.0/24）不存在其他覆盖 ROA。"
+    },
+    {
+      "indent": 3,
+      "text": "The Relying Party interpretation would be: Route is Invalid.",
+      "zh": "依赖方的解释是路由无效。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2.7. Expiry of ROA of Prefix while That of Parent Prefix Prevails",
+      "section_title": true,
+      "zh": "7.2.7. 前缀的 ROA 到期，同时母前缀的 ROA 占优"
+    },
+    {
+      "indent": 3,
+      "text": "A scan of the ROA list reveals that the ROA {10.1.3.0/24, maxLength = 24, ASN 64496} has expired. Further, a route exists in the Internet routing system for 10.1.3.0/24 originated from ASN 64496. Additionally, a valid ROA exists for a parent prefix 10.1.0.0/22, and said ROA is {10.1.0.0/22, maxLength = 24, ASN 64496}.",
+      "zh": "扫描 ROA 列表后发现，ROA {10.1.3.0/24, maxLength = 24, ASN 64496} 已过期。此外，互联网路由系统中存在一条源自 ASN 64496 的 10.1.3.0/24 路由。此外，父前缀 10.1.0.0/22 存在有效 ROA，所述 ROA 为 {10.1.0.0/22，maxLength = 24，ASN 64496}。"
+    },
+    {
+      "indent": 3,
+      "text": "The Relying Party interpretation would be: Route is Valid.",
+      "zh": "依赖方的解释是路线有效。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2.8. Expiry of ROA of Grandparent Prefix while That of Parent Prefix Prevails",
+      "section_title": true,
+      "zh": "7.2.8. 祖辈前缀的 ROA 失效，父辈前缀的 ROA 有效"
+    },
+    {
+      "indent": 3,
+      "text": "A scan of the ROA list reveals that the ROA {10.1.0.0/20, maxLength = 24, ASN 64496} has expired. Further, a route exists in the Internet routing system for 10.1.3.0/24 originated from ASN 64496. Additionally, a valid ROA exists for a parent prefix 10.1.0.0/22, and said ROA is {10.1.0.0/22, maxLength = 24, ASN 64496}.",
+      "zh": "ROA 列表扫描显示，ROA {10.1.0.0/20, maxLength = 24, ASN 64496} 已过期。此外，互联网路由系统中存在一条源自 ASN 64496 的 10.1.3.0/24 路由。此外，父前缀 10.1.0.0/22 存在有效 ROA，所述 ROA 为 {10.1.0.0/22，maxLength = 24，ASN 64496}。"
+    },
+    {
+      "indent": 3,
+      "text": "The Relying Party interpretation would be: Route is Valid.",
+      "zh": "依赖方的解释是路线有效。"
+    },
+    {
+      "indent": 0,
+      "text": "8. Acknowledgements",
+      "section_title": true,
+      "zh": "8. 致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors are indebted to both Sandy Murphy and Sam Weiler for their guidance. Further, the authors would like to thank Steve Kent, Warren Kumari, Randy Bush, Curtis Villamizar, and Danny McPherson for their technical insight and review. The authors also wish to thank Elwyn Davies, Stephen Farrell, Barry Leiba, Stewart Bryant, Alexey Melnikov, and Russ Housley for their review and comments during the IESG review process.",
+      "zh": "作者感谢 Sandy Murphy 和 Sam Weiler 的指导。此外，作者还要感谢史蒂夫-肯特（Steve Kent）、沃伦-库马里（Warren Kumari）、兰迪-布什（Randy Bush）、柯蒂斯-维拉米扎尔（Curtis Villamizar）和丹尼-麦克弗森（Danny McPherson）的技术见解和审查。作者还要感谢 Elwyn Davies、Stephen Farrell、Barry Leiba、Stewart Bryant、Alexey Melnikov 和 Russ Housley 在 IESG 审查过程中提出的审查和意见。"
+    },
+    {
+      "indent": 0,
+      "text": "9. Security Considerations",
+      "section_title": true,
+      "zh": "9. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This memo requires no security considerations.",
+      "zh": "本备忘录无需考虑安全问题。"
+    },
+    {
+      "indent": 0,
+      "text": "10. References",
+      "section_title": true,
+      "zh": "10. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "10.1. Normative References",
+      "section_title": true,
+      "zh": "10.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4271] Rekhter, Y., Li, T., and S. Hares, \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, January 2006.",
+      "zh": "[Rekhter, Y., Li, T., and S. Hares, \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, January 2006."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, February 2012.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, February 2012.",
+      "zh": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012."
+    },
+    {
+      "indent": 0,
+      "text": "10.2. Informative References",
+      "section_title": true,
+      "zh": "10.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[AS0-PROC] Kumari, W., Bush, R., Schiller, H., and K. Patel, \"Codification of AS 0 processing\", Work in Progress, August 2012.",
+      "zh": "[AS0-PROC] Kumari, W., Bush, R., Schiller, H., and K. Patel, \"Codification of AS 0 processing\", Work in Progress, August 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[BRITE] NIST, \"BRITE - BGPSEC / RPKI Interoperability Test & Evaluation\", Developed by the National Institute of Standards and Technology (NIST), Gaithersburg, Maryland, 2011, <http://brite.antd.nist.gov/statics/about>.",
+      "zh": "[BRITE] NIST，\"BRITE - BGPSEC / RPKI 互操作性测试与评估\"，由马里兰州盖瑟斯堡国家标准与技术研究所（NIST）开发，2011 年，<http://brite.antd.nist.gov/statics/about>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC1918] Rekhter, Y., Moskowitz, R., Karrenberg, D., Groot, G., and E. Lear, \"Address Allocation for Private Internets\", BCP 5, RFC 1918, February 1996.",
+      "zh": "[RFC1918] Rekhter, Y., Moskowitz, R., Karrenberg, D., Groot, G., and E. Lear, \"Address Allocation for Private Internets\", BCP 5, RFC 1918, February 1996."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, June 2004.",
+      "zh": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, June 2004."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4632] Fuller, V. and T. Li, \"Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan\", BCP 122, RFC 4632, August 2006.",
+      "zh": "[RFC4632] Fuller、V. 和 T. Li，\"无类别域间路由（CIDR）：互联网地址分配和聚合计划\"，BCP 122，RFC 4632，2006 年 8 月。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, May 2008.",
+      "zh": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, May 2008."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5737] Arkko, J., Cotton, M., and L. Vegoda, \"IPv4 Address Blocks Reserved for Documentation\", RFC 5737, January 2010.",
+      "zh": "[RFC5737] Arkko, J., Cotton, M., and L. Vegoda, \"IPv4 Address Blocks Reserved for Documentation\", RFC 5737, January 2010."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6472] Kumari, W. and K. Sriram, \"Recommendation for Not Using AS_SET and AS_CONFED_SET in BGP\", BCP 172, RFC 6472, December 2011.",
+      "zh": "[RFC6472] Kumari, W. and K. Sriram, \"Recommendation for Not Using AS_SET and AS_CONFED_SET in BGP\", BCP 172, RFC 6472, December 2011."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6483] Huston, G. and G. Michaelson, \"Validation of Route Origination Using the Resource Certificate Public Key Infrastructure (PKI) and Route Origin Authorizations (ROAs)\", RFC 6483, February 2012.",
+      "zh": "[RFC6483] Huston, G. and G. Michaelson, \"Validation of Route Origination Using the Resource Certificate Public Key Infrastructure (PKI) and Route Origin Authorizations (ROAs)\", RFC 6483, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP Prefix Origin Validation\", RFC 6811, January 2013.",
+      "zh": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP 前缀起源验证\"，RFC 6811, 2013 年 1 月。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Terry Manderson ICANN",
+      "zh": "特里-曼德森 ICANN"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: terry.manderson@icann.org",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Kotikalapudi Sriram US NIST",
+      "zh": "科蒂卡拉普迪-斯里拉姆 美国国家标准与技术研究所"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: ksriram@nist.gov",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Russ White Verisign",
+      "zh": "Russ White 威瑞信"
+    },
+    {
+      "indent": 3,
+      "text": "EMail: russ@riw.us",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

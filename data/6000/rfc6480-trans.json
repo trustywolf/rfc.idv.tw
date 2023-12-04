@@ -1,0 +1,854 @@
+{
+  "title": {
+    "text": "RFC 6480 - An Infrastructure to Support Secure Internet Routing",
+    "zh": "RFC 6480 - 支持安全互联网路由的基础设施"
+  },
+  "number": 6480,
+  "created_at": "2023-12-04 17:00:01.588598+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                       M. Lepinski\nRequest for Comments: 6480                                       S. Kent\nCategory: Informational                                 BBN Technologies\nISSN: 2070-1721                                            February 2012",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 10,
+      "text": "An Infrastructure to Support Secure Internet Routing",
+      "zh": "支持安全互联网路由的基础设施"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document describes an architecture for an infrastructure to support improved security of Internet routing. The foundation of this architecture is a Resource Public Key Infrastructure (RPKI) that represents the allocation hierarchy of IP address space and Autonomous System (AS) numbers; and a distributed repository system for storing and disseminating the data objects that comprise the RPKI, as well as other signed objects necessary for improved routing security. As an initial application of this architecture, the document describes how a legitimate holder of IP address space can explicitly and verifiably authorize one or more ASes to originate routes to that address space. Such verifiable authorizations could be used, for example, to more securely construct BGP route filters.",
+      "zh": "本文件介绍了一种支持改进互联网路由安全的基础设施架构。该架构的基础是一个资源公钥基础设施（RPKI），它代表了 IP 地址空间和自治系统（AS）号码的分配层次；以及一个分布式存储库系统，用于存储和传播构成 RPKI 的数据对象以及提高路由安全性所需的其他签名对象。作为该架构的初步应用，该文件描述了 IP 地址空间的合法持有者如何以可验证的方式明确授权一个或多个 AS 开通该地址空间的路由。例如，这种可验证的授权可用于更安全地构建 BGP 路由过滤器。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This document is not an Internet Standards Track specification; it is published for informational purposes.",
+      "zh": "本文件不是互联网标准轨道规范，仅为提供信息而发布。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Not all documents approved by the IESG are a candidate for any level of Internet Standard; see Section 2 of RFC 5741.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。并非所有经 IESG 批准的文件都能成为任何级别的互联网标准候选文件；请参见 RFC 5741 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc6480.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc6480。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2012 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "版权所有 (c) 2012 IETF 信托基金会和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1. Introduction ....................................................3\n   1.1. Terminology ................................................4\n2. Public Key Infrastructure for Internet Number Resources .........4\n   2.1. Role in the Overall Architecture ...........................5\n   2.2. CA Certificates ............................................6\n   2.3. End-Entity (EE) Certificates ...............................7\n   2.4. Trust Anchors ..............................................8\n3. Route Origination Authorizations ................................9\n   3.1. Role in the Overall Architecture ...........................9\n   3.2. Syntax and Semantics ......................................10\n4. Repositories ...................................................11\n   4.1. Role in the Overall Architecture ..........................12\n   4.2. Contents and Structure ....................................12\n   4.3. Access Protocols ..........................................14\n   4.4. Access Control ............................................15\n5. Manifests ......................................................15\n   5.1. Syntax and Semantics ......................................15\n6. Local Cache Maintenance ........................................16\n7. Common Operations ..............................................17\n   7.1. Certificate Issuance ......................................17\n   7.2. CA Key Rollover ...........................................18\n   7.3. ROA Management ............................................19\n        7.3.1. Single-Homed Subscribers ...........................20\n        7.3.2. Multi-Homed Subscribers ............................20\n        7.3.3. Provider-Independent Address Space .................21\n8. Security Considerations ........................................21\n9. IANA Considerations ............................................21\n10. Acknowledgments ...............................................22\n11. References ....................................................22\n   11.1. Normative References .....................................22\n   11.2. Informative References ...................................23",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document describes an architecture for an infrastructure to support improved security for BGP routing [RFC4271] for the Internet. The architecture encompasses three principle elements:",
+      "zh": "本文档描述了一种基础设施架构，用于支持改进互联网 BGP 路由[RFC4271]的安全性。该架构包括三个主要元素："
+    },
+    {
+      "indent": 6,
+      "text": "o Resource Public Key Infrastructure (RPKI)",
+      "zh": "o 资源公钥基础设施 (RPKI)"
+    },
+    {
+      "indent": 6,
+      "text": "o digitally signed routing objects to support routing security",
+      "zh": "o 数字签名路由对象，支持路由安全"
+    },
+    {
+      "indent": 6,
+      "text": "o a distributed repository system to hold the PKI objects and the signed routing objects",
+      "zh": "o 分布式存储库系统，用于保存 PKI 对象和签名路由对象"
+    },
+    {
+      "indent": 3,
+      "text": "The architecture described by this document enables an entity to verifiably assert that it is the legitimate holder of a set of IP addresses or a set of Autonomous System (AS) numbers. As an initial application of this architecture, the document describes how a legitimate holder of IP address space can explicitly and verifiably authorize one or more ASes to originate routes to that address space. Such verifiable authorizations could be used, for example, to more securely construct BGP route filters. In addition to this initial application, the infrastructure defined by this architecture also is intended to provide future support for security protocols such as Secure BGP [S-BGP] or Secure Origin BGP [soBGP]. This architecture is applicable to the routing of both IPv4 and IPv6 datagrams. IPv4 and IPv6 are currently the only address families supported by this architecture. Thus, for example, use of this architecture with MPLS labels is beyond the scope of this document.",
+      "zh": "本文档描述的架构使实体能够以可验证的方式断言自己是一组 IP 地址或一组自治系统 (AS) 号码的合法持有者。作为该架构的初步应用，本文档描述了 IP 地址空间的合法持有者如何以可验证的方式明确授权一个或多个 AS 将路由发送到该地址空间。例如，这种可验证的授权可用于更安全地构建 BGP 路由过滤器。除这一初始应用外，本架构所定义的基础架构还旨在为安全 BGP [S-BGP] 或安全起源 BGP [soBGP] 等安全协议提供未来支持。本架构适用于 IPv4 和 IPv6 数据报的路由。IPv4 和 IPv6 是该架构目前唯一支持的地址系列。因此，将此架构与 MPLS 标签结合使用超出了本文档的范围。"
+    },
+    {
+      "indent": 3,
+      "text": "In order to facilitate deployment, the architecture takes advantage of existing technologies and practices. The structure of the PKI element of the architecture corresponds to the existing resource allocation structure. Thus management of this PKI is a natural extension of the resource-management functions of the organizations that are already responsible for IP address and AS number resource allocation. Likewise, existing resource allocation and revocation practices have well-defined correspondents in this architecture. Note that while the initial focus of this architecture is routing security applications, the PKI described in this document could be used to support other applications that make use of attestations of IP address or AS number resource holdings.",
+      "zh": "为了便于部署，该架构利用了现有的技术和做法。该架构的 PKI 元素的结构与现有的资源分配结构相对应。因此，该 PKI 的管理是已负责 IP 地址和 AS 号码资源分配的组织的资源管理职能的自然延伸。同样，现有的资源分配和撤销实践在此架构中也有明确的对应关系。请注意，虽然本架构的最初重点是路由安全应用，但本文档中描述的 PKI 也可用于支持利用 IP 地址或 AS 号码资源持有证明的其他应用。"
+    },
+    {
+      "indent": 3,
+      "text": "To ease implementation, existing IETF standards are used wherever possible; for example, extensive use is made of the X.509 certificate profile defined by the Public Key Infrastructure using X.509 (PKIX) [RFC5280] working group and the extensions for IP addresses and AS numbers representation defined in RFC 3779 [RFC3779]. Also, Cryptographic Message Syntax (CMS) [RFC5652] is used as the syntax for the newly defined signed objects [RFC6488] required by this infrastructure.",
+      "zh": "例如，广泛使用了由使用 X.509 的公钥基础设施 (PKIX) [RFC5280] 工作组定义的 X.509 证书配置文件，以及 RFC 3779 [RFC3779] 中定义的 IP 地址和 AS 号码表示扩展。此外，加密信息语法 (CMS) [RFC5652] 被用作该基础设施所需的新定义签名对象 [RFC6488] 的语法。"
+    },
+    {
+      "indent": 3,
+      "text": "As noted above, the architecture is comprised of three main components: an X.509 PKI in which certificates attest to holdings of IP address space and AS numbers; non-certificate signed objects (including route origination authorizations and manifests) used by the infrastructure; and a distributed repository system that makes all of these signed objects available for use by ISPs in making routing decisions. These three basic components enable several security functions; most notably the cryptographic validation that an autonomous system is authorized to originate routes to a given prefix [RFC6483].",
+      "zh": "如上所述，该架构由三个主要部分组成：X.509 PKI，其中的证书证明了 IP 地址空间和 AS 号码的持有情况；基础设施使用的非证书签名对象（包括路由起源授权和清单）；以及分布式存储系统，该系统提供所有这些签名对象，供互联网服务提供商在做出路由决策时使用。这三个基本组件可实现多项安全功能，其中最主要的是加密验证自治系统是否有权向给定前缀发送路由[RFC6483]。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Terminology",
+      "section_title": true,
+      "zh": "1.1. 用语"
+    },
+    {
+      "indent": 3,
+      "text": "It is assumed that the reader is familiar with the terms and concepts described in \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\" [RFC5280] and \"X.509 Extensions for IP Addresses and AS Identifiers\" [RFC3779].",
+      "zh": "假定读者熟悉 \"互联网 X.509 公钥基础设施证书和证书吊销列表 (CRL) 简介\" [RFC5280] 和 \"IP 地址和 AS 标识符的 X.509 扩展\" [RFC3779] 中描述的术语和概念。"
+    },
+    {
+      "indent": 3,
+      "text": "Throughout this document, we use the terms \"address space holder\" or \"holder of IP address space\" interchangeably to refer to a legitimate holder of IP address space who has received this address space through the standard IP address allocation hierarchy. That is, the address space holder has either directly received the address space as an allocation from a Regional Internet Registry (RIR) or IANA; or else the address space holder has received the address space as a sub-allocation from a National Internet Registry (NIR) or Local Internet Registry (LIR). We use the term \"resource holder\" to refer to a legitimate holder of either IP address or AS number resources.",
+      "zh": "在本文件中，我们交替使用 \"地址空间持有者 \"或 \"IP 地址空间持有者 \"这两个术语，指通过标准 IP 地址分配层次结构获得地址空间的合法 IP 地址空间持有者。也就是说，地址空间持有者要么直接从地区互联网注册机构 (RIR) 或 IANA 获得地址空间分配；要么从国家互联网注册机构 (NIR) 或地方互联网注册机构 (LIR) 获得地址空间分 配。我们使用 \"资源持有者 \"一词来指 IP 地址或 AS 号码资源的合法持有者。"
+    },
+    {
+      "indent": 3,
+      "text": "Throughout this document, we use the terms \"registry\" and \"ISP\" to refer to an entity that has an IP address space and/or AS number allocation that it is permitted to sub-allocate.",
+      "zh": "在本文件中，我们使用 \"注册机构 \"和 \"互联网服务提供商 \"来指拥有 IP 地址空间和/或 AS 号码分配的实体，该实体被允许再分配 IP 地址空间和/或 AS 号码。"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in RFC 2119 [RFC2119].",
+      "zh": "本文档中的关键词 \"MUST\"、\"MUST NOT\"、\"REQUIRED\"、\"SHALL\"、\"SHALL NOT\"、\"SHOULD\"、\"SHOULD NOT\"、\"RECOMMENDED\"、\"NOT RECOMMENDED\"、\"MAY \"和 \"OPTIONAL \"应按照 RFC 2119 [RFC2119] 中的描述进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Public Key Infrastructure for Internet Number Resources",
+      "section_title": true,
+      "zh": "2. 互联网号码资源公钥基础设施"
+    },
+    {
+      "indent": 3,
+      "text": "Because the holder of a block of IP address space is entitled to define the topological destination of IP datagrams whose destinations fall within that block, decisions about inter-domain routing are inherently based on knowledge of the allocation of the IP address space. Thus, a basic function of this architecture is to provide cryptographically verifiable attestations as to these allocations. In current practice, the allocation of IP addresses is hierarchical. The root of the hierarchy is IANA. Below IANA are five Regional Internet Registries (RIRs), each of which manages address and AS number allocation within a defined geopolitical region. In some regions, the third tier of the hierarchy includes National Internet Registries (NIRs) as well as Local Internet Registries (LIRs) and subscribers with so-called provider-independent (\"portable\") allocations. (The term \"LIR\" is used in some regions to refer to what other regions define as an ISP. Throughout the rest of this document, we will use the term \"LIR/ISP\" to simplify references to these entities.) In other regions, the third tier consists only of LIRs/ISPs and subscribers with provider-independent allocations.",
+      "zh": "由于 IP 地址空间区块的持有者有权确定 IP 数据报的拓扑目的地（其目的地位于该区块内），因此域间路由选择的决定本质上是基于对 IP 地址空间分配的了解。因此，该架构的一个基本功能就是为这些分配提供可加密验证的证明。在目前的实践中，IP 地址的分配是分等级的。层级结构的根基是 IANA。IANA 下面有五个地区互联网注册管理机构 (RIR)，每个注册管理机构负责管理特定地缘政治区域内的地址和 AS 号码分配。在某些地区，第三级结构包括国家互联网注册管理机构（NIR）以及本地互联网注册管理机构（LIR）和拥有所谓独立于提供商（\"可移植\"）分配的用户。(某些地区使用 \"LIR \"一词来指代其他地区定义的 ISP。在本文其余部分，我们将使用 \"LIR/ISP \"一词来简化对这些实体的引用）。在其他地区，第三层仅由 LIR/ISP 和独立于提供商分配的用户组成。"
+    },
+    {
+      "indent": 3,
+      "text": "In general, the holder of a block of IP address space may sub-allocate portions of that block, either to itself (e.g., to a particular unit of the same organization), or to another organization, subject to contractual constraints established by the registries. Because of this structure, IP address allocations can be described naturally by a hierarchic public key infrastructure, in which each certificate attests to an allocation of IP addresses, and issuance of subordinate certificates corresponds to sub-allocation of IP addresses. The above reasoning holds true for AS number resources as well, with the difference that, by convention, AS numbers may not be sub-allocated except by RIRs or NIRs. Thus, allocations of both IP addresses and AS numbers can be expressed by the same PKI. Such a PKI, which is henceforth referred to as the \"Resource Public Key Infrastructure (RPKI)\", is a central component of this architecture.",
+      "zh": "一般来说，IP 地址空间区块的持有者可将该区块的一部分再分配给自己（如同一组织的某一单位）或另一组织，但须遵守注册机构规定的合同约束。由于这种结构，IP 地址的分配可以很自然地用分级公钥基础设施来描述，其中每个证书都证明了 IP 地址的分配，下级证书的签发对应于 IP 地址的次级分配。上述推理同样适用于 AS 号码资源，不同之处在于，按照惯例，除非由区域互联网注册管理机构或国家互联网注册管理机构，否则不得对 AS 号码进行子分配。因此，IP 地址和 AS 号码的分配可以用同一个 PKI 来表示。这种公钥基础设施在下文中称为 \"资源公钥基础设施 (RPKI)\"，是本架构的核心组成部分。"
+    },
+    {
+      "indent": 0,
+      "text": "2.1. Role in the Overall Architecture",
+      "section_title": true,
+      "zh": "2.1. 在整体架构中的作用"
+    },
+    {
+      "indent": 3,
+      "text": "Certificates in this PKI are called resource certificates, and conform to the certificate profile for such certificates [RFC6487]. Resource certificates attest to the allocation by the (certificate) issuer of IP addresses or AS numbers to the subject. They do this by binding the public key contained in the resource certificate to the IP addresses or AS numbers included in the certificate's IP Address Delegation or AS Identifier Delegation extensions, respectively, as defined in RFC 3779 [RFC3779].",
+      "zh": "本 PKI 中的证书称为资源证书，符合此类证书的证书配置文件 [RFC6487]。资源证书证明（证书）签发者为主体分配了 IP 地址或 AS 号码。为此，它们将资源证书中包含的公钥分别与 RFC 3779 [RFC3779] 中定义的证书 IP 地址授权或 AS 标识符授权扩展中包含的 IP 地址或 AS 号码绑定。"
+    },
+    {
+      "indent": 3,
+      "text": "An important property of this PKI is that certificates do not attest to the identity of the subject. Therefore, the subject names used in certificates are not intended to be \"descriptive\". That is, the resource PKI is intended to provide authorization, but not authentication. This is in contrast to most PKIs where the issuer ensures that the descriptive subject name in a certificate is properly associated with the entity that holds the private key corresponding to the public key in the certificate. Because issuers need not verify the right of an entity to use a subject name in a certificate, they avoid the costs and liabilities of such verification. This makes it easier for these entities to take on the additional role of Certification Authority (CA).",
+      "zh": "这种公用钥匙基础结构的一个重要特性是，证书并不证明主体的身份。因此，证书中使用的主体名称不具有 \"描述性\"。也就是说，资源 PKI 的目的是提供授权，而不是验证。这与大多数 PKI 形成鲜明对比，在大多数 PKI 中，签发者会确保证书中的描述性主体名与持有与证书中公用密钥相对应的私钥的实体正确关联。由于签发者无需验证某个实体是否有权使用证书中的主题名称，因此他们避免了这种验证的成本和责任。这使这些实体更容易承担认证机构（CA）的额外角色。"
+    },
+    {
+      "indent": 3,
+      "text": "Most of the certificates in the PKI assert the basic facts on which the rest of the infrastructure operates. CA certificates within the PKI attest to IP address space and AS number holdings. End-entity (EE) certificates are issued by resource holder CAs to delegate the authority attested by their allocation certificates. The primary use for EE certificates is the validation of Route Origination Authorizations (ROAs), signed objects which provide an explicit authorization by an address holder that a given AS is permitted to originate routes to a set of addresses (see Section 3). End-entity certificates are also used to verify other signed objects, such as manifests, which will be used to help ensure the integrity of the repository system (see Section 5).",
+      "zh": "PKI 中的大多数证书都证明了基础设施其他部分赖以运行的基本事实。PKI 中的 CA 证书证明了 IP 地址空间和 AS 号码的持有情况。终端实体 (EE) 证书由资源持有 CA 签发，以授予其分配证书所证明的权限。EE 证书的主要用途是路由起源授权（ROA）的验证，ROA 是经过签名的对象，它提供了地址持有者的明确授权，允许给定的 AS 将路由起源到一组地址（见第 3 节）。终端实体证书还可用于验证清单等其他签名对象，这些对象将用于帮助确保存储库系统的完整性（见第 5 节）。"
+    },
+    {
+      "indent": 0,
+      "text": "2.2. CA Certificates",
+      "section_title": true,
+      "zh": "2.2. CA 证书"
+    },
+    {
+      "indent": 3,
+      "text": "Any resource holder who is authorized to sub-allocate these resources must be able to issue resource certificates to correspond to these sub-allocations. Thus, for example, CA certificates will be associated with IANA and each of the RIRs, NIRs, and LIRs/ISPs. Also, a CA certificate is required to enable a resource holder to issue ROAs, because it must issue the corresponding end-entity certificate used to validate each ROA. Thus, some entities that do not sub-allocate their resources also will need to have CA certificates for their allocations, e.g., a multi-homed subscriber with a provider-independent allocation, to enable them to issue ROAs. (A subscriber who is not multi-homed, whose allocation comes from an LIR/ISP, and who has not moved to a different LIR/ISP, need not be represented in the PKI. Moreover, a multi-homed subscriber with an allocation from an LIR/ISP may or may not need to be explicitly represented, as discussed in Section 7.3.2).",
+      "zh": "任何受权再分配这些资源的资源持有者必须能够签发与这些再分配资源相对应的资源证书。因此，举例来说，CA 证书将与 IANA 以及每个区域互联网注册管理机构、国家互联网注册管理机构和本地互联网注册管理机构/互联网服务提供商相关联。此外，CA 证书也是资源持有者签发 ROA 的必要条件，因为它必须签发用于验证每个 ROA 的相应终端实体证书。因此，一些不对其资源进行子分配的实体也需要为其分配的资源（例如，拥有独立于提供商的分配的多归属用户）获得 CA 证书，使其能够签发 ROA。(非多用户的用户，其分配来自本地互联网接入服务提供商/互联网服务提供商，并且没有转移到不同的本地互联网接入服务提供商/互联网服务提供商，不需要在 PKI 中体现。此外，如第 7.3.2 节所述，分配来自 LIR/ISP 的多重归属用户可能需要也可能不需要明确表示）。"
+    },
+    {
+      "indent": 3,
+      "text": "Unlike in most PKIs, the distinguished name of the subject in a CA certificate is chosen by the certificate issuer. The subject's distinguished name must not attempt to convey the identity of the subject in a descriptive fashion. The subject's distinguished name must include the CommonName attribute and may additionally include the serial attribute.",
+      "zh": "与大多数 PKI 不同的是， CA 证书中主体的区分名称由证书签发者选择。主体的区分名称不得试图以描述性方式传达主体的身份。主体的区分名称必须包括 CommonName 属性，还可以包括 serial 属性。"
+    },
+    {
+      "indent": 3,
+      "text": "In this PKI, the certificate issuer, being an RIR, NIR, or LIR/ISP, is not in the business of verifying the legal right of the subject to assert a particular identity. Therefore, selecting a distinguished name that does not convey the identity of the subject in a descriptive fashion minimizes the opportunity for the subject to misuse the certificate to assert an identity, and thus minimizes the legal liability of the issuer. Since all CA certificates are issued to subjects with whom the issuer has an existing relationship, it is recommended that the issuer select a subject name that enables the issuer to easily link the certificate to existing database records associated with the subject. For example, an authority may use internal database keys or subscriber IDs as the subject's common name in issued certificates.",
+      "zh": "在本公用钥匙基础结构中，证书签发者作为一个区域互联网注册管理机构、国家互联网注册管理机构或本地互联网注册管理机构/互联网服务提供商，并不负责验证主体是否有合法权利主张某一特定身份。因此，选择一个不以描述性方式表达主体身份的区分名称，可最大限度地减少主体滥用证书宣称身份的机会，从而最大限度地减少签发者的法律责任。由于所有 CA 证书都是签发给与签发者有现存关系的主体，因此建议签发者选择一个主体名称，使签发者能很容易地把证书与主体相关的现有数据库记录联系起来。例如，当局可使用内部数据库密钥或用户 ID 作为签发证书中主体的通用名称。"
+    },
+    {
+      "indent": 3,
+      "text": "Although the subject's common name in a certificate does not convey identity, it is still the case that the common name must be unique among all subjects to whom a certification authority issues certificates. That is, a CA must not issue certificates to two different entities that use the same common name for the subject.",
+      "zh": "虽然证书中主体的通用名并不表示身份，但在验证局签发证书的所有主体中，通用名必须是唯一的。也就是说，验证局不得向使用相同主体通用名的两个不同实体签发证书。"
+    },
+    {
+      "indent": 3,
+      "text": "Each resource certificate attests to an allocation of resources to a resource holder, so entities that have allocations from multiple sources will have multiple CA certificates. Note that when an entity receives multiple certificates from different issuers, the subject names in these certificates will generally be different. A CA also may issue distinct certificates for each distinct allocation to the same entity, if the CA and the resource holder agree that such an arrangement will facilitate management and use of the certificates. For example, an LIR/ISP may have several certificates issued to it by one registry, each describing a distinct set of address blocks, because the LIR/ISP desires to treat the allocations as separate.",
+      "zh": "每份资源证书都证明向资源持有者分配了资源，因此从多个来源分配资源的实体将拥有多份 CA 证书。请注意，当一个实体从不同的签发者处获得多个证书时，这些证书中的主题名称通常会不同。如果 CA 和资源持有者认为这样的安排有利于证书的管理和使用，CA 也可以为同一实体的每个不同分配签发不同的证书。例如，一个 LIR/ISP 可能有多个由一个注册机构签发给它的证书，每个证书描述一组不同的地址块，因为 LIR/ISP 希望将这些分配视为独立的。"
+    },
+    {
+      "indent": 0,
+      "text": "2.3. End-Entity (EE) Certificates",
+      "section_title": true,
+      "zh": "2.3. 最终实体（EE）证书"
+    },
+    {
+      "indent": 3,
+      "text": "The private key corresponding to a public key contained in an EE certificate is not used to sign other certificates in a PKI. The primary function of end-entity certificates in this PKI is the verification of signed objects that relate to the usage of the resources described in the certificate, e.g., ROAs and manifests.",
+      "zh": "与 EE 证书所含公共密钥相对应的私钥不用于签署 PKI 中的其他证书。在该公钥基础设施中，终端实体证书的主要功能是验证与证书中描述的资源使用情况有关的签名对象，如 ROA 和清单。"
+    },
+    {
+      "indent": 3,
+      "text": "For ROAs and manifests, there will be a one-to-one correspondence between end-entity certificates and signed objects, i.e., the private key corresponding to each end-entity certificate is used to sign exactly one object, and each object is signed with only one key. This property allows the PKI to be used to revoke these signed objects, rather than creating a new revocation mechanism. When the end-entity certificate used to sign an object has been revoked, the signature on that object (and any corresponding assertions) will be considered invalid, so a signed object can be effectively revoked by revoking the end-entity certificate used to sign it.",
+      "zh": "就 ROA 和清单而言，最终实体证书和签名对象之间是一一对应的，即每个最终实体证书对应的私钥只用于签名一个对象，每个对象只用一个密钥签名。这一特性允许使用 PKI 来撤销这些已签名的对象，而不是创建一个新的撤销机制。当用于签署对象的最终实体证书被撤销时，该对象上的签名（以及任何相应的断言）将被视为无效，因此，通过撤销用于签署对象的最终实体证书，就可以有效地撤销已签署的对象。"
+    },
+    {
+      "indent": 3,
+      "text": "A secondary advantage to this one-to-one correspondence is that the private key corresponding to the public key in a certificate is used exactly once in its lifetime, and thus can be destroyed after it has been used to sign its one object. This fact should simplify key management, since there is no requirement to protect these private keys for an extended period of time.",
+      "zh": "这种一一对应关系的另一个好处是，与证书中的公开密钥相对应的私人密钥在其生命周期内只使用一次，因此在用于签署一个对象后就可以销毁。由于不需要长期保护这些私人密钥，因此可以简化密钥管理。"
+    },
+    {
+      "indent": 3,
+      "text": "The EE certificate used to verify a signed object appears in the Cryptographic Message Syntax (CMS) wrapper (see [RFC6488]) of the signed object. Therefore, it is not necessary to transmit the EE certificate separately from the signed object. Likewise, it is not necessary for the EE certificate to appear in the RPKI repository system except as part of the corresponding signed object.",
+      "zh": "用于验证已签名对象的 EE 证书出现在已签名对象的加密报文语法（CMS）封装器（见 [RFC6488]）中。因此，无需将 EE 证书与签名对象分开传输。同样，EE 证书也不必出现在 RPKI 资源库系统中，除非作为相应已签名对象的一部分。"
+    },
+    {
+      "indent": 3,
+      "text": "Although this document describes only two uses for end-entity certificates, additional uses will likely be defined in the future. For example, end-entity certificates could be used as a more general authorization for their subjects to act on behalf of the specified resource holder. This could facilitate authentication of inter-ISP interactions, or authentication of interactions with the repository system. These additional uses for end-entity certificates may require retention of the corresponding private keys, even though such retention is not required for keys used to sign ROAs and manifests.",
+      "zh": "尽管本文件只描述了终端实体证书的两种用途，但今后可能还会定义更多的用途。例如，终端实体证书可用作其主体代表指定资源持有者行事的更一般授权。这可以方便对 ISP 之间的交互进行验证，或对与资源库系统的交互进行验证。终端实体证书的这些额外用途可能需要保留相应的私人密钥，尽管用于签署 ROA 和清单的密钥不需要保留私人密钥。"
+    },
+    {
+      "indent": 0,
+      "text": "2.4. Trust Anchors",
+      "section_title": true,
+      "zh": "2.4. 信任锚"
+    },
+    {
+      "indent": 3,
+      "text": "In any PKI, each relying party (RP) chooses its own set of trust anchors (TAs). This general property of PKIs applies here as well. There is an extant IP address space and AS number allocation hierarchy, and thus IANA and/or the five RIRs are obvious candidates to be default TAs here. Nonetheless, each RP ultimately chooses the set of trust anchors it will use for certificate validation.",
+      "zh": "在任何 PKI 中，每个依赖方 (RP) 都会选择自己的一组信任锚 (TA)。PKI 的这一普遍特性在这里也同样适用。这里有一个现存的 IP 地址空间和 AS 号码分配层次结构，因此 IANA 和/或五个区域互联网注册管理机构显然是默认 TA 的候选者。尽管如此，每个 RP 最终还是要选择一套用于证书验证的信任锚。"
+    },
+    {
+      "indent": 3,
+      "text": "For example, an RP (e.g., an LIR/ISP) could create a trust anchor to which all address space and/or all AS numbers are assigned, and for which the RP knows the corresponding private key. The RP could then issue certificates under this trust anchor to whatever entities in the PKI it wishes, with the result that the certification paths terminating at this locally installed trust anchor will satisfy the validation requirements specified in RFC 3779. A large ISP that uses private IP address space (i.e., RFC 1918) and runs BGP internally will need to create this sort of trust anchor to accommodate a CA to which all private address space is assigned. The RP could then issue certificates under this CA that correspond to the RP's internal use of private address space.",
+      "zh": "例如，RP（如 LIR/ISP）可以创建一个信任锚，将所有地址空间和/或所有 AS 号码分配给该信任锚，并且 RP 知道该信任锚的相应私钥。然后，RP 可以根据该信任锚向 PKI 中的任何实体签发证书，这样，以本地安装的信任锚为终点的认证路径将满足 RFC 3779 中规定的验证要求。使用私有 IP 地址空间（即 RFC 1918）并在内部运行 BGP 的大型互联网服务提供商需要创建这种信任锚，以容纳一个分配给所有私有地址空间的 CA。然后，RP 可以在该 CA 下签发与 RP 内部使用的私有地址空间相对应的证书。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that an RP who elects to create and manage its own set of trust anchors may fail to detect allocation errors that arise under such circumstances, but the resulting vulnerability is local to the RP.",
+      "zh": "请注意，选择创建和管理自己的信任锚的 RP 可能无法检测到在这种情况下出现的分配错误，但由此产生的漏洞是 RP 的局部漏洞。"
+    },
+    {
+      "indent": 3,
+      "text": "It is expected that some parties within the extant IP address space and AS number allocation hierarchy may wish to publish trust anchor material for possible use by relying parties. A standard profile for the publication of trust anchor material for this public key infrastructure can be found in [RFC6490].",
+      "zh": "预计现存 IP 地址空间和 AS 号码分配层次中的某些方面可能希望发布信任锚材料，供依赖方使用。为该公钥基础设施发布信任锚材料的标准配置文件可参见 [RFC6490]。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Route Origination Authorizations",
+      "section_title": true,
+      "zh": "3. 路由起始授权"
+    },
+    {
+      "indent": 3,
+      "text": "The information on IP address allocation provided by the PKI is not, in itself, sufficient to guide routing decisions. In particular, BGP is based on the assumption that the AS that originates routes for a particular prefix is authorized to do so by the holder of that prefix (or an address block encompassing the prefix); the PKI contains no information about these authorizations. A Route Origination Authorization (ROA) makes such authorization explicit, allowing a holder of IP address space to create an object that explicitly and verifiably asserts that an AS is authorized to originate routes to a given set of prefixes.",
+      "zh": "PKI 提供的 IP 地址分配信息本身不足以指导路由选择决策。特别是，BGP 所依据的假设是，为特定前缀创建路由的 AS 已获得该前缀（或包含该前缀的地址块）持有者的授权；而 PKI 并不包含有关这些授权的信息。路由起源授权（ROA）明确了这种授权，允许 IP 地址空间的持有者创建一个对象，明确并可验证地断言一个 AS 已被授权为一组给定的前缀提供路由。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1. Role in the Overall Architecture",
+      "section_title": true,
+      "zh": "3.1. 在整体架构中的作用"
+    },
+    {
+      "indent": 3,
+      "text": "A ROA is an attestation that the holder of a set of prefixes has authorized an autonomous system to originate routes for those prefixes. A ROA is structured according to the format described in [RFC6482]. The validity of this authorization depends on the signer of the ROA being the holder of the prefix(es) in the ROA; this fact is asserted by an end-entity certificate from the PKI, whose corresponding private key is used to sign the ROA.",
+      "zh": "ROA 是一组前缀的持有者授权自治系统为这些前缀创建路由的证明。ROA 的结构符合 [RFC6482] 中描述的格式。该授权的有效性取决于 ROA 的签名者是否是 ROA 中前缀的持有者；这一事实由 PKI 的最终实体证书来证明，其相应的私钥用于签署 ROA。"
+    },
+    {
+      "indent": 3,
+      "text": "ROAs may be used by relying parties to verify that the AS that originates a route for a given IP address prefix is authorized by the holder of that prefix to originate such a route. For example, an ISP might use validated ROAs as inputs to route filter construction for use by its BGP routers. (See [RFC6483] for information on the use of ROAs to validate the origination of BGP routes.)",
+      "zh": "依赖方可使用 ROA 来验证为给定 IP 地址前缀发起路由的 AS 是否经该前缀持有者授权发起该路由。例如，互联网服务提供商可将经过验证的 ROA 作为路由过滤器构建的输入，供其 BGP 路由器使用。(有关使用 ROA 验证 BGP 路由来源的信息，请参阅 [RFC6483]）。"
+    },
+    {
+      "indent": 3,
+      "text": "Initially, the repository system will be the primary mechanism for disseminating ROAs, since these repositories will hold the certificates and CRLs needed to verify ROAs. In addition, ROAs also could be distributed in BGP UPDATE messages or via other communication paths, if needed to meet timeliness requirements.",
+      "zh": "最初，资源库系统将是传播 ROA 的主要机制，因为这些资源库将保存验证 ROA 所需的证书和 CRL。此外，如果需要满足及时性要求，也可以在 BGP UPDATE 消息中或通过其他通信路径发布 ROA。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2. Syntax and Semantics",
+      "section_title": true,
+      "zh": "3.2. 语法和语义"
+    },
+    {
+      "indent": 3,
+      "text": "A ROA constitutes an explicit authorization for a single AS to originate routes to one or more prefixes, and is signed by the holder of those prefixes. Conceptually, the ROA syntax consists of two parts, a general CMS template common to all RPKI signed objects",
+      "zh": "ROA 是对单个 AS 发端路由到一个或多个前缀的明确授权，并由这些前缀的持有者签署。从概念上讲，ROA 语法由两部分组成，即所有 RPKI 签名对象通用的一般 CMS 模板"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6488] and an encapsulated content specific to the ROA that expresses the authorization [RFC6482].",
+      "zh": "[RFC6488]和表达授权的 ROA 特定封装内容[RFC6482]。"
+    },
+    {
+      "indent": 3,
+      "text": "At a high level, the ROA's content contains (1) an AS number; (2) a list of IP address prefixes; and, optionally, (3) for each prefix, the maximum length of more specific (longer) prefixes that the AS is also authorized to advertise. (This last element facilitates a compact authorization to advertise, for example, any prefixes of length 20 to 24 bits contained within a given length 20 prefix.)",
+      "zh": "在高层次上，ROA 的内容包括：(1) AS 编号；(2) IP 地址前缀列表；(3) 对于每个前缀，AS 被授权宣传的更具体（更长）前缀的最大长度。(最后一个元素便于紧凑授权，例如，在给定的长度为 20 的前缀中包含长度为 20 到 24 比特的任何前缀）。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that a ROA contains only a single AS number. Thus, if an ISP has multiple AS numbers that will be authorized to originate routes to the prefix(es) in the ROA, an address space holder will need to issue multiple ROAs to authorize the ISP to originate routes from any of these ASes.",
+      "zh": "请注意，一个 ROA 只包含一个 AS 号。因此，如果 ISP 有多个 AS 号，这些 AS 号将被授权向 ROA 中的前缀发送路由，则地址空间持有者需要发布多个 ROA，以授权 ISP 从这些 AS 中的任意一个发送路由。"
+    },
+    {
+      "indent": 3,
+      "text": "A ROA is signed using the private key corresponding to the public key in an end-entity (EE) certificate in the PKI. In order for a ROA to be valid, its corresponding end-entity certificate must be valid, and the IP address prefixes of the ROA must exactly match the IP address prefix(es) specified in the EE certificate's RFC 3779 extension. Therefore, the validity interval of the ROA is implicitly the validity interval of its corresponding certificate. A ROA is revoked by revoking the corresponding EE certificate. There is no independent method of revoking a ROA. One might worry that this revocation model could lead to long CRLs for the CA certification that is signing the EE certificates. However, routing announcements on the public Internet are generally quite long lived. Therefore, as long as the EE certificates used to verify a ROA are given a validity interval of several months, the likelihood that many ROAs would need to be revoked within that time is quite low.",
+      "zh": "使用与 PKI 中的最终实体（EE）证书中的公开密钥相对应的私钥签署 ROA。要使 ROA 有效，其对应的终端实体证书必须有效，而且 ROA 的 IP 地址前缀必须与 EE 证书的 RFC 3779 扩展中指定的 IP 地址前缀完全匹配。因此，ROA 的有效期隐含了其相应证书的有效期。ROA 可通过撤销相应的 EE 证书来撤销。没有独立的 ROA 吊销方法。有人可能会担心，这种撤销模式会导致签署 EE 证书的 CA 认证的 CRL 变长。不过，公共互联网上的路由公告一般都很长寿。因此，只要用于验证 ROA 的 EE 证书的有效期间隔为几个月，那么在这段时间内需要撤销许多 ROA 的可能性就很低。"
+    },
+    {
+      "indent": 10,
+      "text": "   ---------                ---------\n   |  RIR  |                |  NIR  |\n   |  CA   |                |  CA   |\n   ---------                ---------\n       |                        |\n       |                        |\n       |                        |\n   ---------                ---------\n   |  ISP  |                |  ISP  |\n   |  CA 1 |                |  CA 2 |\n   ---------                ---------\n    |     \\                      |\n    |      -----                 |\n    |           \\                |\n----------    ----------      ----------\n|  ISP   |    |  ISP   |      |  ISP   |\n|  EE 1a |    |  EE 1b |      |  EE 2  |\n----------    ----------      ----------\n    |             |               |\n    |             |               |\n    |             |               |\n----------    ----------      ----------\n| ROA 1a |    | ROA 1b |      | ROA 2  |\n----------    ----------      ----------",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Figure 1: This figure illustrates an ISP with allocations from two sources (an RIR and an NIR). It needs two CA certificates due to the rules defined in RFC 3779.",
+      "zh": "图 1：该图展示了一个 ISP，它从两个来源（一个区域互联网注册管理机构和一个国家互联网注册管理机构）获得分配。根据 RFC 3779 中定义的规则，它需要两个 CA 证书。"
+    },
+    {
+      "indent": 3,
+      "text": "Because each ROA is associated with a single end-entity certificate, the set of IP prefixes contained in a ROA must be drawn from an allocation by a single source, i.e., a ROA cannot combine allocations from multiple sources. Address space holders who have allocations from multiple sources, and who wish to authorize an AS to originate routes for these allocations, must issue multiple ROAs to the AS.",
+      "zh": "由于每个 ROA 都与单个终端实体证书相关联，因此 ROA 中包含的 IP 前缀集必须来自单个来源的分配，即 ROA 不能将多个来源的分配合并在一起。地址空间持有者如果拥有多个来源的分配，并希望授权一个 AS 为这些分配建立路由，则必须向该 AS 签发多个 ROA。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Repositories",
+      "section_title": true,
+      "zh": "4. 资料库"
+    },
+    {
+      "indent": 3,
+      "text": "Initially, an LIR/ISP will make use of the resource PKI by acquiring and validating every ROA, to create a table of the prefixes for which each AS is authorized to originate routes. To validate all ROAs, an LIR/ISP needs to acquire all the certificates and CRLs. The primary function of the distributed repository system described here is to store these signed objects and to make them available for download by LIRs/ISPs. Note that this repository system provides a mechanism by which relying parties can pull fresh data at whatever frequency they deem appropriate. However, it does not provide a mechanism for pushing fresh data to relying parties (e.g., by including resource PKI objects in BGP or other protocol messages) and such a mechanism is beyond the scope of the current document.",
+      "zh": "最初，LIR/ISP 将通过获取和验证每个 ROA 来利用资源 PKI，以创建每个 AS 被授权发端路由的前缀表。为了验证所有 ROA，LIR/ISP 需要获取所有证书和 CRL。此处描述的分布式存储库系统的主要功能是存储这些签名对象，并供 LIR/ISP 下载。请注意，该存储库系统提供了一种机制，依赖方可通过该机制以其认为适当的频率获取新数据。但是，它并不提供向依赖方推送新鲜数据的机制（例如，通过在 BGP 或其他协议信息中包含资源 PKI 对象），这种机制超出了本文档的范围。"
+    },
+    {
+      "indent": 3,
+      "text": "The digital signatures on all objects in the repository ensure that unauthorized modification of valid objects is detectable by relying parties. Additionally, the repository system uses manifests (see Section 5) to ensure that relying parties can detect the deletion of valid objects and the insertion of out-of-date, valid signed objects.",
+      "zh": "资源库中所有对象的数字签名可确保依赖方检测到对有效对象的未经授权的修改。此外，存储库系统还使用清单（见第 5 节）来确保依赖方能够检测到有效对象的删除和已签名的过期有效对象的插入。"
+    },
+    {
+      "indent": 3,
+      "text": "The repository system is also a point of enforcement for access controls for the signed objects stored in it, e.g., ensuring that records related to an allocation of resources can be manipulated only by authorized parties. The use of access controls prevents denial-of-service attacks based on deletion of or tampering with repository objects. Indeed, although relying parties can detect tampering with objects in the repository, it is preferable that the repository system prevent such unauthorized modifications to the greatest extent possible.",
+      "zh": "存储库系统也是对其中存储的签名对象实施访问控制的执行点，例如，确保与资源分配有关的记录只能由授权方操作。使用访问控制可以防止基于删除或篡改存储库对象的拒绝服务攻击。事实上，虽然依赖方可以检测到对存储库中对象的篡改，但存储库系统最好还是尽可能防止这种未经授权的修改。"
+    },
+    {
+      "indent": 0,
+      "text": "4.1. Role in the Overall Architecture",
+      "section_title": true,
+      "zh": "4.1. 在整体架构中的作用"
+    },
+    {
+      "indent": 3,
+      "text": "The repository system is the untrusted clearing-house for all signed objects that must be globally accessible to relying parties. When certificates and CRLs are created, they are uploaded to this repository, and then downloaded for use by relying parties (primarily LIRs/ISPs). ROAs and manifests are additional examples of such objects, but other types of signed objects may be added to this architecture in the future. This document briefly describes the way signed objects (certificates, CRLs, ROAs, and manifests) are managed in the repository system. As other types of signed objects are added to the repository system, it will be necessary to modify the description, but it is anticipated that most of the design principles will still apply. The repository system is described in detail in [RFC6481].",
+      "zh": "存储库系统是所有签名对象的非信任信息交换中心，依赖方必须能在全球范围内访问这些对象。在创建证书和 CRL 时，它们会被上传到该存储库，然后被依赖方（主要是 LIR/ISP）下载使用。ROA 和清单是此类对象的其他示例，但将来可能会在此架构中添加其他类型的签名对象。本文件简要介绍了在存储库系统中管理签名对象（证书、CRL、ROA 和清单）的方式。随着其他类型的签名对象被添加到版本库系统中，有必要对描述进行修改，但预计大部分设计原则仍将适用。资源库系统的详细描述见 [RFC6481]。"
+    },
+    {
+      "indent": 0,
+      "text": "4.2. Contents and Structure",
+      "section_title": true,
+      "zh": "4.2. 内容和结构"
+    },
+    {
+      "indent": 3,
+      "text": "Although there is a single repository system that is accessed by relying parties, it is comprised of multiple databases. These databases will be distributed among registries (RIRs, NIRs, LIRs/ISPs). At a minimum, the database operated by each registry will contain all CA and EE certificates, CRLs, and manifests signed by the CA(s) associated with that registry. Repositories operated by LIRs/ISPs also will contain ROAs. Registries are encouraged to maintain copies of repository data from their customers, and their customer's customers (etc.), to facilitate retrieval of the whole repository contents by relying parties. Ideally, each RIR will hold PKI data from all entities within its geopolitical scope.",
+      "zh": "虽然依赖方可以访问单一的存储库系统，但该系统由多个数据库组成。这些数据库将分布在注册机构（RIR、NIR、LIR/ISP）之间。每个注册机构运行的数据库至少包含所有 CA 和 EE 证书、CRL 以及由与该注册机构相关的 CA 签发的清单。由本地互联网注册管理机构/互联网服务提供商运营的存储库也将包含 ROA。我们鼓励注册机构维护其客户及其客户的客户（等）的存储库数据副本，以方便依赖方检索整个存储库的内容。理想情况下，每个区域登记册都将保存其地理政治范围内所有实体的公钥基础设施数据。"
+    },
+    {
+      "indent": 3,
+      "text": "For every certificate in the PKI, there will be a corresponding file system directory in the repository that is the authoritative publication point for all objects (certificates, CRLs, ROAs, and manifests) verifiable via this certificate. A certificate's Subject Information Access (SIA) extension [RFC5280] contains a URI that references this directory. Additionally, a certificate's Authority Information Access (AIA) extension [RFC5280] contains a URI that references the authoritative location for the CA certificate under which the given certificate was issued. That is, if certificate A is used to verify certificate B, then the AIA extension of certificate B points to certificate A, and the SIA extension of certificate A points to a directory containing certificate B (see Figure 2).",
+      "zh": "对于 PKI 中的每张证书，存储库中都有一个相应的文件系统目录，该目录是可通过该证书验证的所有对象（证书、CRL、ROA 和清单）的权威发布点。证书的主题信息访问（SIA）扩展[RFC5280]包含一个引用该目录的 URI。此外，证书的 Authority Information Access (AIA) 扩展名 [RFC5280] 包含一个 URI，用于引用 CA 证书的权威位置，给定证书就是在该位置下签发的。也就是说，如果证书 A 用于验证证书 B，那么证书 B 的 AIA 扩展名指向证书 A，而证书 A 的 SIA 扩展名指向包含证书 B 的目录（见图 2）。"
+    },
+    {
+      "indent": 14,
+      "text": "           +--------+\n+--------->| Cert A |<----+\n|          | CRLDP  |     |\n|          |  AIA   |     |\n|  +--------- SIA   |     |\n|  |       +--------+     |\n|  |                      |\n|  |                      |\n|  |                      |\n|  |  +-------------------|------------------+\n|  |  |                   |                  |\n|  +->|   +--------+      |   +--------+     |\n|     |   | Cert B |      |   | Cert C |     |\n|     |   | CRLDP ----+   |   | CRLDP -+-+   |\n+----------- AIA   |  |   +----- AIA   | |   |\n      |   |  SIA   |  |       |  SIA   | |   |\n      |   +--------+  |       +--------+ |   |\n      |               V                  |   |\n      |           +---------+            |   |\n      |           | A's CRL |<-----------+   |\n      |           +---------+                |\n      | A's Repository Publication Directory |\n      +--------------------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 11,
+      "text": "Figure 2: Use of SIA and AIA extensions in the RPKI",
+      "zh": "图 2：在 RPKI 中使用 SIA 和 AIA 扩展功能"
+    },
+    {
+      "indent": 3,
+      "text": "In Figure 2, certificates B and C are issued by CA A. Therefore, the AIA extensions of certificates B and C point to (certificate) A, and the SIA extension of certificate A points to the repository publication point of CA A's subordinate products, which includes certificates B and C, as well as the CRL issued by A. The CRL Distribution Points (CRLDP) extension in certificates B and C both point to the CRL issued by A.",
+      "zh": "因此，证书 B 和 C 的 AIA 扩展指向（证书）A，证书 A 的 SIA 扩展指向 CA A 下属产品的存储库发布点，其中包括证书 B 和 C 以及 A 签发的 CRL。"
+    },
+    {
+      "indent": 3,
+      "text": "If a CA certificate is reissued with the same public key, it should not be necessary to reissue (with an updated AIA URI) all certificates signed by the certificate being reissued. Therefore, a certification authority SHOULD use a persistent URI naming scheme for issued certificates. That is, reissued certificates should use the same publication point as previously issued certificates having the same subject and public key, and should overwrite such certificates.",
+      "zh": "如果用相同的公开密钥重新签发 CA 证书，就没有必要（用更新的 AIA URI）重新签发由被重新签发的证书签署的所有证书。因此，认证机构应为已签发的证书使用持久 URI 命名方案。也就是说，重新签发的证书应使用与以前签发的具有相同主题和公开密钥的证书相同的公布点，并应覆盖这些证书。"
+    },
+    {
+      "indent": 0,
+      "text": "4.3. Access Protocols",
+      "section_title": true,
+      "zh": "4.3. 访问协议"
+    },
+    {
+      "indent": 3,
+      "text": "Repository operators will choose one or more access protocols that relying parties can use to access the repository system. These protocols will be used by numerous participants in the infrastructure (e.g., all registries, ISPs, and multi-homed subscribers) to maintain their respective portions of it. In order to support these activities, certain basic functionality is required of the suite of access protocols, as described below. No single access protocol needs to implement all of these functions (although that may be the case), but each function MUST be implemented by at least one access protocol deployed by a repository operator.",
+      "zh": "版本库运营商将选择一种或多种访问协议，依赖方可使用这些协议访问版本库系统。这些协议将被基础设施的众多参与者（如所有注册机构、互联网服务提供商和多主机用户）用来维护各自的部分。为了支持这些活动，访问协议套件需要具备某些基本功能，如下所述。没有任何一个访问协议需要实现所有这些功能（尽管情况可能如此），但每个功能都必须由资源库运营商部署的至少一个访问协议来实现。"
+    },
+    {
+      "indent": 3,
+      "text": "Download: Access protocols must support the bulk download of repository contents and subsequent download of changes to the downloaded contents, since this will be the most common way in which relying parties interact with the repository system. Other types of download interactions (e.g., download of a single object) may also be supported.",
+      "zh": "下载：访问协议必须支持批量下载版本库内容以及随后下载对下载内容的修改，因为这将是依赖方与版本库系统交互的最常见方式。也可支持其他类型的下载交互（如下载单个对象）。"
+    },
+    {
+      "indent": 3,
+      "text": "Upload/change/delete: Access protocols must also support mechanisms for the issuers of certificates, CRLs, and other signed objects to add them to the repository, and to remove them. Mechanisms for modifying objects in the repository may also be provided. All access protocols that allow modification to the repository (through addition, deletion, or modification of its contents) must support verification of the authorization of the entity performing the modification, so that appropriate access controls can be applied (see Section 4.4).",
+      "zh": "上传/更改/删除：访问协议还必须支持证书、CRL 和其他签名对象的签发者将其添加到存储库和删除的机制。还可提供修改存储库中对象的机制。所有允许修改存储库（通过添加、删除或修改其内容）的访问协议都必须支持对执行修改的实体的授权进行验证，以便应用适当的访问控制（见第 4.4 节）。"
+    },
+    {
+      "indent": 3,
+      "text": "To ensure all relying parties are able to acquire all RPKI signed objects, all publication points MUST be accessible via rsync (see [RFC5781] and [RSYNC]), although other download protocols MAY also be supported. A repository publication point may provide update/change/delete functionality via (set of) access protocols that it desires, provided that the supported protocols are clearly communicated to all certification authorities publishing data at a given publication point.",
+      "zh": "为确保所有依赖方都能获取所有 RPKI 签名对象，所有发布点必须能通过 rsync（见 [RFC5781] 和 [RSYNC]）访问，尽管也可能支持其他下载协议。存储库发布点可通过其所需的（一组）访问协议提供更新/更改/删除功能，但所支持的协议必须明确告知在特定发布点发布数据的所有验证机构。"
+    },
+    {
+      "indent": 0,
+      "text": "4.4. Access Control",
+      "section_title": true,
+      "zh": "4.4. 门禁控制"
+    },
+    {
+      "indent": 3,
+      "text": "In order to maintain the integrity of information in the repository, controls must be put in place to prevent the addition, deletion, or modification of objects in the repository by unauthorized parties. The identities of parties attempting to make such changes can be authenticated through the relevant access protocols. Although specific access control policies are subject to the local control of repository operators, it is RECOMMENDED that repositories allow only the issuers of signed objects to add, delete, or modify them. Alternatively, it may be advantageous in the future to define a formal delegation mechanism to allow resource holders to authorize other parties to act on their behalf, as suggested in Section 2.3.",
+      "zh": "为了保持资源库中信息的完整性，必须采取控制措施，防止未经授权的各方添加、删除或修改资源库中的对象。可以通过相关的访问协议来验证试图进行此类更改的各方的身份。虽然具体的访问控制策略取决于存储库操作员的本地控制，但建议存储库只允许签名对象的签发者添加、删除或修改对象。另外，正如第 2.3 节所建议的那样，将来定义一种正式的授权机制，允许资源持有者授权其他方代表其行事，可能会有好处。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Manifests",
+      "section_title": true,
+      "zh": "5. 表现形式"
+    },
+    {
+      "indent": 3,
+      "text": "A manifest is a signed object listing of all of the signed objects (except for the manifest itself) issued by an authority responsible for a publication in the repository system. For each unexpired certificate, CRL, or ROA issued by the authority, the manifest contains both the name of the file containing the object, and a hash of the file content.",
+      "zh": "清单是一个已签名对象的列表，其中列出了存储库系统中负责发布的机构签发的所有已签名对象（清单本身除外）。对于授权机构签发的每个未过期证书、CRL 或 ROA，清单都包含包含该对象的文件名和文件内容的哈希值。"
+    },
+    {
+      "indent": 3,
+      "text": "As with ROAs, a manifest is signed by a private key, for which the corresponding public key appears in an end-entity certificate. This EE certificate, in turn, is signed by the CA in question. Since the private key in an EE certificate is used to sign only a single manifest, then the manifest can be revoked by revoking the EE certificate. In such a case, to avoid needless CRL growth, the EE certificate used to validate a manifest SHOULD expire at the same time that the manifest expires.",
+      "zh": "与 ROA 一样，清单由私钥签署，相应的公钥出现在终端实体证书中。该电子实体证书则由相关 CA 签署。由于电子实体证书中的私钥只用于签署一份清单，因此可以通过撤销电子实体证书来撤销清单。在这种情况下，为避免不必要的 CRL 增长，用于验证清单的 EE 证书应与清单同时过期。"
+    },
+    {
+      "indent": 3,
+      "text": "Manifests may be used by relying parties when constructing a local cache (see Section 6) to mitigate the risk of an attacker who deletes files from a repository or replaces current signed objects with stale versions of the same object. Such protection is needed because, although all objects in the repository system are signed, the repository system itself is untrusted.",
+      "zh": "依赖方可在构建本地缓存时使用清单（见第 6 节），以降低攻击者从资源库中删除文件或用同一对象的过期版本替换当前已签名对象的风险。之所以需要这种保护，是因为尽管版本库系统中的所有对象都已签名，但版本库系统本身是不可信任的。"
+    },
+    {
+      "indent": 0,
+      "text": "5.1. Syntax and Semantics",
+      "section_title": true,
+      "zh": "5.1. 语法和语义"
+    },
+    {
+      "indent": 3,
+      "text": "A manifest constitutes a list of (the hashes of) all the files in a repository point at a particular point in time. A detailed specification of the manifest's content is provided in [RFC6486] but, at a high level, a manifest consists of (1) a manifest number; (2) the time the manifest was issued; (3) the time of the next planned update; and (4) a list of filename and hash value pairs.",
+      "zh": "清单是存储库中某一特定时间点的所有文件（哈希值）的列表。清单内容的详细说明见 [RFC6486]，但在高层次上，清单包括：(1) 清单编号；(2) 清单发布时间；(3) 下次计划更新时间；(4) 文件名和哈希值对列表。"
+    },
+    {
+      "indent": 3,
+      "text": "The manifest number is a sequence number that is incremented each time a manifest is issued by the authority. An authority is REQUIRED to issue a new manifest any time it alters any of its items in the repository, or when the specified time of the next update is reached. A manifest is thus valid until the specified time of the next update or until a manifest is issued with a greater manifest number, whichever comes first. (Note that when an EE certificate is used to sign only a single manifest, whenever the authority issues the new manifest, the CA MUST also issue a new CRL that includes the EE certificate corresponding to the old manifest. The revoked EE certificate for the old manifest will be removed from the CRL when it expires; thus, this procedure ought not to result in significant CRL growth.)",
+      "zh": "清单编号是一个序列号，在管理机构每次发布清单时都会递增。管理机构在更改存储库中的任何项目时，或在达到下次更新的指定时间时，都必须发布新的清单。因此，清单有效期到下次更新的指定时间或清单编号更大的清单发布为止，以先到者为准。(请注意，当 EE 证书仅用于签署一份清单时，每当授权机构签发新的清单时，CA 也必须签发新的 CRL，其中包括与旧清单相对应的 EE 证书。旧清单的废止 EE 证书将在过期时从 CRL 中删除；因此，这一程序应不会导致 CRL 的显著增长）。"
+    },
+    {
+      "indent": 0,
+      "text": "6. Local Cache Maintenance",
+      "section_title": true,
+      "zh": "6. 本地缓存维护"
+    },
+    {
+      "indent": 3,
+      "text": "In order to utilize signed objects issued under this PKI, a relying party must first obtain a local copy of the valid EE certificates for the PKI. To do so, the relying party performs the following steps:",
+      "zh": "要使用该 PKI 签发的签名对象，依赖方必须首先获得该 PKI 的有效 EE 证书的本地副本。为此，依赖方需要执行以下步骤："
+    },
+    {
+      "indent": 6,
+      "text": "1. Query the repository system to obtain a copy of all certificates, manifests, and CRLs issued under the PKI.",
+      "zh": "1. 查询存储库系统，获取 PKI 签发的所有证书、清单和 CRL 的副本。"
+    },
+    {
+      "indent": 6,
+      "text": "2. For each CA certificate in the PKI, verify the signature on the corresponding manifest. Additionally, verify that the current time is earlier than the time indicated in the nextUpdate field of the manifest.",
+      "zh": "2. 对于 PKI 中的每个 CA 证书，验证相应清单上的签名。此外，还要验证当前时间是否早于清单中 nextUpdate 字段所指示的时间。"
+    },
+    {
+      "indent": 6,
+      "text": "3. For each manifest, verify that certificates and CRLs issued under the corresponding CA certificate match the hash values contained in the manifest. Additionally, verify that no certificate or manifest listed on the manifest is missing from the repository. If the hash values do not match, or if any certificate or CRL is missing, notify the appropriate repository administrator that the repository data has been corrupted.",
+      "zh": "3. 对于每个清单，验证在相应 CA 证书下签发的证书和 CRL 是否与清单中包含的哈希值相匹配。此外，还要验证存储库中是否缺少清单上列出的证书或清单。如果哈希值不匹配，或缺少任何证书或证书废止列表，请通知相应的存储库管理员存储库数据已损坏。"
+    },
+    {
+      "indent": 6,
+      "text": "4. Validate each EE certificate by constructing and verifying a certification path for the certificate (including checking relevant CRLs) to the locally configured set of TAs. (See [RFC6487] for more details.)",
+      "zh": "4. 通过构建和验证证书到本地配置的 TA 的认证路径（包括检查相关的 CRL）来验证每个 EE 证书。(详见 [RFC6487]）。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that since relying parties will perform these operations regularly, it is more efficient for the relying party to request from the repository system only those objects that have changed since the relying party last updated its local cache.",
+      "zh": "需要注意的是，由于依赖方会定期执行这些操作，因此依赖方只向存储库系统请求那些自依赖方上次更新其本地缓存以来已发生变化的对象会更有效率。"
+    },
+    {
+      "indent": 3,
+      "text": "Note also that by checking all issued objects against the appropriate manifest, the relying party can be certain that it is not missing an updated version of any object.",
+      "zh": "还需注意的是，通过对照相应的清单检查所有已签发对象，依赖方可以确保不会丢失任何对象的更新版本。"
+    },
+    {
+      "indent": 0,
+      "text": "7. Common Operations",
+      "section_title": true,
+      "zh": "7. 共同业务"
+    },
+    {
+      "indent": 3,
+      "text": "Creating and maintaining the infrastructure described above will entail additional operations as \"side effects\" of normal resource allocation and routing authorization procedures. For example, a subscriber with provider-independent (\"portable\") address space who enters a relationship with an ISP will need to issue one or more ROAs identifying that ISP, in addition to conducting any other necessary technical or business procedures. The current primary use of this infrastructure is for route filter construction; using ROAs, route filters can be constructed in an automated fashion with high assurance that the holder of the advertised prefix has authorized the origin AS to originate an advertised route.",
+      "zh": "创建和维护上述基础设施需要额外的操作，这是正常资源分配和路由授权程序的 \"副作用\"。例如，拥有独立于提供商（\"可移植\"）地址空间的用户与某个互联网服务提供商建立关系后，除了执行任何其他必要的技术或业务程序外，还需要发布一个或多个 ROA，以识别该互联网服务提供商。该基础设施目前的主要用途是路由过滤器的构建；使用 ROA，可以自动构建路由过滤器，并能高度保证广告前缀的持有者已授权源 AS 发起广告路由。"
+    },
+    {
+      "indent": 0,
+      "text": "7.1. Certificate Issuance",
+      "section_title": true,
+      "zh": "7.1. 证书发放"
+    },
+    {
+      "indent": 3,
+      "text": "There are several operational scenarios that require certificates to be issued. Any allocation that may be sub-allocated requires a CA certificate, e.g., so that certificates can be issued as necessary for the sub-allocations. Holders of provider-independent IP address space allocations also must have certificates, so that a ROA can be issued to each ISP that is authorized to originate a route to the allocation (since the allocation does not come from any ISP). Additionally, multi-homed subscribers may require certificates for their allocations if they intend to issue the ROAs for their allocations (see Section 7.3.2). Other resource holders need not be issued CA certificates within the PKI.",
+      "zh": "有几种运行情况需要签发证书。例如，任何可能进行子分配的分配都需要 CA 证书，以便根据需要为子分配签发证书。独立于提供商的 IP 地址空间分配的持有者也必须拥有证书，这样才能向每个被授权向分配发送路由的 ISP 签发 ROA（因为分配并非来自任何 ISP）。此外，如果多归属用户打算为其分配的资源签发 ROA，则可能需要为其分配的资源签发证书（见第 7.3.2 节）。其他资源持有者无需在 PKI 中获得 CA 证书。"
+    },
+    {
+      "indent": 3,
+      "text": "In the long run, a resource holder will not request resource certificates, but rather receive a certificate as a side effect of the allocation process for the resource. However, initial deployment of the RPKI will entail issuance of certificates to existing resource holders as an explicit event. Note that in all cases, the authority issuing a CA certificate will be the entity who allocates resources to the subject. This differs from most PKIs in which a subject can request a certificate from any certification authority.",
+      "zh": "从长远来看，资源持有者不会申请资源证书，而是在资源分配过程中收到证书。不过，RPKI 的初始部署将需要向现有资源持有者发放证书，这是一个明确的事件。请注意，在任何情况下，颁发 CA 证书的机构都是向主体分配资源的实体。这与大多数公钥基础设施不同，在大多数公钥基础设施中，主体可以向任何认证机构申请证书。"
+    },
+    {
+      "indent": 3,
+      "text": "If a resource holder receives multiple allocations over time, it may accrue a collection of resource certificates to attest to them. If a resource holder receives multiple allocations from the same source, the set of resource certificates may be combined into a single resource certificate, if both the issuer and the resource holder agree. This is accomplished by consolidating the IP Address Delegation and AS Identifier Delegation extensions into a single extension (of each type) in a new certificate. However, if these certificates attest to allocations that are valid for different periods of time, creating a certificate that combines them might create problems, as the combined certificate can express only a single validity interval.",
+      "zh": "如果资源持有者在一段时间内收到多次分配，则可累积一组资源证书来证明这些分配。如果资源持有者从同一来源获得多个分配，在签发者和资源持有者同意的情况下，资源证书集可合并为一个资源证书。具体做法是将 IP 地址授权和 AS 标识符授权扩展合并为新证书中的单一扩展（每种类型）。但是，如果这些证书证明的是有效期不同的分配，那么创建一个将它们合并的证书可能会产生问题，因为合并后的证书只能表达一个有效期。"
+    },
+    {
+      "indent": 3,
+      "text": "If a resource holder's allocations come from different sources, they will be signed by different CAs and cannot be combined. When a set of resources is no longer allocated to a resource holder, any certificates attesting to such an allocation MUST be revoked. A resource holder SHOULD NOT use the same public key in multiple CA certificates that are issued by the same or differing authorities, as reuse of a key pair complicates path construction. Note that since the subject's distinguished name is chosen by the issuer, a subject who receives allocations from two sources generally will receive certificates with different subject names.",
+      "zh": "如果资源持有者的资源分配来自不同来源，它们将由不同的 CA 签名，不能合并。当一组资源不再分配给资源持有者时，证明这种分配的任何证书都必须撤销。资源持有者不应在由相同或不同机构签发的多个 CA 证书中使用相同的公开密钥，因为重复使用密钥对会使路径构建复杂化。请注意，由于主体的区分名称由签发者选择，因此从两个来源获得分配的主体通常会收到具有不同主体名称的证书。"
+    },
+    {
+      "indent": 0,
+      "text": "7.2. CA Key Rollover",
+      "section_title": true,
+      "zh": "7.2. CA 密钥翻转"
+    },
+    {
+      "indent": 3,
+      "text": "Whenever a certification authority wishes to change the public key (and corresponding private key) associated with its RPKI CA certificate, it MUST perform a key rollover procedure. Key rollover is typically performed on a periodic basis, where the frequency of key rollovers is specified in the certification practice statement of the given CA. Additionally, unscheduled rollovers may be required in the event of suspected key compromises.",
+      "zh": "每当认证机构希望更改与其 RPKI CA 证书相关的公开密钥（及相应的私钥）时，必须执行密钥展期程序。密钥翻转通常是定期进行的，密钥翻转的频率在特定 CA 的认证惯例声明中规定。此外，在懷疑金鑰外洩的情況下，也可能需要不定期的金鑰翻轉。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that rollover is only required when the CA's key actually changes; it is not required in cases where a new CA certificate is issued with the same key as the previous certificate for this CA. For example, a new CA certificate must be issued if the CA gains or relinquishes a resource, or if the validity period of the resource allocation is extended. However, in such cases, the new certificate will generally use the same public (and private) key as the previous certificate; thus, key rollover is not required.",
+      "zh": "请注意，只有当 CA 的密钥实际发生变化时才需要翻转；如果签发的新 CA 证书的密钥与该 CA 以前的证书相同，则不需要翻转。例如，如果 CA 获得或放弃资源，或资源分配的有效期延长，则必须签发新的 CA 证书。不过，在这种情况下，新证书一般会使用与以前证书相同的公（私）钥；因此，不需要进行密钥展期。"
+    },
+    {
+      "indent": 3,
+      "text": "The document [RFC6489] specifies a conservative key rollover procedure that should be used by a certification authority when it changes the public (and private) keys associated with its RPKI CA certificate. At a high level, the two key properties of the rollover procedure are as follows. First, as data from RPKI signed objects may be used in routing operations, the procedure ensures that at any point in the rollover procedure, a relying party will never reach incorrect conclusions about the validity of a signed object. Note in particular, that the CA cannot assume that a relying party will use any particular algorithm for constructing a certificate path from an EE certificate to (one of) the relying party's trust anchor(s); therefore, the key rollover procedure is designed to preserve the integrity of the SIA and AIA points within the RPKI hierarchy to the greatest extent possible. Second, the key rollover procedure is designed so that the reissuance of all certificates below the CA in the RPKI hierarchy is not required. Of course, it is necessary to re-sign all certificates issued directly under the CA whose key is changing. However, the SIA and AIA pointers within the certificates are populated so that no further reissuance is required.",
+      "zh": "文件 [RFC6489] 规定了一种保守的密钥展期程序，认证机构在更改与其 RPKI CA 证书相关的公用（和私用）密钥时应使用该程序。在高层次上，滚转程序的两个关键特性如下。首先，由于 RPKI 签名对象的数据可用于路由操作，因此该程序可确保在滚转程序的任何阶段，依赖方都不会对签名对象的有效性得出错误结论。特别要注意的是，CA 不能假定依赖方会使用任何特定的算法来构建从 EE 证书到依赖方信任锚（之一）的证书路径；因此，密钥滚转程序的设计是为了最大限度地保持 RPKI 层次结构中 SIA 和 AIA 点的完整性。其次，密钥转移程序的设计使 RPKI 层次结构中 CA 以下的所有证书都无需重新签发。当然，有必要重新签署所有直接在密钥发生变化的 CA 下签发的证书。不过，证书中的 SIA 和 AIA 指针已填好，因此无需再重新签发。"
+    },
+    {
+      "indent": 0,
+      "text": "7.3. ROA Management",
+      "section_title": true,
+      "zh": "7.3. ROA 管理"
+    },
+    {
+      "indent": 3,
+      "text": "Whenever a holder of IP address space wants to authorize an AS to originate routes for a prefix within his holdings, he MUST issue an end-entity certificate containing that prefix in an IP Address Delegation extension. He then uses the corresponding private key to sign a ROA containing the designated prefix and the AS number for the AS. The resource holder MAY include more than one prefix in the EE certificate and corresponding ROA if desired. As a prerequisite, then, any address space holder that issues ROAs for a prefix must have a resource certificate for an allocation containing that prefix. The standard procedure for issuing a ROA is as follows:",
+      "zh": "每当 IP 地址空间持有者要授权一个 AS 为其持有的前缀创建路由时，他必须在 IP 地址授权扩展中签发包含该前缀的终端实体证书。然后，他使用相应的私钥签署包含指定前缀和 AS 编号的 ROA。如果需要，资源持有者可在 EE 证书和相应的 ROA 中包含多个前缀。因此，作为前提条件，任何为前缀签发 ROA 的地址空间持有者都必须拥有包含该前缀的分配资源证书。签发 ROA 的标准程序如下："
+    },
+    {
+      "indent": 6,
+      "text": "1. Create an end-entity certificate containing the prefix(es) to be authorized in the ROA.",
+      "zh": "1. 创建终端实体证书，其中包含 ROA 中要授权的前缀。"
+    },
+    {
+      "indent": 6,
+      "text": "2. Construct the payload of the ROA, including the prefixes in the end-entity certificate and the AS number to be authorized.",
+      "zh": "2. 构建 ROA 的有效载荷，包括终端实体证书中的前缀和要授权的 AS 号码。"
+    },
+    {
+      "indent": 6,
+      "text": "3. Sign the ROA using the private key corresponding to the end-entity certificate (the ROA is comprised of the payload encapsulated in a CMS signed message [RFC5652]).",
+      "zh": "3. 使用与终端实体证书相对应的私钥签署 ROA（ROA 由封装在 CMS 签名信息 [RFC5652] 中的有效载荷组成）。"
+    },
+    {
+      "indent": 6,
+      "text": "4. Upload the end-entity certificate and the ROA to the repository system.",
+      "zh": "4. 将最终实体证书和 ROA 上传到存储库系统。"
+    },
+    {
+      "indent": 3,
+      "text": "The standard procedure for revoking a ROA is to revoke the corresponding end-entity certificate by creating an appropriate CRL and uploading it to the repository system. The revoked ROA and end-entity certificate SHOULD be removed from the repository system.",
+      "zh": "撤销 ROA 的标准程序是通过创建适当的 CRL 并将其上传到版本库系统来撤销相应的最终实体证书。被废止的 ROA 和最终实体证书应从存储库系统中删除。"
+    },
+    {
+      "indent": 3,
+      "text": "Care must be taken when revoking ROAs in that revoking a ROA may cause a relying party to treat routing advertisements corresponding to the prefixes and origin AS number in the ROA as unauthorized (and potentially even change routing behavior to no longer forward packets based on those advertisements). In particular, resource holders should adhere to the principle of \"make before break\" as follows. Before revoking a ROA corresponding to a prefix that the resource holder wishes to be routable on the Internet, it is very important for the resource holder to ensure that there exists another valid alternative ROA that lists the same prefix (possibly indicating a different AS number). Additionally, the resource holder should ensure that the AS indicated in the valid alternative ROA is actually originating routing advertisements to the prefixes in question. Furthermore, a relying party must fetch new ROAs from the repository system before taking any routing action in response to a ROA revocation.",
+      "zh": "撤销 ROA 时必须小心谨慎，因为撤销 ROA 可能会导致依赖方将 ROA 中与前缀和源 AS 编号对应的路由广告视为未经授权（甚至可能改变路由行为，不再根据这些广告转发数据包）。资源持有者尤其应遵守以下 \"先做后断 \"原则。在撤销与资源持有者希望可在互联网上路由的前缀相对应的 ROA 之前，资源持有者必须确保存在另一个列出相同前缀（可能显示不同 AS 号）的有效替代 ROA。此外，资源持有者还应确保有效的替代 ROA 中显示的 AS 确实在为相关前缀发布路由广告。此外，依赖方必须从资源库系统获取新的 ROA，然后才能针对 ROA 撤销采取任何路由操作。"
+    },
+    {
+      "indent": 0,
+      "text": "7.3.1. Single-Homed Subscribers",
+      "section_title": true,
+      "zh": "7.3.1. 单主机用户"
+    },
+    {
+      "indent": 3,
+      "text": "In BGP, a single-homed subscriber with Provider Aggregatable (PA) address space does not need to explicitly authorize routes to be originated for the prefix(es) it is using, since its ISP will already advertise a more general prefix and route traffic for the subscriber's prefix as an internal function. Since no routes are originated specifically for prefixes held by these subscribers, no ROAs need to be issued under their allocations; rather, the subscriber's ISP will issue any necessary ROAs for its more general prefixes under resource certificates from its own allocation. Thus, a single-homed subscriber with an IP address allocation from his service provider is not included in the RPKI, i.e., it does not receive a CA certificate, nor issue EE certificates or ROAs.",
+      "zh": "在 BGP 中，具有 \"提供商可聚合 (PA) 地址空间\"（Provider Aggregatable (PA) address space）的单机用户无需明确授权为其使用的前缀创建路由，因为其 ISP 已将更通用的前缀作为广告发布，并将为用户的前缀路由流量作为内部功能。由于不会专门为这些用户持有的前缀创建路由，因此无需在其分配下签发 ROA；相反，用户的 ISP 将根据自己分配的资源证书为其更通用的前缀签发任何必要的 ROA。因此，由服务提供商分配 IP 地址的单机用户不在 RPKI 之内，即不会收到 CA 证书，也不会签发 EE 证书或 ROA。"
+    },
+    {
+      "indent": 0,
+      "text": "7.3.2. Multi-Homed Subscribers",
+      "section_title": true,
+      "zh": "7.3.2. 多家庭用户"
+    },
+    {
+      "indent": 3,
+      "text": "Here we consider a subscriber who receives Provider Aggregatable (PA) IP address space from a primary ISP (i.e., the IP addresses used by the subscriber are a subset of ISP A's IP address space allocation) and receives redundant upstream connectivity from one or more secondary ISPs, in addition to the primary ISP. The preferred option for such a multi-homed subscriber is for the subscriber to obtain an AS number and run BGP with each of its upstream providers. In such a case, there are two RECOMMENDED ways for ROA management to be handled. The first is that the primary ISP issues a CA certificate to the subscriber, and the subscriber issues a ROA to containing the subscriber's AS number and the subscriber's IP address prefixes. The second possibility is that the primary ISP does not issue a CA certificate to the subscriber, and instead issues a ROA on the subscriber's behalf that contains the subscriber's AS number and the subscriber's IP address prefixes.",
+      "zh": "在此，我们考虑这样一个用户：他从主 ISP 处获得可提供商聚合（PA）的 IP 地址空间（即用户使用的 IP 地址是 ISP A 分配的 IP 地址空间的子集），并且除了主 ISP 之外，还从一个或多个辅助 ISP 处获得冗余的上游连接。对于这种多家庭用户，首选方案是用户获得一个 AS 号，并与每个上游提供商运行 BGP。在这种情况下，有两种建议的 ROA 管理方式。第一种是主 ISP 向用户签发 CA 证书，用户签发包含用户 AS 号和用户 IP 地址前缀的 ROA。第二种可能是主 ISP 不向用户签发 CA 证书，而是代表用户签发包含用户 AS 号和用户 IP 地址前缀的 ROA。"
+    },
+    {
+      "indent": 3,
+      "text": "If the subscriber is unable or unwilling to obtain an AS number and run BGP, the another option is that the multi-homed subscriber can request that the primary ISP create a ROA for each secondary ISP that authorizes the secondary ISP to originate routes to the subscriber's prefixes. The primary ISP will also create a ROA containing its own AS number and the subscriber's prefixes, as it is likely in such a case that the primary ISP wishes to advertise precisely the subscriber's prefixes and not an encompassing aggregate. Note that this approach results in inconsistent origin AS numbers for the subscriber's prefixes that are considered undesirable on the public Internet; thus, this approach is NOT RECOMMENDED.",
+      "zh": "如果用户无法或不愿意获取 AS 号并运行 BGP，另一种方法是多址用户可以要求主 ISP 为每个辅助 ISP 创建 ROA，授权辅助 ISP 开通到用户前缀的路由。主 ISP 还将创建一个 ROA，其中包含自己的 AS 号和用户的前缀，因为在这种情况下，主 ISP 很可能希望精确地公布用户的前缀，而不是一个包含的集合。请注意，这种方法会导致用户前缀的源 AS 号不一致，这在公共互联网上是不可取的；因此，不推荐这种方法。"
+    },
+    {
+      "indent": 0,
+      "text": "7.3.3. Provider-Independent Address Space",
+      "section_title": true,
+      "zh": "7.3.3. 独立于提供商的地址空间"
+    },
+    {
+      "indent": 3,
+      "text": "A resource holder is said to have provider-independent (portable) address space if the resource holder received its allocation directly from a RIR or NIR. Because the prefixes represented in such allocations are not taken from an allocation held by an ISP, there is no ISP that holds and advertises a more general prefix. A holder of a portable IP address space allocation MUST authorize one or more ASes to originate routes to these prefixes. Thus, the resource holder MUST generate one or more EE certificates and associated ROAs to enable the AS(es) to originate routes for the prefix(es) in question. This ROA is required because none of the ISP's existing ROAs authorize it to originate routes to the subscriber's provider-independent allocation.",
+      "zh": "如果资源持有者直接从区域互联网注册管理机构或国家互联网注册管理机构获得分配，则称该资源持有者拥有独立于提供商的（可移植）地址空间。由于此类分配所代表的前缀并非来自 ISP 持有的分配，因此没有 ISP 持有和宣传更通用的前缀。便携式 IP 地址空间分配的持有者必须授权一个或多个 AS 为这些前缀创建路由。因此，资源持有者必须生成一个或多个 EE 证书和相关 ROA，以使 AS 能够为相关前缀创建路由。之所以需要此 ROA，是因为 ISP 的现有 ROA 均未授权其为用户的独立于提供商的分配创建路由。"
+    },
+    {
+      "indent": 0,
+      "text": "8. Security Considerations",
+      "section_title": true,
+      "zh": "8. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "The focus of this document is security; hence, security considerations permeate this specification.",
+      "zh": "本文档的重点是安全，因此安全方面的考虑贯穿于本规范的始终。"
+    },
+    {
+      "indent": 3,
+      "text": "The security mechanisms provided by and enabled by this architecture depend on the integrity and availability of the infrastructure it describes. The integrity of objects within the infrastructure is ensured by appropriate controls on the repository system, as described in Section 4.4. Likewise, because the repository system is structured as a distributed database, it should be inherently resistant to denial-of-service attacks; nonetheless, appropriate precautions should also be taken, both through replication and backup of the constituent databases and through the physical security of database servers.",
+      "zh": "本架构所提供和启用的安全机制取决于其所描述的基础设施的完整性和可用性。如第 4.4 节所述，基础设施内对象的完整性通过对存储库系统的适当控制来确保。同样，由于资源库系统的结构是分布式数据库，因此它本质上应可抵御拒绝服务攻击；不过，也应采取适当的预防措施，包括复制和备份组成数据库，以及确保数据库服务器的物理安全。"
+    },
+    {
+      "indent": 0,
+      "text": "9. IANA Considerations",
+      "section_title": true,
+      "zh": "9. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "Instructions for IANA's participation in the RPKI are provided in [RFC6491].",
+      "zh": "关于 IANA 参与 RPKI 的说明见 [RFC6491]。"
+    },
+    {
+      "indent": 0,
+      "text": "10. Acknowledgments",
+      "section_title": true,
+      "zh": "10. 致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The architecture described in this document is derived from the collective ideas and work of a large group of individuals. This work would not have been possible without the intellectual contributions of George Michaelson, Robert Loomans, Sanjaya and Geoff Huston of APNIC, Robert Kisteleki and Henk Uijterwaal of the RIPE NCC, Tim Christensen and Cathy Murphy of ARIN, Rob Austein of ISC, and Randy Bush of IIJ.",
+      "zh": "本文档中描述的架构来自于许多人的集体想法和工作。如果没有 APNIC 的 George Michaelson、Robert Loomans、Sanjaya 和 Geoff Huston、RIPE NCC 的 Robert Kisteleki 和 Henk Uijterwaal、ARIN 的 Tim Christensen 和 Cathy Murphy、ISC 的 Rob Austein 以及 IIJ 的 Randy Bush 的智力贡献，这项工作是不可能完成的。"
+    },
+    {
+      "indent": 3,
+      "text": "Although we are indebted to everyone who has contributed to this architecture, we would like to especially thank Rob Austein for the concept of a manifest, Geoff Huston for the concept of managing object validity through single-use EE certificate key pairs, and Richard Barnes for help in preparing an early version of this document.",
+      "zh": "尽管我们要感谢为这一架构做出贡献的所有人，但我们要特别感谢 Rob Austein 提出清单的概念，感谢 Geoff Huston 提出通过一次性使用的 EE 证书密钥对管理对象有效性的概念，感谢 Richard Barnes 在编写本文档早期版本时提供的帮助。"
+    },
+    {
+      "indent": 0,
+      "text": "11. References",
+      "section_title": true,
+      "zh": "11. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "11.1. Normative References",
+      "section_title": true,
+      "zh": "11.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, March 1997."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, June 2004.",
+      "zh": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, June 2004."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, January 2006.",
+      "zh": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, January 2006."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, May 2008.",
+      "zh": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, May 2008."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5652] Housley, R., \"Cryptographic Message Syntax (CMS)\", STD 70, RFC 5652, September 2009.",
+      "zh": "[RFC5652] Housley, R.，\"加密信息语法（CMS）\"，STD 70，RFC 5652，2009 年 9 月。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"The rsync URI Scheme\", RFC 5781, February 2010.",
+      "zh": "[RFC5781] Weiler, S., Ward, D., and R. Housley, \"rsync URI Scheme\", RFC 5781, February 2010."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6481] Huston, G., Loomans, R., and G. Michaelson, \"A Profile for Resource Certificate Repository Structure\", RFC 6481, February 2012.",
+      "zh": "[RFC6481] Huston, G., Loomans, R., and G. Michaelson, \"A Profile for Resource Certificate Repository Structure\", RFC 6481, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, February 2012.",
+      "zh": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6486] Austein, R., Huston., G., Kent, S., and M. Lepinski, \"Manifests for the Resource Public Key Infrastructure\", RFC 6486, February 2012.",
+      "zh": "[RFC6486] Austein, R., Huston., G., Kent, S., and M. Lepinski, \"Manifests for the Resource Public Key Infrastructure\", RFC 6486, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6488] Lepinski, M., Chi, A., and S. Kent, \"Signed Object Template for the Resource Public Key Infrastructure\", RFC 6488, February 2012.",
+      "zh": "[RFC6488] Lepinski, M., Chi, A., and S. Kent, \"Signed Object Template for the Resource Public Key Infrastructure\", RFC 6488, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6491] Manderson, T., Vegoda, L., and S. Kent, \"Resource Public Key Infrastructure (RPKI) Objects Issued by IANA\", RFC 6491, February 2012.",
+      "zh": "[RFC6491] Manderson, T., Vegoda, L., and S. Kent, \"Resource Public Key Infrastructure (RPKI) Objects Issued by IANA\", RFC 6491, February 2012."
+    },
+    {
+      "indent": 0,
+      "text": "11.2. Informative References",
+      "section_title": true,
+      "zh": "11.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6483] Huston, G. and G. Michaelson, \"Validation of Route Origination Using the Resource Certificate Public Key Infrastructure (PKI) and Route Origin Authorizations (ROAs)\", RFC 6483, February 2012.",
+      "zh": "[RFC6483] Huston, G. and G. Michaelson, \"Validation of Route Origination Using the Resource Certificate Public Key Infrastructure (PKI) and Route Origin Authorizations (ROAs)\", RFC 6483, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6489] Huston, G., Michaelson, G., and S. Kent, \"Certification Authority (CA) Key Rollover in the Resource Public Key Infrastructure (RPKI)\", BCP 174, RFC 6489, February 2012.",
+      "zh": "[RFC6489] Huston, G., Michaelson, G., and S. Kent, \"Certification Authority (CA) Key Rollover in the Resource Public Key Infrastructure (RPKI)\", BCP 174, RFC 6489, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6490] Huston, G., Weiler, S., Michaelson, G., and S. Kent, \"Resource Public Key Infrastructure (RPKI) Trust Anchor Locator\", RFC 6490, February 2012.",
+      "zh": "[RFC6490] Huston, G., Weiler, S., Michaelson, G., and S. Kent, \"Resource Public Key Infrastructure (RPKI) Trust Anchor Locator\", RFC 6490, February 2012."
+    },
+    {
+      "indent": 3,
+      "text": "[RSYNC] rsync web pages, <http://rsync.samba.org/>.",
+      "zh": "[RSYNC] rsync 网页，<http://rsync.samba.org/>。"
+    },
+    {
+      "indent": 3,
+      "text": "[S-BGP] Kent, S., Lynn, C., and Seo, K., \"Secure Border Gateway Protocol (Secure-BGP)\", IEEE Journal on Selected Areas in Communications Vol. 18, No. 4, April 2000.",
+      "zh": "[Kent, S., Lynn, C., and Seo, K., \"Secure Border Gateway Protocol (Secure-BGP)\", IEEE Journal on Selected Areas in Communications Vol."
+    },
+    {
+      "indent": 3,
+      "text": "[soBGP] White, R., \"soBGP\", May 2005, <ftp://ftp-eng.cisco.com/sobgp/index.html>",
+      "zh": "[soBGP] White, R., \"soBGP\", May 2005, <ftp://ftp-eng.cisco.com/sobgp/index.html>"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Matt Lepinski BBN Technologies 10 Moulton St. Cambridge, MA 02138",
+      "zh": "Matt Lepinski BBN Technologies 10 Moulton St."
+    },
+    {
+      "indent": 3,
+      "text": "EMail: mlepinski@bbn.com",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Stephen Kent BBN Technologies 10 Moulton St. Cambridge, MA 02138",
+      "zh": "Stephen Kent BBN Technologies 10 Moulton St."
+    },
+    {
+      "indent": 3,
+      "text": "EMail: kent@bbn.com",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

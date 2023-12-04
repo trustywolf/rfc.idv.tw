@@ -1,0 +1,375 @@
+{
+  "title": {
+    "text": "RFC 9324 - Policy Based on the Resource Public Key Infrastructure (RPKI) without Route Refresh",
+    "zh": "RFC 9324 - 基于资源公钥基础架构 (RPKI) 的无路由刷新策略"
+  },
+  "number": 9324,
+  "created_at": "2023-12-04 15:40:23.440204+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                           R. Bush\nRequest for Comments: 9324               IIJ Research Lab & Arrcus, Inc.\nUpdates: 8481                                                   K. Patel\nCategory: Standards Track                                   Arrcus, Inc.\nISSN: 2070-1721                                                 P. Smith\n                                        PFS Internet Development Pty Ltd\n                                                                M. Tinka\n                                                                  SEACOM\n                                                           December 2022",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 1,
+      "text": "Policy Based on the Resource Public Key Infrastructure (RPKI) without Route Refresh",
+      "zh": "基于资源公钥基础架构 (RPKI) 的无路由刷新策略"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "A BGP speaker performing policy based on the Resource Public Key Infrastructure (RPKI) should not issue route refresh to its neighbors because it has received new RPKI data. This document updates RFC 8481 by describing how to avoid doing so by either keeping a full Adj-RIB-In or saving paths dropped due to ROV (Route Origin Validation) so they may be reevaluated with respect to new RPKI data.",
+      "zh": "基于资源公钥基础设施（RPKI）执行策略的 BGP 发言者不应因收到新的 RPKI 数据而向其邻居发布路由刷新。本文档更新了 RFC 8481，描述了如何通过保持完整的 Adj-RIB-In 或保存因 ROV（路由起源验证）而丢弃的路径来避免这样做，以便根据新的 RPKI 数据重新评估这些路径。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc9324.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc9324。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "Copyright (c) 2022 IETF Trust 和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (https://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节所述的修订版 BSD 许可文本，并且不提供修订版 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction\n  1.1.  Requirements Language\n2.  Related Work\n3.  ROV Experience\n4.  Keeping Partial Adj-RIB-In Data\n5.  Operational Recommendations\n6.  Security Considerations\n7.  IANA Considerations\n8.  References\n  8.1.  Normative References\n  8.2.  Informative References\nAcknowledgements\nAuthors' Addresses",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "Memory constraints in early BGP speakers caused classic BGP implementations [RFC4271] to not keep a full Adj-RIB-In (Section 1.1 of [RFC4271]). When doing RPKI-based Route Origin Validation (ROV) [RFC6811] [RFC8481] and similar RPKI-based policy, if such a BGP speaker receives new RPKI data, it might not have kept paths previously marked as Invalid, etc. Such an implementation must then request a route refresh [RFC2918] [RFC7313] from its neighbors to recover the paths that might be covered by these new RPKI data. This will be perceived as rude by those neighbors as it passes a serious resource burden on to them. This document recommends implementations keep and mark paths affected by RPKI-based policy, so route refresh is no longer needed.",
+      "zh": "早期 BGP 发言者的内存限制导致经典 BGP 实现 [RFC4271] 无法保留完整的 Adj-RIB-In（[RFC4271] 第 1.1 节）。在执行基于 RPKI 的路由起源验证（ROV）[RFC6811] [RFC8481] 和类似的基于 RPKI 的策略时，如果此类 BGP 发言者收到新的 RPKI 数据，它可能不会保留之前标记为无效等的路径。这样，BGP 实现就必须向其邻居请求路由刷新 [RFC2918] [RFC7313]，以恢复这些新 RPKI 数据可能覆盖的路径。这将被这些邻居视为无礼之举，因为这会给他们带来严重的资源负担。本文档建议实现者保留并标记受基于 RPKI 的策略影响的路径，这样就不再需要路由刷新了。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Requirements Language",
+      "section_title": true,
+      "zh": "1.1. 要求语言"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Related Work",
+      "section_title": true,
+      "zh": "2. 相关工作"
+    },
+    {
+      "indent": 3,
+      "text": "It is assumed that the reader understands BGP [RFC4271], route refresh [RFC7313], the RPKI [RFC6480], Route Origin Authorizations (ROAs) [RFC6482], the Resource Public Key Infrastructure (RPKI) to Router Protocol [RPKI-ROUTER-PROT-v2], RPKI-Based Prefix Validation [RFC6811], and Origin Validation Clarifications [RFC8481].",
+      "zh": "假定读者了解 BGP [RFC4271]、路由刷新 [RFC7313]、RPKI [RFC6480]、路由起源授权 (ROAs)[RFC6482]、资源公钥基础设施 (RPKI) 到路由器协议 [RPKI-ROUTER-PROT-v2]、基于 RPKI 的前缀验证 [RFC6811] 和起源验证澄清 [RFC8481]。"
+    },
+    {
+      "indent": 3,
+      "text": "Note that the term \"RPKI-based Route Origin Validation\" in this document means the same as the term \"Prefix Origin Validation\" used in [RFC6811].",
+      "zh": "请注意，本文档中的术语 \"基于 RPKI 的路由起源验证 \"与 [RFC6811] 中使用的术语 \"前缀起源验证 \"含义相同。"
+    },
+    {
+      "indent": 0,
+      "text": "3. ROV Experience",
+      "section_title": true,
+      "zh": "3. 遥控潜水器体验"
+    },
+    {
+      "indent": 3,
+      "text": "As Route Origin Validation dropping Invalids has deployed, some BGP speaker implementations have been found that, when receiving new RPKI data (Validated ROA Payloads (VRPs) [RPKI-ROUTER-PROT-v2]), issue a BGP route refresh [RFC7313] to all sending BGP peers so that they can reevaluate the received paths against the new data.",
+      "zh": "随着路由起源验证（Route Origin Validation dropping Invalids）的部署，发现一些 BGP 说话者实现在接收到新的 RPKI 数据（经验证的 ROA 有效载荷（VRP）[RPKI-ROUTER-PROT-v2]）时，会向所有发送 BGP 对等方发出 BGP 路由刷新 [RFC7313]，以便它们根据新数据重新评估接收到的路径。"
+    },
+    {
+      "indent": 3,
+      "text": "In actual deployment, this has been found to be very destructive, transferring a serious resource burden to the unsuspecting peers. In reaction, RPKI-based Route Origin Validation (ROV) has been turned off. There have been actual de-peerings.",
+      "zh": "在实际部署中，我们发现这种做法非常具有破坏性，会给毫无戒心的对等网络带来严重的资源负担。为此，基于 RPKI 的路由起源验证 (ROV) 已被关闭。已经出现了实际的取消对等网络的情况。"
+    },
+    {
+      "indent": 3,
+      "text": "As RPKI registration and ROA creation have steadily increased, this problem has increased, not just proportionally, but on the order of the in-degree of ROV implementing BGP speakers. As Autonomous System Provider Authorization (ASPA) [AS_PATH-VER] becomes used, the problem will increase.",
+      "zh": "随着 RPKI 注册和 ROA 创建的稳步增加，这个问题也随之增加，不仅是按比例增加，而且与实施 ROV 的 BGP 发言者的程度成正比。随着自治系统提供者授权（ASPA）[AS_PATH-VER] 的使用，这个问题也会越来越严重。"
+    },
+    {
+      "indent": 3,
+      "text": "Other mechanisms, such as automated policy provisioning, which have flux rates similar to ROV (i.e., on the order of minutes), could very well cause similar problems.",
+      "zh": "其他机制，如自动策略供应，其流量速率与 ROV 类似（即几分钟），很可能会造成类似的问题。"
+    },
+    {
+      "indent": 3,
+      "text": "Therefore, this document updates [RFC8481] by describing how to avoid this problem.",
+      "zh": "因此，本文件更新了 [RFC8481]，介绍了如何避免这一问题。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Keeping Partial Adj-RIB-In Data",
+      "section_title": true,
+      "zh": "4. 保留部分 Adj-RIB-In 数据"
+    },
+    {
+      "indent": 3,
+      "text": "If new RPKI data arrive that cause operator policy to invalidate the best route and the BGP speaker did not keep the dropped routes, then the BGP speaker would issue a route refresh, which this feature aims to prevent.",
+      "zh": "如果有新的 RPKI 数据到达，导致操作员策略使最佳路由失效，而 BGP 说话者又没有保留被放弃的路由，那么 BGP 说话者就会发出路由刷新，而这项功能就是为了防止这种情况发生。"
+    },
+    {
+      "indent": 3,
+      "text": "A route that is dropped by operator policy due to ROV is, by nature, considered ineligible to compete for the best route and MUST be kept in the Adj-RIB-In for potential future evaluation.",
+      "zh": "由于 ROV 而被运营商政策放弃的路线，从本质上讲，被认为没有资格竞争最佳路线，必须保留在 Adj-RIB-In 中，以便将来进行潜在评估。"
+    },
+    {
+      "indent": 3,
+      "text": "Ameliorating the route refresh problem by keeping a full Adj-RIB-In can be a problem for resource-constrained BGP speakers. In reality, only some data need be retained. If an implementation chooses not to retain the full Adj-RIB-In, it MUST retain at least routes dropped due to ROV for potential future evaluation.",
+      "zh": "对于资源有限的 BGP 发言者来说，通过保留完整的 Adj-RIB-In 来改善路由刷新问题可能是个难题。实际上，只需保留部分数据。如果实施方案选择不保留完整的 Adj-RIB-In，则必须至少保留因 ROV 而丢弃的路由，以便将来进行评估。"
+    },
+    {
+      "indent": 3,
+      "text": "As storing these routes could cause problems in resource-constrained devices, there MUST be a global operation, CLI, YANG, or other mechanism that allows the operator to enable this feature and store the dropped routes. Such an operator control MUST NOT be per peer, as this could cause inconsistent behavior.",
+      "zh": "由于存储这些路由可能会给资源有限的设备带来问题，因此必须有全局操作、CLI、YANG 或其他机制允许操作员启用此功能并存储放弃的路由。这种操作员控制不得针对每个对等设备，否则会导致行为不一致。"
+    },
+    {
+      "indent": 3,
+      "text": "As a side note, policy that may drop routes due to RPKI-based checks such as ROV (and ASPA, BGPsec [RFC8205], etc., in the future) MUST be run and the dropped routes saved per this section, before non-RPKI policies are run, as the latter may change path attributes.",
+      "zh": "顺便提一句，由于基于 RPKI 的检查（如 ROV，以及将来的 ASPA、BGPsec [RFC8205] 等）而可能放弃路由的策略，必须在运行非 RPKI 策略之前运行，并根据本节保存放弃的路由，因为后者可能会改变路径属性。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Operational Recommendations",
+      "section_title": true,
+      "zh": "5. 业务建议"
+    },
+    {
+      "indent": 3,
+      "text": "Operators deploying ROV and/or other RPKI-based policies should ensure that the BGP speaker implementation is not causing route refresh requests to neighbors.",
+      "zh": "部署 ROV 和/或其他基于 RPKI 策略的运营商应确保 BGP 发言者实施不会向邻居发出路由刷新请求。"
+    },
+    {
+      "indent": 3,
+      "text": "BGP speakers MUST either keep the full Adj-RIB-In or implement the specification in Section 4. Conformance to this behavior is an additional, mandatory capability for BGP speakers performing ROV.",
+      "zh": "BGP 发言者必须保留完整的 Adj-RIB-In 或执行第 4 节中的规范。对于执行 ROV 的 BGP 发言者来说，遵守这一行为是一项额外的强制能力。"
+    },
+    {
+      "indent": 3,
+      "text": "If the BGP speaker does not implement these recommendations, the operator should enable the vendor's control to keep the full Adj-RIB-In, sometimes referred to as \"soft reconfiguration inbound\". The operator should then measure to ensure that there are no unnecessary route refresh requests sent to neighbors.",
+      "zh": "如果 BGP 发言者不执行这些建议，操作员应启用供应商的控制，以保持完整的 Adj-RIB-In，有时也称为 \"入站软重新配置\"。然后，操作员应采取措施，确保没有向邻居发送不必要的路由刷新请求。"
+    },
+    {
+      "indent": 3,
+      "text": "If the BGP speaker's equipment has insufficient resources to support either of the two proposed options (keeping a full AdjRibIn or at least the dropped routes), the equipment SHOULD either be replaced with capable equipment or SHOULD NOT be used for ROV.",
+      "zh": "如果 BGP 发言者的设备没有足够的资源来支持两个建议方案中的任何一个（保留完整的 AdjRibIn 或至少保留被放弃的路由），则应将该设备更换为有能力的设备，或不应将其用于 ROV。"
+    },
+    {
+      "indent": 3,
+      "text": "The configuration setting in Section 4 should only be used in very well-known and controlled circumstances where the scaling issues are well understood and anticipated.",
+      "zh": "第 4 节中的配置设置只应在众所周知和受控的情况下使用，其中的缩放问题应得到充分理解和预期。"
+    },
+    {
+      "indent": 3,
+      "text": "Operators using the specification in Section 4 should be aware that a misconfigured neighbor might erroneously send a massive number of paths, thus consuming a lot of memory. Hence, pre-policy filtering such as described in [MAXPREFIX-INBOUND] could be used to reduce this exposure.",
+      "zh": "使用第 4 节中规范的操作员应该意识到，配置错误的邻居可能会错误地发送大量路径，从而消耗大量内存。因此，可以使用 [MAXPREFIX-INBOUND] 中描述的预策略过滤来减少这种风险。"
+    },
+    {
+      "indent": 3,
+      "text": "If route refresh has been issued toward more than one peer, the order of receipt of the refresh data can cause churn in both best route selection and outbound signaling.",
+      "zh": "如果向不止一个对等设备发出路由刷新，收到刷新数据的先后顺序会导致最佳路由选择和出站信令发生变化。"
+    },
+    {
+      "indent": 3,
+      "text": "Internet Exchange Points (IXPs) that provide route servers [RFC7947] should be aware that some members could be causing an undue route refresh load on the route servers and take appropriate administrative and/or technical measures. IXPs using BGP speakers as route servers should ensure that they are not generating excessive route refresh requests.",
+      "zh": "提供路由服务器 [RFC7947] 的互联网交换点 (IXP) 应意识到某些成员可能会给路由服务器带来过多的路由刷新负载，并采取适当的管理和/或技术措施。使用 BGP 发言者作为路由服务器的 IXP 应确保它们不会产生过多的路由刷新请求。"
+    },
+    {
+      "indent": 0,
+      "text": "6. Security Considerations",
+      "section_title": true,
+      "zh": "6. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This document describes a denial of service that Route Origin Validation or other RPKI policy may place on a BGP neighbor and describes how it may be ameliorated.",
+      "zh": "本文档描述了路由起源验证或其他 RPKI 策略可能对 BGP 邻居造成的拒绝服务，并介绍了如何改善这种情况。"
+    },
+    {
+      "indent": 3,
+      "text": "Otherwise, this document adds no additional security considerations to those already described by the referenced documents.",
+      "zh": "除此以外，本文件不对参考文件中已描述的安全考虑因素作任何补充。"
+    },
+    {
+      "indent": 0,
+      "text": "7. IANA Considerations",
+      "section_title": true,
+      "zh": "7. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This document has no IANA actions.",
+      "zh": "本文件没有 IANA 操作。"
+    },
+    {
+      "indent": 0,
+      "text": "8. References",
+      "section_title": true,
+      "zh": "8. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "8.1. Normative References",
+      "section_title": true,
+      "zh": "8.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2918] Chen, E., \"Route Refresh Capability for BGP-4\", RFC 2918, DOI 10.17487/RFC2918, September 2000, <https://www.rfc-editor.org/info/rfc2918>.",
+      "zh": "[RFC2918] Chen, E., \"Route Refresh Capability for BGP-4\", RFC 2918, DOI 10.17487/RFC2918, September 2000, <https://www.rfc-editor.org/info/rfc2918>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, DOI 10.17487/RFC4271, January 2006, <https://www.rfc-editor.org/info/rfc4271>.",
+      "zh": "[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., \"A Border Gateway Protocol 4 (BGP-4)\", RFC 4271, DOI 10.17487/RFC4271, January 2006, <https://www.rfc-editor.org/info/rfc4271>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP Prefix Origin Validation\", RFC 6811, DOI 10.17487/RFC6811, January 2013, <https://www.rfc-editor.org/info/rfc6811>.",
+      "zh": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP Prefix Origin Validation\", RFC 6811, DOI 10.17487/RFC6811, January 2013, <https://www.rfc-editor.org/info/rfc6811>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7313] Patel, K., Chen, E., and B. Venkatachalapathy, \"Enhanced Route Refresh Capability for BGP-4\", RFC 7313, DOI 10.17487/RFC7313, July 2014, <https://www.rfc-editor.org/info/rfc7313>.",
+      "zh": "[RFC7313] Patel, K., Chen, E., and B. Venkatachalapathy, \"Enhanced Route Refresh Capability for BGP-4\", RFC 7313, DOI 10.17487/RFC7313, July 2014, <https://www.rfc-editor.org/info/rfc7313>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>.",
+      "zh": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8481] Bush, R., \"Clarifications to BGP Origin Validation Based on Resource Public Key Infrastructure (RPKI)\", RFC 8481, DOI 10.17487/RFC8481, September 2018, <https://www.rfc-editor.org/info/rfc8481>.",
+      "zh": "[RFC8481] Bush, R., \"Clarifications to BGP Origin Validation Based on Resource Public Key Infrastructure (RPKI)\", RFC 8481, DOI 10.17487/RFC8481, September 2018, <https://www.rfc-editor.org/info/rfc8481>。"
+    },
+    {
+      "indent": 0,
+      "text": "8.2. Informative References",
+      "section_title": true,
+      "zh": "8.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[AS_PATH-VER] Azimov, A., Bogomazov, E., Bush, R., Patel, K., Snijders, J., and K. Sriram, \"BGP AS_PATH Verification Based on Resource Public Key Infrastructure (RPKI) Autonomous System Provider Authorization (ASPA) Objects\", Work in Progress, Internet-Draft, draft-ietf-sidrops-aspa-verification-11, 24 October 2022, <https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-11>.",
+      "zh": "[AS_PATH-VER] Azimov, A., Bogomazov, E., Bush, R., Patel, K., Snijders, J., and K. Sriram, \"BGP AS_PATH Verification Based on Resource Public Key Infrastructure (RPKI) Autonomous System Provider Authorization (ASPA) Objects\", Work in Progress, Internet-Draft, draft-ietf-sidrops-aspa-verification-11, 24 October 2022, <https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-11>."
+    },
+    {
+      "indent": 3,
+      "text": "[MAXPREFIX-INBOUND] Aelmans, M., Stucchi, M., and J. Snijders, \"BGP Maximum Prefix Limits Inbound\", Work in Progress, Internet-Draft, draft-sas-idr-maxprefix-inbound-04, 19 January 2022, <https://datatracker.ietf.org/doc/html/draft-sas-idr-maxprefix-inbound-04>.",
+      "zh": "[MAXPREFIX-INBOUND] Aelmans, M., Stucchi, M., and J. Snijders, \"BGP Maximum Prefix Limits Inbound\", Work in Progress, Internet-Draft, draft-sas-idr-maxprefix-inbound-04, 19 January 2022, <https://datatracker.ietf.org/doc/html/draft-sas-idr-maxprefix-inbound-04>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, DOI 10.17487/RFC6482, February 2012, <https://www.rfc-editor.org/info/rfc6482>.",
+      "zh": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, DOI 10.17487/RFC6482, February 2012, <https://www.rfc-editor.org/info/rfc6482>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7947] Jasinska, E., Hilliard, N., Raszuk, R., and N. Bakker, \"Internet Exchange BGP Route Server\", RFC 7947, DOI 10.17487/RFC7947, September 2016, <https://www.rfc-editor.org/info/rfc7947>.",
+      "zh": "[RFC7947] Jasinska, E., Hilliard, N., Raszuk, R., and N. Bakker, \"Internet Exchange BGP Route Server\", RFC 7947, DOI 10.17487/RFC7947, September 2016, <https://www.rfc-editor.org/info/rfc7947>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8205] Lepinski, M., Ed. and K. Sriram, Ed., \"BGPsec Protocol Specification\", RFC 8205, DOI 10.17487/RFC8205, September 2017, <https://www.rfc-editor.org/info/rfc8205>.",
+      "zh": "[RFC8205] Lepinski, M., Ed. and K. Sriram, Ed., \"BGPsec Protocol Specification\", RFC 8205, DOI 10.17487/RFC8205, September 2017, <https://www.rfc-editor.org/info/rfc8205>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RPKI-ROUTER-PROT-v2] Bush, R. and R. Austein, \"The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 2\", Work in Progress, Internet-Draft, draft-ietf-sidrops-8210bis-10, 16 June 2022, <https://datatracker.ietf.org/doc/html/ draft-ietf-sidrops-8210bis-10>.",
+      "zh": "[RPKI-ROUTER-PROT-v2] Bush, R. and R. Austein, \"The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 2\", Work in Progress, Internet-Draft, draft-ietf-sidrops-8210bis-10, 16 June 2022, <https://datatracker.ietf.org/doc/html/ draft-ietf-sidrops-8210bis-10>."
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgements",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors wish to thank Alvaro Retana, Ben Maddison, Derek Yeung, John Heasley, John Scudder, Matthias Waehlisch, Nick Hilliard, Saku Ytti, and Ties de Kock.",
+      "zh": "作者感谢 Alvaro Retana、Ben Maddison、Derek Yeung、John Heasley、John Scudder、Matthias Waehlisch、Nick Hilliard、Saku Ytti 和 Ties de Kock。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Randy Bush IIJ Research Lab & Arrcus, Inc. 1856 SW Edgewood Dr Portland, OR 97210 United States of America Email: randy@psg.com",
+      "zh": "Randy Bush IIJ Research Lab & Arrcus, Inc.1856 SW Edgewood Dr Portland, OR 97210 United States of America Email: randy@psg.com"
+    },
+    {
+      "indent": 3,
+      "text": "Keyur Patel Arrcus, Inc. 2077 Gateway Place, Suite #400 San Jose, CA 95119 United States of America Email: keyur@arrcus.com",
+      "zh": "Keyur Patel Arrcus, Inc. 2077 Gateway Place, Suite #400 San Jose, CA 95119 United States of America Email: keyur@arrcus.com"
+    },
+    {
+      "indent": 3,
+      "text": "Philip Smith PFS Internet Development Pty Ltd PO Box 1908 Milton QLD 4064 Australia Email: pfsinoz@gmail.com",
+      "zh": "Philip Smith PFS Internet Development Pty Ltd PO Box 1908 Milton QLD 4064 Australia Email: pfsinoz@gmail.com"
+    },
+    {
+      "indent": 3,
+      "text": "Mark Tinka SEACOM Building 7, Design Quarter District Leslie Avenue, Magaliessig Fourways, Gauteng 2196 South Africa Email: mark@tinka.africa",
+      "zh": "Mark Tinka SEACOM Building 7, Design Quarter District Leslie Avenue, Magaliessig Fourways, Gauteng 2196 South Africa Email: mark@tinka.africa"
+    }
+  ]
+}

@@ -1,0 +1,4379 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>draft-ietf-sidrops-8210bis-11 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="../master.css">
+  <script type="text/javascript" src="../index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="../index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="index.html">Draft</a>
+        <a class="nav-item nav-link" href="../contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">draft-ietf-sidrops-8210bis-11</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-8210bis-11">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-secondary" role="alert">
+        <h4 class="alert-heading">draft-ietf-sidrops-8210bis-11 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-8210bis-11">
+            https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-8210bis-11
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC draft-ietf-sidrops-8210bis-11</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+      <div id="rfc_alert" class="" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_draft">当前显示的 RFC 是 Draft 版本。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Network Working Group                                            R. Bush
+Internet-Draft                               IIJ Research, Arrcus, &amp; DRL
+Intended status: Standards Track                              R. Austein
+Expires: 24 March 2024                              Dragon Research Labs
+                                                       21 September 2023
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 2 draft-ietf-sidrops-8210bis-11
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源公钥基础架构（RPKI）到路由器协议第 2 版 draft-ietf-sidrops-8210bis-11
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In order to verifiably validate the origin Autonomous Systems and Autonomous System Paths of BGP announcements, routers need a simple but reliable mechanism to receive Resource Public Key Infrastructure (RFC 6480) prefix origin data and router keys from a trusted cache. This document describes a protocol to deliver them.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为了可验证 BGP 公告的起源自治系统和自治系统路径，路由器需要一种简单但可靠的机制，以便从可信缓存中接收资源公钥基础设施（RFC 6480）前缀起源数据和路由器密钥。本文档介绍了传递这些数据和密钥的协议。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document describes version 2 of the RPKI-Router protocol. RFC 6810 describes version 0, and RFC 8210 describes version 1. This document is compatible with both.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档描述 RPKI-Router 协议的第 2 版。RFC 6810 描述了版本 0，RFC 8210 描述了版本 1。本文档与这两个版本兼容。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本互联网草案完全按照 BCP 78 和 BCP 79 的规定提交。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Internet-Drafts are working documents of the Internet Engineering Task Force (IETF). Note that other groups may also distribute working documents as Internet-Drafts. The list of current Internet-Drafts is at https://datatracker.ietf.org/drafts/current/.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+互联网草案是互联网工程任务组（IETF）的工作文件。请注意，其他团体也可能将工作文件作为互联网草案分发。当前互联网草案的列表见 https://datatracker.ietf.org/drafts/current/。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time. It is inappropriate to use Internet-Drafts as reference material or to cite them other than as &#34;work in progress.&#34;
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+互联网草案为草稿文件，有效期最长为六个月，可随时更新、替换或被其他文件取代。除作为 &#34;进行中的工作 &#34;外，不宜将互联网草案用作参考资料或引用。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This Internet-Draft will expire on 24 March 2024.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本互联网草案将于 2024 年 3 月 24 日到期。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2023 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2023 IETF Trust 和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/ license-info) in effect on the date of publication of this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和 IETF Trust 的《IETF 文档相关法律规定》（https://trustee.ietf.org/ license-info）的约束，在本文档发布之日有效。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含 &#34;托管法律条款 &#34;第 4.e 节中所述的 &#34;修订版 BSD 许可 &#34;文本，并且不提供 &#34;修订版 BSD 许可 &#34;中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
+     1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   3
+     1.2.  Changes from RFC 8210 . . . . . . . . . . . . . . . . . .   3
+   2.  Glossary  . . . . . . . . . . . . . . . . . . . . . . . . . .   4
+   3.  Deployment Structure  . . . . . . . . . . . . . . . . . . . .   5
+   4.  Operational Overview  . . . . . . . . . . . . . . . . . . . .   5
+   5.  Protocol Data Units (PDUs)  . . . . . . . . . . . . . . . . .   7
+     5.1.  Fields of a PDU . . . . . . . . . . . . . . . . . . . . .   7
+     5.2.  Serial Notify . . . . . . . . . . . . . . . . . . . . . .  10
+     5.3.  Serial Query  . . . . . . . . . . . . . . . . . . . . . .  11
+     5.4.  Reset Query . . . . . . . . . . . . . . . . . . . . . . .  12
+     5.5.  Cache Response  . . . . . . . . . . . . . . . . . . . . .  12
+     5.6.  IPv4 Prefix . . . . . . . . . . . . . . . . . . . . . . .  13
+     5.7.  IPv6 Prefix . . . . . . . . . . . . . . . . . . . . . . .  14
+     5.8.  End of Data . . . . . . . . . . . . . . . . . . . . . . .  15
+     5.9.  Cache Reset . . . . . . . . . . . . . . . . . . . . . . .  16
+     5.10. Router Key  . . . . . . . . . . . . . . . . . . . . . . .  16
+     5.11. Error Report  . . . . . . . . . . . . . . . . . . . . . .  18
+     5.12. ASPA PDU  . . . . . . . . . . . . . . . . . . . . . . . .  19
+   6.  Protocol Timing Parameters  . . . . . . . . . . . . . . . . .  21
+   7.  Protocol Version Negotiation  . . . . . . . . . . . . . . . .  22
+   8.  Protocol Sequences  . . . . . . . . . . . . . . . . . . . . .  24
+     8.1.  Start or Restart  . . . . . . . . . . . . . . . . . . . .  24
+     8.2.  Typical Exchange  . . . . . . . . . . . . . . . . . . . .  25
+     8.3.  No Incremental Update Available . . . . . . . . . . . . .  25
+     8.4.  Cache Has No Data Available . . . . . . . . . . . . . . .  26
+   9.  Transport . . . . . . . . . . . . . . . . . . . . . . . . . .  26
+     9.1.  SSH Transport . . . . . . . . . . . . . . . . . . . . . .  28
+     9.2.  TLS Transport . . . . . . . . . . . . . . . . . . . . . .  28
+     9.3.  TCP MD5 Transport . . . . . . . . . . . . . . . . . . . .  29
+     9.4.  TCP-AO Transport  . . . . . . . . . . . . . . . . . . . .  29
+   10. Router-Cache Setup  . . . . . . . . . . . . . . . . . . . . .  30
+   11. ROA PDU Race Minimization . . . . . . . . . . . . . . . . . .  31
+   12. Deployment Scenarios  . . . . . . . . . . . . . . . . . . . .  31
+   13. Error Codes . . . . . . . . . . . . . . . . . . . . . . . . .  32
+   14. Security Considerations . . . . . . . . . . . . . . . . . . .  33
+   15. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  35
+   16. References  . . . . . . . . . . . . . . . . . . . . . . . . .  35
+     16.1.  Normative References . . . . . . . . . . . . . . . . . .  35
+     16.2.  Informative References . . . . . . . . . . . . . . . . .  38
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  38
+   Authors&#39; Addresses  . . . . . . . . . . . . . . . . . . . . . . .  39
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In order to verifiably validate the origin Autonomous Systems (ASes) and AS paths of BGP announcements, routers need a simple but reliable mechanism to receive cryptographically validated Resource Public Key Infrastructure (RPKI) [RFC6480] prefix origin data and router keys from a trusted cache. This document describes a protocol to deliver them. The design is intentionally constrained to be usable on much of the current generation of ISP router platforms.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为了可验证 BGP 公告的起源自治系统（ASes）和 AS 路径，路由器需要一种简单但可靠的机制，以便从可信缓存接收经过加密验证的资源公钥基础设施（RPKI）[RFC6480] 前缀起源数据和路由器密钥。本文档描述了传递这些信息的协议。该设计有意受限，以便能在当前大多数 ISP 路由器平台上使用。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This specification documents version 2 of the RPKI-RTR protocol. Earlier versions are documented in [RFC6810] and [RFC8210]. Though this version is, of course, preferred, the earlier versions are expected to continue to be productively deployed indefinitely, and Section 7 details how to downgrade from this version to earlier versions as needed in order to interoperate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本规范记录了 RPKI-RTR 协议的第 2 版。更早的版本记录在 [RFC6810] 和 [RFC8210] 中。第 7 节详细介绍了如何根据需要从本版本降级到早期版本，以便实现互操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Section 3 describes the deployment structure, and Section 4 then presents an operational overview. The binary payloads of the protocol are formally described in Section 5, and the expected Protocol Data Unit (PDU) sequences are described in Section 8. The transport protocol options are described in Section 9. Section 10 details how routers and caches are configured to connect and authenticate. Section 12 describes likely deployment scenarios. The traditional security and IANA considerations end the document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+第 3 节描述了部署结构，第 4 节介绍了运行概况。第 5 节正式介绍了协议的二进制有效载荷，第 8 节介绍了预期的协议数据单元（PDU）序列。第 9 节介绍了传输协议选项。第 10 节详细介绍如何配置路由器和缓存以进行连接和验证。第 12 节介绍了可能的部署方案。本文档的最后是传统的安全性和 IANA 注意事项。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The protocol is extensible in order to support new PDUs with new semantics, if deployment experience indicates that they are needed. PDUs are versioned should deployment experience call for change.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该协议具有可扩展性，以便在部署经验表明需要时支持具有新语义的新 PDU。如果根据部署经验需要进行更改，PDU 也会进行版本控制。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-1--Requirements-Language">
+1.1. Requirements Language
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.1. 要求语言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;NOT RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, 以及 &#34;OPTIONAL&#34; 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-2--Changes-from-RFC-8210">
+1.2. Changes from RFC 8210
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.2. 与 RFC 8210 相比的变化
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This section summarizes the significant changes between [RFC8210] and the protocol described in this document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本节总结了 [RFC8210] 与本文档所述协议之间的重大变化。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* A new ASPA (Autonomous System Provider Authorization) PDU type (Section 5.12) has been added to support [I-D.ietf-sidrops-aspa-profile].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 为支持 [I-D.ietf-sidrops-aspa-profile]，新增了 ASPA（自治系统提供商授权）PDU 类型（第 5.12 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* A small Section 11 has been added to handle two possible ROA (Route Origination Authorization) PDU race conditions, Break Before Make and Shorter Prefix First.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 增加了一个小的第 11 节，以处理两种可能的 ROA（路由起始授权）PDU 竞争条件，即 &#34;先中断后制作 &#34;和 &#34;先短前缀后制作&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Language was clarified when multiple caches are configured, and an interesting affect is noted.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 在配置多个缓存时，对语言进行了澄清，并注意到一个有趣的影响。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* The protocol version number incremented from 1 (one) to 2 (two) and Section 7 has been updated accordingly.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 协议版本号从 1（一）增加到 2（二），第 7 节也做了相应更新。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Glossary">
+2. Glossary
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 术语表
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following terms are used with special meaning.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+以下术语具有特殊含义。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Global RPKI: The authoritative data of the RPKI are published in a distributed set of servers at the IANA, Regional Internet Registries (RIRs), National Internet Registries (NIRs), and ISPs; see [RFC6481].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+全球 RPKI：RPKI 的权威数据发布在 IANA、地区互联网注册管理机构 (RIR)、国家互联网注册管理机构 (NIR) 和互联网服务提供商的一组分布式服务器中；参见 [RFC6481]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CA: The authoritative data of the RPKI are meant to be published by a distributed set of Certification Authorities (CAs) at the IANA, RIRs, NIRs, and ISPs (see [RFC6481]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CA：RPKI 的权威数据将由 IANA、RIR、NIR 和 ISP 的一组分布式认证机构 (CA) 发布（见 [RFC6481]）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Cache: A Cache, AKA Relying Party Cache, is a coalesced copy of the published Global RPKI data, periodically fetched or refreshed, directly or indirectly, using the rsync protocol [RFC5781] or some successor. Relying Party software is used to gather and validate the distributed data of the RPKI into a cache. Trusting this cache further is a matter between the provider of the cache and a Relying Party.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存：缓存，又称依赖方缓存，是已发布的全球 RPKI 数据的凝聚副本，使用 rsync 协议 [RFC5781] 或其他后续协议直接或间接地定期获取或刷新。依赖方软件用于将 RPKI 的分布式数据收集并验证到缓存中。进一步信任缓存是缓存提供者和依赖方之间的事。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Serial Number: &#34;Serial Number&#34; is a 32-bit strictly increasing unsigned integer which wraps from 2^32-1 to 0. It denotes the logical version of a cache. A cache increments the value when it successfully updates its data from a parent cache or from primary RPKI data. While a cache is receiving updates, new incoming data and implicit deletes are associated with the new Serial Number but MUST NOT be sent until the fetch is complete. A Serial Number is not commensurate between different caches or different protocol versions, nor need it be maintained across resets of the cache server. See [RFC1982] on DNS Serial Number Arithmetic for too much detail on the topic.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+序列号：&#34;序列号 &#34;是一个从 2^32-1 到 0 的 32 位严格递增的无符号整数，表示缓存的逻辑版本。当高速缓存从父高速缓存或主 RPKI 数据中成功更新数据时，该值就会递增。缓存在接收更新时，新传入的数据和隐式删除都会与新的序列号相关联，但在获取完成之前不得发送。不同缓存或不同协议版本之间的序列号并不相称，缓存服务器重置时也不需要维护序列号。有关该主题的更多详情，请参阅有关 DNS 序列号运算的 [RFC1982]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Session ID: When a cache server is started, it generates a Session
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+会话 ID：缓存服务器启动时，会生成一个会话
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+ID to uniquely identify the instance of the cache and to bind it to the sequence of Serial Numbers that cache instance will generate. This allows the router to restart a failed session knowing that the Serial Number it is using is commensurate with that of the cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+ID 来唯一标识缓存实例，并将其与缓存实例生成的序列号序列绑定。这样，路由器就能知道它所使用的序列号与高速缓存的序列号一致，从而重新启动失败的会话。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Payload PDU: A payload PDU is a protocol message which contains data for use by the router, as opposed to a PDU which conveys the control mechanisms of this protocol. Prefixes and Router Keys are examples of payload PDUs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有效载荷 PDU：有效载荷 PDU 是一种协议报文，包含供路由器使用的数据，而不是传递本协议控制机制的 PDU。前缀和路由器密钥就是有效载荷 PDU 的例子。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Deployment-Structure">
+3. Deployment Structure
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 部署结构
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Deployment of the RPKI to reach routers has a three-level structure as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+将 RPKI 部署到路由器有如下三级结构：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Global RPKI: The authoritative data of the RPKI are published in a distributed set of servers at the IANA, RIRs, NIRs, and ISPs (see [RFC6481]).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+全球 RPKI：RPKI 的权威数据由 IANA、RIR、NIR 和 ISP 的一组分布式服务器发布（见 [RFC6481]）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Local Caches: Local caches are a local set of one or more collected and verified caches of RPKI data. A Relying Party, e.g., router or other client, MUST have a trust relationship with, and a trusted transport channel to, any cache(s) it uses.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本地缓存：本地缓存是由一个或多个已收集和验证的 RPKI 数据缓存组成的本地集合。可信赖方（如路由器或其他客户端）必须与其使用的任何缓存建立信任关系和可信传输通道。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Routers: A router fetches data from a local cache using the protocol described in this document. It is said to be a client of the cache. There MAY be mechanisms for the router to assure itself of the authenticity of the cache and to authenticate itself to the cache (see Section 9).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器：路由器使用本文档中描述的协议从本地缓存中获取数据。路由器是缓存的客户端。路由器可能有办法确保缓存的真实性，并对缓存进行身份验证（见第 9 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Operational-Overview">
+4. Operational Overview
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 业务概览
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A router establishes and keeps open a transport connection to one or more caches with which it has client/server relationships. It is configured with a semi-ordered list of caches and establishes a connection to the most preferred cache, or set of caches with that same priority, which accept the connections.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器与一个或多个具有客户/服务器关系的高速缓存建立并保持开放的传输连接。路由器通过半排序的高速缓存列表进行配置，并与接受连接的最优先高速缓存或具有相同优先级的高速缓存建立连接。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The router MUST choose the most preferred, by configuration, cache or set of caches so that the operator may control load on their caches and the Global RPKI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器必须根据配置选择最优先的缓存或缓存集，以便操作员控制其缓存和全球 RPKI 的负载。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A VRP is effective if it is in the fetched set from any of the currently preferred caches. Therefore, a VRP takes effect on the router when the first cache serves that VRP, and the VRP is in effect until the last cache withdraws that VRP. Thus, in a global sense, the effect of a VRP announcement propagates more quickly than a withdraw,
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果 VRP 在当前首选高速缓存的获取集中，它就会生效。因此，当第一个缓存为 VRP 提供服务时，VRP 就在路由器上生效，VRP 一直有效，直到最后一个缓存撤销该 VRP。因此，从全局意义上讲，VRP 公告的传播速度要快于撤回、
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Periodically, the router sends a Serial Query to the cache the most recent Serial Number for which it has received data from that cache, i.e., the router&#39;s current Serial Number, in the form of a Serial Query. When a router establishes a new session with a cache or wishes to reset a current relationship, it sends a Reset Query.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器会定期向高速缓存发送串行查询（Serial Query），查询它从高速缓存接收数据的最新序列号，即路由器的当前序列号。当路由器与高速缓存建立新会话或希望重置当前关系时，会发送重置查询。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The cache responds to the Serial Query with all data changes which took place since the given Serial Number. This may be the null set, in which case the End of Data PDU (Section 5.8) is still sent. Note that the Serial Number comparison used to determine &#34;since the given Serial Number&#34; MUST take wrap-around into account; see [RFC1982].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+高速缓存会响应序列查询，并提供给定序列号后发生的所有数据更改。在这种情况下，数据结束 PDU（第 5.8 节）仍将被发送。请注意，用于确定 &#34;自给定序列号以来 &#34;的序列号比较必须考虑到缠绕；请参阅 [RFC1982]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When the router has received all data records from the cache, it sets its current Serial Number to that of the Serial Number in the received End of Data PDU.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器收到缓存中的所有数据记录后，会将其当前序列号设置为收到的数据结束 PDU 中的序列号。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When the cache updates its database, it sends a Notify PDU to every currently connected router. This is a hint that now would be a good time for the router to poll for an update, but it is only a hint. The protocol requires the router to poll for updates periodically in any case.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存更新数据库时，会向每个当前连接的路由器发送一个通知 PDU。这是一个提示，表明现在是路由器轮询更新的好时机，但这只是一个提示。协议要求路由器在任何情况下都要定期轮询更新。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Strictly speaking, a router could track a cache simply by asking for a complete data set every time it updates, but this would be very inefficient. The Serial-Number-based incremental update mechanism allows an efficient transfer of just the data records which have changed since the last update. As with any update protocol based on incremental transfers, the router must be prepared to fall back to a full transfer if for any reason the cache is unable to provide the necessary incremental data. Unlike some incremental transfer protocols, this protocol requires the router to make an explicit request to start the fallback process; this is deliberate, as the cache has no way of knowing whether the router has also established sessions with other caches that may be able to provide better service.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+严格说来，路由器可以在每次更新时要求提供完整的数据集来跟踪高速缓存，但这样做效率很低。基于序列号的增量更新机制只允许高效传输上次更新后发生变化的数据记录。与任何基于增量传输的更新协议一样，路由器必须做好准备，以便在高速缓存因故无法提供必要的增量数据时退回到完整传输。与某些增量传输协议不同的是，该协议要求路由器明确请求启动回退过程；这是有意为之，因为高速缓存无法知道路由器是否还与其他能提供更好服务的高速缓存建立了会话。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As a cache server must evaluate certificates and ROAs (Route Origin Authorizations; see [RFC6480]), which are time dependent, servers&#39; clocks MUST be correct to a tolerance of an hour.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于缓存服务器必须评估与时间相关的证书和 ROAs（路由起源授权，见 [RFC6480]），因此服务器的时钟必须正确，误差不得超过一小时。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Barring errors, transport connections remain up as long as the cache and router remain up and the router is not reconfigured to no longer use the cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+只要高速缓存和路由器不出错，只要路由器没有被重新配置为不再使用高速缓存，传输连接就不会中断。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Should a transport connection be lost for unknown reasons, the router SHOULD try to reestablish one; being careful to not abuse the cache with two many failed requests.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果传输连接因不明原因丢失，路由器应尝试重新建立连接，但要注意不要滥用缓存，以免出现两次请求失败的情况。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Protocol-Data-Units-PDUs">
+5. Protocol Data Units (PDUs)
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 协议数据单元 (PDU)
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The exchanges between the cache and the router are sequences of exchanges of the following PDUs according to the rules described in Section 8.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+高速缓存和路由器之间的交换是根据第 8 节所述规则交换以下 PDU 的序列。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Reserved fields (marked &#34;zero&#34; in PDU diagrams) MUST be zero on transmission and MUST be ignored on receipt.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+保留字段（在 PDU 图表中标记为 &#34;零&#34;）在传输时必须为零，在接收时必须忽略。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-1--Fields-of-a-PDU">
+5.1. Fields of a PDU
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.1. PDU 字段
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+PDUs contain the following data elements:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+PDU 包含以下数据元素：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Protocol Version: An 8-bit unsigned integer, currently 2, denoting the version of this protocol.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+协议版本：一个 8 位无符号整数，目前为 2，表示该协议的版本。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+PDU Type: An 8-bit unsigned integer, denoting the type of the PDU, e.g., IPv4 Prefix.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+PDU 类型：一个 8 位无符号整数，表示 PDU 的类型，如 IPv4 前缀。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Serial Number: A 32-bit unsigned integer serializing the RPKI cache epoch when this set of PDUs was received from an upstream cache server or gathered from the Global RPKI. A cache increments its Serial Number when completing a validated update from a parent cache or the Global RPKI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+序列号：一个 32 位无符号整数，用于序列化从上游缓存服务器接收此 PDU 或从全球 RPKI 收集此 PDU 时的 RPKI 缓存时间。缓存在完成来自父缓存或全局 RPKI 的有效更新时会递增其序列号。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Session ID: A 16-bit unsigned integer. When a cache server is started, it generates a Session ID to identify the instance of the cache and to bind it to the sequence of Serial Numbers that cache instance will generate. This allows the router to restart a failed session knowing that the Serial Number it is using is commensurate with that of the cache. If, at any time after the protocol version has been negotiated (Section 7), either the router or the cache finds that the value of the Session ID is not the same as the other&#39;s, the party which detects the mismatch MUST immediately terminate the session with an Error Report PDU with code 0 (&#34;Corrupt Data&#34;), and the router MUST flush all data learned from that cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+会话 ID：一个 16 位无符号整数。当缓存服务器启动时，它会生成一个会话 ID 来标识缓存实例，并将其与该缓存实例将生成的序列号序列绑定。这样，路由器就能知道它使用的序列号与高速缓存的序列号一致，从而重新启动失败的会话。如果在协议版本协商（第 7 节）后的任何时候，路由器或高速缓存发现会话 ID 的值与对方的不一致，检测到不匹配的一方必须立即用代码为 0（&#34;损坏数据&#34;）的错误报告 PDU 终止会话，并且路由器必须清除从该高速缓存学到的所有数据。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Note that sessions are specific to a particular protocol version.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+请注意，会话是针对特定协议版本的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+That is, if a cache server supports multiple versions of this protocol, happens to use the same Session ID value for multiple protocol versions, and further happens to use the same Serial Number values for two or more sessions using the same Session ID but different Protocol Version values, the Serial Numbers are not commensurate. The full test for whether Serial Numbers are commensurate requires comparing Protocol Version, Session ID, and Serial Number. To reduce the risk of confusion, cache servers SHOULD NOT use the same Session ID across multiple protocol versions, but even if they do, routers MUST treat sessions with different Protocol Version fields as separate sessions even if they do happen to have the same Session ID.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+也就是说，如果高速缓存服务器支持该协议的多个版本，恰好在多个协议版本中使用了相同的会话 ID 值，而且恰好在使用相同会话 ID 但协议版本值不同的两个或多个会话中使用了相同的序列号值，那么这些序列号就是不匹配的。要全面检验序列号是否一致，需要比较协议版本、会话 ID 和序列号。为降低混淆风险，高速缓存服务器不应在多个协议版本中使用相同的会话 ID，但即使使用了相同的会话 ID，路由器也必须将具有不同协议版本字段的会话视为单独的会话，即使它们碰巧具有相同的会话 ID。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Should a cache erroneously reuse a Session ID so that a router does not realize that the session has changed (old Session ID and new Session ID have the same numeric value), the router may become confused as to the content of the cache. The time it takes the router to discover that it is confused will depend on whether the Serial Numbers are also reused. If the Serial Numbers in the old and new sessions are different enough, the cache will respond to the router&#39;s Serial Query with a Cache Reset, which will solve the problem. If, however, the Serial Numbers are close, the cache may respond with a Cache Response, which may not be enough to bring the router into sync. In such cases, it&#39;s likely but not certain that the router will detect some discrepancy between the state that the cache expects and its own state. For example, the Cache Response may tell the router to drop a record which the router does not hold or may tell the router to add a record which the router already has. In such cases, a router will detect the error and reset the session. The one case in which the router may stay out of sync is when nothing in the Cache Response contradicts any data currently held by the router.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+如果高速缓存错误地重复使用了会话 ID，导致路由器没有意识到会话已经改变（旧的会话 ID 和新的会话 ID 具有相同的数值），路由器可能会对高速缓存的内容感到困惑。路由器发现自己混淆的时间取决于序列号是否也被重复使用。如果新旧会话中的序列号有足够大的差异，缓存就会通过缓存重置来响应路由器的序列查询，从而解决问题。但是，如果序列号很接近，缓存可能会响应缓存响应，但这可能不足以使路由器同步。在这种情况下，路由器很可能会检测到缓存所期望的状态与其自身状态之间存在某些差异，但这并不确定。例如，&#34;缓存响应 &#34;可能会告诉路由器放弃一条路由器没有的记录，或者告诉路由器添加一条路由器已经有的记录。在这种情况下，路由器会检测到错误并重置会话。路由器可能保持不同步的一种情况是，缓存响应中没有任何内容与路由器当前持有的任何数据相矛盾。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Using persistent storage for the Session ID or a clock-based scheme for generating Session IDs should avoid the risk of Session ID collisions.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+使用会话 ID 的持久存储或基于时钟的会话 ID 生成方案，可以避免会话 ID 碰撞的风险。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+The Session ID might be a pseudorandom value, a strictly increasing value if the cache has reliable storage, et cetera. A seconds-since-epoch timestamp value such as the low order 16 bits of unsigned integer seconds since 1970-01-01T00:00:00Z ignoring leap seconds might make a good Session ID value.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+会话 ID 可以是一个伪随机值，如果缓存存储可靠，也可以是一个严格递增的值，等等。会话 ID 可以是一个很好的时间戳值，例如自 1970-01-01T00:00:00Z 开始的无符号整数秒的低阶 16 位，忽略闰秒。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Length: A 32-bit unsigned integer which has as its value the count of the bytes in the entire PDU, including the 8 bytes of header which includes the length field.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+长度（Length）：一个 32 位无符号整数，其值为整个 PDU 的字节数，包括包含长度字段的 8 字节报头。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Flags: An 8-bit binary field, with the lowest-order bit being 1 for
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+标志：8 位二进制字段，最低位为 1 表示
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+an announcement and 0 for a withdrawal. For a Prefix PDU (IPv4 or IPv6), the announce/withdraw flag indicates whether this PDU announces a new right to announce the prefix or withdraws a previously announced right; a withdraw effectively deletes one previously announced Prefix PDU with the exact same Prefix, Length, Max-Len, and Autonomous System Number (ASN).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+表示宣布，0 表示撤回。对于前缀 PDU（IPv4 或 IPv6），&#34;宣布/撤回 &#34;标志表示该 PDU 是宣布了宣布前缀的新权利，还是撤回了先前宣布的权利；撤回会有效删除先前宣布的具有完全相同的前缀、长度、最大长度和自治系统编号（ASN）的前缀 PDU。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Similarly, for a Router Key PDU, the flag indicates whether this PDU announces a new Router Key or deletes one previously announced Router Key PDU with the exact same AS Number, subjectKeyIdentifier, and subjectPublicKeyInfo.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+同样，对于路由器密钥 PDU，标记表示该 PDU 是宣布了新的路由器密钥，还是删除了先前宣布的具有完全相同的 AS 编号、subjectKeyIdentifier 和 subjectPublicKeyInfo 的路由器密钥 PDU。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+The remaining bits in the Flags field are reserved for future use.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Flags 字段中的其余位保留供将来使用。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Prefix Length: An 8-bit unsigned integer denoting the shortest prefix allowed by the Prefix element.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+前缀长度：一个 8 位无符号整数，表示前缀元素允许的最短前缀。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Max Length: An 8-bit unsigned integer denoting the longest prefix allowed by the Prefix element. This MUST NOT be less than the Prefix Length element.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+最大长度：一个 8 位无符号整数，表示前缀元素允许的最长前缀。该值不得小于前缀长度元素。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Prefix: The IPv4 or IPv6 prefix of the ROA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+前缀：ROA 的 IPv4 或 IPv6 前缀。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Autonomous System Number: A 32-bit unsigned integer representing an ASN allowed to announce a prefix or associated with a router key.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+自治系统编号：一个 32 位无符号整数，代表允许宣布前缀或与路由器密钥相关联的 ASN。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Subject Key Identifier: The 20-octet Subject Key Identifier (SKI) value of a router key, as described in [RFC6487].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+主题密钥标识符：如 [RFC6487] 所述，路由器密钥的 20 字节主题密钥标识符 (SKI) 值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Subject Public Key Info: A variable length field holding a router key&#39;s subjectPublicKeyInfo value, as described in [RFC8608]. This is the full ASN.1 DER encoding of the subjectPublicKeyInfo, including the ASN.1 tag and length values of the subjectPublicKeyInfo SEQUENCE.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+主题公钥信息：如 [RFC8608] 所述，这是一个长度可变的字段，包含路由器密钥的 subjectPublicKeyInfo 值。这是 subjectPublicKeyInfo 的完整 ASN.1 DER 编码，包括 subjectPublicKeyInfo SEQUENCE 的 ASN.1 标记和长度值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Refresh Interval: A 32-bit interval in seconds between normal cache polls. See Section 6.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+刷新间隔：以秒为单位的 32 位正常缓存轮询间隔。参见第 6 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Retry Interval: A 32-bit interval in seconds between cache poll retries after a failed cache poll. See Section 6.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+重试间隔：缓存轮询失败后重试缓存轮询的 32 位间隔（秒）。参见第 6 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Expire Interval: A 32-bit interval in seconds during which data fetched from a cache remains valid in the absence of a successful subsequent cache poll. See Section 6.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+过期间隔：以秒为单位的 32 位时间间隔，在此时间间隔内，如果没有成功的后续缓存轮询，从缓存获取的数据将保持有效。参见第 6 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+AFI Flags: An 8-bit field of the ASPA PDU where the low order bit is
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+AFI 标志：ASPA PDU 的 8 位字段，其中低阶位为
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+set if the AS relationships are for IPv4 (AFI 1), and the second lowest bit is set for IPv6 (AFI 2). Currently, both bits MUST be set.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+如果 AS 关系为 IPv4（AFI 1），则设置该位；如果 AS 关系为 IPv6（AFI 2），则设置第二低位。目前，这两个位都必须设置。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Provider AS Count: A 16-bit count of Provider Autonomous System Numbers in the PDU.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+提供商 AS 计数：PDU 中提供商自治系统编号的 16 位计数。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Customer Autonomous System Number: The 32-bit AS number of the Autonomous System that authorizes the upstream providers listed in the Provider Autonomous System list to propagate prefixes of the specified address family to other ASes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+客户自治系统号：授权提供商自治系统列表中列出的上游提供商向其他 AS 传播指定地址族前缀的自治系统的 32 位 AS 编号。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Provider Autonomous System Numbers: The set of 32-bit AS numbers authorized to propagate prefixes of the specified AFI which were received from the customer AS.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+提供商自治系统号码：从客户 AS 收到的授权传播指定 AFI 前缀的 32 位 AS 号码集。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-2--Serial-Notify">
+5.2. Serial Notify
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.2. 串行通知
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The cache notifies the router that the cache has new data.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存会通知路由器缓存中有新数据。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Session ID reassures the router that the Serial Numbers are commensurate, i.e., the cache session has not been changed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+会话 ID 可使路由器确信序列号是一致的，即缓存会话未被更改。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Upon receipt of a Serial Notify PDU, the router MAY issue an immediate Serial Query (Section 5.3) or Reset Query (Section 5.4) without waiting for the Refresh Interval timer (see Section 6) to expire.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+收到串行通知 PDU 后，路由器可以立即发出串行查询（第 5.3 节）或重置查询（第 5.4 节），而无需等待刷新间隔计时器（见第 6 节）到期。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Serial Notify is the only message that the cache can send that is not in response to a message from the router.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+串行通知是高速缓存可以发送的唯一信息，它不是对路由器信息的回应。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the router receives a Serial Notify PDU during the initial startup period where the router and cache are still negotiating to agree on a protocol version, the router MUST simply ignore the Serial Notify PDU, even if the Serial Notify PDU is for an unexpected protocol version. See Section 7 for details.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果路由器在初始启动期间收到串行通知 PDU，而路由器和高速缓存仍在协商协议版本，则路由器必须忽略该串行通知 PDU，即使该串行通知 PDU 的协议版本出乎意料。详情请参见第 7 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |     Session ID      |
+   |    2     |    0     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                Length=12                  |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |               Serial Number               |
+   |                                           |
+   `-------------------------------------------&#39;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-3--Serial-Query">
+5.3. Serial Query
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.3. 串行查询
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The router sends a Serial Query to ask the cache for all announcements and withdrawals which have occurred since the Serial Number specified in the Serial Query.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器发送序列查询，要求缓存提供自序列查询中指定的序列号以来发生的所有通告和撤销。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The cache replies to this query with a Cache Response PDU (Section 5.5) if the cache has a (possibly null) record of the changes since the Serial Number specified by the router, followed by zero or more payload PDUs and an End Of Data PDU (Section 5.8).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果高速缓存有自路由器指定的序列号以来的更改记录（可能为空），则高速缓存用高速缓存响应 PDU（第 5.5 节）回复该查询，随后是零个或多个有效负载 PDU 和数据结束 PDU（第 5.8 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When replying to a Serial Query, the cache MUST return the minimum set of changes needed to bring the router into sync with the cache. That is, if a particular prefix or router key underwent multiple changes between the Serial Number specified by the router and the cache&#39;s current Serial Number, the cache MUST merge those changes to present the simplest possible view of those changes to the router. In general, this means that, for any particular prefix or router key, the data stream will include at most one withdrawal followed by at most one announcement, and if all of the changes cancel out, the data stream will not mention the prefix or router key at all.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在回复序列查询时，高速缓存必须返回使路由器与高速缓存同步所需的最小更改集。也就是说，如果一个特定的前缀或路由器密钥在路由器指定的序列号和高速缓存的当前序列号之间发生了多次变化，高速缓存必须合并这些变化，以便向路由器呈现这些变化的最简单视图。一般来说，这意味着对于任何特定的前缀或路由器密钥，数据流将最多包含一次撤回，随后最多包含一次公告，如果所有更改都抵消了，那么数据流将完全不提及该前缀或路由器密钥。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The rationale for this approach is that the entire purpose of the RPKI-Router protocol is to offload work from the router to the cache, and it should therefore be the cache&#39;s job to simplify the change set, thus reducing work for the router.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这种方法的基本原理是，RPKI-路由器协议的全部目的是将路由器的工作卸载到高速缓存，因此高速缓存的工作应该是简化变更集，从而减少路由器的工作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the cache does not have the data needed to update the router, perhaps because its records do not go back to the Serial Number in the Serial Query, then it responds with a Cache Reset PDU (Section 5.9).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果缓存中没有更新路由器所需的数据，可能是因为其记录没有回到序列查询中的序列号，则缓存会响应缓存重置 PDU（第 5.9 节）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Session ID tells the cache what instance the router expects to ensure that the Serial Numbers are commensurate, i.e., the cache session has not been changed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+会话 ID 会告诉高速缓存路由器所期望的实例，以确保序列号一致，即高速缓存会话未被更改。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |     Session ID      |
+   |    2     |    1     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=12                 |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |               Serial Number               |
+   |                                           |
+   `-------------------------------------------&#39;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-4--Reset-Query">
+5.4. Reset Query
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.4. 重置查询
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The router tells the cache that it wants to receive the total active, current, non-withdrawn database. The cache responds with a Cache Response PDU (Section 5.5), followed by zero or more payload PDUs and an End of Data PDU (Section 5.8).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器告诉高速缓存，它想接收全部活动的、当前的、未撤回的数据库。高速缓存通过高速缓存响应 PDU（第 5.5 节）、零个或多个有效负载 PDU 和数据结束 PDU（第 5.8 节）做出响应。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |         zero        |
+   |    2     |    2     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=8                  |
+   |                                           |
+   `-------------------------------------------&#39;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-5--Cache-Response">
+5.5. Cache Response
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.5. 缓存响应
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The cache responds to queries with zero or more payload PDUs. When replying to a Serial Query (Section 5.3), the cache sends the set of announcements and withdrawals that have occurred since the Serial Number sent by the client router. When replying to a Reset Query (Section 5.4), the cache sends the set of all data records it has; in this case, the announce/withdraw field in the payload PDUs MUST have the value 1 (announce).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+高速缓存以零或更多有效载荷 PDU 回应查询。在回复序列查询（第 5.3 节）时，高速缓存会发送自客户端路由器发送序列号以来发生的公告和撤回信息。在回复重置查询（第 5.4 节）时，高速缓存会发送它拥有的所有数据记录的集合；在这种情况下，有效载荷 PDU 中的通告/撤回字段的值必须为 1（通告）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In response to a Reset Query, the new value of the Session ID tells the router the instance of the cache session for future confirmation. In response to a Serial Query, the Session ID being the same reassures the router that the Serial Numbers are commensurate, i.e., the cache session has not been changed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在响应重置查询时，会话 ID 的新值会告诉路由器缓存会话的实例，以便将来确认。在响应序列查询时，会话 ID 相同可使路由器确信序列号是一致的，即缓存会话没有被更改。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |     Session ID      |
+   |    2     |    3     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=8                  |
+   |                                           |
+   `-------------------------------------------&#39;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-6--IPv4-Prefix">
+5.6. IPv4 Prefix
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.6. IPv4 前缀
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |         zero        |
+   |    2     |    4     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=20                 |
+   |                                           |
+   +-------------------------------------------+
+   |          |  Prefix  |   Max    |          |
+   |  Flags   |  Length  |  Length  |   zero   |
+   |          |   0..32  |   0..32  |          |
+   +-------------------------------------------+
+   |                                           |
+   |                IPv4 Prefix                |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |         Autonomous System Number          |
+   |                                           |
+   `-------------------------------------------&#39;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This PDU carries an [RFC6811] Validated ROA Payload (VRP) for an IPv4 ROA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+该 PDU 携带 IPv4 ROA 的 [RFC6811] 验证 ROA 有效载荷（VRP）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The lowest-order bit of the Flags field is 1 for an announcement and 0 for a withdrawal.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Flags 字段的最低阶位为 1 表示宣布，为 0 表示撤回。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the RPKI, nothing prevents a signing certificate from issuing two identical ROAs. In this case, there would be no semantic difference between the objects, merely a process redundancy.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 RPKI 中，没有任何规定阻止签名证书签发两个相同的 ROA。在这种情况下，两个对象之间没有语义上的区别，只是程序上的冗余。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the RPKI, there is also an actual need for what might appear to a router as identical IPvX PDUs. This can occur when an upstream certificate is being reissued or there is an address ownership transfer up the validation chain. The ROA would be identical in the router sense, i.e., have the same {Prefix, Len, Max-Len, ASN}, but it would have a different validation path in the RPKI. This is important to the RPKI but not to the router.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 RPKI 中，路由器实际需要的可能是相同的 IPvX PDU。这种情况可能发生在上游证书重新签发或验证链上的地址所有权转移时。ROA 在路由器意义上是相同的，即具有相同的 {Prefix, Len, Max-Len, ASN}，但在 RPKI 中会有不同的验证路径。这对 RPKI 很重要，但对路由器并不重要。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The cache server MUST ensure that it has told the router client to have one and only one IPvX PDU for a unique {Prefix, Len, Max-Len, ASN} at any one point in time. Should the router client receive an IPvX PDU with a {Prefix, Len, Max-Len, ASN} identical to one it already has active, it SHOULD raise a Duplicate Announcement Received error.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存服务器必须确保它已告知路由器客户端，在任何一个时间点上都只有一个唯一的 {前缀、长度、最大长度、ASN}的 IPvX PDU。如果路由器客户端收到的 IPvX PDU 的 {Prefix, Len, Max-Len, ASN} 与它已激活的 PDU 相同，则应引发 &#34;收到重复公告&#34;（Duplicate Announcement Received）错误。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-7--IPv6-Prefix">
+5.7. IPv6 Prefix
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.7. IPv6 前缀
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |         zero        |
+   |    2     |    6     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=32                 |
+   |                                           |
+   +-------------------------------------------+
+   |          |  Prefix  |   Max    |          |
+   |  Flags   |  Length  |  Length  |   zero   |
+   |          |  0..128  |  0..128  |          |
+   +-------------------------------------------+
+   |                                           |
+   +---                                     ---+
+   |                                           |
+   +---            IPv6 Prefix              ---+
+   |                                           |
+   +---                                     ---+
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |         Autonomous System Number          |
+   |                                           |
+   `-------------------------------------------&#39;
+      This PDU carries an [RFC6811] Validated ROA Payload (VRP) for an IPv6
+   ROA.
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Analogous to the IPv4 Prefix PDU, it has 96 more bits and no magic.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+与 IPv4 前缀 PDU 类似，它多了 96 个比特，但没有魔法。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-8--End-of-Data">
+5.8. End of Data
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.8. 数据结束
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The cache tells the router it has no more data for the request.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存会告诉路由器，它没有更多数据来满足请求。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Session ID and Protocol Version MUST be the same as that of the corresponding Cache Response which began the (possibly null) sequence of payload PDUs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+会话 ID 和协议版本必须与开始有效载荷 PDU（可能为空）序列的相应缓存响应相同。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |     Session ID      |
+   |    2     |    7     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=24                 |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |               Serial Number               |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |              Refresh Interval             |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |               Retry Interval              |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |              Expire Interval              |
+   |                                           |
+   `-------------------------------------------&#39;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Refresh Interval, Retry Interval, and Expire Interval are all 32-bit elapsed times measured in seconds. They express the timing parameters which the cache expects the router to use in deciding when to send subsequent Serial Query or Reset Query PDUs to the cache. See Section 6 for an explanation of the use and the range of allowed values for these parameters.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+刷新间隔（Refresh Interval）、重试间隔（Retry Interval）和过期间隔（Expire Interval）都是以秒为单位的 32 位经过时间。它们表示高速缓存希望路由器用于决定何时向高速缓存发送后续串行查询或重置查询 PDU 的定时参数。有关这些参数的用途和允许值范围的说明，请参见第 6 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that the End of Data PDU changed significantly between versions 0 and 1. Version 2 End of Data is the same as Version 1.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，数据结束 PDU 在版本 0 和版本 1 之间发生了很大变化。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-9--Cache-Reset">
+5.9. Cache Reset
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.9. 缓存重置
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The cache may respond to a Serial Query informing the router that the cache cannot provide an incremental update starting from the Serial Number specified by the router. The router must decide whether to issue a Reset Query or switch to a different cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存可能会响应序列查询，通知路由器缓存无法从路由器指定的序列号开始提供增量更新。路由器必须决定是发出重置查询（Reset Query）还是切换到其他缓存。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |         zero        |
+   |    2     |    8     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=8                  |
+   |                                           |
+   `-------------------------------------------&#39;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-10--Router-Key">
+5.10. Router Key
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.10. 路由器密钥
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |          |          |
+   | Version  |   Type   |   Flags  |   zero   |
+   |    2     |    9     |          |          |
+   +-------------------------------------------+
+   |                                           |
+   |                  Length                   |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   +---                                     ---+
+   |          Subject Key Identifier           |
+   +---                                     ---+
+   |                                           |
+   +---                                     ---+
+   |                (20 octets)                |
+   +---                                     ---+
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |                 AS Number                 |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |          Subject Public Key Info          |
+   |                                           |
+   `-------------------------------------------&#39;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Router Key PDU transports an [RFC8635] Router key.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器密钥 PDU 传输 [RFC8635] 路由器密钥。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The lowest-order bit of the Flags field is 1 for an announcement and 0 for a withdrawal.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Flags 字段的最低阶位为 1 表示宣布，为 0 表示撤回。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The cache server MUST ensure that it has told the router client to have one and only one Router Key PDU for a unique {SKI, ASN, Subject Public Key} at any one point in time. Should the router client receive a Router Key PDU with a {SKI, ASN, Subject Public Key} identical to one it already has active, it SHOULD raise a Duplicate Announcement Received error.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存服务器必须确保已告知路由器客户端，在任何一个时间点，唯一的 {SKI、ASN、主题公钥}只有一个路由器密钥 PDU。如果路由器客户端收到的{SKI、ASN、主题公钥}的路由器密钥 PDU 与它已激活的路由器密钥 PDU 相同，则应引发 &#34;收到重复公告 &#34;错误。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Note that a particular ASN may appear in multiple Router Key PDUs with different Subject Public Key values, while a particular Subject Public Key value may appear in multiple Router Key PDUs with different ASNs. In the interest of keeping the announcement and withdrawal semantics as simple as possible for the router, this protocol makes no attempt to compress either of these cases.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+请注意，一个特定的 ASN 可能会出现在具有不同主体公钥值的多个路由器密钥 PDU 中，而一个特定的主体公钥值可能会出现在具有不同 ASN 的多个路由器密钥 PDU 中。为了让路由器尽可能简单地处理公告和撤回语义，本协议不试图压缩这两种情况。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Also note that it is possible, albeit very unlikely, for multiple distinct Subject Public Key values to hash to the same SKI. For this reason, implementations MUST compare Subject Public Key values as well as SKIs when detecting duplicate PDUs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+还要注意的是，多个不同的主体公钥值有可能哈希到相同的 SKI，尽管这种可能性很小。因此，在检测重复 PDU 时，实施必须比较主体公钥值和 SKI。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As the Subject Public Key Info is a variable length field, it must be decoded to determine where the PDU terminates.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于 &#34;主题公钥信息 &#34;是一个长度可变的字段，因此必须对其进行解码，以确定 PDU 的终止位置。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-11--Error-Report">
+5.11. Error Report
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.11. 错误报告
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This PDU is used by either party to report an error to the other.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+任何一方使用此 PDU 向另一方报告错误。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Error reports are only sent as responses to other PDUs, not to report errors in Error Report PDUs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+错误报告仅作为对其他 PDU 的响应发送，而不是在错误报告 PDU 中报告错误。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Error codes are described in Section 13.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+第 13 节介绍了错误代码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Erroneous PDU field is a binary copy of the PDU causing the error condition, including all fields.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+错误 PDU 字段是导致错误条件的 PDU（包括所有字段）的二进制副本。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the error is generic (e.g., &#34;Internal Error&#34;) and not associated with the PDU to which it is responding, the Erroneous PDU field MUST be empty and the Length of Encapsulated PDU field MUST be zero.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果错误是一般错误（如 &#34;内部错误&#34;），且与响应的 PDU 无关，则错误 PDU 字段必须为空，封装 PDU 字段的长度必须为零。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An Error Report PDU MUST NOT be sent for an Error Report PDU. If an erroneous Error Report PDU is received, the session SHOULD be dropped.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+不得为错误报告 PDU 发送错误报告 PDU。如果收到错误的错误报告 PDU，则应放弃会话。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the error is associated with a PDU of excessive length, i.e., too long to be any legal PDU other than another Error Report, or a possibly corrupt length, the Erroneous PDU field MAY be truncated.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果错误与长度过长的 PDU 相关联，即除了另一个错误报告外，PDU 长度过长而无法成为任何合法的 PDU，或长度可能已损坏，则错误 PDU 字段可能被截断。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Arbitrary Text field is optional; if not present, the Length of Arbitrary text field MUST be zero. If Arbitrary Text is present, it MUST be a string in UTF-8 encoding (see [RFC3629]) in the Queen&#39;s English.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+任意文本字段是可选的；如果不存在，任意文本字段的长度必须为零。如果存在任意文本，它必须是以 UTF-8 编码（见 [RFC3629]）表示的女王英语字符串。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |     Error Code      |
+   |    2     |    10    |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                  Length                   |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |       Length of Encapsulated PDU          |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   ~               Erroneous PDU               ~
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |         Length of Arbitrary Text          |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |              Arbitrary Text               |
+   ~                    of                     ~
+   |          Error Diagnostic Message         |
+   |                                           |
+   `-------------------------------------------&#39;
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5-12--ASPA-PDU">
+5.12. ASPA PDU
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5.12. ASPA PDU
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |        zero         |
+   |    2     |    11    |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length                    |
+   |                                           |
+   +-------------------------------------------+
+   |          |          |                     |
+   |  Flags   | AFI Flags|  Provider AS Count  |
+   |          |          |                     |
+   +-------------------------------------------+
+   |                                           |
+   |    Customer Autonomous System Number      |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   ~    Provider Autonomous System Numbers     ~
+   |                                           |
+   ~-------------------------------------------~
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The ASPA PDU supports [I-D.ietf-sidrops-aspa-profile]. An ASPA PDU represents one single customer AS and its provider ASes. Receipt of an ASPA PDU announcement (announce/withdraw flag == 1) when the router already has an ASPA PDU with the same Customer Autonomous System Number replaces the previous one. The cache MUST deliver the complete data of an ASPA record in a single ASPA PDU.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+ASPA PDU 支持 [I-D.ietf-sidrops-aspa-profile]。一个 ASPA PDU 代表一个客户 AS 及其提供商 AS。当路由器已拥有具有相同客户自治系统编号的 ASPA PDU 时，接收到的 ASPA PDU 公告（announce/withdraw 标志 == 1）将替换前一个 ASPA PDU。缓存必须在单个 ASPA PDU 中传递 ASPA 记录的完整数据。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The router MUST see at most one ASPA from a cache for a particular Customer Autonomous System Number active at any time. As a number of conditions in the global RPKI may present multiple valid ASPA RPKI records for a single customer to a particular RP cache, this places a burden on the cache to form the union of multiple ASPA records it has received from the global RPKI into one ASPA PDU.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器在任何时候都最多只能从高速缓存中看到一个特定客户自治系统号码的 ASPA。由于全局 RPKI 中的许多条件可能会向特定 RP 缓存提交单个客户的多个有效 ASPA RPKI 记录，这就给缓存带来了负担，使其无法将从全局 RPKI 收到的多个 ASPA 记录合并为一个 ASPA PDU。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Flags field is as described in Section 5.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+标志字段如第 5 节所述。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For the ASPA PDU, the announce/withdraw Flag is set to 1 to indicate either the announcement of a new ASPA record or a replacement for a previously announced record with the same Customer Autonomous System Number.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于 ASPA PDU，公布/撤回标志设置为 1，表示公布新的 ASPA 记录或替换先前公布的具有相同客户自治系统编号的记录。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the announce/withdraw flag is set to 0, it indicates removal of the entire ASPA record for that Customer AS. Here, the customer AS of the ASPA record MUST be provided, the Provider AS Count must be zero, the Provider AS Numbers list MUST be null, and these last two fields MUST be ignored by the router.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果 announce/withdraw 标志设置为 0，则表示删除了该客户 AS 的整个 ASPA 记录。在此，必须提供 ASPA 记录的客户 AS，提供商 AS 数量必须为零，提供商 AS 编号列表必须为空，路由器必须忽略最后两个字段。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The AFI Flags field is defined in Section 15 Currently, the two low order bits MUST always be set, i.e. 1, and the rest unset, i.e. 0. This allows the router to prepare for less change should the AFIs be separated in a future version.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+AFI 标志字段的定义见第 15 节。目前，两个低阶位必须始终置位（即 1），其余未置位（即 0）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Provider AS Count is the number of 32-bit Provider Autonomous System Numbers in the PDU.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+提供商 AS 数量是 PDU 中 32 位提供商自治系统编号的数量。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Customer Autonomous System Number is the 32-bit Autonomous System Number of the customer which authenticated the ASPA RPKI data. There MUST be one and only one ASPA for a Customer Autonomous System Number active in the router at any time.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+客户自治系统编号是验证 ASPA RPKI 数据的客户的 32 位自治系统编号。路由器中任何时候都必须有且只能有一个客户自治系统编号的 ASPA 处于活动状态。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+There are zero or more 32-bit Provider Autonomous System Number fields as indicated in the Provider AS Count; see [I-D.ietf-sidrops-aspa-profile].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如 Provider AS Count 所示，有零个或多个 32 位 Provider Autonomous System Number 字段；请参阅 [I-D.ietf-sidrops-aspa-profile]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--Protocol-Timing-Parameters">
+6. Protocol Timing Parameters
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 协议定时参数
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Since the data the cache distributes via the RPKI-Router protocol are retrieved from the Global RPKI system at intervals which are only known to the cache, only the cache can really know how frequently it makes sense for the router to poll the cache, or how long the data are likely to remain valid (or, at least, unchanged). For this reason, as well as to allow the cache some control over the load placed on it by its client routers, the End Of Data PDU includes three values that allow the cache to communicate timing parameters to the router:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于高速缓存通过 RPKI-Router 协议从全局 RPKI 系统中获取的数据只有高速缓存知道时间间隔，因此只有高速缓存才能真正知道路由器轮询高速缓存的频率，或数据可能保持有效（或至少保持不变）的时间。因此，为了让高速缓存能够控制客户端路由器对其施加的负载，数据结束 PDU 包含三个值，允许高速缓存向路由器传送定时参数：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Refresh Interval: This parameter tells the router how long to wait before next attempting to poll the cache and between subsequent attempts, using a Serial Query or Reset Query PDU. The router SHOULD NOT poll the cache sooner than indicated by this parameter. Note that receipt of a Serial Notify PDU overrides this interval and suggests that the router issue an immediate query without waiting for the Refresh Interval to expire. Countdown for this timer starts upon receipt of the containing End Of Data PDU.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+刷新间隔：此参数告诉路由器下次尝试轮询高速缓存前要等待多长时间，以及使用串行查询或重置查询 PDU 的后续尝试之间要等待多长时间。路由器轮询高速缓存的时间不应早于该参数的指示时间。请注意，收到串行通知 PDU 会覆盖此时间间隔，并建议路由器立即发出查询，而不必等待刷新时间间隔到期。该计时器的倒计时从收到包含 End Of Data PDU 时开始。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Minimum allowed value: 1 second.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+最小允许值：1 秒。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Maximum allowed value: 86400 seconds (1 day).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+最大允许值：86400 秒（1 天）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Recommended default: 3600 seconds (1 hour).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+建议默认值：3600 秒（1 小时）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Retry Interval: This parameter tells the router how long to wait before retrying a failed Serial Query or Reset Query. The router SHOULD NOT retry sooner than indicated by this parameter. Note that a protocol version mismatch overrides this interval: if the router needs to downgrade to a lower protocol version number, it MAY send the first Serial Query or Reset Query immediately. Countdown for this timer starts upon failure of the query and restarts after each subsequent failure until a query succeeds.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+重试间隔：该参数告诉路由器重试失败的串行查询或重置查询需要等待多长时间。路由器重试的时间不应早于该参数的指示时间。请注意，协议版本不匹配会覆盖此时间间隔：如果路由器需要降级到较低的协议版本号，它可以立即发送第一个串行查询或重置查询。该计时器的倒计时从查询失败时开始，以后每次失败后都会重新开始，直到查询成功为止。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Minimum allowed value: 1 second.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+最小允许值：1 秒。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Maximum allowed value: 7200 seconds (2 hours).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+最大允许值：7200 秒（2 小时）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Recommended default: 600 seconds (10 minutes).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+建议默认值：600 秒（10 分钟）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Expire Interval: This parameter tells the router how long it can continue to use the current version of the data while unable to perform a successful subsequent query. The router MUST NOT retain the data past the time indicated by this parameter. Countdown for this timer starts upon receipt of the containing End Of Data PDU.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+过期时间间隔：该参数告诉路由器，在无法成功执行后续查询的情况下，可以继续使用当前版本的数据多长时间。路由器保留数据的时间不得超过此参数所指示的时间。该计时器的倒计时从收到包含 End Of Data PDU 时开始。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Minimum allowed value: 600 seconds (10 minutes).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+最小允许值：600 秒（10 分钟）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Maximum allowed value: 172800 seconds (2 days).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+最大允许值：172800 秒（2 天）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Recommended default: 7200 seconds (2 hours).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+建议默认值：7200 秒（2 小时）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the router has never issued a successful query against a particular cache, it SHOULD retry periodically using the default Retry Interval, above.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果路由器从未对特定高速缓存成功发出过查询，则应使用上述默认重试间隔定期重试。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Caches MUST set Expire Interval to a value larger than both the Refresh Interval and the Retry Interval.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存必须将 &#34;过期时间间隔 &#34;设置为大于 &#34;刷新时间间隔 &#34;和 &#34;重试时间间隔 &#34;的值。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--Protocol-Version-Negotiation">
+7. Protocol Version Negotiation
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 协议版本协商
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A router MUST start each transport connection by issuing either a Reset Query or a Serial Query. This query MUST tell the cache the highest version of this protocol the router implements.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器必须通过发出重置查询（Reset Query）或串行查询（Serial Query）来启动每个传输连接。该查询必须告诉高速缓存路由器所执行协议的最高版本。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If a cache which supports version N receives a Reset Query with Version Q &lt; N, the cache MUST downgrade to protocol version Q [RFC6810] or [RFC8210]. If the router&#39;s Reset Request was Q &gt; N, the cache MUST send a version 2 Error Report PDU with Error Code 4 (&#34;Unsupported Protocol Version&#34;), and the router MUST send another Reset Query with a lower Version Q. This MAY repeat. If the router requests Q == 0 and it still fails, then the router MUST abort the session, sending a version 2 Error Report PDU with Error Code 4 (&#34;Unsupported Protocol Version&#34;).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果支持版本 N 的高速缓存收到版本 Q &lt; N 的重置查询，高速缓存必须降级到协议版本 Q [RFC6810] 或 [RFC8210]。如果路由器的重置请求是 Q &gt; N，高速缓存必须发送带有错误代码 4（&#34;不支持的协议版本&#34;）的版本 2 错误报告 PDU，并且路由器必须发送带有较低版本 Q 的另一个重置查询。如果路由器请求 Q == 0 且仍然失败，则路由器必须中止会话，发送带有错误代码 4（&#34;不支持的协议版本&#34;）的版本 2 错误报告 PDU。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If a router which supports version N sends a query to a cache which only supports version C &lt; N, one of two things will happen:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果支持版本 N 的路由器向只支持版本 C &lt; N 的高速缓存发送查询，则会出现两种情况之一：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. The cache may terminate the connection, perhaps with a version 2 Error Report PDU with Error Code 4 (&#34;Unsupported Protocol Version&#34;). In this case, the router MAY retry the connection using protocol version C.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 高速缓存可能会终止连接，可能会发出带有错误代码 4（&#34;不支持的协议版本&#34;）的版本 2 错误报告 PDU。在这种情况下，路由器可以使用协议版本 C 重试连接。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. The cache may reply with a version C response. In this case, the router MUST either downgrade to version C or terminate the connection.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 高速缓存可能会回复 C 版本。在这种情况下，路由器必须降级到版本 C 或终止连接。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In any of the downgraded combinations above, the new features of the higher version will not be available, and all PDUs MUST have the negotiated lower version number in their version fields.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在上述任何降级组合中，较高版本的新功能将不可用，所有 PDU 的版本字段中都必须有协商好的较低版本编号。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If either party receives a PDU containing an unrecognized Protocol Version (neither 0, 1, nor 2) during this negotiation, it MUST either downgrade to a known version or terminate the connection, with an Error Report PDU unless the received PDU is itself an Error Report PDU.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果任何一方在协商过程中接收到包含未识别协议版本（既非 0、1 也非 2）的 PDU，则必须降级到已知版本或终止连接，并发出错误报告 PDU，除非接收到的 PDU 本身就是错误报告 PDU。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The router MUST ignore any Serial Notify PDUs it might receive from the cache during this initial startup period, regardless of the Protocol Version field in the Serial Notify PDU. Since Session ID and Serial Number values are specific to a particular protocol version, the values in the notification are not useful to the router. Even if these values were meaningful, the only effect that processing the notification would have would be to trigger exactly the same Reset Query or Serial Query that the router has already sent as part of the not-yet-complete version negotiation process, so there is nothing to be gained by processing notifications until version negotiation completes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+无论串行通知 PDU 中的协议版本字段如何，路由器都必须忽略在初始启动期间可能从高速缓存接收到的任何串行通知 PDU。由于会话 ID 和序列号值是特定协议版本所特有的，因此通知中的值对路由器并无用处。即使这些值有意义，处理通知的唯一效果也是触发路由器在尚未完成的版本协商过程中已经发送的完全相同的重置查询或串行查询，因此在版本协商完成之前处理通知没有任何益处。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Caches SHOULD NOT send Serial Notify PDUs before version negotiation completes. Routers, however, MUST handle such notifications (by ignoring them) for backwards compatibility with caches serving protocol version 0.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存不应在版本协商完成前发送串行通知 PDU。但是，路由器必须处理此类通知（忽略它们），以便与提供协议版本 0 的缓存向后兼容。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Once the cache and router have agreed upon a Protocol Version via the negotiation process above, that version is stable for the life of the session. See Section 5.1 for a discussion of the interaction between Protocol Version and Session ID.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+一旦高速缓存和路由器通过上述协商过程商定了协议版本，该版本在会话期间将保持稳定。有关协议版本和会话 ID 之间交互的讨论，请参见第 5.1 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If either party receives a PDU for a different Protocol Version once the above negotiation completes, that party MUST drop the session; unless the PDU containing the unexpected Protocol Version was itself an Error Report PDU, the party dropping the session SHOULD send an Error Report with an error code of 8 (&#34;Unexpected Protocol Version&#34;).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+除非包含意外协议版本的 PDU 本身是错误报告 PDU，否则放弃会话的一方应发送错误代码为 8（&#34;意外协议版本&#34;）的错误报告。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8--Protocol-Sequences">
+8. Protocol Sequences
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8. 协议序列
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The sequences of PDU transmissions fall into four conversations as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+PDU 传输序列分为以下四个会话：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8-1--Start-or-Restart">
+8.1. Start or Restart
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8.1. 启动或重启
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | &lt;----- Reset Query -------- | R requests data (or Serial Query)
+     |                             |
+     | ----- Cache Response -----&gt; | C confirms request
+     | ------- Payload PDU ------&gt; | C sends zero or more
+     | ------- Payload PDU ------&gt; |   IPv4 Prefix, IPv6 Prefix,
+     | ------- Payload PDU ------&gt; |   ASPA, or Router Key PDUs
+     | ------- End of Data ------&gt; | C sends End of Data
+     |                             |   and sends new serial
+     ~                             ~
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When a transport connection is first established, the router MUST send either a Reset Query or a Serial Query. A Serial Query would be appropriate if the router has unexpired data from a broken session with the same cache and remembers the Session ID of that session, in which case a Serial Query containing the Session ID from the previous session will allow the router to bring itself up to date while ensuring that the Serial Numbers are commensurate and that the router and cache are speaking compatible versions of the protocol. In all other cases, the router lacks the necessary data for fast resynchronization and therefore MUST fall back to a Reset Query.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+首次建立传输连接时，路由器必须发送重置查询（Reset Query）或串行查询（Serial Query）。如果路由器与同一高速缓存之间有中断会话中的未过期数据，并记住了该会话的会话 ID，那么发送串行查询是合适的，在这种情况下，包含前一个会话的会话 ID 的串行查询将允许路由器更新自己，同时确保序列号一致，路由器和高速缓存使用的是兼容的协议版本。在所有其他情况下，路由器缺乏快速重新同步所需的数据，因此必须退回到重置查询。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Reset Query sequence is also used when the router receives a Cache Reset, chooses a new cache, or fears that it has otherwise lost its way.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当路由器收到缓存重置、选择新缓存或担心自己迷失方向时，也会使用重置查询序列。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+See Section 7 for details on version negotiation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关版本协商的详细信息，请参见第 7 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+To limit the length of time a cache must keep the data necessary to generate incremental updates, a router MUST send either a Serial Query or a Reset Query periodically. This also acts as a keep-alive at the application layer. See Section 6 for details on the required polling frequency.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为了限制高速缓存必须保存生成增量更新所需的数据的时间，路由器必须定期发送串行查询或重置查询。这也是应用层的保持更新功能。有关所需轮询频率的详细信息，请参阅第 6 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8-2--Typical-Exchange">
+8.2. Typical Exchange
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8.2. 典型交换
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | -------- Notify ----------&gt; |  (optional)
+     |                             |
+     | &lt;----- Serial Query ------- | R requests data
+     |                             |
+     | ----- Cache Response -----&gt; | C confirms request
+     | ------- Payload PDU ------&gt; | C sends zero or more
+     | ------- Payload PDU ------&gt; |   IPv4 Prefix, IPv6 Prefix,
+     | ------- Payload PDU ------&gt; |   ASPA. or Router Key PDUs
+     | ------- End of Data ------&gt; | C sends End of Data
+     |                             |   and sends new serial
+     ~                             ~
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The cache server SHOULD send a Notify PDU with its current Serial Number when the cache&#39;s serial changes, with the expectation that the router MAY then issue a Serial Query earlier than it otherwise might. This is analogous to DNS NOTIFY in [RFC1996]. The cache MUST rate-limit Serial Notifies to no more frequently than one per minute.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当高速缓存的序列号发生变化时，高速缓存服务器应发送包含其当前序列号的通知 PDU，路由器可能会因此而提前发出序列查询。这类似于 [RFC1996] 中的 DNS NOTIFY。缓存必须限制串行通知的频率，不得超过每分钟一次。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When the transport layer is up and either a timer has gone off in the router or the cache has sent a Notify PDU, the router queries for new data by sending a Serial Query, and the cache sends all data newer than the serial in the Serial Query.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当传输层启动，且路由器中的定时器已关闭或高速缓存已发送通知 PDU 时，路由器会通过发送串行查询来查询新数据，而高速缓存则会发送所有比串行查询中的串行数据更新的数据。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+To limit the length of time a cache must keep old withdraws, a router MUST send either a Serial Query or a Reset Query periodically. See Section 6 for details on the required polling frequency.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为了限制高速缓存必须保留旧撤回信息的时间，路由器必须定期发送串行查询或重置查询。有关所需轮询频率的详细信息，请参见第 6 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8-3--No-Incremental-Update-Available">
+8.3. No Incremental Update Available
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8.3. 无增量更新
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | &lt;------ Serial Query ------ | R requests data
+     | ------- Cache Reset ------&gt; | C cannot supply update
+     |                             |   from specified serial
+     | &lt;------ Reset Query ------- | R requests new data
+     | ----- Cache Response -----&gt; | C confirms request
+     | ------- Payload PDU ------&gt; | C sends zero or more
+     | ------- Payload PDU ------&gt; |   IPv4 Prefix, IPv6 Prefix,
+     | ------- Payload PDU ------&gt; |   ASPA, or Router Key PDUs
+     | ------- End of Data ------&gt; | C sends End of Data
+     |                             |   and sends new serial
+     ~                             ~
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The cache may respond to a Serial Query with a Cache Reset, informing the router that the cache cannot supply an incremental update from the Serial Number specified by the router. This might be because the cache has lost state, or because the router has waited too long between polls and the cache has cleaned up old data that it no longer believes it needs, or because the cache has run out of storage space and had to expire some old data early. Regardless of how this state arose, the cache replies with a Cache Reset to tell the router that it cannot honor the request. When a router receives this, the router SHOULD attempt to connect to any more-preferred caches in its cache list. If there are no more-preferred caches, it MUST issue a Reset Query and get an entire new load from the cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存可能会以 &#34;缓存重置&#34;（Cache Reset）来响应序列查询，通知路由器缓存无法从路由器指定的序列号开始提供增量更新。这可能是因为高速缓存丢失了状态，或者是因为路由器在两次轮询之间等待的时间太长，高速缓存清理了它认为不再需要的旧数据，或者是因为高速缓存用完了存储空间，不得不让一些旧数据提前过期。无论这种状态是如何产生的，高速缓存都会回复一个 &#34;高速缓存重置&#34;（Cache Reset），告诉路由器它无法满足请求。当路由器收到该请求时，路由器应尝试连接其缓存列表中的更多首选缓存。如果没有更多首选高速缓存，路由器必须发出重置查询，并从高速缓存中获取新的负载。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="8-4--Cache-Has-No-Data-Available">
+8.4. Cache Has No Data Available
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+8.4. 缓存中没有可用数据
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | &lt;------ Serial Query ------ | R requests data
+     | ---- Error Report PDU ----&gt; | C No Data Available
+     ~                             ~
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | &lt;------ Reset Query ------- | R requests data
+     | ---- Error Report PDU ----&gt; | C No Data Available
+     ~                             ~
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The cache may respond to either a Serial Query or a Reset Query informing the router that the cache cannot supply any update at all. The most likely cause is that the cache has lost state, perhaps due to a restart, and has not yet recovered. While it is possible that a cache might go into such a state without dropping any of its active sessions, a router is more likely to see this behavior when it initially connects and issues a Reset Query while the cache is still rebuilding its database.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+高速缓存可能会响应串行查询或重置查询，告知路由器高速缓存根本无法提供任何更新。最可能的原因是高速缓存丢失了状态，可能是由于重新启动，而且尚未恢复。虽然高速缓存有可能在不丢弃任何活动会话的情况下进入这种状态，但路由器更有可能在高速缓存仍在重建数据库时，通过初始连接和发出重置查询看到这种行为。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When a router receives this kind of error, the router SHOULD attempt to connect to any other caches in its cache list, in preference order. If no other caches are available, the router MUST issue periodic Reset Queries until it gets a new usable load from the cache; maybe once a minute so as not to DoS the cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当路由器收到此类错误时，路由器应按优先顺序尝试连接其缓存列表中的任何其他缓存。如果没有其他可用的高速缓存，路由器必须定期发出重置查询，直到从高速缓存中获得新的可用负载；为了不对高速缓存造成 DoS，可能每分钟重置一次。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9--Transport">
+9. Transport
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9. 运输
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The transport-layer session between a router and a cache carries the binary PDUs in a persistent session.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器和高速缓存之间的传输层会话以持久会话的方式传输二进制 PDU。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+To prevent cache spoofing and DoS attacks by illegitimate routers, it is highly desirable that the router and the cache be authenticated to each other. Integrity protection for payloads is also desirable to protect against monkey-in-the-middle (MITM) attacks. Unfortunately, there is no protocol to do so on all currently used platforms. Therefore, as of the writing of this document, there is no mandatory-to-implement transport which provides authentication and integrity protection.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为防止非法路由器的高速缓存欺骗和 DoS 攻击，路由器和高速缓存最好能相互验证。为防止中间人（MITM）攻击，还需要对有效载荷进行完整性保护。遗憾的是，目前使用的所有平台都没有这样的协议。因此，在撰写本文档时，还没有一种强制实施的传输方式可以提供身份验证和完整性保护。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+To reduce exposure to dropped but non-terminated sessions, both caches and routers SHOULD enable keep-alives when available in the chosen transport protocol.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为减少丢失但未终止会话的风险，缓存和路由器都应在所选传输协议可用时启用保持续传功能。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is expected that, when the TCP Authentication Option (TCP-AO) [RFC5925] is available on all platforms deployed by operators, it will become the mandatory-to-implement transport.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当运营商部署的所有平台都能使用 TCP 验证选项（TCP-AO）[RFC5925]时，预计它将成为强制实施的传输方式。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Caches and routers MUST implement unprotected transport over TCP using a port, rpki-rtr (323); see Section 15. Operators SHOULD use procedural means, e.g., access control lists (ACLs), to reduce the exposure to authentication issues.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存和路由器必须使用端口 rpkii-rtr (323) 通过 TCP 实现无保护传输；请参见第 15 节。操作员应使用程序手段（如访问控制列表 (ACL)）来减少身份验证问题的风险。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If unprotected TCP is the transport, the cache and routers MUST be on the same trusted and controlled network.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果使用未受保护的 TCP 传输，高速缓存和路由器必须位于同一个受信任和受控制的网络上。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If available to the operator, caches and routers MUST use one of the following more protected protocols:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果操作员可以使用，高速缓存和路由器必须使用以下一种更受保护的协议：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Caches and routers SHOULD use TCP-AO transport [RFC5925] over the rpki-rtr port.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 缓存和路由器应通过 rpkii-rtr 端口使用 TCP-AO 传输 [RFC5925]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Caches and routers MAY use Secure Shell version 2 (SSHv2) transport [RFC4252] using the normal SSH port. For an example, see Section 9.1.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 缓存和路由器可以使用正常 SSH 端口，使用安全外壳版本 2 (SSHv2) 传输 [RFC4252]。有关示例，请参见第 9.1 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Caches and routers MAY use TCP MD5 transport [RFC2385] using the rpki-rtr port if no other protected transport is available. Note that TCP MD5 has been obsoleted by TCP-AO [RFC5925].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 如果没有其他受保护的传输方式，缓存和路由器可使用 rpkii-rtr 端口使用 TCP MD5 传输 [RFC2385]。请注意，TCP MD5 已被 TCP-AO [RFC5925] 所取代。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Caches and routers MAY use TCP over IPsec transport [RFC4301] using the rpki-rtr port.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 缓存和路由器可以使用 rpkii-rtr 端口，通过 IPsec 传输 [RFC4301] 使用 TCP。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Caches and routers MAY use Transport Layer Security (TLS) transport [RFC8446] using port rpki-rtr-tls (324); see Section 15. Conformance to [RFC7525] modern cipher suites is REQUIRED.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 缓存和路由器可以使用端口 rpkii-rtr-tls (324) 进行传输层安全 (TLS) 传输 [RFC8446]；请参阅第 15 节。必须符合 [RFC7525] 现代密码套件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9-1--SSH-Transport">
+9.1. SSH Transport
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9.1. SSH 传输
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+To run over SSH, the client router first establishes an SSH transport connection using the SSHv2 transport protocol, and the client and server exchange keys for message integrity and encryption. The client then invokes the &#34;ssh-userauth&#34; service to authenticate the application, as described in the SSH authentication protocol [RFC4252]. Once the application has been successfully authenticated, the client invokes the &#34;ssh-connection&#34; service, also known as the SSH connection protocol.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+要通过 SSH 运行，客户端路由器首先要使用 SSHv2 传输协议建立 SSH 传输连接，然后客户端和服务器交换密钥，以确保信息的完整性和加密。然后，客户端调用 &#34;ssh-userauth &#34;服务对应用程序进行身份验证，如 SSH 身份验证协议 [RFC4252] 所述。一旦应用程序认证成功，客户端就会调用 &#34;ssh-connection &#34;服务（也称为 SSH 连接协议）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+After the ssh-connection service is established, the client opens a channel of type &#34;session&#34;, which results in an SSH session.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+ssh 连接服务建立后，客户端会打开一个 &#34;会话 &#34;类型的通道，从而形成 SSH 会话。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Once the SSH session has been established, the application invokes the application transport as an SSH subsystem called &#34;rpki-rtr&#34;. Subsystem support is a feature of SSHv2 and is not included in SSHv1. Running this protocol as an SSH subsystem avoids the need for the application to recognize shell prompts or skip over extraneous information, such as a system message that is sent at shell startup.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+SSH 会话建立后，应用程序将作为 SSH 子系统 &#34;rpki-rtr &#34;调用应用程序传输。子系统支持是 SSHv2 的一项功能，不包括在 SSHv1 中。 将此协议作为 SSH 子系统运行可避免应用程序识别 shell 提示或跳过无关信息（如 shell 启动时发送的系统信息）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It is assumed that the router and cache have exchanged keys out of band by some reasonably secured means.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+假设路由器和高速缓存已通过某种合理安全的方式在带外交换了密钥。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Cache servers supporting SSH transport MUST accept RSA authentication and SHOULD accept Elliptic Curve Digital Signature Algorithm (ECDSA) authentication. User authentication &#34;publickey&#34;) MUST be supported; host authentication &#34;hostbased&#34;) MAY be supported. Implementations MAY support password authentication &#34;password&#34;). &#34;None&#34; authentication MUST NOT be used. Client routers SHOULD verify the public key of the cache to avoid MITM attacks.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+支持 SSH 传输的缓存服务器必须接受 RSA 身份验证，并应接受椭圆曲线数字签名算法 (ECDSA) 身份验证。必须支持用户身份验证 &#34;publickey&#34;）；可能支持主机身份验证 &#34;hostbased&#34;）。实施可能支持密码验证（&#34;password&#34;）。不得使用 &#34;无 &#34;验证。客户端路由器应验证缓存的公钥，以避免 MITM 攻击。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9-2--TLS-Transport">
+9.2. TLS Transport
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9.2. TLS 传输
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Client routers using TLS transport MUST present client-side certificates to authenticate themselves to the cache in order to allow the cache to manage the load by rejecting connections from unauthorized routers. In principle, any type of certificate and Certification Authority (CA) may be used; however, in general, cache operators will wish to create their own small-scale CA and issue certificates to each authorized router. This simplifies credential rollover; any unrevoked, unexpired certificate from the proper CA may be used.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+使用 TLS 传输的客户端路由器必须出示客户端证书，以便向高速缓存进行身份验证，从而使高速缓存能够通过拒绝来自未经授权路由器的连接来管理负载。原则上，可以使用任何类型的证书和认证机构（CA）；但一般情况下，高速缓存运营商希望创建自己的小型 CA，并向每个授权路由器发放证书。这样可以简化证书的延期；可以使用适当 CA 颁发的任何未撤销、未过期的证书。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Certificates used to authenticate client routers in this protocol MUST include a subjectAltName extension [RFC5280] containing one or more iPAddress identities; when authenticating the router&#39;s certificate, the cache MUST check the IP address of the TLS connection against these iPAddress identities and SHOULD reject the connection if none of the iPAddress identities match the connection.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本协议中用于验证客户端路由器的证书必须包括一个包含一个或多个 iPAddress 标识的 subjectAltName 扩展名 [RFC5280]；验证路由器证书时，缓存必须根据这些 iPAddress 标识检查 TLS 连接的 IP 地址，如果没有一个 iPAddress 标识与连接匹配，则应拒绝该连接。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Routers MUST also verify the cache&#39;s TLS server certificate, using subjectAltName dNSName identities as described in [RFC6125], to avoid MITM attacks. The rules and guidelines defined in [RFC6125] apply here, with the following considerations:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器还必须使用 [RFC6125] 中描述的 subjectAltName dNSName 身份验证缓存的 TLS 服务器证书，以避免 MITM 攻击。此处适用 [RFC6125] 中定义的规则和指南，但需注意以下几点：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* Support for the DNS-ID identifier type (that is, the dNSName identity in the subjectAltName extension) is REQUIRED in rpki-rtr server and client implementations which use TLS. Certification authorities which issue rpki-rtr server certificates MUST support the DNS-ID identifier type, and the DNS-ID identifier type MUST be present in rpki-rtr server certificates.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 使用 TLS 的 rpkii-rtr 服务器和客户端实现必须支持 DNS-ID 标识类型（即 subjectAltName 扩展中的 dNSName 标识）。签发 rpkii-rtr 服务器证书的认证机构必须支持 DNS-ID 标识符类型，而且 rpkii-rtr 服务器证书中必须包含 DNS-ID 标识符类型。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* DNS names in rpki-rtr server certificates SHOULD NOT contain the wildcard character &#34;*&#34;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* rpkii-rtr 服务器证书中的 DNS 名称不应包含通配符 &#34;*&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* rpki-rtr implementations which use TLS MUST NOT use Common Name (CN-ID) identifiers; a CN field may be present in the server certificate&#39;s subject name but MUST NOT be used for authentication within the rules described in [RFC6125].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 使用 TLS 的 rpkii-rtr 实现不得使用通用名称 (CN-ID) 标识符；服务器证书的主题名称中可以有 CN 字段，但不得用于 [RFC6125] 所述规则范围内的身份验证。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* The client router MUST set its &#34;reference identifier&#34; (see Section 6.2 of [RFC6125]) to the DNS name of the rpki-rtr cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+* 客户路由器必须将其 &#34;参考标识符&#34;（参见 [RFC6125] 第 6.2 节）设置为 rpki-rtr 缓存的 DNS 名称。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9-3--TCP-MD5-Transport">
+9.3. TCP MD5 Transport
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9.3. TCP MD5 传输
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If TCP MD5 is used, implementations MUST support key lengths of at least 80 printable ASCII bytes, per Section 4.5 of [RFC2385]. Implementations MUST also support hexadecimal sequences of at least 32 characters, i.e., 128 bits.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果使用 TCP MD5，根据 [RFC2385] 第 4.5 节，实施必须支持至少 80 个可打印 ASCII 字节的密钥长度。实施还必须支持至少 32 个字符的十六进制序列，即 128 位。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Key rollover with TCP MD5 is problematic. Cache servers SHOULD support [RFC4808].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+TCP MD5 的密钥翻转存在问题。缓存服务器应支持 [RFC4808]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="9-4--TCP-AO-Transport">
+9.4. TCP-AO Transport
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+9.4. TCP-AO 传输
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Implementations MUST support key lengths of at least 80 printable ASCII bytes. Implementations MUST also support hexadecimal sequences of at least 32 characters, i.e., 128 bits. Message Authentication Code (MAC) lengths of at least 96 bits MUST be supported, per Section 5.1 of [RFC5925].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+实施必须支持至少 80 个可打印 ASCII 字节的密钥长度。实施还必须支持至少 32 个字符的十六进制序列，即 128 位。根据 [RFC5925] 第 5.1 节，必须支持至少 96 位的信息验证码 (MAC)。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The cryptographic algorithms and associated parameters described in [RFC5926] MUST be supported.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+必须支持 [RFC5926] 中描述的加密算法和相关参数。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="10--Router-Cache-Setup">
+10. Router-Cache Setup
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+10. 路由器缓存设置
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A cache has the public authentication data for each router it is configured to support.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+高速缓存为其配置支持的每个路由器都提供了公共身份验证数据。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A router may be configured to peer with a selection of caches, and a cache may be configured to support a selection of routers. Each must have the name of, and authentication data for, each peer. In addition, in a router, this list has a non-unique preference value for each cache. This preference is intended to be based on proximity, a la RTT, not trust, preferred belief, et cetera. The client router attempts to establish a session with each potential serving cache in preference order and then starts to load data from the most preferred cache to which it can connect and authenticate. The router&#39;s list of caches has the following elements:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器可配置为与选定的高速缓存对等，高速缓存可配置为支持选定的路由器。每个路由器都必须有每个对等程序的名称和验证数据。此外，在路由器中，该列表对每个高速缓存都有一个非唯一的偏好值。这种偏好是基于距离（如 RTT），而不是信任、首选信念等。客户端路由器会尝试按优先级顺序与每个潜在的服务高速缓存建立会话，然后开始从它可以连接和验证的最优先高速缓存加载数据。路由器的高速缓存列表包含以下要素：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Preference: An unsigned integer denoting the router&#39;s preference to connect to that cache; the lower the value, the more preferred.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+首选项：一个无符号整数，表示路由器连接该高速缓存的优先级；值越小，优先级越高。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Name: The IP address or fully qualified domain name of the cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+名称：缓存的 IP 地址或完全合格域名。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Cache Credential(s): Any credential (such as a public key) needed to authenticate the cache&#39;s identity to the router.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+高速缓存凭证：向路由器验证高速缓存身份所需的任何凭证（如公钥）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Router Credential(s): Any credential (such as a private key or certificate) needed to authenticate the router&#39;s identity to the cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由器凭证：向缓存验证路由器身份所需的任何凭证（如私钥或证书）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Due to the distributed nature of the RPKI, caches simply cannot be rigorously synchronous. A client may hold data from multiple caches but MUST keep the data marked as to source, as later updates MUST affect the correct data.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于 RPKI 的分布式特性，缓存不可能严格同步。客户端可以持有多个缓存中的数据，但必须保留标明来源的数据，因为以后的更新必须影响正确的数据。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Just as there may be more than one covering ROA from a single cache, there may be multiple covering ROAs from multiple caches. The results are as described in [RFC6811].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+就像来自单个高速缓存的覆盖 ROA 可能不止一个一样，来自多个高速缓存的覆盖 ROA 也可能有多个。结果如 [RFC6811] 所述。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If data from multiple caches are held, implementations MUST NOT distinguish between data sources when performing validation of BGP announcements.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果持有来自多个缓存的数据，则在对 BGP 公告进行验证时，实现不得区分数据源。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When a more-preferred cache becomes available, if resources allow, it would be prudent for the client to start fetching from that cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果资源允许，当更优先的缓存可用时，客户端最好开始从该缓存获取数据。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The client SHOULD attempt to maintain at least one set of data, regardless of whether it has chosen a different cache or established a new connection to the previous cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+客户端应尝试维护至少一组数据，无论它是选择了不同的高速缓存，还是与先前的高速缓存建立了新的连接。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A client MAY drop the data from a particular cache when it is fully in sync with one or more other caches.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当某个高速缓存与一个或多个其他高速缓存完全同步时，客户端可以放弃该高速缓存中的数据。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+See Section 6 for details on what to do when the client is not able to refresh from a particular cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关客户端无法从特定缓存刷新时如何处理的详情，请参阅第 6 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If a client loses connectivity to a cache it is using or otherwise decides to switch to a new cache, it SHOULD retain the data from the previous cache until it has a full set of data from one or more other caches. Note that this may already be true at the point of connection loss if the client has connections to more than one cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果客户端与正在使用的高速缓存失去连接，或决定切换到新的高速缓存，则应保留前一个高速缓存中的数据，直到从一个或多个其他高速缓存中获得全套数据。需要注意的是，如果客户端与不止一个高速缓存有连接，那么在连接中断时可能就已经是这样了。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="11--ROA-PDU-Race-Minimization">
+11. ROA PDU Race Minimization
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+11. ROA PDU 竞赛最小化
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When a cache is sending ROA (IPv4 or IPv6) PDUs to a router, especially an initial full load in response to a Reset Query PDU, two undesirable race conditions are possible:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当高速缓存向路由器发送 ROA（IPv4 或 IPv6）PDU，特别是响应重置查询 PDU 的初始满载时，可能会出现两种不理想的竞赛条件：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Break Before Make: For some prefix P, an AS may announce two (or more) ROAs because they are in the process of changing what provider AS is announcing P. This is a case of &#34;make before break.&#34; If a cache is feeding a router and sends the one not yet in service a significant time before sending the one currently in service, then BGP data could be marked invalid during the interval. To minimize that interval, the cache SHOULD announce all ROAs for the same prefix as close to sequentially as possible.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+先断后续：对于某些前缀 P，一个 AS 可能会宣布两个（或多个）ROA，因为它们正在改变宣布 P 的提供商 AS。如果高速缓存为路由器提供信息，并在发送当前正在服务的高速缓存之前相当长的一段时间发送尚未服务的高速缓存，那么 BGP 数据可能会在这段时间内被标记为无效。为尽量缩短间隔时间，高速缓存应尽可能按顺序公布同一前缀的所有 ROA。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Shorter Prefix First: If an AS has issued a ROA for P0, and another AS (likely their customer) has issued a ROA for P1 which is a sub-prefix of P0, a router which receives the ROA for P0 before that for P1 is likely to mark a BGP prefix P1 invalid. Therefore, the cache SHOULD announce the sub-prefix P1 before the covering prefix P0.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+较短前缀优先：如果一个 AS 发布了 P0 的 ROA，而另一个 AS（可能是其客户）发布了 P1 的 ROA（P1 是 P0 的子前缀），那么在收到 P1 的 ROA 之前收到 P0 的 ROA 的路由器很可能会将 BGP 前缀 P1 标记为无效。因此，缓存应在覆盖前缀 P0 之前宣布子前缀 P1。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="12--Deployment-Scenarios">
+12. Deployment Scenarios
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+12. 部署方案
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For illustration, we present three likely deployment scenarios:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为便于说明，我们提出了三种可能的部署方案：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Small End Site: The small multihomed end site may wish to outsource
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+小型终端站点：小型多汇聚终端站点可能希望外包
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+the RPKI cache to one or more of their upstream ISPs. They would exchange authentication material with the ISP using some out-of-band mechanism, and their router(s) would connect to the cache(s) of one or more upstream ISPs. The ISPs would likely deploy caches intended for customer use separately from the caches with which their own BGP speakers peer.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+RPKI 缓存到一个或多个上游 ISP。他们将使用某种带外机制与 ISP 交换验证材料，他们的路由器将连接到一个或多个上游 ISP 的缓存。ISP 可能会将客户使用的高速缓存与自己的 BGP 扬声器对等的高速缓存分开部署。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Large End Site: A larger multihomed end site might run one or more caches, arranging them in a hierarchy of client caches, each fetching from a serving cache which is closer to the Global RPKI. They might configure fallback peerings to upstream ISP caches.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+大型终端站点：较大的多重归属终端站点可能会运行一个或多个高速缓存，将它们排列成客户高速缓存的层次结构，每个高速缓存都从离全球 RPKI 较近的服务高速缓存获取数据。它们可能会配置与上游 ISP 缓存的后备对等。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+ISP Backbone: A large ISP would likely have one or more redundant caches in each major point of presence (PoP), and these caches would fetch from each other in an ISP-dependent topology so as not to place undue load on the Global RPKI.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+ISP 主干网：大型 ISP 可能会在每个主要存在点 (PoP) 中设置一个或多个冗余高速缓存，这些高速缓存将以依赖 ISP 的拓扑结构相互获取，以避免给全球 RPKI 带来不必要的负载。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Experience with large DNS cache deployments has shown that complex topologies are ill-advised, as it is easy to make errors in the graph, e.g., not maintain a loop-free condition.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+大型 DNS 缓存部署的经验表明，复杂的拓扑结构并不可取，因为很容易在图中出现错误，例如无法保持无循环状态。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Of course, these are illustrations, and there are other possible deployment strategies. It is expected that minimizing load on the Global RPKI servers will be a major consideration.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当然，这些只是示例，还有其他可能的部署策略。预计最大限度地减少全球 RPKI 服务器的负载将是一个主要考虑因素。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+To keep load on Global RPKI services from unnecessary peaks, it is recommended that caches which fetch from the Global RPKI not do so all at the same times, e.g., on the hour. Choose a random time, perhaps the ISP&#39;s AS number modulo 60, and jitter the inter-fetch timing.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为避免全局 RPKI 服务的负载出现不必要的峰值，建议从全局 RPKI 获取数据的缓存不要在同一时间（如每小时）获取数据。选择一个随机的时间，也许是 ISP 的 AS 编号取模 60，并对取数间隔时间进行抖动。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="13--Error-Codes">
+13. Error Codes
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+13. 错误代码
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This section describes the meaning of the error codes. There is an IANA registry where valid error codes are listed; see [iana-err]. Errors which are considered fatal MUST cause the session to be dropped, and the router MUST flush all data learned from that cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本节介绍了错误代码的含义。IANA 注册表中列出了有效的错误代码；请参阅 [iana-err]。被认为是致命的错误必须导致会话被丢弃，路由器必须清除从缓存中获取的所有数据。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+0: Corrupt Data (fatal): The receiver believes the received PDU to be corrupt in a manner not specified by another error code.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+0：数据损坏（致命）：接收方认为接收到的 PDU 损坏，损坏方式不属于其他错误代码。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1: Internal Error (fatal): The party reporting the error experienced some kind of internal error unrelated to protocol operation (ran out of memory, a coding assertion failed, et cetera).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1：内部错误（致命）：报错方发生了与协议操作无关的内部错误（内存耗尽、编码断言失败等）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2: No Data Available: The cache believes itself to be in good
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2: 无数据：高速缓存认为自己处于良好状态
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+working order but is unable to answer either a Serial Query or a Reset Query because it has no useful data available at this time. This is likely to be a temporary error and most likely indicates that the cache has not yet completed pulling down an initial current data set from the Global RPKI system after some kind of event that invalidated whatever data it might have previously held (reboot, network partition, et cetera).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+但无法回答串行查询或重置查询，因为此时它没有可用的有用数据。这很可能是一个暂时性错误，很可能表明高速缓存尚未完成从全局 RPKI 系统中提取初始当前数据集的工作，因为发生了某种事件（重启、网络分区等），导致高速缓存之前可能保存的数据失效。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3: Invalid Request (fatal): The cache server believes the client&#39;s request to be invalid.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3: 无效请求（致命）：缓存服务器认为客户端的请求无效。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4: Unsupported Protocol Version (fatal): The Protocol Version is not known by the receiver of the PDU.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4: 协议版本不支持（致命）：PDU 接收方不知道协议版本。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5: Unsupported PDU Type (fatal): The PDU Type is not known by the receiver of the PDU.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+5：不支持的 PDU 类型（致命）：PDU 接收方不知道 PDU 类型。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+6: Withdrawal of Unknown Record (fatal): The received PDU has Flag=0, but a matching record ({Prefix, Len, Max-Len, ASN} tuple for an IPvX PDU, or {SKI, ASN, Subject Public Key} tuple for a Router Key PDU), or Customer Autonomous System for an ASPA PDU does not exist in the receiver&#39;s database.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+6: 撤回未知记录（致命）：接收到的 PDU 有 Flag=0，但在接收方的数据库中不存在匹配记录（IPvX PDU 的 {Prefix, Len, Max-Len, ASN} 元组，或路由器密钥 PDU 的 {SKI, ASN, Subject Public Key} 元组），或 ASPA PDU 的客户自治系统。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+7: Duplicate Announcement Received (fatal): The received PDU has Flag=1, but a matching record ({Prefix, Len, Max-Len, ASN} tuple for an IPvX PDU or {SKI, ASN, Subject Public Key} tuple for a Router Key PDU), or Customer Autonomous System for an ASPA PDU is already active in the router.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+7：收到重复公告（致命）：接收到的 PDU 具有 Flag=1，但路由器中已有匹配记录（IPvX PDU 中的{前缀、长度、最大长度、ASN}元组，或路由器密钥 PDU 中的{SKI、ASN、主题公钥}元组），或 ASPA PDU 中的客户自治系统。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+8: Unexpected Protocol Version (fatal): The received PDU has a Protocol Version field that differs from the protocol version negotiated in Section 7.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+8：意外协议版本（致命）：接收的 PDU 的协议版本字段与第 7 节中协商的协议版本不同。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="14--Security-Considerations">
+14. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+14. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As this document describes a security protocol, many aspects of security interest are described in the relevant sections. This section points out issues which may not be obvious in other sections.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于本文档描述的是一个安全协议，因此许多与安全有关的方面都在相关章节中进行了描述。本节指出了其他章节中可能不明显的问题。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Cache Validation: In order for a collection of caches as described in Section 12 to provide a consistent view, they need to be given consistent trust anchors of the Certification Authorities to use in their internal validation process. Distribution of a consistent trust anchor set to validating caches is assumed to be out of band.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存验证：为了让第 12 节所述的缓存集合提供一致的视图，需要向它们提供认证机构的一致信任锚，以便在内部验证过程中使用。假定向验证缓存分发一致的信任锚集是不受限制的。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Cache Peer Identification: The router initiates a transport
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+缓存对等识别：路由器启动传输
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+connection to a cache, which it identifies by either IP address or fully qualified domain name. Be aware that a DNS or address spoofing attack could make the correct cache unreachable. No session would be established, as the authorization keys would not match.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+连接到缓存，它通过 IP 地址或完全合格域名来识别缓存。请注意，DNS 或地址欺骗攻击可能会导致无法连接到正确的缓存。由于授权密钥不匹配，因此无法建立会话。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Transport Security: The RPKI relies on object, not server or transport, trust. That is, the IANA root trust anchor is distributed to all caches through some out-of-band means and can then be used by each cache to validate certificates and ROAs all the way down the tree. The inter-cache relationships are based on this object security model; hence, the inter-cache transport can be lightly protected.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+传输安全：RPKI 依赖的是对象信任，而不是服务器或传输信任。也就是说，IANA 根信任锚是通过某种带外方式分发给所有缓存的，然后每个缓存都可以用它来验证证书和 ROA，并一直向下延伸。高速缓存间的关系就是基于这种对象安全模型，因此，高速缓存间的传输可以受到轻度保护。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+However, this protocol document assumes that the routers cannot do the validation cryptography. Hence, the last link, from cache to router, SHOULD be secured by server authentication and transport-level security to prevent monkey in the middle attacks; though it might not be. Not using transport security is dangerous, as server authentication and transport have very different threat models than object security.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+不过，本协议文件假定路由器无法进行验证加密。因此，从高速缓存到路由器的最后一个链路应该由服务器验证和传输级安全来保护，以防止 &#34;中间猴子 &#34;攻击；但也有可能不这样做。不使用传输安全是很危险的，因为服务器验证和传输的威胁模型与对象安全截然不同。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+So the strength of the trust relationship and the transport between the router(s) and the cache(s) are critical. You&#39;re betting your routing on this.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+因此，信任关系的强度以及路由器和高速缓存之间的传输至关重要。你的路由选择就取决于此。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+While we cannot say the cache must be on the same LAN, if only due to the issue of an enterprise wanting to offload the cache task to their upstream ISP(s), locality, trust, and control are very critical issues here. The cache(s) really SHOULD be as close, in the sense of controlled and protected (against DDoS, MITM) transport, to the router(s) as possible. It also SHOULD be topologically close so that a minimum of validated routing data are needed to bootstrap a router&#39;s access to a cache.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+虽然我们不能说高速缓存必须在同一局域网内，但如果只是因为企业希望将高速缓存任务卸载给上游 ISP，那么本地性、信任和控制就是非常关键的问题。从受控和受保护（防 DDoS、MITM）传输的角度看，高速缓存应尽可能靠近路由器。高速缓存在拓扑结构上也应尽可能靠近路由器，以便路由器访问高速缓存时只需最少的验证路由数据。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Authenticating transport protocols (i.e. not raw TCP) will authenticate the identity of the cache server to the router client, and vice versa, before any data are exchanged.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+在交换任何数据之前，验证传输协议（即非原始 TCP）将向路由器客户端验证高速缓存服务器的身份，反之亦然。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+Transports which cannot provide the necessary authentication and integrity (see Section 9) must rely on network design and operational controls to provide protection against spoofing/ corruption attacks. As pointed out in Section 9, TCP-AO is the long-term plan. Protocols which provide integrity and authenticity SHOULD be used, and if they cannot, i.e., TCP is used as the transport, the router and cache MUST be on the same trusted, controlled network.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-6">
+无法提供必要的验证和完整性（见第 9 节）的传输必须依靠网络设计和操作控制来防范欺骗/破坏攻击。如第 9 节所述，TCP-AO 是一项长期计划。应使用能提供完整性和真实性的协议，如果不能，即使用 TCP 作为传输，路由器和高速缓存必须位于同一受控可信网络上。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="15--IANA-Considerations">
+15. IANA Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+15. IANA考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This section only discusses updates required in the existing IANA protocol registries to accommodate version 2 of this protocol. See [RFC8210] for IANA considerations of the previous (version 1) protocol.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本节仅讨论为适应本协议第 2 版而需要对现有 IANA 协议注册进行的更新。有关前一协议（版本 1）的 IANA 注意事项，请参阅 [RFC8210]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+All of the PDU types in the IANA &#34;rpki-rtr-pdu&#34; registry [iana-pdu] in protocol versions 0 and 1 are also allowed in protocol version 2, with the addition of the new ASPA PDU.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+除了新的 ASPA PDU 之外，协议版本 2 还允许使用协议版本 0 和 1 中 IANA &#34;rpki-rtr-pdu &#34;注册表 [iana-pdu]中的所有 PDU 类型。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &#34;rpki-rtr-pdu&#34; registry [iana-pdu] has been updated as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+rpki-rtr-pdu &#34;注册表 [iana-pdu]已更新如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+              Protocol   PDU
+              Version    Type  Description
+              --------   ----  ---------------
+                 0-2       0   Serial Notify
+                 0-2       1   Serial Query
+                 0-2       2   Reset Query
+                 0-2       3   Cache Response
+                 0-2       4   IPv4 Prefix
+                 0-2       6   IPv6 Prefix
+                 0-2       7   End of Data
+                 0-2       8   Cache Reset
+                  0        9   Reserved
+                 1-2       9   Router Key
+                 0-2      10   Error Report
+                 0-1      11   Reserved
+                  2       11   ASPA
+                 0-2     255   Reserved
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document requests the IANA to create a registry for ASPA AFI Flags 0 to 7. The name of the registry should be rpki-rtr-afi. The policy for adding to the registry is Expert Review per [RFC8126], where the responsible IESG area director should appoint the Expert Reviewer. The initial entries should be as follows:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件请求 IANA 为 ASPA AFI 标志 0 至 7 创建一个注册表。注册表的名称应为 rpki-rtr-afi。根据 [RFC8126]，向注册表添加内容的政策是专家评审，负责的 IESG 地区主管应指定专家评审员。初始条目如下：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+             Bit     Bit Name
+             ----    -------------------
+              0      IPv4 AFI 1, currently MUST be set
+              1      IPv6 AFI 2, currently MUST be set
+              2-7    Reserved, MUST be zero
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="16--References">
+16. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+16. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="16-1--Normative-References">
+16.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+16.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[I-D.ietf-sidrops-aspa-profile] Azimov, A., Uskov, E., Bush, R., Snijders, J., Housley, R., and B. Maddison, &#34;A Profile for Autonomous System Provider Authorization&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-aspa-profile-16, 10 July 2023, &lt;https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-profile-16&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[I-D.ietf-sidrops-aspa-profile] Azimov, A., Uskov, E., Bush, R., Snijders, J., Housley, R., and B. Maddison, &#34;A Profile for Autonomous System Provider Authorization&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-aspa-profile-16, 10 July 2023, &lt;https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-profile-16&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[iana-err] IANA, &#34;rpki-rtr-error&#34;, &lt;https://www.iana.org/assignments/rpki#rpki-rtr-error&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[iana-err] IANA，&#34;rpki-rtr-error&#34;，&lt;https://www.iana.org/assignments/rpki#rpki-rtr-error&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[iana-pdu] IANA, &#34;rpki-rtr-pdu&#34;, &lt;https://www.iana.org/assignments/rpki#rpki-rtr-pdu&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[iana-pdu] IANA，&#34;rpki-rtr-pdu&#34;，&lt;https://www.iana.org/assignments/rpki#rpki-rtr-pdu&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC1982] Elz, R. and R. Bush, &#34;Serial Number Arithmetic&#34;, RFC 1982, DOI 10.17487/RFC1982, August 1996, &lt;https://www.rfc-editor.org/info/rfc1982&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC1982] Elz, R. and R. Bush, &#34;Serial Number Arithmetic&#34;, RFC 1982, DOI 10.17487/RFC1982, August 1996, &lt;https://www.rfc-editor.org/info/rfc1982&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2385] Heffernan, A., &#34;Protection of BGP Sessions via the TCP MD5 Signature Option&#34;, RFC 2385, DOI 10.17487/RFC2385, August 1998, &lt;https://www.rfc-editor.org/info/rfc2385&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2385] Heffernan, A., &#34;Protection of BGP Sessions via the TCP MD5 Signature Option&#34;, RFC 2385, DOI 10.17487/RFC2385, August 1998, &lt;https://www.rfc-editor.org/info/rfc2385&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3629] Yergeau, F., &#34;UTF-8, a transformation format of ISO 10646&#34;, STD 63, RFC 3629, DOI 10.17487/RFC3629, November 2003, &lt;https://www.rfc-editor.org/info/rfc3629&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3629] Yergeau, F., &#34;UTF-8, a transformation format of ISO 10646&#34;, STD 63, RFC 3629, DOI 10.17487/RFC3629, November 2003, &lt;https://www.rfc-editor.org/info/rfc3629&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4252] Ylonen, T. and C. Lonvick, Ed., &#34;The Secure Shell (SSH) Authentication Protocol&#34;, RFC 4252, DOI 10.17487/RFC4252, January 2006, &lt;https://www.rfc-editor.org/info/rfc4252&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4252] Ylonen, T. and C. Lonvick, Ed., &#34;The Secure Shell (SSH) Authentication Protocol&#34;, RFC 4252, DOI 10.17487/RFC4252, January 2006, &lt;https://www.rfc-editor.org/info/rfc4252&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4301] Kent, S. and K. Seo, &#34;Security Architecture for the Internet Protocol&#34;, RFC 4301, DOI 10.17487/RFC4301, December 2005, &lt;https://www.rfc-editor.org/info/rfc4301&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4301] Kent, S. and K. Seo, &#34;Security Architecture for the Internet Protocol&#34;, RFC 4301, DOI 10.17487/RFC4301, December 2005, &lt;https://www.rfc-editor.org/info/rfc4301&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, DOI 10.17487/RFC5280, May 2008, &lt;https://www.rfc-editor.org/info/rfc5280&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, DOI 10.17487/RFC5280, May 2008, &lt;https://www.rfc-editor.org/info/rfc5280&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5925] Touch, J., Mankin, A., and R. Bonica, &#34;The TCP Authentication Option&#34;, RFC 5925, DOI 10.17487/RFC5925, June 2010, &lt;https://www.rfc-editor.org/info/rfc5925&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5925] Touch, J., Mankin, A., and R. Bonica, &#34;The TCP Authentication Option&#34;, RFC 5925, DOI 10.17487/RFC5925, June 2010, &lt;https://www.rfc-editor.org/info/rfc5925&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5926] Lebovitz, G. and E. Rescorla, &#34;Cryptographic Algorithms for the TCP Authentication Option (TCP-AO)&#34;, RFC 5926, DOI 10.17487/RFC5926, June 2010, &lt;https://www.rfc-editor.org/info/rfc5926&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5926] Lebovitz, G. and E. Rescorla, &#34;Cryptographic Algorithms for the TCP Authentication Option (TCP-AO)&#34;, RFC 5926, DOI 10.17487/RFC5926, June 2010, &lt;https://www.rfc-editor.org/info/rfc5926&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6125] Saint-Andre, P. and J. Hodges, &#34;Representation and Verification of Domain-Based Application Service Identity within Internet Public Key Infrastructure Using X.509 (PKIX) Certificates in the Context of Transport Layer Security (TLS)&#34;, RFC 6125, DOI 10.17487/RFC6125, March 2011, &lt;https://www.rfc-editor.org/info/rfc6125&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6125] Saint-Andre, P. and J. Hodges, &#34;Representation and Verification of Domain-Based Application Service Identity within Internet Public Key Infrastructure Using X.509 (PKIX) Certificates in the Context of Transport Layer Security (TLS)&#34;, RFC 6125, DOI 10.17487/RFC6125, March 2011, &lt;https://www.rfc-editor.org/info/rfc6125&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Huston, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, DOI 10.17487/RFC6487, February 2012, &lt;https://www.rfc-editor.org/info/rfc6487&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6487] Huston, G., Michaelson, G., and R. Loomans, &#34;A Profile for X.509 PKIX Resource Certificates&#34;, RFC 6487, DOI 10.17487/RFC6487, February 2012, &lt;https://www.rfc-editor.org/info/rfc6487&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6810] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol&#34;, RFC 6810, DOI 10.17487/RFC6810, January 2013, &lt;https://www.rfc-editor.org/info/rfc6810&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6810] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol&#34;, RFC 6810, DOI 10.17487/RFC6810, January 2013, &lt;https://www.rfc-editor.org/info/rfc6810&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, &#34;BGP Prefix Origin Validation&#34;, RFC 6811, DOI 10.17487/RFC6811, January 2013, &lt;https://www.rfc-editor.org/info/rfc6811&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, &#34;BGP Prefix Origin Validation&#34;, RFC 6811, DOI 10.17487/RFC6811, January 2013, &lt;https://www.rfc-editor.org/info/rfc6811&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7525] Sheffer, Y., Holz, R., and P. Saint-Andre, &#34;Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)&#34;, RFC 7525, DOI 10.17487/RFC7525, May 2015, &lt;https://www.rfc-editor.org/info/rfc7525&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7525] Sheffer, Y., Holz, R., and P. Saint-Andre, &#34;Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)&#34;, RFC 7525, DOI 10.17487/RFC7525, May 2015, &lt;https://www.rfc-editor.org/info/rfc7525&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8126] Cotton, M., Leiba, B., and T. Narten, &#34;Guidelines for Writing an IANA Considerations Section in RFCs&#34;, BCP 26, RFC 8126, DOI 10.17487/RFC8126, June 2017, &lt;https://www.rfc-editor.org/info/rfc8126&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8126] Cotton, M., Leiba, B., and T. Narten, &#34;Guidelines for Writing an IANA Considerations Section in RFCs&#34;, BCP 26, RFC 8126, DOI 10.17487/RFC8126, June 2017, &lt;https://www.rfc-editor.org/info/rfc8126&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8210] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1&#34;, RFC 8210, DOI 10.17487/RFC8210, September 2017, &lt;https://www.rfc-editor.org/info/rfc8210&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8210] Bush, R. and R. Austein, &#34;The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1&#34;, RFC 8210, DOI 10.17487/RFC8210, September 2017, &lt;https://www.rfc-editor.org/info/rfc8210&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8446] Rescorla, E., &#34;The Transport Layer Security (TLS) Protocol Version 1.3&#34;, RFC 8446, DOI 10.17487/RFC8446, August 2018, &lt;https://www.rfc-editor.org/info/rfc8446&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8446] Rescorla, E., &#34;The Transport Layer Security (TLS) Protocol Version 1.3&#34;, RFC 8446, DOI 10.17487/RFC8446, August 2018, &lt;https://www.rfc-editor.org/info/rfc8446&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8608] Turner, S. and O. Borchert, &#34;BGPsec Algorithms, Key Formats, and Signature Formats&#34;, RFC 8608, DOI 10.17487/RFC8608, June 2019, &lt;https://www.rfc-editor.org/info/rfc8608&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8608] Turner、S. 和 O. Borchert，&#34;BGPsec 算法、密钥格式和签名格式&#34;，RFC 8608，DOI 10.17487/RFC8608，2019 年 6 月，&lt;https://www.rfc-editor.org/info/rfc8608&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8635] Bush, R., Turner, S., and K. Patel, &#34;Router Keying for BGPsec&#34;, RFC 8635, DOI 10.17487/RFC8635, August 2019, &lt;https://www.rfc-editor.org/info/rfc8635&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8635] Bush, R., Turner, S., and K. Patel, &#34;Router Keying for BGPsec&#34;, RFC 8635, DOI 10.17487/RFC8635, August 2019, &lt;https://www.rfc-editor.org/info/rfc8635&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="16-2--Informative-References">
+16.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+16.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC1996] Vixie, P., &#34;A Mechanism for Prompt Notification of Zone Changes (DNS NOTIFY)&#34;, RFC 1996, DOI 10.17487/RFC1996, August 1996, &lt;https://www.rfc-editor.org/info/rfc1996&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC1996] Vixie, P., &#34;A Mechanism for Prompt Notification of Zone Changes (DNS NOTIFY)&#34;, RFC 1996, DOI 10.17487/RFC1996, August 1996, &lt;https://www.rfc-editor.org/info/rfc1996&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4808] Bellovin, S., &#34;Key Change Strategies for TCP-MD5&#34;, RFC 4808, DOI 10.17487/RFC4808, March 2007, &lt;https://www.rfc-editor.org/info/rfc4808&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4808] Bellovin, S., &#34;Key Change Strategies for TCP-MD5&#34;, RFC 4808, DOI 10.17487/RFC4808, March 2007, &lt;https://www.rfc-editor.org/info/rfc4808&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5781] Weiler, S., Ward, D., and R. Housley, &#34;The rsync URI Scheme&#34;, RFC 5781, DOI 10.17487/RFC5781, February 2010, &lt;https://www.rfc-editor.org/info/rfc5781&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5781] Weiler, S., Ward, D., and R. Housley, &#34;The rsync URI Scheme&#34;, RFC 5781, DOI 10.17487/RFC5781, February 2010, &lt;https://www.rfc-editor.org/info/rfc5781&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;https://www.rfc-editor.org/info/rfc6480&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;https://www.rfc-editor.org/info/rfc6480&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, DOI 10.17487/RFC6481, February 2012, &lt;https://www.rfc-editor.org/info/rfc6481&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, DOI 10.17487/RFC6481, February 2012, &lt;https://www.rfc-editor.org/info/rfc6481&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Acknowledgements
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+致谢
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors wish to thank Nils Bars, Steve Bellovin, Oliver Borchert, Mohamed Boucadair, Tim Bruijnzeels, Roman Danyliw, Rex Fernando, Richard Hansen, Martin Hoffmann, Paul Hoffman, Fabian Holler, Russ Housley, Pradosh Mohapatra, Keyur Patel, David Mandelberg, Sandy Murphy, Robert Raszuk, Andreas Reuter, Thomas Schmidt, John Scudder, Ruediger Volk, Matthias Waehlisch, and David Ward. Particular thanks go to Hannes Gredler for showing us the dangers of unnecessary fields.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢 Nils Bars、Steve Bellovin、Oliver Borchert、Mohamed Boucadair、Tim Bruijnzeels、Roman Danyliw、Rex Fernando、Richard Hansen、Martin Hoffmann、Paul Hoffman、Fabian Holler、Russ Housley、Pradosh Mohapatra、Keyur Patel、David Mandelberg、Sandy Murphy、Robert Raszuk、Andreas Reuter、Thomas Schmidt、John Scudder、Ruediger Volk、Matthias Waehlisch 和 David Ward。特别感谢 Hannes Gredler 向我们展示了不必要字段的危险。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+No doubt this list is incomplete. We apologize to any contributor whose name we missed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+毫无疑问，这份名单并不完整。如有遗漏，我们深表歉意。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Randy Bush IIJ Research, Arrcus, &amp; DRL 5147 Crystal Springs Bainbridge Island, Washington 98110 United States of America Email: randy@psg.com
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Randy Bush IIJ Research, Arrcus, &amp; DRL 5147 Crystal Springs Bainbridge Island, Washington 98110 美国 电子邮件：randy@psg.com
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Rob Austein Dragon Research Labs Email: sra@hactrn.net
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Rob Austein 龙研究实验室 电子邮件：sra@hactrn.net
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Bush &amp; Austein Expires 24 March 2024 [Page 39]
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Bush &amp; Austein Expires 24 March 2024 [Page 39]
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

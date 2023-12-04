@@ -1,0 +1,484 @@
+{
+  "title": {
+    "text": "RFC 7935 - The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure",
+    "zh": "RFC 7935 - 资源公钥基础设施使用的算法和密钥大小规范"
+  },
+  "number": 7935,
+  "created_at": "2023-12-04 16:46:05.116083+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                         G. Huston\nRequest for Comments: 7935                            G. Michaelson, Ed.\nObsoletes: 6485                                                    APNIC\nCategory: Standards Track                                    August 2016\nISSN: 2070-1721",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 11,
+      "text": " The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure",
+      "zh": "资源公钥基础设施使用的算法和密钥大小规范"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document specifies the algorithms, algorithms' parameters, asymmetric key formats, asymmetric key size, and signature format for the Resource Public Key Infrastructure (RPKI) subscribers that generate digital signatures on certificates, Certificate Revocation Lists (CRLs), Cryptographic Message Syntax (CMS) signed objects and certification requests as well as for the relying parties (RPs) that verify these digital signatures.",
+      "zh": "本文档规定了算法、算法参数、非对称密钥格式、非对称密钥大小和签名格式，适用于为证书、证书吊销列表（CRL）、加密信息语法（CMS）签名对象和认证请求生成数字签名的资源公钥基础设施（RPKI）用户，以及验证这些数字签名的依赖方（RP）。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc7935.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc7935。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2016 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "Copyright (c) 2016 IETF Trust 和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3\n  1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3\n2.  Algorithms  . . . . . . . . . . . . . . . . . . . . . . . . .   3\n3.  Asymmetric Key Pair Formats . . . . . . . . . . . . . . . . .   4\n  3.1.  Public Key Format . . . . . . . . . . . . . . . . . . . .   5\n  3.2.  Private Key Format  . . . . . . . . . . . . . . . . . . .   5\n4.  Signature Format  . . . . . . . . . . . . . . . . . . . . . .   5\n5.  Additional Requirements . . . . . . . . . . . . . . . . . . .   5\n6.  Security Considerations . . . . . . . . . . . . . . . . . . .   5\n7.  Changes Applied to RFC 6485 . . . . . . . . . . . . . . . . .   6\n8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   7\n  8.1.  Normative References  . . . . . . . . . . . . . . . . . .   7\n  8.2.  Informative References  . . . . . . . . . . . . . . . . .   8\nAcknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .   9\nAuthors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   9",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document specifies:",
+      "zh": "本文件规定"
+    },
+    {
+      "indent": 6,
+      "text": "* the digital signature algorithm and parameters;",
+      "zh": "* 数字签名算法和参数；"
+    },
+    {
+      "indent": 6,
+      "text": "* the hash algorithm and parameters;",
+      "zh": "* 哈希算法和参数；"
+    },
+    {
+      "indent": 6,
+      "text": "* the public and private key formats; and,",
+      "zh": "* 公钥和私钥的格式；以及"
+    },
+    {
+      "indent": 6,
+      "text": "* the signature format",
+      "zh": "* 签名格式"
+    },
+    {
+      "indent": 3,
+      "text": "used by Resource Public Key Infrastructure (RPKI) [RFC6480] subscribers when they apply digital signatures to certificates and Certificate Revocation Lists (CRLs) [RFC5280], Cryptographic Message Syntax (CMS) signed objects [RFC5652] (e.g., Route Origin Authorizations (ROAs) [RFC6482] and manifests [RFC6486]), and certification requests [RFC2986] [RFC4211]. Relying parties (RPs) also use the algorithms defined in this document to verify RPKI subscribers' digital signatures [RFC6480].",
+      "zh": "资源公钥基础设施（RPKI）[RFC6480] 用户在将数字签名应用于证书和证书吊销列表（CRL）[RFC5280]、加密信息语法（CMS）签名对象[RFC5652]（如路由起源授权（ROA）[RFC6482]和清单[RFC6486]）以及认证请求[RFC2986][RFC4211]时使用。依赖方 (RP) 也使用本文档中定义的算法来验证 RPKI 用户的数字签名 [RFC6480]。"
+    },
+    {
+      "indent": 3,
+      "text": "The RPKI profiles and specification documents that reference RFC 6485 now refer to this document; these documents include the RPKI Certificate Policy (CP) [RFC6484], the RPKI Certificate Profile [RFC6487], the RPKI Architecture [RFC6480], and the Signed Object Template for the RPKI [RFC6488]. Familiarity with these documents is assumed.",
+      "zh": "引用 RFC 6485 的 RPKI 配置文件和规范文档现在都引用本文档；这些文档包括 RPKI 证书策略 (CP) [RFC6484]、RPKI 证书配置文件 [RFC6487]、RPKI 架构 [RFC6480] 和 RPKI 的签名对象模板 [RFC6488]。假定已熟悉这些文件。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Terminology",
+      "section_title": true,
+      "zh": "1.1. 用语"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in [RFC2119].",
+      "zh": "本文档中的关键词 \"MUST\"、\"MUST NOT\"、\"REQUIRED\"、\"SHALL\"、\"SHALL NOT\"、\"SHOULD\"、\"SHOULD NOT\"、\"RECOMMENDED\"、\"MAY \"和 \"OPTIONAL \"应按照 [RFC2119] 中的描述进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Algorithms",
+      "section_title": true,
+      "zh": "2. 算法"
+    },
+    {
+      "indent": 3,
+      "text": "Two cryptographic algorithms are used in the RPKI:",
+      "zh": "RPKI 使用两种加密算法："
+    },
+    {
+      "indent": 6,
+      "text": "* The signature algorithm used in certificates, CRLs, CMS signed objects, and certification requests is RSA Public-Key Cryptography Standards (PKCS) #1 Version 1.5 (sometimes referred to as \"RSASSA-PKCS1-v1_5\") from Section 8.2 of [RFC3447].",
+      "zh": "* 证书、CRL、CMS 签名对象和认证请求中使用的签名算法是 [RFC3447] 第 8.2 节中的 RSA Public-Key Cryptography Standards (PKCS) #1 Version 1.5（有时称为 \"RSASSA-PKCS1-v1_5\"）。"
+    },
+    {
+      "indent": 6,
+      "text": "* The hashing algorithm used in certificates, CRLs, CMS signed objects and certification requests is SHA-256 [SHS] (see note below).",
+      "zh": "* 证书、CRL、CMS 签名对象和认证请求中使用的散列算法是 SHA-256 [SHS]（见下文注释）。"
+    },
+    {
+      "indent": 9,
+      "text": "NOTE: The exception is the use of SHA-1 [SHS] when CAs generate authority and subject key identifiers [RFC6487].",
+      "zh": "注：当 CA 生成授权和主体密钥标识符时，使用 SHA-1 [SHS] 是个例外 [RFC6487]。"
+    },
+    {
+      "indent": 3,
+      "text": "In certificates, CRLs, and certification requests the hashing and digital signature algorithms are identified together, i.e., \"RSA PKCS #1 v1.5 with SHA-256\" or more simply \"RSA with SHA-256\". The Object Identifier (OID) sha256WithRSAEncryption from [RFC4055] MUST be used in these products.",
+      "zh": "在证书、CRL 和认证请求中，散列算法和数字签名算法被标识在一起，即 \"RSA PKCS #1.5 with SHA-256 \"或更简单的 \"RSA with SHA-256\"。这些产品必须使用 [RFC4055] 中的对象标识符 (OID) sha256WithRSAEncryption。"
+    },
+    {
+      "indent": 3,
+      "text": "The OID is in the following locations:",
+      "zh": "OID 位于以下位置"
+    },
+    {
+      "indent": 6,
+      "text": "In the certificate, the OID appears in the signature and signatureAlgorithm fields [RFC4055].",
+      "zh": "在证书中，OID 出现在签名和签名算法字段中 [RFC4055]。"
+    },
+    {
+      "indent": 6,
+      "text": "In the CRL, the OID appears in the signatureAlgorithm field [RFC4055].",
+      "zh": "在 CRL 中，OID 出现在签名算法字段 [RFC4055]。"
+    },
+    {
+      "indent": 6,
+      "text": "In a certification request, the OID appears in the PKCS #10 signatureAlgorithm field [RFC2986], or in the Certificate Request Message Format (CRMF) POPOSigningKey algorithmIdentifier field [RFC4211].",
+      "zh": "在认证请求中，OID 出现在 PKCS #10 signatureAlgorithm 字段 [RFC2986] 或证书请求消息格式 (CRMF) POPOSigningKey algorithmIdentifier 字段 [RFC4211] 中。"
+    },
+    {
+      "indent": 3,
+      "text": "In CMS SignedData, the hashing (message digest) and digital signature algorithms are identified separately. The object identifier and parameters for SHA-256 (as defined in [RFC5754]) MUST be used for the SignedData digestAlgorithms field and the SignerInfo digestAlgorithm field. The object identifier and parameters for rsaEncryption [RFC3370] MUST be used for the SignerInfo signatureAlgorithm field when generating CMS SignedData objects. RPKI implementations MUST accept either rsaEncryption or sha256WithRSAEncryption for the SignerInfo signatureAlgorithm field when verifying CMS SignedData objects (for compatibility with objects produced by implementations conforming to [RFC6485]).",
+      "zh": "在 CMS SignedData 中，哈希算法（报文摘要）和数字签名算法是分开标识的。SignedData digestAlgorithms 字段和 SignerInfo digestAlgorithms 字段必须使用 SHA-256 的对象标识符和参数（如 [RFC5754] 所定义）。生成 CMS SignedData 对象时，SignerInfo 的签名算法字段必须使用 rsaEncryption [RFC3370] 的对象标识符和参数。RPKI 实现在验证 CMS SignedData 对象时，必须接受 rsaEncryption 或 sha256WithRSAEncryption 作为 SignerInfo 签名算法字段（以便与符合[RFC6485]的实现生成的对象兼容）。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Asymmetric Key Pair Formats",
+      "section_title": true,
+      "zh": "3. 非对称密钥对格式"
+    },
+    {
+      "indent": 3,
+      "text": "The RSA key pairs used to compute the signatures MUST have a 2048-bit modulus and a public exponent (e) of 65,537.",
+      "zh": "用于计算签名的 RSA 密钥对必须具有 2048 位模数和 65,537 的公共指数 (e)。"
+    },
+    {
+      "indent": 0,
+      "text": "3.1. Public Key Format",
+      "section_title": true,
+      "zh": "3.1. 公钥格式"
+    },
+    {
+      "indent": 3,
+      "text": "The subject's public key is included in subjectPublicKeyInfo [RFC5280]. It has two sub-fields: algorithm and subjectPublicKey. The values for the structures and their sub-structures follow:",
+      "zh": "主体的公钥包含在 subjectPublicKeyInfo [RFC5280] 中。它有两个子字段：算法和 subjectPublicKey。结构及其子结构的值如下："
+    },
+    {
+      "indent": 3,
+      "text": "algorithm (which is an AlgorithmIdentifier type): The object identifier for RSA PKCS #1 v1.5 with SHA-256 MUST be used in the algorithm field, as specified in Section 5 of [RFC4055]. The value for the associated parameters from that clause MUST also be used for the parameters field.",
+      "zh": "算法（AlgorithmIdentifier 类型）：根据 [RFC4055] 第 5 节的规定，RSA PKCS #1.5 和 SHA-256 的对象标识符必须用于算法字段。参数字段也必须使用该条款中的相关参数值。"
+    },
+    {
+      "indent": 3,
+      "text": "subjectPublicKey: RSAPublicKey MUST be used to encode the certificate's subjectPublicKey field, as specified in [RFC4055].",
+      "zh": "subjectPublicKey：根据 [RFC4055] 的规定，必须使用 RSAPublicKey 对证书的 subjectPublicKey 字段进行编码。"
+    },
+    {
+      "indent": 0,
+      "text": "3.2. Private Key Format",
+      "section_title": true,
+      "zh": "3.2. 私钥格式"
+    },
+    {
+      "indent": 3,
+      "text": "Local policy determines the private key format.",
+      "zh": "本地策略决定私钥格式。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Signature Format",
+      "section_title": true,
+      "zh": "4. 签名格式"
+    },
+    {
+      "indent": 3,
+      "text": "The structure for the certificate's signature field is as specified in Section 1.2 of [RFC4055]. The structure for the signature field in the CMS SignedData's SignerInfos is as specified in [RFC5652].",
+      "zh": "证书签名字段的结构如 [RFC4055] 第 1.2 节所述。CMS SignedData 的 SignerInfos 中签名字段的结构如 [RFC5652] 所述。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Additional Requirements",
+      "section_title": true,
+      "zh": "5. 额外要求"
+    },
+    {
+      "indent": 3,
+      "text": "It is anticipated that the RPKI will require the adoption of updated key sizes and a different set of signature and hash algorithms over time, in order to maintain an acceptable level of cryptographic security to protect the integrity of signed products in the RPKI. This profile should be replaced to specify such future requirements, as and when appropriate.",
+      "zh": "预计随着时间的推移，RPKI 将要求采用更新的密钥大小以及不同的签名和散列算法，以保持可接受的加密安全级别，保护 RPKI 中已签名产品的完整性。本简介应在适当的时候替换，以明确未来的此类要求。"
+    },
+    {
+      "indent": 3,
+      "text": "The procedures to implement such a transition of key sizes and algorithms are specified in [RFC6916].",
+      "zh": "RFC6916] 中规定了实现这种密钥大小和算法转换的程序。"
+    },
+    {
+      "indent": 0,
+      "text": "6. Security Considerations",
+      "section_title": true,
+      "zh": "6. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "The Security Considerations of [RFC4055], [RFC5280], and [RFC6487] apply to certificates and CRLs. The Security Considerations of [RFC2986], [RFC4211], and [RFC6487] apply to certification requests. The Security Considerations of [RFC5754] apply to CMS signed objects. No new security threats are introduced as a result of this specification.",
+      "zh": "RFC4055]、[RFC5280] 和 [RFC6487] 的安全考虑因素适用于证书和 CRL。RFC2986]、[RFC4211] 和 [RFC6487] 的安全考虑因素适用于证书请求。RFC5754] 的安全考虑因素适用于 CMS 签名对象。本规范没有引入新的安全威胁。"
+    },
+    {
+      "indent": 0,
+      "text": "7. Changes Applied to RFC 6485",
+      "section_title": true,
+      "zh": "7. 适用于 RFC 6485 的变更"
+    },
+    {
+      "indent": 3,
+      "text": "This update includes a slight technical change to [RFC6485] that is considered to be outside the limited scope of an erratum. The document update process has included other errata and also corrected a number of nits.",
+      "zh": "本次更新包括对 [RFC6485] 的轻微技术修改，该修改被认为超出了勘误的有限范围。文件更新过程中还包含了其他勘误，并纠正了一些小问题。"
+    },
+    {
+      "indent": 3,
+      "text": "Section 2 of [RFC6485] specified sha256WithRSAEncryption as the OID to use for the SignerInfo signatureAlgorithm field in CMS SignedObjects. However, existing implementations use the rsaEncryption OID for this field. (Support for rsaEncryption in third-party cryptographic libraries is better than sha256WithRSAEncryption, perhaps because [RFC3370] says that support for rsaEncryption is required, while support for OIDs that specify both RSA and a digest algorithm is optional.)",
+      "zh": "RFC6485] 第 2 节规定，sha256WithRSAEncryption 是 CMS SignedObjects 中 SignerInfo 签名算法字段的 OID。不过，现有的实现对该字段使用的是 rsaEncryption OID。(第三方加密库对 rsaEncryption 的支持优于 sha256WithRSAEncryption，可能是因为 [RFC3370] 规定对 rsaEncryption 的支持是必需的，而对同时指定 RSA 和摘要算法的 OID 的支持是可选的）。"
+    },
+    {
+      "indent": 3,
+      "text": "Rather than force existing implementations to switch to sha256WithRSAEncryption, this document was changed to follow existing practice. This does not represent a cryptographic algorithm change, just an identifier change. (Unlike certificates, CRLs, and certification requests, CMS signed objects have a separate algorithm identifier field for the hash (digest) algorithm, and that field is already required to contain the id-sha256 OID per Section 2.)",
+      "zh": "本文档并没有强制现有实现转用 sha256WithRSAEncryption，而是按照现有做法进行了修改。这并不代表加密算法的改变，只是标识符的改变。(与证书、CRL 和认证请求不同，CMS 签名对象的哈希（摘要）算法有一个单独的算法标识符字段，而根据第 2 节的规定，该字段已被要求包含 id-sha256 OID）。"
+    },
+    {
+      "indent": 3,
+      "text": "To avoid compatibility problems, RPs are still required to accept sha256WithRSAEncryption if encountered.",
+      "zh": "为避免兼容性问题，如果遇到 sha256WithRSAEncryption，仍要求 RP 接受。"
+    },
+    {
+      "indent": 3,
+      "text": "Other changes include:",
+      "zh": "其他变化包括"
+    },
+    {
+      "indent": 6,
+      "text": "* Minor wording and typo fixes.",
+      "zh": "* 少量措辞和错字修正。"
+    },
+    {
+      "indent": 6,
+      "text": "* Corrections to references ([RFC5652] instead of [RFC3370], [RFC3447] instead of [RFC4055]).",
+      "zh": "* 参考文献更正（[RFC5652] 而非 [RFC3370]，[RFC3447] 而非 [RFC4055]）。"
+    },
+    {
+      "indent": 6,
+      "text": "* Additional citations included in the Introduction.",
+      "zh": "* 更多引文见导言。"
+    },
+    {
+      "indent": 6,
+      "text": "* Correction to the CRMF POPOSigningKey field that is mentioned in Section 2 (algorithmIdentifier instead of signature).",
+      "zh": "* 更正第 2 节中提到的 CRMF POPOSigningKey 字段（algorithmIdentifier 而不是签名）。"
+    },
+    {
+      "indent": 6,
+      "text": "* Inclusion of certification requests in mentions of certificates, CRLs, and CMS signed objects.",
+      "zh": "* 在提及证书、CRL 和 CMS 签名对象时包含认证请求。"
+    },
+    {
+      "indent": 6,
+      "text": "* Replacement of text in Section 5 with a pointer to the procedures specified in [RFC6916] (algorithm agility).",
+      "zh": "* 用指向 [RFC6916] 中指定程序的指针替换第 5 节中的文本（算法敏捷性）。"
+    },
+    {
+      "indent": 6,
+      "text": "* Replacement of \"signed object\" with \"CMS signed object\" everywhere.",
+      "zh": "* 用 \"CMS 签名对象 \"取代所有 \"签名对象\"。"
+    },
+    {
+      "indent": 0,
+      "text": "8. References",
+      "section_title": true,
+      "zh": "8. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "8.1. Normative References",
+      "section_title": true,
+      "zh": "8.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <http://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <http://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2986] Nystrom, M. and B. Kaliski, \"PKCS #10: Certification Request Syntax Specification Version 1.7\", RFC 2986, DOI 10.17487/RFC2986, November 2000, <http://www.rfc-editor.org/info/rfc2986>.",
+      "zh": "[RFC2986] Nystrom, M. and B. Kaliski, \"PKCS #10: Certification Request Syntax Specification Version 1.7\", RFC 2986, DOI 10.17487/RFC2986, November 2000, <http://www.rfc-editor.org/info/rfc2986>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3370] Housley, R., \"Cryptographic Message Syntax (CMS) Algorithms\", RFC 3370, DOI 10.17487/RFC3370, August 2002, <http://www.rfc-editor.org/info/rfc3370>.",
+      "zh": "[RFC3370] Housley, R., \"Cryptographic Message Syntax (CMS) Algorithms\", RFC 3370, DOI 10.17487/RFC3370, August 2002, <http://www.rfc-editor.org/info/rfc3370>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3447] Jonsson, J. and B. Kaliski, \"Public-Key Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.1\", RFC 3447, DOI 10.17487/RFC3447, February 2003, <http://www.rfc-editor.org/info/rfc3447>.",
+      "zh": "[RFC3447] Jonsson, J. and B. Kaliski, \"Public-Key Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.1\", RFC 3447, DOI 10.17487/RFC3447, February 2003, <http://www.rfc-editor.org/info/rfc3447>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4055] Schaad, J., Kaliski, B., and R. Housley, \"Additional Algorithms and Identifiers for RSA Cryptography for use in the Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 4055, DOI 10.17487/RFC4055, June 2005, <http://www.rfc-editor.org/info/rfc4055>.",
+      "zh": "[RFC4055] Schaad, J., Kaliski, B., and R. Housley, \"Additional Algorithms and Identifiers for RSA Cryptography for use in the Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 4055, DOI 10.17487/RFC4055, June 2005, <http://www.rfc-editor.org/info/rfc4055>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4211] Schaad, J., \"Internet X.509 Public Key Infrastructure Certificate Request Message Format (CRMF)\", RFC 4211, DOI 10.17487/RFC4211, September 2005, <http://www.rfc-editor.org/info/rfc4211>.",
+      "zh": "[RFC4211] Schaad, J., \"Internet X.509 Public Key Infrastructure Certificate Request Message Format (CRMF)\", RFC 4211, DOI 10.17487/RFC4211, September 2005, <http://www.rfc-editor.org/info/rfc4211>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, DOI 10.17487/RFC5280, May 2008, <http://www.rfc-editor.org/info/rfc5280>.",
+      "zh": "[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, \"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile\", RFC 5280, DOI 10.17487/RFC5280, May 2008, <http://www.rfc-editor.org/info/rfc5280>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5652] Housley, R., \"Cryptographic Message Syntax (CMS)\", STD 70, RFC 5652, DOI 10.17487/RFC5652, September 2009, <http://www.rfc-editor.org/info/rfc5652>.",
+      "zh": "[RFC5652] Housley, R., \"Cryptographic Message Syntax (CMS)\", STD 70, RFC 5652, DOI 10.17487/RFC5652, September 2009, <http://www.rfc-editor.org/info/rfc5652>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC5754] Turner, S., \"Using SHA2 Algorithms with Cryptographic Message Syntax\", RFC 5754, DOI 10.17487/RFC5754, January 2010, <http://www.rfc-editor.org/info/rfc5754>.",
+      "zh": "[RFC5754] Turner, S., \"Using SHA2 Algorithms with Cryptographic Message Syntax\", RFC 5754, DOI 10.17487/RFC5754, January 2010, <http://www.rfc-editor.org/info/rfc5754>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <http://www.rfc-editor.org/info/rfc6480>.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <http://www.rfc-editor.org/info/rfc6480>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6484] Kent, S., Kong, D., Seo, K., and R. Watro, \"Certificate Policy (CP) for the Resource Public Key Infrastructure (RPKI)\", BCP 173, RFC 6484, DOI 10.17487/RFC6484, February 2012, <http://www.rfc-editor.org/info/rfc6484>.",
+      "zh": "[RFC6484] Kent, S., Kong, D., Seo, K., and R. Watro, \"Certificate Policy (CP) for the Resource Public Key Infrastructure (RPKI)\", BCP 173, RFC 6484, DOI 10.17487/RFC6484, February 2012, <http://www.rfc-editor.org/info/rfc6484>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, DOI 10.17487/RFC6487, February 2012, <http://www.rfc-editor.org/info/rfc6487>.",
+      "zh": "[RFC6487] Huston, G., Michaelson, G., and R. Loomans, \"A Profile for X.509 PKIX Resource Certificates\", RFC 6487, DOI 10.17487/RFC6487, February 2012, <http://www.rfc-editor.org/info/rfc6487>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6488] Lepinski, M., Chi, A., and S. Kent, \"Signed Object Template for the Resource Public Key Infrastructure (RPKI)\", RFC 6488, DOI 10.17487/RFC6488, February 2012, <http://www.rfc-editor.org/info/rfc6488>.",
+      "zh": "[RFC6488] Lepinski, M., Chi, A., and S. Kent, \"Signed Object Template for the Resource Public Key Infrastructure (RPKI)\", RFC 6488, DOI 10.17487/RFC6488, February 2012, <http://www.rfc-editor.org/info/rfc6488>。"
+    },
+    {
+      "indent": 3,
+      "text": "[SHS] National Institute of Standards and Technology (NIST), \"FIPS Publication 180-3: Secure Hash Standard\", FIPS Publication 180-3, October 2008.",
+      "zh": "[SHS] 美国国家标准与技术研究院（NIST），\"FIPS 出版 180-3：安全散列标准\"，FIPS 出版 180-3，2008 年 10 月。"
+    },
+    {
+      "indent": 0,
+      "text": "8.2. Informative References",
+      "section_title": true,
+      "zh": "8.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, DOI 10.17487/RFC6482, February 2012, <http://www.rfc-editor.org/info/rfc6482>.",
+      "zh": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, DOI 10.17487/RFC6482, February 2012, <http://www.rfc-editor.org/info/rfc6482>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6485] Huston, G., \"The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)\", RFC 6485, DOI 10.17487/RFC6485, February 2012, <http://www.rfc-editor.org/info/rfc6485>.",
+      "zh": "[RFC6485] Huston, G., \"The Profile for Algorithms and Key Sizes for Use in the Resource Public Key Infrastructure (RPKI)\", RFC 6485, DOI 10.17487/RFC6485, February 2012, <http://www.rfc-editor.org/info/rfc6485>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, \"Manifests for the Resource Public Key Infrastructure (RPKI)\", RFC 6486, DOI 10.17487/RFC6486, February 2012, <http://www.rfc-editor.org/info/rfc6486>.",
+      "zh": "[RFC6486] Austein, R., Huston, G., Kent, S., and M. Lepinski, \"Manifests for the Resource Public Key Infrastructure (RPKI)\", RFC 6486, DOI 10.17487/RFC6486, February 2012, <http://www.rfc-editor.org/info/rfc6486>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6916] Gagliano, R., Kent, S., and S. Turner, \"Algorithm Agility Procedure for the Resource Public Key Infrastructure (RPKI)\", BCP 182, RFC 6916, DOI 10.17487/RFC6916, April 2013, <http://www.rfc-editor.org/info/rfc6916>.",
+      "zh": "[RFC6916] Gagliano, R., Kent, S., and S. Turner, \"Algorithm Agility Procedure for the Resource Public Key Infrastructure (RPKI)\", BCP 182, RFC 6916, DOI 10.17487/RFC6916, April 2013, <http://www.rfc-editor.org/info/rfc6916>。"
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgments",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors acknowledge the reuse in this document of material originally contained in working drafts of the RPKI Certificate Policy [RFC6484] and resource certificate profile [RFC6487] documents. The coauthors of these two documents -- namely, Stephen Kent, Derrick Kong, Karen Seo, Ronald Watro, George Michaelson, and Robert Loomans -- are acknowledged, with thanks. The constraint on key size noted in this profile is the outcome of comments from Stephen Kent and review comments from David Cooper. Sean Turner has provided additional review input to this document.",
+      "zh": "作者承认本文档重复使用了最初包含在 RPKI 证书策略 [RFC6484] 和资源证书配置文件 [RFC6487] 文档工作草案中的材料。本文对这两份文档的共同作者--即 Stephen Kent、Derrick Kong、Karen Seo、Ronald Watro、George Michaelson 和 Robert Loomans--表示感谢。本简介中对关键字大小的限制是斯蒂芬-肯特（Stephen Kent）的意见和戴维-库珀（David Cooper）的审阅意见的结果。肖恩-特纳（Sean Turner）为本文档提供了额外的审核意见。"
+    },
+    {
+      "indent": 3,
+      "text": "Andrew Chi and David Mandelberg discovered the issue addressed in this replacement of [RFC6485], and the changes in this updated specification reflect the outcome of a discussion between Rob Austein and Matt Lepinski on the SIDR Working group mailing list. Richard Hansen contributed a significant number of suggestions that have been incorporated into this document.",
+      "zh": "Andrew Chi 和 David Mandelberg 发现了此次替换 [RFC6485] 所涉及的问题，此次更新规范中的更改反映了 Rob Austein 和 Matt Lepinski 在 SIDR 工作组邮件列表上的讨论结果。理查德-汉森（Richard Hansen）提出了大量建议，这些建议已被纳入本文档。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Geoff Huston APNIC",
+      "zh": "Geoff Huston APNIC"
+    },
+    {
+      "indent": 3,
+      "text": "Email: gih@apnic.net",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "George Michaelson (editor) APNIC",
+      "zh": "乔治-迈克尔逊（编辑） APNIC"
+    },
+    {
+      "indent": 3,
+      "text": "Email: ggm@apnic.net",
+      "raw": true,
+      "zh": ""
+    }
+  ]
+}

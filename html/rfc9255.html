@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 9255 - The &#39;I&#39; in RPKI Does Not Stand for Identity 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="contact.html">Contact</a>
+        <a class="nav-item nav-link" href="../figs/html/index.html">Figs</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">9255</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc9255">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 9255 - The 'I' in RPKI Does Not Stand for Identity 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc9255">
+            https://datatracker.ietf.org/doc/html/rfc9255
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 9255 - RPKI 中的 "I "并不代表身份</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                           R. Bush
+Request for Comments: 9255                         Arrcus &amp; IIJ Research
+Category: Standards Track                                     R. Housley
+ISSN: 2070-1721                                           Vigil Security
+                                                               June 2022
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-14">
+The &#39;I&#39; in RPKI Does Not Stand for Identity
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-14">
+RPKI 中的 &#34;I &#34;并不代表身份
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+There is a false notion that Internet Number Resources (INRs) in the RPKI can be associated with the real-world identity of the &#39;holder&#39; of an INR. This document specifies that RPKI does not associate to the INR holder.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有一种错误观念认为，RPKI 中的互联网号码资源（INR）可以与 INR &#34;持有者 &#34;的真实身份相关联。本文件规定，RPKI 不与 INR 持有者相关联。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This is an Internet Standards Track document.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这是一份互联网标准跟踪文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc9255.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc9255。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2022 IETF Trust 和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (https://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节所述的修订版 BSD 许可文本，并且不提供修订版 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction
+     1.1.  Requirements Language
+   2.  The RPKI is for Authorization
+   3.  Discussion
+   4.  Security Considerations
+   5.  IANA Considerations
+   6.  References
+     6.1.  Normative References
+     6.2.  Informative References
+   Acknowledgments
+   Authors&#39; Addresses
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The Resource Public Key Infrastructure (RPKI), see [RFC6480], &#34;represents the allocation hierarchy of IP address space and Autonomous System (AS) numbers,&#34; which are collectively known as Internet Number Resources (INRs). Since initial deployment, the RPKI has grown to include other similar resource and routing data, e.g., Router Keying for BGPsec [RFC8635].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源公钥基础设施（RPKI），见 [RFC6480]，&#34;代表 IP 地址空间和自治系统（AS）号码的分配层次&#34;，它们统称为互联网号码资源（INR）。自最初部署以来，RPKI 已发展到包括其他类似的资源和路由数据，如 BGPsec 的路由器密钥 [RFC8635]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In security terms, the phrase &#34;Public Key&#34; implies there is also a corresponding private key [RFC5280]. The RPKI provides strong authority to the current holder of INRs; however, some people have a desire to use RPKI private keys to sign arbitrary documents as the INR &#39;holder&#39; of those resources with the inappropriate expectation that the signature will be considered an attestation to the authenticity of the document content. But, in reality, the RPKI certificate is only an authorization to speak for the explicitly identified INRs; it is explicitly not intended for authentication of the &#39;holders&#39; of the INRs. This situation is emphasized in Section 2.1 of [RFC6480].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在安全方面，&#34;公钥 &#34;一词意味着也有相应的私钥 [RFC5280]。RPKI 为 INR 的当前持有者提供了很强的权威性；然而，有些人希望使用 RPKI 私钥作为这些资源的 INR &#34;持有者 &#34;来签署任意文件，并不恰当地期望该签名将被视为文件内容真实性的证明。但实际上，RPKI 证书只是对明确标识的 INR 的授权，而不是对 INR &#34;持有者 &#34;的认证。RFC6480] 第 2.1 节强调了这种情况。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+It has been suggested that one could authenticate real-world business transactions with the signatures of INR holders. For example, Bill&#39;s Bait and Sushi (BB&amp;S) could use the private key attesting to that they are the holder of their AS in the RPKI to sign a Letter of Authorization (LOA) for some other party to rack and stack hardware owned by BB&amp;S. Unfortunately, while this may be technically possible, it is neither appropriate nor meaningful.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有人建议，可以用 INR 持有者的签名来验证现实世界中的商业交易。例如，Bill&#39;s Bait and Sushi（BB&amp;S）可以使用私钥证明他们是 RPKI 中其 AS 的持有者，以签署一份授权书（LOA），让其他方将 BB&amp;S 拥有的硬件上架和堆叠。遗憾的是，虽然这在技术上是可行的，但既不合适也没有意义。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The &#39;I&#39; in RPKI actually stands for &#34;Infrastructure,&#34; as in Resource Public Key Infrastructure, not for &#34;Identity&#34;. In fact, the RPKI does not provide any association between INRs and the real-world holder(s) of those INRs. The RPKI provides authorization to make assertions only regarding Internet Number Resources, such as IP prefixes or AS numbers, and data such as Autonomous System Provider Authorization (ASPA) records [ASPA-PROFILE].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 中的 &#34;I &#34;实际上代表 &#34;基础设施&#34;，如资源公钥基础设施，而不是 &#34;身份&#34;。事实上，RPKI 并不提供 INR 与这些 INR 的现实世界持有者之间的任何关联。RPKI 只授权对互联网号码资源（如 IP 前缀或 AS 号码）和数据（如自治系统提供者授权（ASPA）记录 [ASPA-PROFILE]）做出断言。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In short, avoid the desire to use RPKI certificates for any purpose other than the verification of authorizations associated with the delegation of INRs or attestations related to INRs. Instead, recognize that these authorizations and attestations take place irrespective of the identity of an RPKI private key holder.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+简而言之，除了验证与 INR 委托相关的授权或与 INR 相关的证明外，不要将 RPKI 证书用于任何其他目的。相反，要认识到这些授权和证明的发生与 RPKI 私钥持有人的身份无关。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1-1--Requirements-Language">
+1.1. Requirements Language
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1.1. 要求语言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;NOT RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, 以及 &#34;OPTIONAL&#34; 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--The-RPKI-is-for-Authorization">
+2. The RPKI is for Authorization
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. RPKI 用于授权
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The RPKI was designed and specified to sign certificates for use within the RPKI itself and to generate Route Origin Authorizations (ROAs) [RFC6480] for use in routing. Its design intentionally precluded use for attesting to real-world identity as, among other issues, it would expose the Certification Authority (CA) to liability.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 的设计和规定是为了签署 RPKI 本身使用的证书，并生成路由起源授权（ROA）[RFC6480]，用于路由选择。其设计有意排除了用于证明真实身份的用途，因为除其他问题外，这将使认证机构（CA）承担责任。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+That the RPKI does not authenticate real-world identity is by design. If it tried to do so, aside from the liability, it would end in a world of complexity with no proof of termination.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 不对现实世界的身份进行验证是设计的初衷。如果它试图这样做，除了要承担责任外，还将陷入一个没有终止证明的复杂世界。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Registries such as the Regional Internet Registries (RIRs) provide INR to real-world identity mapping through WHOIS [RFC3912] and similar services. They claim to be authoritative, at least for the INRs that they allocate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+区域互联网注册机构（RIR）等注册机构通过 WHOIS [RFC3912] 和类似服务提供 INR 与真实身份的映射。它们声称自己具有权威性，至少对其分配的 INR 而言是如此。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+That is, RPKI-based credentials of INRs MUST NOT be used to authenticate real-world documents or transactions. That might be done with some formal external authentication of authority allowing an otherwise anonymous INR holder to authenticate the particular document or transaction. Given such external, i.e. non-RPKI, verification of authority, the use of RPKI-based credentials adds no authenticity.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+也就是说，基于 RPKI 的 INR 凭据不得用于验证真实世界的文件或交易。这可以通过一些正式的外部权威认证来实现，允许原本匿名的 INR 持有人对特定文件或交易进行认证。鉴于这种外部（即非 RPKI）权威验证，使用基于 RPKI 的凭证不会增加任何真实性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Discussion">
+3. Discussion
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 讨论
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Section 2.1 of the RPKI base document [RFC6480] says explicitly &#34;An important property of this PKI is that certificates do not attest to the identity of the subject.&#34;
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+RPKI 基本文件 [RFC6480] 第 2.1 节明确指出：&#34;本 PKI 的一个重要特性是证书不证明主体的身份&#34;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Section 3.1 of &#34;Template for a Certification Practice Statement (CPS) for the Resource PKI (RPKI)&#34; [RFC7382] states that the Subject name in each certificate SHOULD NOT be meaningful and goes on to explain this at some length.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源公钥基础设施（RPKI）的认证惯例声明（CPS）模板&#34;[RFC7382] 第 3.1 节指出，每份证书中的主体名称不应有意义，并对此进行了详细解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Normally, the INR holder does not hold the private key attesting to their resources; the CA does. The INR holder has a real-world business relationship with the CA for which they have likely signed real-world documents.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+通常，INR 持有者并不持有证明其资源的私钥，而是由 CA 持有。INR 持有人与 CA 之间有真实的业务关系，他们很可能签署了真实的文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As the INR holder does not have the keying material, they rely on the CA, to which they presumably present credentials, to manipulate their INRs. These credentials may be user ID and password (with two-factor authentication one hopes), a hardware token, client browser certificates, etc.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于 INR 持有者没有密钥材料，他们只能依靠 CA（他们可能向 CA 提交了凭证）来操作他们的 INR。这些凭证可能是用户 ID 和密码（希望有双因素认证）、硬件令牌、客户端浏览器证书等。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Hence schemes such as Resource Tagged Attestations [RPKI-RTA] and Signed Checklists [RPKI-RSC] must go to great lengths to extract the supposedly relevant keys from the CA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+因此，资源标记证明 [RPKI-RTA] 和签名核对表 [RPKI-RSC] 等方案必须不遗余力地从 CA 中提取所谓的相关密钥。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+For some particular INR, say, Bill&#39;s Bait and Sushi&#39;s Autonomous System (AS) number, someone out on the net probably has the credentials to the CA account in which BB&amp;S&#39;s INRs are registered. That could be the owner of BB&amp;S, Randy&#39;s Taco Stand, an IT vendor, or the Government of Elbonia. One simply can not know.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对于某些特定的 INR（例如，Bill&#39;s Bait and Sushi 的自治系统（AS）号码），网络上可能有人拥有注册 BB&amp;S INR 的 CA 帐户的凭证。这个人可能是 BB&amp;S 的所有者、Randy&#39;s Taco Stand、IT 供应商或埃尔波尼亚政府。我们根本无法知道。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In large organizations, INR management is often compartmentalized with no authority over anything beyond dealing with INR registration. The INR manager for Bill&#39;s Bait and Sushi is unlikely to be authorized to conduct bank transactions for BB&amp;S, or even to authorize access to BB&amp;S&#39;s servers in some colocation facility.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在大型企业中，INR 管理往往是条块分割的，除了处理 INR 注册之外，没有其他权限。Bill&#39;s Bait and Sushi 的 INR 经理不可能被授权为 BB&amp;S 进行银行交易，甚至不可能被授权访问 BB&amp;S 在某个主机托管设施中的服务器。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Then there is the temporal issue. The holder of that AS may be BB&amp;S today when some document was signed, and could be the Government of Elbonia tomorrow. Or the resource could have been administratively moved from one CA to another, likely requiring a change of keys. If so, how does one determine if the signature on the real-world document is still valid?
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+然后是时间问题。今天签署某些文件时，AS 的持有者可能是 BB&amp;S，而明天则可能是埃尔波尼亚政府。或者，资源可能已经从一个 CA 转移到另一个 CA，这可能需要更换密钥。如果是这样，如何确定真实文件上的签名是否仍然有效？
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+While Ghostbuster Records [RFC6493] may seem to identify real-world entities, their semantic content is completely arbitrary and does not attest to holding of any INRs. They are merely clues for operational support contact in case of technical RPKI problems.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+虽然 Ghostbuster 记录 [RFC6493] 似乎可以识别现实世界中的实体，但其语义内容完全是任意的，并不证明持有任何 INR。它们仅仅是在出现 RPKI 技术问题时为运行支持联系提供的线索。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Usually, before registering INRs, CAs require proof of an INR holding via external documentation and authorities. It is somewhat droll that the CPS Template [RFC7382] does not mention any diligence the CA must, or even might, conduct to assure the INRs are in fact owned by a registrant.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+通常，在注册 INR 之前，CA 需要通过外部文件和授权来证明 INR 的持有。有点可笑的是，CPS 模板 [RFC7382] 并未提及 CA 必须或甚至可能进行的任何努力，以确保 INR 确实为注册者所有。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+That someone can provide &#39;proof of possession&#39; of the private key signing over a particular INR should not be taken to imply that they are a valid legal representative of the organization in possession of that INR. They could be in an INR administrative role, and not be a formal representative of the organization.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+某人能提供签署某一 INR 的私人密钥的 &#34;持有证明&#34;，并不意味着他是持有该 INR 的组织的合法代表。他们可能只是 INR 的管理者，而不是该组织的正式代表。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Autonomous System Numbers do not identify real-world entities. They are identifiers some network operators &#39;own&#39; and are only used for loop detection in routing. They have no inherent semantics other than uniqueness.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+自治系统号码并不能识别现实世界中的实体。它们是一些网络运营商 &#34;拥有 &#34;的标识符，仅用于路由中的循环检测。除了唯一性之外，它们没有固有的语义。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Security-Considerations">
+4. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Attempts to use RPKI data to authenticate real-world documents or other artifacts requiring identity, while possibly cryptographically valid within the RPKI, are misleading as to any authenticity.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+试图使用 RPKI 数据来验证现实世界中的文件或其他需要身份验证的人工制品，虽然在 RPKI 中可能在密码学上是有效的，但在任何真实性方面都会产生误导。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When a document is signed with the private key associated with an RPKI certificate, the signer is speaking for the INRs (the IP address space and AS numbers) in the certificate. This is not an identity; this is an authorization. In schemes such as Resource Tagged Attestations [RPKI-RTA] and Signed Checklists [RPKI-RSC], the signed message further narrows this scope of INRs. The INRs in the message are a subset of the INRs in the certificate. If the signature is valid, the message content comes from a party that is authorized to speak for that subset of INRs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+当使用与 RPKI 证书相关的私钥签署文件时，签署者是在为证书中的 INRs（IP 地址空间和 AS 号码）说话。这不是身份，而是授权。在资源标记证明 [RPKI-RTA] 和签名核对表 [RPKI-RSC] 等方案中，签名信息进一步缩小了 INR 的范围。信息中的 INR 是证书中 INR 的子集。如果签名有效，则信息内容来自被授权代表该 INR 子集的一方。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Control of INRs for an entity could be used to falsely authorize transactions or documents for which the INR manager has no authority.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+一个实体对 INR 的控制权可能被用来虚假授权 INR 管理员无权授权的交易或文件。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--IANA-Considerations">
+5. IANA Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. IANA考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document has no IANA actions.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件没有 IANA 操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--References">
+6. References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. 参考文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-1--Normative-References">
+6.1. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.1. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, DOI 10.17487/RFC5280, May 2008, &lt;https://www.rfc-editor.org/info/rfc5280&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC5280] Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., and W. Polk, &#34;Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile&#34;, RFC 5280, DOI 10.17487/RFC5280, May 2008, &lt;https://www.rfc-editor.org/info/rfc5280&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;https://www.rfc-editor.org/info/rfc6480&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;https://www.rfc-editor.org/info/rfc6480&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7382] Kent, S., Kong, D., and K. Seo, &#34;Template for a Certification Practice Statement (CPS) for the Resource PKI (RPKI)&#34;, BCP 173, RFC 7382, DOI 10.17487/RFC7382, April 2015, &lt;https://www.rfc-editor.org/info/rfc7382&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7382] Kent, S., Kong, D., and K. Seo, &#34;Template for a Certification Practice Statement (CPS) for the Resource PKI (RPKI)&#34;, BCP 173, RFC 7382, DOI 10.17487/RFC7382, April 2015, &lt;https://www.rfc-editor.org/info/rfc7382&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8635] Bush, R., Turner, S., and K. Patel, &#34;Router Keying for BGPsec&#34;, RFC 8635, DOI 10.17487/RFC8635, August 2019, &lt;https://www.rfc-editor.org/info/rfc8635&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8635] Bush, R., Turner, S., and K. Patel, &#34;Router Keying for BGPsec&#34;, RFC 8635, DOI 10.17487/RFC8635, August 2019, &lt;https://www.rfc-editor.org/info/rfc8635&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6-2--Informative-References">
+6.2. Informative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6.2. 参考性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[ASPA-PROFILE] Azimov, A., Uskov, E., Bush, R., Patel, K., Snijders, J., and R. Housley, &#34;A Profile for Autonomous System Provider Authorization&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-aspa-profile-07, 31 January 2022, &lt;https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-profile-07&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[ASPA-PROFILE] Azimov, A., Uskov, E., Bush, R., Patel, K., Snijders, J., and R. Housley, &#34;A Profile for Autonomous System Provider Authorization&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-aspa-profile-07, 31 January 2022, &lt;https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-profile-07&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3912] Daigle, L., &#34;WHOIS Protocol Specification&#34;, RFC 3912, DOI 10.17487/RFC3912, September 2004, &lt;https://www.rfc-editor.org/info/rfc3912&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3912] Daigle, L., &#34;WHOIS Protocol Specification&#34;, RFC 3912, DOI 10.17487/RFC3912, September 2004, &lt;https://www.rfc-editor.org/info/rfc3912&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6493] Bush, R., &#34;The Resource Public Key Infrastructure (RPKI) Ghostbusters Record&#34;, RFC 6493, DOI 10.17487/RFC6493, February 2012, &lt;https://www.rfc-editor.org/info/rfc6493&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6493] Bush, R., &#34;The Resource Public Key Infrastructure (RPKI) Ghostbusters Record&#34;, RFC 6493, DOI 10.17487/RFC6493, February 2012, &lt;https://www.rfc-editor.org/info/rfc6493&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RPKI-RSC] Snijders, J., Harrison, T., and B. Maddison, &#34;A profile for Resource Public Key Infrastructure (RPKI) Signed Checklists (RSC)&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-rpki-rsc-08, 26 May 2022, &lt;https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-rpki-rsc-08&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RPKI-RSC] Snijders, J., Harrison, T., and B. Maddison, &#34;A profile for Resource Public Key Infrastructure (RPKI) Signed Checklists (RSC)&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-rpkii-rsc-08, 26 May 2022, &lt;https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-rpki-rsc-08&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RPKI-RTA] Michaelson, G., Huston, G., Harrison, T., Bruijnzeels, T., and M. Hoffmann, &#34;A profile for Resource Tagged Attestations (RTAs)&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-rpki-rta-00, 21 January 2021, &lt;https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-rpki-rta-00&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RPKI-RTA] Michaelson, G., Huston, G., Harrison, T., Bruijnzeels, T., and M. Hoffmann, &#34;A profile for Resource Tagged Attestations (RTAs)&#34;, Work in Progress, Internet-Draft, draft-ietf-sidrops-rpkii-rta-00, 21 January 2021, &lt;https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-rpki-rta-00&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Acknowledgments
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+致谢
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors thank George Michaelson and Job Snijders for lively discussion, Geoff Huston for some more formal text, Ties de Kock for useful suggestions, many directorate and IESG reviewers, and last but not least, Biff for the loan of Bill&#39;s Bait and Sushi.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢乔治-迈克尔逊（George Michaelson）和乔布斯-斯奈德斯（Job Snijders）的热烈讨论，感谢杰夫-赫斯顿（Geoff Huston）提供的一些更正式的文本，感谢蒂斯-德-科克（Ties de Kock）提出的有益建议，感谢许多领导层和 IESG 的审稿人，最后但并非最不重要的是，感谢毕夫（Biff）借出比尔的鱼饵和寿司店。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Randy Bush Arrcus &amp; Internet Initiative Japan Research 5147 Crystal Springs Bainbridge Island, WA 98110 United States of America Email: randy@psg.com
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Randy Bush Arrcus &amp; Internet Initiative Japan Research 5147 Crystal Springs Bainbridge Island, WA 98110 United States of America Email: randy@psg.com
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Russ Housley Vigil Security, LLC 516 Dranesville Road Herndon, VA 20170 United States of America Email: housley@vigilsec.com
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Russ Housley Vigil Security, LLC 516 Dranesville Road Herndon, VA 20170 美国 电子邮件：housley@vigilsec.com
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>
