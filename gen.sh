@@ -1,5 +1,6 @@
-#!/bin/bash -u
+#!/usr/bin/env bash
 
+pushd figs
 python3 collect_figures.py --begin 0001 --end 0999 -w data/0000.json
 python3 collect_figures.py --begin 1000 --end 1999 -w data/1000.json
 python3 collect_figures.py --begin 2000 --end 2999 -w data/2000.json
@@ -10,7 +11,6 @@ python3 collect_figures.py --begin 6000 --end 6999 -w data/6000.json
 python3 collect_figures.py --begin 7000 --end 7999 -w data/7000.json
 python3 collect_figures.py --begin 8000 --end 8999 -w data/8000.json
 python3 collect_figures.py --begin 9000 --end 9999 -w data/9000.json
-
 python3 make_html.py 0000
 python3 make_html.py 1000
 python3 make_html.py 2000
@@ -21,5 +21,11 @@ python3 make_html.py 6000
 python3 make_html.py 7000
 python3 make_html.py 8000
 python3 make_html.py 9000
-
 python3 make_index.py
+popd
+
+python3 main.py --make --begin 2220 --end 9999
+python3 main.py --make --draft draft-ietf-sidrops-8210bis-11
+python3 main.py --make --draft draft-ietf-sidrops-rpki-rov-timing-06
+python3 main.py --make-index
+python3 main.py --make-index-draft
