@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 8000-8999 のアスキーアート</title>
+
+  <link rel="shortcut icon" type="image/x-icon"
+    href="https://tex2e.github.io/rfc-translater/favicon.ico" />
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <style>
+    p.text {
+      font-size: 100%;
+      overflow-wrap: break-word;
+    }
+    pre.text {
+      font-size: 75%;
+    }
+  </style>
+
+  <script>
+    var host = window.location.hostname;
+    if (host != "localhost") {
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-75892425-1', 'auto');
+      ga('send', 'pageview');
+    }
+  </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Figs</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="../../html/index.html">Trans</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@tex2e</small></span>
+      </div>
+    </div>
+  </nav>
+
+
+  <div style="height: 1ex;"></div> <!-- spacing -->
+
+  <div class="container">
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8181">
+          RFC <span class="rfc-number">8181</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+          +------+    +------+    +------+
+          |  CA  |    |  CA  |    |  CA  |
+          +------+    +------+    +------+
+              |           |           |    Publication protocol
+              |           |           |    business relationship
+              +-------+   |  +--------+      perhaps set up by
+                      |   |  |                    RFC 8183
+                 +----v---v--v-----+
+                 |                 |
+                 |   Publication   |
+                 |   Repository    |
+                 |                 |
+                 +-----------------+     Distribution protocols
+                          |                   rsync or RRDP
+           +--------------+----------------+
+           |              |                |
+   +-------v-----+ +------v------+  +------v------+
+   |   Relying   | |   Relying   |  |   Relying   |
+   |    Party    | |    Party    |  |    Party    |
+   +-------------+ +-------------+  +-------------+
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8205">
+          RFC <span class="rfc-number">8205</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+        +---------------------------------------------------------+
+        |     +-----------------+                                 |
+        |     |   Secure_Path   |                                 |
+        |     +-----------------+                                 |
+        |     |    pCount X     |                                 |
+        |     |    Flags X      |                                 |
+        |     |    AS X         |                                 |
+        |     |    pCount Y     |                                 |
+        |     |    Flags Y      |                                 |
+        |     |    AS Y         |                                 |
+        |     |      ...        |                                 |
+        |     +-----------------+                                 |
+        |                                                         |
+        |   +---------------------+     +---------------------+   |
+        |   |  Signature_Block 1  |     |  Signature_Block 2  |   |
+        |   +---------------------+     +---------------------+   |
+        |   |  Algorithm Suite 1  |     |  Algorithm Suite 2  |   |
+        |   |  SKI X1             |     |  SKI X2             |   |
+        |   |  Signature X1       |     |  Signature X2       |   |
+        |   |  SKI Y1             |     |  SKI Y2             |   |
+        |   |  Signature Y1       |     |  Signature Y2       |   |
+        |   |       ...           |     |       ....          |   |
+        |   +---------------------+     +---------------------+   |
+        |                                                         |
+        +---------------------------------------------------------+
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8206">
+          RFC <span class="rfc-number">8206</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+                                       64505
+                                       |
+             ISP B                     ISP A
+   CE-1 &lt;--- PE-1 &lt;------------------- PE-2 &lt;--- CE-2
+   64496     Old_ASN: 64510   Old_ASN: 64500     64499
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8206">
+          RFC <span class="rfc-number">8206</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+                                     64505
+                                     |
+           ISP A&#39;                    ISP A&#39;
+ CE-1 &lt;--- PE-1 &lt;------------------- PE-2 &lt;--- CE-2
+ 64496     Old_ASN: 64510   Old_ASN: 64500     64499
+           New_ASN: 64500   New_ASN: 64500
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8206">
+          RFC <span class="rfc-number">8206</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+                                    64505
+                                    |
+          ISP A&#39;                    ISP A&#39;
+CE-1 ---&gt; PE-1 -------------------&gt; PE-2 ---&gt; CE-2
+64496     Old_ASN: 64510   Old_ASN: 64500     64499
+          New_ASN: 64500   New_ASN: 64500
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8210">
+          RFC <span class="rfc-number">8210</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |     Session ID      |
+   |    1     |    0     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                Length=12                  |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |               Serial Number               |
+   |                                           |
+   `-------------------------------------------&#39;
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8210">
+          RFC <span class="rfc-number">8210</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |     Session ID      |
+   |    1     |    1     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=12                 |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |               Serial Number               |
+   |                                           |
+   `-------------------------------------------&#39;
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8210">
+          RFC <span class="rfc-number">8210</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |         zero        |
+   |    1     |    2     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=8                  |
+   |                                           |
+   `-------------------------------------------&#39;
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8210">
+          RFC <span class="rfc-number">8210</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |     Session ID      |
+   |    1     |    3     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=8                  |
+   |                                           |
+   `-------------------------------------------&#39;
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8210">
+          RFC <span class="rfc-number">8210</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |         zero        |
+   |    1     |    8     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=8                  |
+   |                                           |
+   `-------------------------------------------&#39;
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8210">
+          RFC <span class="rfc-number">8210</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | &lt;----- Reset Query -------- | R requests data (or Serial Query)
+     |                             |
+     | ----- Cache Response -----&gt; | C confirms request
+     | ------- Payload PDU ------&gt; | C sends zero or more
+     | ------- Payload PDU ------&gt; |   IPv4 Prefix, IPv6 Prefix,
+     | ------- Payload PDU ------&gt; |   or Router Key PDUs
+     | ------- End of Data ------&gt; | C sends End of Data
+     |                             |   and sends new serial
+     ~                             ~
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8210">
+          RFC <span class="rfc-number">8210</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | -------- Notify ----------&gt; |  (optional)
+     |                             |
+     | &lt;----- Serial Query ------- | R requests data
+     |                             |
+     | ----- Cache Response -----&gt; | C confirms request
+     | ------- Payload PDU ------&gt; | C sends zero or more
+     | ------- Payload PDU ------&gt; |   IPv4 Prefix, IPv6 Prefix,
+     | ------- Payload PDU ------&gt; |   or Router Key PDUs
+     | ------- End of Data ------&gt; | C sends End of Data
+     |                             |   and sends new serial
+     ~                             ~
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8210">
+          RFC <span class="rfc-number">8210</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | &lt;------ Serial Query ------ | R requests data
+     | ------- Cache Reset ------&gt; | C cannot supply update
+     |                             |   from specified serial
+     | &lt;------ Reset Query ------- | R requests new data
+     | ----- Cache Response -----&gt; | C confirms request
+     | ------- Payload PDU ------&gt; | C sends zero or more
+     | ------- Payload PDU ------&gt; |   IPv4 Prefix, IPv6 Prefix,
+     | ------- Payload PDU ------&gt; |   or Router Key PDUs
+     | ------- End of Data ------&gt; | C sends End of Data
+     |                             |   and sends new serial
+     ~                             ~
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8210">
+          RFC <span class="rfc-number">8210</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | &lt;------ Serial Query ------ | R requests data
+     | ---- Error Report PDU ----&gt; | C No Data Available
+     ~                             ~
+
+   Cache                         Router
+     ~                             ~
+     | &lt;------ Reset Query ------- | R requests data
+     | ---- Error Report PDU ----&gt; | C No Data Available
+     ~                             ~
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8608">
+          RFC <span class="rfc-number">8608</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+     Algorithm   Digest          Signature       Specification
+     Suite       Algorithm       Algorithm       Pointer
+     Identifier
+   +------------+---------------+--------------+-----------------------+
+   | 0x02-0xF6  | Unassigned    | Unassigned   |                       |
+   +------------+---------------+--------------+-----------------------+
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc8654">
+          RFC <span class="rfc-number">8654</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   +-------+----------------------+-----------+
+   | Value | Description          | Reference |
+   +=======+======================+===========+
+   | 6     | BGP Extended Message | RFC 8654  |
+   +-------+----------------------+-----------+
+      </pre>
+      <hr>
+    </div>
+  </div>
+</body>
+</html>

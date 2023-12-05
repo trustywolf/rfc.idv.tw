@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 6000-6999 のアスキーアート</title>
+
+  <link rel="shortcut icon" type="image/x-icon"
+    href="https://tex2e.github.io/rfc-translater/favicon.ico" />
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <style>
+    p.text {
+      font-size: 100%;
+      overflow-wrap: break-word;
+    }
+    pre.text {
+      font-size: 75%;
+    }
+  </style>
+
+  <script>
+    var host = window.location.hostname;
+    if (host != "localhost") {
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-75892425-1', 'auto');
+      ga('send', 'pageview');
+    }
+  </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Figs</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="../../html/index.html">Trans</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@tex2e</small></span>
+      </div>
+    </div>
+  </nav>
+
+
+  <div style="height: 1ex;"></div> <!-- spacing -->
+
+  <div class="container">
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6350">
+          RFC <span class="rfc-number">6350</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   +------------------------+-----------+--------------+---------------+
+   | Property               | Parameter | Value        | Reference     |
+   +------------------------+-----------+--------------+---------------+
+   | FN, NICKNAME, PHOTO,   | TYPE      | work         | RFC 6350,     |
+   | ADR, TEL, EMAIL, IMPP, |           |              | Section 5.6   |
+   | LANG, TZ, GEO, TITLE,  |           |              |               |
+   | ROLE, LOGO, ORG,       |           |              |               |
+   | RELATED, CATEGORIES,   |           |              |               |
+   | NOTE, SOUND, URL, KEY, |           |              |               |
+   | FBURL, CALADRURI, and  |           |              |               |
+   | CALURI                 |           |              |               |
+   | FN, NICKNAME, PHOTO,   | TYPE      | home         | RFC 6350,     |
+   | ADR, TEL, EMAIL, IMPP, |           |              | Section 5.6   |
+   | LANG, TZ, GEO, TITLE,  |           |              |               |
+   | ROLE, LOGO, ORG,       |           |              |               |
+   | RELATED, CATEGORIES,   |           |              |               |
+   | NOTE, SOUND, URL, KEY, |           |              |               |
+   | FBURL, CALADRURI, and  |           |              |               |
+   | CALURI                 |           |              |               |
+   | TEL                    | TYPE      | text         | RFC 6350,     |
+   |                        |           |              | Section 6.4.1 |
+   | TEL                    | TYPE      | voice        | RFC 6350,     |
+   |                        |           |              | Section 6.4.1 |
+   | TEL                    | TYPE      | fax          | RFC 6350,     |
+   |                        |           |              | Section 6.4.1 |
+   | TEL                    | TYPE      | cell         | RFC 6350,     |
+   |                        |           |              | Section 6.4.1 |
+   | TEL                    | TYPE      | video        | RFC 6350,     |
+   |                        |           |              | Section 6.4.1 |
+   | TEL                    | TYPE      | pager        | RFC 6350,     |
+   |                        |           |              | Section 6.4.1 |
+   | TEL                    | TYPE      | textphone    | RFC 6350,     |
+   |                        |           |              | Section 6.4.1 |
+   | BDAY, ANNIVERSARY      | CALSCALE  | gregorian    | RFC 6350,     |
+   |                        |           |              | Section 5.8   |
+   | RELATED                | TYPE      | contact      | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | acquaintance | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | friend       | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | met          | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+
+   | RELATED                | TYPE      | co-worker    | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | colleague    | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | co-resident  | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | neighbor     | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | child        | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | parent       | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | sibling      | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | spouse       | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | kin          | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | muse         | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | crush        | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | date         | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | sweetheart   | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | me           | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   |                        |           |              | and [xfn]     |
+   | RELATED                | TYPE      | agent        | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   | RELATED                | TYPE      | emergency    | RFC 6350,     |
+   |                        |           |              | Section 6.6.6 |
+   +------------------------+-----------+--------------+---------------+
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6480">
+          RFC <span class="rfc-number">6480</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+             ---------                ---------
+             |  RIR  |                |  NIR  |
+             |  CA   |                |  CA   |
+             ---------                ---------
+                 |                        |
+                 |                        |
+                 |                        |
+             ---------                ---------
+             |  ISP  |                |  ISP  |
+             |  CA 1 |                |  CA 2 |
+             ---------                ---------
+              |     \                      |
+              |      -----                 |
+              |           \                |
+          ----------    ----------      ----------
+          |  ISP   |    |  ISP   |      |  ISP   |
+          |  EE 1a |    |  EE 1b |      |  EE 2  |
+          ----------    ----------      ----------
+              |             |               |
+              |             |               |
+              |             |               |
+          ----------    ----------      ----------
+          | ROA 1a |    | ROA 1b |      | ROA 2  |
+          ----------    ----------      ----------
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6480">
+          RFC <span class="rfc-number">6480</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+                         +--------+
+              +---------&gt;| Cert A |&lt;----+
+              |          | CRLDP  |     |
+              |          |  AIA   |     |
+              |  +--------- SIA   |     |
+              |  |       +--------+     |
+              |  |                      |
+              |  |                      |
+              |  |                      |
+              |  |  +-------------------|------------------+
+              |  |  |                   |                  |
+              |  +-&gt;|   +--------+      |   +--------+     |
+              |     |   | Cert B |      |   | Cert C |     |
+              |     |   | CRLDP ----+   |   | CRLDP -+-+   |
+              +----------- AIA   |  |   +----- AIA   | |   |
+                    |   |  SIA   |  |       |  SIA   | |   |
+                    |   +--------+  |       +--------+ |   |
+                    |               V                  |   |
+                    |           +---------+            |   |
+                    |           | A&#39;s CRL |&lt;-----------+   |
+                    |           +---------+                |
+                    | A&#39;s Repository Publication Directory |
+                    +--------------------------------------+
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6481">
+          RFC <span class="rfc-number">6481</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+                         +--------+
+              +---------&gt;| Cert A |&lt;----+
+              |          |  AIA   |     |
+              |  +--------- SIA   |     |
+              |  |       +--------+     |
+              |  |                      |
+              |  |  +-------------------|------------------+
+              |  |  |                   |                  |
+              |  +-&gt;|   +--------+      |   +--------+     |
+              |     |   | Cert B |      |   | Cert C |     |
+              |     |   | CRLDP-------+ |   | CRLDP-----+  |
+              +----------- AIA   |    | +----- AIA   |  |  |
+                    |   |  SIA------+ |     |  SIA------------+
+                    |   +--------+  | |     +--------+  |  |  |
+                    |               | V                 V  |  |
+                    |               | +-----------------+  |  |
+                    |               | | CRL issued by A |  |  |
+                    | A&#39;s Repository| +-----------------+  |  |
+                    | Directory     |                      |  |
+                    +---------------|----------------------+  |
+                                    |                         |
+          +----------------+        |    +----------------+   |
+          | B&#39;s Repository |&lt;-------+    | C&#39;s Repository |&lt;--+
+          |  Directory     |             |  Directory     |
+          +----------------+             +----------------+
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6810">
+          RFC <span class="rfc-number">6810</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |     Session ID      |
+   |    0     |    0     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                Length=12                  |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |               Serial Number               |
+   |                                           |
+   `-------------------------------------------&#39;
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6810">
+          RFC <span class="rfc-number">6810</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |     Session ID      |
+   |    0     |    1     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=12                 |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |               Serial Number               |
+   |                                           |
+   `-------------------------------------------&#39;
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6810">
+          RFC <span class="rfc-number">6810</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |    reserved = zero  |
+   |    0     |    2     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=8                  |
+   |                                           |
+   `-------------------------------------------&#39;
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6810">
+          RFC <span class="rfc-number">6810</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |     Session ID      |
+   |    0     |    3     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=8                  |
+   |                                           |
+   `-------------------------------------------&#39;
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6810">
+          RFC <span class="rfc-number">6810</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |     Session ID      |
+   |    0     |    7     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=12                 |
+   |                                           |
+   +-------------------------------------------+
+   |                                           |
+   |               Serial Number               |
+   |                                           |
+   `-------------------------------------------&#39;
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6810">
+          RFC <span class="rfc-number">6810</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   0          8          16         24        31
+   .-------------------------------------------.
+   | Protocol |   PDU    |                     |
+   | Version  |   Type   |    reserved = zero  |
+   |    0     |    8     |                     |
+   +-------------------------------------------+
+   |                                           |
+   |                 Length=8                  |
+   |                                           |
+   `-------------------------------------------&#39;
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6810">
+          RFC <span class="rfc-number">6810</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | &lt;----- Reset Query -------- | R requests data (or Serial Query)
+     |                             |
+     | ----- Cache Response -----&gt; | C confirms request
+     | ------- IPvX Prefix ------&gt; | C sends zero or more
+     | ------- IPvX Prefix ------&gt; |   IPv4 and IPv6 Prefix
+     | ------- IPvX Prefix ------&gt; |   Payload PDUs
+     | ------  End of Data ------&gt; | C sends End of Data
+     |                             |   and sends new serial
+     ~                             ~
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6810">
+          RFC <span class="rfc-number">6810</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | -------- Notify ----------&gt; |  (optional)
+     |                             |
+     | &lt;----- Serial Query ------- | R requests data
+     |                             |
+     | ----- Cache Response -----&gt; | C confirms request
+     | ------- IPvX Prefix ------&gt; | C sends zero or more
+     | ------- IPvX Prefix ------&gt; |   IPv4 and IPv6 Prefix
+     | ------- IPvX Prefix ------&gt; |   Payload PDUs
+     | ------  End of Data ------&gt; | C sends End of Data
+     |                             |   and sends new serial
+     ~                             ~
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6810">
+          RFC <span class="rfc-number">6810</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | &lt;-----  Serial Query ------ | R requests data
+     | ------- Cache Reset ------&gt; | C cannot supply update
+     |                             |   from specified serial
+     | &lt;------ Reset Query ------- | R requests new data
+     | ----- Cache Response -----&gt; | C confirms request
+     | ------- IPvX Prefix ------&gt; | C sends zero or more
+     | ------- IPvX Prefix ------&gt; |   IPv4 and IPv6 Prefix
+     | ------- IPvX Prefix ------&gt; |   Payload PDUs
+     | ------  End of Data ------&gt; | C sends End of Data
+     |                             |   and sends new serial
+     ~                             ~
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6810">
+          RFC <span class="rfc-number">6810</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+   Cache                         Router
+     ~                             ~
+     | &lt;-----  Serial Query ------ | R requests data
+     | ---- Error Report PDU ----&gt; | C No Data Available
+     ~                             ~
+
+   Cache                         Router
+     ~                             ~
+     | &lt;-----  Reset Query ------- | R requests data
+     | ---- Error Report PDU ----&gt; | C No Data Available
+     ~                             ~
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6916">
+          RFC <span class="rfc-number">6916</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+     Phase 0    Phase 1   Phase 2             Phase 4  Phase 0
+   --x--------x---------x-------------------x--------x---------
+     ^        ^         ^                   ^        ^
+     |        |         |                   |        |
+    (1)      (2)       (3)                 (5)      (6)
+      </pre>
+      <hr>
+    </div>
+    <div class="col-sm-12 col-md-12">
+      <div class="text-right">
+        [
+        <a href="https://tools.ietf.org/html/rfc6916">
+          RFC <span class="rfc-number">6916</span>
+        </a>
+        ]
+      </div>
+      <pre class="text text-monospace">
+               Phase 0              Phase 3   Phase 4  Phase 0
+   -------------------------------x---------x--------x---------
+     ^                            ^         ^        ^
+     |                            |         |        |
+    (1)                          (4)       (5)      (6)
+      </pre>
+      <hr>
+    </div>
+  </div>
+</body>
+</html>
