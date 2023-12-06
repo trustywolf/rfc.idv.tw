@@ -1,7 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Text&display=swap');
-
 body {
-  font-family: -apple-system,BlinkMacSystemFont,"Red Hat Text",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-family: -apple-system,BlinkMacSystemFont,"Microsoft JhengHei UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 }
 
 dl, ol, ul {
