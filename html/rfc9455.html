@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RFC 9455 - Avoiding Route Origin Authorizations (ROAs) Containing Multiple IP Prefixes 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" integrity="sha256-+IZRbz1B6ee9mUx/ejmonK+ulIP5A5bLDd6v6NHqXnI=" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="master.css">
+  <script type="text/javascript" src="index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="draft/index.html">Draft</a>
+        <a class="nav-item nav-link" href="figs/index.html">Figs</a>
+        <a class="nav-item nav-link" href="copyright.html">Copyright</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">9455</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/rfc9455">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">RFC 9455 - Avoiding Route Origin Authorizations (ROAs) Containing Multiple IP Prefixes 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/rfc9455">
+            https://datatracker.ietf.org/doc/html/rfc9455
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC 9455 - 避免包含多个 IP 前缀的路由起源授权 (ROA)</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+Internet Engineering Task Force (IETF)                            Z. Yan
+Request for Comments: 9455                                         CNNIC
+BCP: 238                                                         R. Bush
+Category: Best Current Practice          IIJ Research Lab &amp; Arrcus, Inc.
+ISSN: 2070-1721                                                  G. Geng
+                                                        Jinan University
+                                                              T. de Kock
+                                                                RIPE NCC
+                                                                  J. Yao
+                                                                   CNNIC
+                                                             August 2023
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Avoiding Route Origin Authorizations (ROAs) Containing Multiple IP Prefixes
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+避免包含多个 IP 前缀的路由起源授权 (ROA)
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When using the Resource Public Key Infrastructure (RPKI), address space holders need to issue Route Origin Authorization (ROA) object(s) to authorize one or more Autonomous Systems (ASes) to originate BGP routes to IP address prefix(es). This memo discusses operational problems that may arise from ROAs containing multiple IP prefixes and recommends that each ROA contain a single IP prefix.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+使用资源公钥基础设施 (RPKI) 时，地址空间持有者需要发布路由起源授权 (ROA) 对象，以授权一个或多个自治系统 (AS) 将 BGP 路由起源到 IP 地址前缀。本备忘录讨论了包含多个 IP 前缀的 ROA 可能产生的操作问题，并建议每个 ROA 只包含一个 IP 前缀。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This memo documents an Internet Best Current Practice.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本备忘录记录了互联网当前最佳做法。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on BCPs is available in Section 2 of RFC 7841.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关 BCP 的更多信息，请参阅 RFC 7841 第 2 节。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc9455.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc9455。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2023 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2023 IETF Trust 和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (https://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节所述的修订版 BSD 许可文本，并且不提供修订版 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction
+   2.  Terminology
+   3.  Problem Statement
+   4.  Recommendations
+   5.  Security Considerations
+   6.  IANA Considerations
+   7.  Normative References
+   Acknowledgements
+   Authors&#39; Addresses
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the RPKI, a ROA, which is a digitally signed object, identifies that a single AS has been authorized by the address space holder to originate BGP routes to one or more IP prefixes within the related address space [RFC6482].
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 RPKI 中，ROA 是一个数字签名对象，用于标识地址空间持有者已授权单个 AS 向相关地址空间内的一个或多个 IP 前缀发送 BGP 路由 [RFC6482]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Each ROA contains an asID field and an ipAddrBlocks field. The asID field contains a single AS number that is authorized to originate routes to the given IP address prefix(es). The ipAddrBlocks field contains one or more IP address prefixes to which the AS is authorized to originate the routes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+每个 ROA 都包含一个 asID 字段和一个 ipAddrBlocks 字段。asID 字段包含一个 AS 号码，该 AS 被授权向给定的 IP 地址前缀发送路由。ipAddrBlocks 字段包含一个或多个 IP 地址前缀，AS 有权将路由发往这些 IP 地址前缀。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+If the address space holder needs to authorize more than one AS to advertise the same set of IP prefixes, multiple ROAs must be issued (one for each AS number [RFC6480]). Prior to this document, there was no guidance recommending the issuance of a separate ROA for each IP prefix or a single ROA containing multiple IP prefixes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果地址空间持有者需要授权一个以上的 AS 宣传同一组 IP 前缀，则必须发布多个 ROA（每个 AS 编号一个 ROA [RFC6480]）。在本文档之前，没有任何指南建议为每个 IP 前缀或包含多个 IP 前缀的单个 ROA 签发单独的 ROA。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Terminology">
+2. Terminology
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 用语
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The key words &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;NOT RECOMMENDED&#34;, &#34;MAY&#34;, and &#34;OPTIONAL&#34; in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档中的关键词 &#34;MUST&#34;, &#34;MUST NOT&#34;, &#34;REQUIRED&#34;, &#34;SHALL&#34;, &#34;SHALL NOT&#34;, &#34;SHOULD&#34;, &#34;SHOULD NOT&#34;, &#34;RECOMMENDED&#34;, &#34;MAY&#34;, 以及 &#34;OPTIONAL&#34; 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Problem-Statement">
+3. Problem Statement
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 问题陈述
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An address space holder can issue a separate ROA for each of its routing announcements. Alternatively, for a given asID, it can issue a single ROA for multiple routing announcements, or even for all of its routing announcements. Since a given ROA is either valid or invalid, the routing announcements for which that ROA was issued will &#34;share fate&#34; when it comes to RPKI validation. Currently, no existing RFCs provide recommendations about what kinds of ROAs to issue: one per prefix or one for multiple routing announcements. The problem of fate-sharing was not discussed or addressed.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+地址空间持有者可为其每个路由公告发布单独的 ROA。或者，对于一个给定的 asID，它可以为多个路由公告甚至所有路由公告发布一个 ROA。由于给定的 ROA 要么有效要么无效，因此在进行 RPKI 验证时，为其发布 ROA 的路由公告将 &#34;共命运&#34;。目前，现有的 RFC 并没有就发布哪种 ROA（每个前缀一个或多个路由通告一个）提供建议。没有讨论或解决命运共享的问题。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In the RPKI trust chain, the Certification Authority (CA) certificate issued by a parent CA to a delegatee of some resources may be revoked by the parent at any time, which would result in changes to resources specified in the certificate extensions defined in [RFC3779]. Any ROA object that includes resources that are a) no longer entirely contained in the new CA certificate or b) contained in a new CA certificate that has not yet been discovered by Relying Party (RP) software will be rejected as invalid. Since ROA invalidity affects all routes specified in that ROA, unchanged resources with associated routes via that asID cannot be separated from those affected by the change in CA certificate validity. They will fall under this invalid ROA even though there was no intent to change their validity. Had these resources been in a separate ROA, there would be no change to the issuing CA certificate and therefore no subsequent invalidity.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在 RPKI 信任链中，由上级 CA 签发给某些资源受权方的认证机构 (CA) 证书可能随时被上级 CA 撤销，这将导致 [RFC3779] 中定义的证书扩展中指定的资源发生变化。任何 ROA 对象如果包含 a) 不再完全包含在新 CA 证书中的资源，或 b) 包含在依赖方 (RP) 软件尚未发现的新 CA 证书中的资源，都将被视为无效而被拒绝。由于 ROA 无效会影响该 ROA 中指定的所有路由，因此通过该 asID 与相关路由保持不变的资源无法与受 CA 证书有效性变化影响的资源区分开来。即使没有改变其有效性的意图，这些资源也将属于该无效 ROA。如果这些资源处于单独的 ROA 中，则签发 CA 证书不会发生变化，因此也不会随之失效。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CAs have to carefully coordinate ROA updates with updates to a resource certificate. This process may be automated if a single entity manages both the parent CA and the CA issuing the ROAs (Scenario D in [RFC8211], Section 3.4). However, in other deployment scenarios, this coordination becomes more complex.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+CA 必须仔细协调 ROA 更新和资源证书更新。如果由一个实体同时管理父 CA 和签发 ROA 的 CA（[RFC8211]第 3.4 节中的方案 D），这一过程就可以实现自动化。但是，在其他部署场景中，这种协调就会变得更加复杂。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+As there is a single expiration time for the entire ROA, expiration will affect all prefixes in the ROA. Thus, changes to the ROA for any of the prefixes must be synchronized with changes to other prefixes, especially when authorization for a prefix is time bounded. Had these prefixes been in separately issued ROAs, the validity interval would be unique to each ROA, and invalidity would only be affected by reissuance of the specific issuing parent CA certificate.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+由于整个 ROA 只有一个过期时间，过期将影响 ROA 中的所有前缀。因此，任何一个前缀的 ROA 的更改都必须与其他前缀的更改同步进行，尤其是当一个前缀的授权有时间限制时。如果这些前缀属于单独签发的 ROA，则每个 ROA 的有效期间隔都是唯一的，只有重新签发特定的父 CA 证书才会影响有效期。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+A prefix could be allowed to originate from an AS only for a specific period of time, for example, if the IP prefix was leased out temporarily. If a ROA with multiple IP prefixes was used, this would be more difficult to manage, and potentially be more error-prone. Similarly, more complex routing may require changes in asID or routes for a subset of prefixes. Reissuance of a ROA might result in changes to the validity of previously received BGP routes covered by the ROA&#39;s prefixes. There will be no change to the validity of unaffected routes if a) the time-limited resources are in separate ROAs, or b) for more complex routing, each change in asID or a change in routes for a given prefix is reflected in a change to a discrete ROA.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+一个前缀可以只允许在特定时间内从一个 AS 发起，例如，如果 IP 前缀是临时租出的。如果使用具有多个 IP 前缀的 ROA，管理起来会更加困难，而且可能更容易出错。同样，更复杂的路由选择可能需要更改 asID 或子集前缀的路由。重新签发 ROA 可能会导致之前收到的由 ROA 前缀覆盖的 BGP 路由的有效性发生变化。如果出现以下情况，则未受影响路由的有效性将不会发生变化：a) 时限资源位于不同的 ROA 中；或 b) 对于更复杂的路由，asID 的每次变化或给定前缀的路由变化都反映在对离散 ROA 的更改中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The use of ROA with a single IP prefix can minimize these side effects. It avoids fate-sharing irrespective of the cause, where the parent CA issuing each ROA remains valid and where each ROA itself remains valid.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+使用具有单一 IP 前缀的 ROA 可以最大限度地减少这些副作用。它避免了因果共享，即签发每个 ROA 的父 CA 保持有效，每个 ROA 本身也保持有效。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Recommendations">
+4. Recommendations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 建议
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Unless the CA has good reasons to the contrary, an issued ROA SHOULD contain a single IP prefix.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+除非 CA 有充分的相反理由，否则签发的 ROA 应包含单个 IP 前缀。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Security-Considerations">
+5. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Issuing separate ROAs for independent IP prefixes may increase the file-fetch burden on the RP during validation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+为独立 IP 前缀发布单独的 ROA 可能会增加 RP 在验证过程中的文件获取负担。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="6--IANA-Considerations">
+6. IANA Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+6. IANA考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document has no IANA actions.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件没有 IANA 操作。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="7--Normative-References">
+7. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+7. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC2119] Bradner, S., &#34;Key words for use in RFCs to Indicate Requirement Levels&#34;, BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, &lt;https://www.rfc-editor.org/info/rfc2119&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3779] Lynn, C., Kent, S., and K. Seo, &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34;, RFC 3779, DOI 10.17487/RFC3779, June 2004, &lt;https://www.rfc-editor.org/info/rfc3779&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC3779] Lynn, C., Kent, S., and K. Seo, &#34;X.509 Extensions for IP Addresses and AS Identifiers&#34;, RFC 3779, DOI 10.17487/RFC3779, June 2004, &lt;https://www.rfc-editor.org/info/rfc3779&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;https://www.rfc-editor.org/info/rfc6480&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6480] Lepinski, M. and S. Kent, &#34;An Infrastructure to Support Secure Internet Routing&#34;, RFC 6480, DOI 10.17487/RFC6480, February 2012, &lt;https://www.rfc-editor.org/info/rfc6480&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8174] Leiba, B., &#34;Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words&#34;, BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, &lt;https://www.rfc-editor.org/info/rfc8174&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8211] Kent, S. and D. Ma, &#34;Adverse Actions by a Certification Authority (CA) or Repository Manager in the Resource Public Key Infrastructure (RPKI)&#34;, RFC 8211, DOI 10.17487/RFC8211, September 2017, &lt;https://www.rfc-editor.org/info/rfc8211&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC8211] Kent, S. and D. Ma, &#34;Adverse Actions by a Certification Authority (CA) or Repository Manager in the Resource Public Key Infrastructure (RPKI)&#34;, RFC 8211, DOI 10.17487/RFC8211, September 2017, &lt;https://www.rfc-editor.org/info/rfc8211&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Acknowledgements
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+致谢
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors wish to thank the following people for their reviews and contributions to this document: George Michaelson, Tim Bruijnzeels, Job Snijders, Di Ma, Geoff Huston, Tom Harrison, Rob Austein, Stephen Kent, Christopher Morrow, Russ Housley, Ching-Heng Ku, Keyur Patel, Cuiling Zhang, and Kejun Dong. Thanks are also due to Sean Turner for the Security Area Directorate review.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢以下人员对本文档的审阅和贡献：George Michaelson、Tim Bruijnzeels、Job Snijders、Di Ma、Geoff Huston、Tom Harrison、Rob Austein、Stephen Kent、Christopher Morrow、Russ Housley、Ching-Heng Ku、Keyur Patel、Cuiling Zhang 和 Kejun Dong。此外，还要感谢肖恩-特纳（Sean Turner）对安全区域局的审查。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This work was supported by the Beijing Nova Program of Science and Technology under grant Z191100001119113.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+这项工作得到了北京市科技新星计划（Z191100001119113）的资助。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Zhiwei Yan CNNIC No.4 South 4th Street, Zhongguancun Beijing 100190 China Email: yanzhiwei@cnnic.cn
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+阎志伟 CNNIC 北京中关村南四街 4 号 100190 中国电子邮件：yanzhiwei@cnnic.cn
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Randy Bush IIJ Research Lab &amp; Arrcus, Inc. 5147 Crystal Springs Bainbridge Island, Washington 98110 United States of America Email: randy@psg.com
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Randy Bush IIJ Research Lab &amp; Arrcus, Inc.5147 Crystal Springs Bainbridge Island, Washington 98110 United States of America Email: randy@psg.com
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Guanggang Geng Jinan University No.601, West Huangpu Avenue Guangzhou 510632 China Email: gggeng@jnu.edu.cn
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Guanggang Geng 暨南大学 广州市黄埔大道西 601 号 510632 中国 Email: gggeng@jnu.edu.cn
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Ties de Kock RIPE NCC Stationsplein 11 Amsterdam Netherlands Email: tdekock@ripe.net
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Ties de Kock RIPE NCC Stationsplein 11 Amsterdam Netherlands Email: tdekock@ripe.net
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Jiankang Yao CNNIC No.4 South 4th Street, Zhongguancun Beijing 100190 China Email: yaojk@cnnic.cn
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Jiankang Yao CNNIC 北京中关村南四街 4 号 100190 中国电子邮件：yaojk@cnnic.cn
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>

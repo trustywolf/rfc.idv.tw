@@ -1,0 +1,261 @@
+{
+  "title": {
+    "text": "RFC 9455 - Avoiding Route Origin Authorizations (ROAs) Containing Multiple IP Prefixes",
+    "zh": "RFC 9455 - 避免包含多个 IP 前缀的路由起源授权 (ROA)"
+  },
+  "number": 9455,
+  "created_at": "2023-12-10 20:48:59.618782+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                            Z. Yan\nRequest for Comments: 9455                                         CNNIC\nBCP: 238                                                         R. Bush\nCategory: Best Current Practice          IIJ Research Lab & Arrcus, Inc.\nISSN: 2070-1721                                                  G. Geng\n                                                        Jinan University\n                                                              T. de Kock\n                                                                RIPE NCC\n                                                                  J. Yao\n                                                                   CNNIC\n                                                             August 2023",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "Avoiding Route Origin Authorizations (ROAs) Containing Multiple IP Prefixes",
+      "zh": "避免包含多个 IP 前缀的路由起源授权 (ROA)"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "When using the Resource Public Key Infrastructure (RPKI), address space holders need to issue Route Origin Authorization (ROA) object(s) to authorize one or more Autonomous Systems (ASes) to originate BGP routes to IP address prefix(es). This memo discusses operational problems that may arise from ROAs containing multiple IP prefixes and recommends that each ROA contain a single IP prefix.",
+      "zh": "使用资源公钥基础设施 (RPKI) 时，地址空间持有者需要发布路由起源授权 (ROA) 对象，以授权一个或多个自治系统 (AS) 将 BGP 路由起源到 IP 地址前缀。本备忘录讨论了包含多个 IP 前缀的 ROA 可能产生的操作问题，并建议每个 ROA 只包含一个 IP 前缀。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This memo documents an Internet Best Current Practice.",
+      "zh": "本备忘录记录了互联网当前最佳做法。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on BCPs is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关 BCP 的更多信息，请参阅 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at https://www.rfc-editor.org/info/rfc9455.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 https://www.rfc-editor.org/info/rfc9455。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2023 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "Copyright (c) 2023 IETF Trust 和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (https://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节所述的修订版 BSD 许可文本，并且不提供修订版 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction\n2.  Terminology\n3.  Problem Statement\n4.  Recommendations\n5.  Security Considerations\n6.  IANA Considerations\n7.  Normative References\nAcknowledgements\nAuthors' Addresses",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "In the RPKI, a ROA, which is a digitally signed object, identifies that a single AS has been authorized by the address space holder to originate BGP routes to one or more IP prefixes within the related address space [RFC6482].",
+      "zh": "在 RPKI 中，ROA 是一个数字签名对象，用于标识地址空间持有者已授权单个 AS 向相关地址空间内的一个或多个 IP 前缀发送 BGP 路由 [RFC6482]。"
+    },
+    {
+      "indent": 3,
+      "text": "Each ROA contains an asID field and an ipAddrBlocks field. The asID field contains a single AS number that is authorized to originate routes to the given IP address prefix(es). The ipAddrBlocks field contains one or more IP address prefixes to which the AS is authorized to originate the routes.",
+      "zh": "每个 ROA 都包含一个 asID 字段和一个 ipAddrBlocks 字段。asID 字段包含一个 AS 号码，该 AS 被授权向给定的 IP 地址前缀发送路由。ipAddrBlocks 字段包含一个或多个 IP 地址前缀，AS 有权将路由发往这些 IP 地址前缀。"
+    },
+    {
+      "indent": 3,
+      "text": "If the address space holder needs to authorize more than one AS to advertise the same set of IP prefixes, multiple ROAs must be issued (one for each AS number [RFC6480]). Prior to this document, there was no guidance recommending the issuance of a separate ROA for each IP prefix or a single ROA containing multiple IP prefixes.",
+      "zh": "如果地址空间持有者需要授权一个以上的 AS 宣传同一组 IP 前缀，则必须发布多个 ROA（每个 AS 编号一个 ROA [RFC6480]）。在本文档之前，没有任何指南建议为每个 IP 前缀或包含多个 IP 前缀的单个 ROA 签发单独的 ROA。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Terminology",
+      "section_title": true,
+      "zh": "2. 用语"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照BCP 14 [RFC2119] [RFC8174]中描述的一样，当且仅当它们以全大写形式出现时进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Problem Statement",
+      "section_title": true,
+      "zh": "3. 问题陈述"
+    },
+    {
+      "indent": 3,
+      "text": "An address space holder can issue a separate ROA for each of its routing announcements. Alternatively, for a given asID, it can issue a single ROA for multiple routing announcements, or even for all of its routing announcements. Since a given ROA is either valid or invalid, the routing announcements for which that ROA was issued will \"share fate\" when it comes to RPKI validation. Currently, no existing RFCs provide recommendations about what kinds of ROAs to issue: one per prefix or one for multiple routing announcements. The problem of fate-sharing was not discussed or addressed.",
+      "zh": "地址空间持有者可为其每个路由公告发布单独的 ROA。或者，对于一个给定的 asID，它可以为多个路由公告甚至所有路由公告发布一个 ROA。由于给定的 ROA 要么有效要么无效，因此在进行 RPKI 验证时，为其发布 ROA 的路由公告将 \"共命运\"。目前，现有的 RFC 并没有就发布哪种 ROA（每个前缀一个或多个路由通告一个）提供建议。没有讨论或解决命运共享的问题。"
+    },
+    {
+      "indent": 3,
+      "text": "In the RPKI trust chain, the Certification Authority (CA) certificate issued by a parent CA to a delegatee of some resources may be revoked by the parent at any time, which would result in changes to resources specified in the certificate extensions defined in [RFC3779]. Any ROA object that includes resources that are a) no longer entirely contained in the new CA certificate or b) contained in a new CA certificate that has not yet been discovered by Relying Party (RP) software will be rejected as invalid. Since ROA invalidity affects all routes specified in that ROA, unchanged resources with associated routes via that asID cannot be separated from those affected by the change in CA certificate validity. They will fall under this invalid ROA even though there was no intent to change their validity. Had these resources been in a separate ROA, there would be no change to the issuing CA certificate and therefore no subsequent invalidity.",
+      "zh": "在 RPKI 信任链中，由上级 CA 签发给某些资源受权方的认证机构 (CA) 证书可能随时被上级 CA 撤销，这将导致 [RFC3779] 中定义的证书扩展中指定的资源发生变化。任何 ROA 对象如果包含 a) 不再完全包含在新 CA 证书中的资源，或 b) 包含在依赖方 (RP) 软件尚未发现的新 CA 证书中的资源，都将被视为无效而被拒绝。由于 ROA 无效会影响该 ROA 中指定的所有路由，因此通过该 asID 与相关路由保持不变的资源无法与受 CA 证书有效性变化影响的资源区分开来。即使没有改变其有效性的意图，这些资源也将属于该无效 ROA。如果这些资源处于单独的 ROA 中，则签发 CA 证书不会发生变化，因此也不会随之失效。"
+    },
+    {
+      "indent": 3,
+      "text": "CAs have to carefully coordinate ROA updates with updates to a resource certificate. This process may be automated if a single entity manages both the parent CA and the CA issuing the ROAs (Scenario D in [RFC8211], Section 3.4). However, in other deployment scenarios, this coordination becomes more complex.",
+      "zh": "CA 必须仔细协调 ROA 更新和资源证书更新。如果由一个实体同时管理父 CA 和签发 ROA 的 CA（[RFC8211]第 3.4 节中的方案 D），这一过程就可以实现自动化。但是，在其他部署场景中，这种协调就会变得更加复杂。"
+    },
+    {
+      "indent": 3,
+      "text": "As there is a single expiration time for the entire ROA, expiration will affect all prefixes in the ROA. Thus, changes to the ROA for any of the prefixes must be synchronized with changes to other prefixes, especially when authorization for a prefix is time bounded. Had these prefixes been in separately issued ROAs, the validity interval would be unique to each ROA, and invalidity would only be affected by reissuance of the specific issuing parent CA certificate.",
+      "zh": "由于整个 ROA 只有一个过期时间，过期将影响 ROA 中的所有前缀。因此，任何一个前缀的 ROA 的更改都必须与其他前缀的更改同步进行，尤其是当一个前缀的授权有时间限制时。如果这些前缀属于单独签发的 ROA，则每个 ROA 的有效期间隔都是唯一的，只有重新签发特定的父 CA 证书才会影响有效期。"
+    },
+    {
+      "indent": 3,
+      "text": "A prefix could be allowed to originate from an AS only for a specific period of time, for example, if the IP prefix was leased out temporarily. If a ROA with multiple IP prefixes was used, this would be more difficult to manage, and potentially be more error-prone. Similarly, more complex routing may require changes in asID or routes for a subset of prefixes. Reissuance of a ROA might result in changes to the validity of previously received BGP routes covered by the ROA's prefixes. There will be no change to the validity of unaffected routes if a) the time-limited resources are in separate ROAs, or b) for more complex routing, each change in asID or a change in routes for a given prefix is reflected in a change to a discrete ROA.",
+      "zh": "一个前缀可以只允许在特定时间内从一个 AS 发起，例如，如果 IP 前缀是临时租出的。如果使用具有多个 IP 前缀的 ROA，管理起来会更加困难，而且可能更容易出错。同样，更复杂的路由选择可能需要更改 asID 或子集前缀的路由。重新签发 ROA 可能会导致之前收到的由 ROA 前缀覆盖的 BGP 路由的有效性发生变化。如果出现以下情况，则未受影响路由的有效性将不会发生变化：a) 时限资源位于不同的 ROA 中；或 b) 对于更复杂的路由，asID 的每次变化或给定前缀的路由变化都反映在对离散 ROA 的更改中。"
+    },
+    {
+      "indent": 3,
+      "text": "The use of ROA with a single IP prefix can minimize these side effects. It avoids fate-sharing irrespective of the cause, where the parent CA issuing each ROA remains valid and where each ROA itself remains valid.",
+      "zh": "使用具有单一 IP 前缀的 ROA 可以最大限度地减少这些副作用。它避免了因果共享，即签发每个 ROA 的父 CA 保持有效，每个 ROA 本身也保持有效。"
+    },
+    {
+      "indent": 0,
+      "text": "4. Recommendations",
+      "section_title": true,
+      "zh": "4. 建议"
+    },
+    {
+      "indent": 3,
+      "text": "Unless the CA has good reasons to the contrary, an issued ROA SHOULD contain a single IP prefix.",
+      "zh": "除非 CA 有充分的相反理由，否则签发的 ROA 应包含单个 IP 前缀。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Security Considerations",
+      "section_title": true,
+      "zh": "5. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "Issuing separate ROAs for independent IP prefixes may increase the file-fetch burden on the RP during validation.",
+      "zh": "为独立 IP 前缀发布单独的 ROA 可能会增加 RP 在验证过程中的文件获取负担。"
+    },
+    {
+      "indent": 0,
+      "text": "6. IANA Considerations",
+      "section_title": true,
+      "zh": "6. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "This document has no IANA actions.",
+      "zh": "本文件没有 IANA 操作。"
+    },
+    {
+      "indent": 0,
+      "text": "7. Normative References",
+      "section_title": true,
+      "zh": "7. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <https://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, DOI 10.17487/RFC3779, June 2004, <https://www.rfc-editor.org/info/rfc3779>.",
+      "zh": "[RFC3779] Lynn, C., Kent, S., and K. Seo, \"X.509 Extensions for IP Addresses and AS Identifiers\", RFC 3779, DOI 10.17487/RFC3779, June 2004, <https://www.rfc-editor.org/info/rfc3779>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>.",
+      "zh": "[RFC6480] Lepinski, M. and S. Kent, \"An Infrastructure to Support Secure Internet Routing\", RFC 6480, DOI 10.17487/RFC6480, February 2012, <https://www.rfc-editor.org/info/rfc6480>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, DOI 10.17487/RFC6482, February 2012, <https://www.rfc-editor.org/info/rfc6482>.",
+      "zh": "[RFC6482] Lepinski, M., Kent, S., and D. Kong, \"A Profile for Route Origin Authorizations (ROAs)\", RFC 6482, DOI 10.17487/RFC6482, February 2012, <https://www.rfc-editor.org/info/rfc6482>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>.",
+      "zh": "[RFC8174] Leiba, B., \"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words\", BCP 14, RFC 8174, DOI 10.17487/RFC8174, May 2017, <https://www.rfc-editor.org/info/rfc8174>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC8211] Kent, S. and D. Ma, \"Adverse Actions by a Certification Authority (CA) or Repository Manager in the Resource Public Key Infrastructure (RPKI)\", RFC 8211, DOI 10.17487/RFC8211, September 2017, <https://www.rfc-editor.org/info/rfc8211>.",
+      "zh": "[RFC8211] Kent, S. and D. Ma, \"Adverse Actions by a Certification Authority (CA) or Repository Manager in the Resource Public Key Infrastructure (RPKI)\", RFC 8211, DOI 10.17487/RFC8211, September 2017, <https://www.rfc-editor.org/info/rfc8211>。"
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgements",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors wish to thank the following people for their reviews and contributions to this document: George Michaelson, Tim Bruijnzeels, Job Snijders, Di Ma, Geoff Huston, Tom Harrison, Rob Austein, Stephen Kent, Christopher Morrow, Russ Housley, Ching-Heng Ku, Keyur Patel, Cuiling Zhang, and Kejun Dong. Thanks are also due to Sean Turner for the Security Area Directorate review.",
+      "zh": "作者感谢以下人员对本文档的审阅和贡献：George Michaelson、Tim Bruijnzeels、Job Snijders、Di Ma、Geoff Huston、Tom Harrison、Rob Austein、Stephen Kent、Christopher Morrow、Russ Housley、Ching-Heng Ku、Keyur Patel、Cuiling Zhang 和 Kejun Dong。此外，还要感谢肖恩-特纳（Sean Turner）对安全区域局的审查。"
+    },
+    {
+      "indent": 3,
+      "text": "This work was supported by the Beijing Nova Program of Science and Technology under grant Z191100001119113.",
+      "zh": "这项工作得到了北京市科技新星计划（Z191100001119113）的资助。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Zhiwei Yan CNNIC No.4 South 4th Street, Zhongguancun Beijing 100190 China Email: yanzhiwei@cnnic.cn",
+      "zh": "阎志伟 CNNIC 北京中关村南四街 4 号 100190 中国电子邮件：yanzhiwei@cnnic.cn"
+    },
+    {
+      "indent": 3,
+      "text": "Randy Bush IIJ Research Lab & Arrcus, Inc. 5147 Crystal Springs Bainbridge Island, Washington 98110 United States of America Email: randy@psg.com",
+      "zh": "Randy Bush IIJ Research Lab & Arrcus, Inc.5147 Crystal Springs Bainbridge Island, Washington 98110 United States of America Email: randy@psg.com"
+    },
+    {
+      "indent": 3,
+      "text": "Guanggang Geng Jinan University No.601, West Huangpu Avenue Guangzhou 510632 China Email: gggeng@jnu.edu.cn",
+      "zh": "Guanggang Geng 暨南大学 广州市黄埔大道西 601 号 510632 中国 Email: gggeng@jnu.edu.cn"
+    },
+    {
+      "indent": 3,
+      "text": "Ties de Kock RIPE NCC Stationsplein 11 Amsterdam Netherlands Email: tdekock@ripe.net",
+      "zh": "Ties de Kock RIPE NCC Stationsplein 11 Amsterdam Netherlands Email: tdekock@ripe.net"
+    },
+    {
+      "indent": 3,
+      "text": "Jiankang Yao CNNIC No.4 South 4th Street, Zhongguancun Beijing 100190 China Email: yaojk@cnnic.cn",
+      "zh": "Jiankang Yao CNNIC 北京中关村南四街 4 号 100190 中国电子邮件：yaojk@cnnic.cn"
+    }
+  ]
+}
