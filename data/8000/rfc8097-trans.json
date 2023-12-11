@@ -1,0 +1,280 @@
+{
+  "title": {
+    "text": "RFC 8097 - BGP Prefix Origin Validation State Extended Community",
+    "zh": "RFC 8097 - BGP 前缀起源验证状态 扩展社区"
+  },
+  "number": 8097,
+  "created_at": "2023-12-12 01:42:27.623476+09:00",
+  "updated_by": "",
+  "contents": [
+    {
+      "indent": 0,
+      "text": "Internet Engineering Task Force (IETF)                      P. Mohapatra\nRequest for Comments: 8097                              Sproute Networks\nCategory: Standards Track                                       K. Patel\nISSN: 2070-1721                                             Arrcus, Inc.\n                                                              J. Scudder\n                                                        Juniper Networks\n                                                                 D. Ward\n                                                                   Cisco\n                                                                 R. Bush\n                                         Internet Initiative Japan, Inc.\n                                                              March 2017",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 9,
+      "text": "BGP Prefix Origin Validation State Extended Community",
+      "zh": "BGP 前缀起源验证状态 扩展社区"
+    },
+    {
+      "indent": 0,
+      "text": "Abstract",
+      "zh": "摘要"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines a new BGP opaque extended community to carry the origination Autonomous System (AS) validation state inside an autonomous system. Internal BGP (IBGP) speakers that receive this validation state can configure local policies that allow it to influence their decision process.",
+      "zh": "本文档定义了一种新的 BGP 不透明扩展社区，用于在自治系统内部携带发端自治系统（AS）验证状态。收到此验证状态的内部 BGP (IBGP) 发言者可配置本地策略，使其能够影响自己的决策过程。"
+    },
+    {
+      "indent": 0,
+      "text": "Status of This Memo",
+      "zh": "本备忘录的地位"
+    },
+    {
+      "indent": 3,
+      "text": "This is an Internet Standards Track document.",
+      "zh": "这是一份互联网标准跟踪文件。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is a product of the Internet Engineering Task Force (IETF). It represents the consensus of the IETF community. It has received public review and has been approved for publication by the Internet Engineering Steering Group (IESG). Further information on Internet Standards is available in Section 2 of RFC 7841.",
+      "zh": "本文件是互联网工程任务组 (IETF) 的成果。它代表了 IETF 社区的共识。它已接受公众审查，并经互联网工程指导小组 (IESG) 批准发布。有关互联网标准的更多信息，请参见 RFC 7841 第 2 节。"
+    },
+    {
+      "indent": 3,
+      "text": "Information about the current status of this document, any errata, and how to provide feedback on it may be obtained at http://www.rfc-editor.org/info/rfc8097.",
+      "zh": "有关本文件的当前状态、任何勘误以及如何提供反馈的信息，请访问 http://www.rfc-editor.org/info/rfc8097。"
+    },
+    {
+      "indent": 0,
+      "text": "Copyright Notice",
+      "zh": "版权声明"
+    },
+    {
+      "indent": 3,
+      "text": "Copyright (c) 2017 IETF Trust and the persons identified as the document authors. All rights reserved.",
+      "zh": "版权所有 (c) 2017 IETF 信托基金会和文件作者。保留所有权利。"
+    },
+    {
+      "indent": 3,
+      "text": "This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.",
+      "zh": "本文档受 BCP 78 和本文档发布之日有效的 IETF 信托基金《与 IETF 文档有关的法律规定》 (http://trustee.ietf.org/license-info) 的约束。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节中所述的简化 BSD 许可文本，并且不提供简化 BSD 许可中所述的担保。"
+    },
+    {
+      "indent": 0,
+      "text": "Table of Contents",
+      "zh": "目录"
+    },
+    {
+      "indent": 3,
+      "text": "1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3\n  1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   3\n2.  Origin Validation State Extended Community  . . . . . . . . .   3\n3.  Deployment Considerations . . . . . . . . . . . . . . . . . .   4\n4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   4\n5.  Security Considerations . . . . . . . . . . . . . . . . . . .   4\n6.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5\n  6.1.  Normative References  . . . . . . . . . . . . . . . . . .   5\n  6.2.  Informative References  . . . . . . . . . . . . . . . . .   5\nAcknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .   6\nAuthors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   6",
+      "raw": true,
+      "toc": true,
+      "zh": ""
+    },
+    {
+      "indent": 0,
+      "text": "1. Introduction",
+      "section_title": true,
+      "zh": "1. 导言"
+    },
+    {
+      "indent": 3,
+      "text": "This document defines a new BGP opaque extended community to carry the origination AS validation state inside an autonomous system. IBGP speakers that receive this validation state can configure local policies that allow it to influence their decision process.",
+      "zh": "本文档定义了一种新的 BGP 不透明扩展社区，用于在自治系统内携带发端 AS 验证状态。收到此验证状态的 IBGP 发言者可配置本地策略，使其能够影响自己的决策过程。"
+    },
+    {
+      "indent": 0,
+      "text": "1.1. Requirements Language",
+      "section_title": true,
+      "zh": "1.1. 要求语言"
+    },
+    {
+      "indent": 3,
+      "text": "The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in RFC 2119 [RFC2119].",
+      "zh": "本文档中的关键词 \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"MAY\", 以及 \"OPTIONAL\" 应按照RFC 2119 [RFC2119]中的描述进行解释。"
+    },
+    {
+      "indent": 0,
+      "text": "2. Origin Validation State Extended Community",
+      "section_title": true,
+      "zh": "2. 原产地验证状态扩展社区"
+    },
+    {
+      "indent": 3,
+      "text": "The origin validation state extended community is an opaque extended community [RFC4360] with the following encoding:",
+      "zh": "起源验证状态扩展社区是一种不透明的扩展社区 [RFC4360]，其编码如下："
+    },
+    {
+      "indent": 7,
+      "text": " 0                   1                   2                   3\n 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1\n+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n|       0x43    |      0x00     |             Reserved          |\n+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n|                    Reserved                   |validationstate|\n+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "The value of the high-order octet of the extended Type field is 0x43, which indicates it is non-transitive. The value of the low-order octet of the extended Type field as assigned by IANA is 0x00. The Reserved field MUST be set to 0 and ignored upon the receipt of this community. The last octet of the extended community is an unsigned integer that gives the route's validation state [RFC6811]. It can assume the following values:",
+      "zh": "扩展类型字段高阶八位位组的值为 0x43，表示它是非传递性的。IANA 分配的扩展类型字段低八位位组的值为 0x00。收到此社区后，保留字段必须设置为 0 并忽略。扩展社区的最后一个八位位组是一个无符号整数，表示路由的验证状态 [RFC6811]。它可以有以下值："
+    },
+    {
+      "indent": 21,
+      "text": "+-------+-----------------------------+\n| Value | Meaning                     |\n+-------+-----------------------------+\n|   0   | Lookup result = \"valid\"     |\n|   1   | Lookup result = \"not found\" |\n|   2   | Lookup result = \"invalid\"   |\n+-------+-----------------------------+",
+      "raw": true,
+      "zh": ""
+    },
+    {
+      "indent": 3,
+      "text": "If the router is configured to support the extensions defined in this document, it SHOULD attach the origin validation state extended community to BGP UPDATE messages sent to IBGP peers by mapping the computed validation state in the last octet of the extended community. Similarly, a receiving BGP speaker, in the absence of validation state set based on local data, SHOULD derive a validation state from the last octet of the extended community, if present.",
+      "zh": "如果路由器被配置为支持本文档中定义的扩展，它就应该通过在扩展社区的最后一个八位位组中映射计算出的验证状态，将起源验证状态扩展社区附加到发送给 IBGP 对等方的 BGP UPDATE 消息中。同样，接收 BGP 说话者在没有根据本地数据设置验证状态的情况下，应从扩展社区的最后一个八位位组（如果存在）推导出验证状态。"
+    },
+    {
+      "indent": 3,
+      "text": "An implementation SHOULD NOT send more than one instance of the origin validation state extended community. However, if more than one instance is received, an implementation MUST disregard all instances other than the one with the numerically greatest validation state value. If the value received is greater than the largest specified value (2), the implementation MUST apply a strategy similar to attribute discard [RFC7606] by discarding the erroneous community and logging the error for further analysis.",
+      "zh": "实现不应发送一个以上的起源验证状态扩展社区实例。但是，如果收到多个实例，实施必须忽略验证状态值最大的实例以外的所有实例。如果收到的值大于指定的最大值 (2)，实施必须采用与属性丢弃 [RFC7606] 类似的策略，丢弃错误的社区并记录错误以便进一步分析。"
+    },
+    {
+      "indent": 3,
+      "text": "By default, implementations MUST drop the origin validation state extended community if received from an External BGP (EBGP) peer, without processing it further. Similarly, by default, an implementation SHOULD NOT send the community to EBGP peers. However, it SHOULD be possible to configure an implementation to send or accept the community when warranted. An example of a case where the community would reasonably be received from, or sent to, an EBGP peer is when two adjacent ASes are under control of the same administration. A second example is documented in [SIDR-RPKI].",
+      "zh": "默认情况下，如果从外部 BGP (EBGP) 对等体接收到起源验证状态扩展社区，实施必须将其丢弃，而不做进一步处理。同样，默认情况下，实现不应向 EBGP 对等体发送社区。但是，应该可以对实现进行配置，以便在必要时发送或接受社区。从 EBGP 对等体接收或向 EBGP 对等体发送社群的一个合理情况是，两个相邻的 AS 由同一管理机构控制。第二个例子在[SIDR-RPKI]中有记载。"
+    },
+    {
+      "indent": 0,
+      "text": "3. Deployment Considerations",
+      "section_title": true,
+      "zh": "3. 部署考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "In deployment scenarios in which not all the speakers in an autonomous system are upgraded to support the extensions defined in this document, it is necessary to define policies that match on the origin validation extended community and set another BGP attribute [RFC6811] that influences selection of the best path in the same way that an implementation of this extension would.",
+      "zh": "在部署方案中，如果自治系统中并非所有扬声器都已升级到支持本文档中定义的扩展，则有必要定义与起源验证扩展社区相匹配的策略，并设置另一个 BGP 属性 [RFC6811]，该属性与该扩展的实现方式相同，会影响最佳路径的选择。"
+    },
+    {
+      "indent": 0,
+      "text": "4. IANA Considerations",
+      "section_title": true,
+      "zh": "4. IANA考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "IANA has registered the value 0x00, with the name \"BGP Origin Validation State Extended Community\", in the \"Non-Transitive Opaque Extended Community Sub-Types\" registry.",
+      "zh": "IANA 已在 \"非互易不透明扩展社区子类型 \"注册表中注册了名称为 \"BGP 起源验证状态扩展社区 \"的值 0x00。"
+    },
+    {
+      "indent": 0,
+      "text": "5. Security Considerations",
+      "section_title": true,
+      "zh": "5. 安全考虑因素"
+    },
+    {
+      "indent": 3,
+      "text": "Security considerations such as those described in [RFC4272] continue to apply. Because this document introduces an extended community that will generally be used to affect route selection, the analysis in Section 4.5 (\"Falsification\") of [RFC4593] is relevant. These issues are neither new nor unique to the origin validation extended community.",
+      "zh": "诸如 [RFC4272] 中所述的安全考虑因素仍然适用。由于本文档引入的扩展社区通常将用于影响路由选择，因此 [RFC4593] 第 4.5 节（\"伪造\"）中的分析与此相关。这些问题既不是新问题，也不是起源验证扩展社区独有的问题。"
+    },
+    {
+      "indent": 3,
+      "text": "The security considerations provided in [RFC6811] apply equally to this application of origin validation. In addition, this document describes a scheme where router A outsources validation to some router B. If this scheme is used, the participating routers should have the appropriate trust relationship -- B should trust A either because they are under the same administrative control or for some other reason (for example, consider [SIDR-RPKI]). The security properties of the TCP connection between the two routers should also be considered. See Section 5.1 of [RFC7454] for advice regarding protection of the TCP connection.",
+      "zh": "RFC6811] 中提供的安全考虑因素同样适用于这种起源验证应用。此外，本文档还描述了路由器 A 将验证外包给某个路由器 B 的方案。如果使用这种方案，参与的路由器应具有适当的信任关系 - B 应信任 A，因为它们处于相同的管理控制之下或出于其他原因（例如，考虑 [SIDR-RPKI]）。还应考虑两个路由器之间 TCP 连接的安全属性。有关保护 TCP 连接的建议，请参阅 [RFC7454] 第 5.1 节。"
+    },
+    {
+      "indent": 0,
+      "text": "6. References",
+      "section_title": true,
+      "zh": "6. 参考文献"
+    },
+    {
+      "indent": 0,
+      "text": "6.1. Normative References",
+      "section_title": true,
+      "zh": "6.1. 规范性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <http://www.rfc-editor.org/info/rfc2119>.",
+      "zh": "[RFC2119] Bradner, S., \"Key words for use in RFCs to Indicate Requirement Levels\", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997, <http://www.rfc-editor.org/info/rfc2119>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4360] Sangli, S., Tappan, D., and Y. Rekhter, \"BGP Extended Communities Attribute\", RFC 4360, DOI 10.17487/RFC4360, February 2006, <http://www.rfc-editor.org/info/rfc4360>.",
+      "zh": "[RFC4360] Sangli, S., Tappan, D., and Y. Rekhter, \"BGP Extended Communities Attribute\", RFC 4360, DOI 10.17487/RFC4360, February 2006, <http://www.rfc-editor.org/info/rfc4360>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP Prefix Origin Validation\", RFC 6811, DOI 10.17487/RFC6811, January 2013, <http://www.rfc-editor.org/info/rfc6811>.",
+      "zh": "[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, \"BGP Prefix Origin Validation\", RFC 6811, DOI 10.17487/RFC6811, January 2013, <http://www.rfc-editor.org/info/rfc6811>。"
+    },
+    {
+      "indent": 0,
+      "text": "6.2. Informative References",
+      "section_title": true,
+      "zh": "6.2. 参考性文献"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4272] Murphy, S., \"BGP Security Vulnerabilities Analysis\", RFC 4272, DOI 10.17487/RFC4272, January 2006, <http://www.rfc-editor.org/info/rfc4272>.",
+      "zh": "[RFC4272] Murphy, S., \"BGP 安全漏洞分析\"，RFC 4272，DOI 10.17487/RFC4272，2006 年 1 月，<http://www.rfc-editor.org/info/rfc4272>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC4593] Barbir, A., Murphy, S., and Y. Yang, \"Generic Threats to Routing Protocols\", RFC 4593, DOI 10.17487/RFC4593, October 2006, <http://www.rfc-editor.org/info/rfc4593>.",
+      "zh": "[RFC4593] Barbir, A., Murphy, S., and Y. Yang, \"Generic Threats to Routing Protocols\", RFC 4593, DOI 10.17487/RFC4593, October 2006, <http://www.rfc-editor.org/info/rfc4593>."
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7454] Durand, J., Pepelnjak, I., and G. Doering, \"BGP Operations and Security\", BCP 194, RFC 7454, DOI 10.17487/RFC7454, February 2015, <http://www.rfc-editor.org/info/rfc7454>.",
+      "zh": "[RFC7454] Durand, J., Pepelnjak, I., and G. Doering, \"BGP Operations and Security\", BCP 194, RFC 7454, DOI 10.17487/RFC7454, February 2015, <http://www.rfc-editor.org/info/rfc7454>。"
+    },
+    {
+      "indent": 3,
+      "text": "[RFC7606] Chen, E., Ed., Scudder, J., Ed., Mohapatra, P., and K. Patel, \"Revised Error Handling for BGP UPDATE Messages\", RFC 7606, DOI 10.17487/RFC7606, August 2015, <http://www.rfc-editor.org/info/rfc7606>.",
+      "zh": "[RFC7606] Chen, E., Ed., Scudder, J., Ed., Mohapatra, P., and K. Patel, \"Revised Error Handling for BGP UPDATE Messages\", RFC 7606, DOI 10.17487/RFC7606, August 2015, <http://www.rfc-editor.org/info/rfc7606>。"
+    },
+    {
+      "indent": 3,
+      "text": "[SIDR-RPKI] King, T., Kopp, D., Lambrianidis, A., and A. Fenioux, \"Signaling Prefix Origin Validation Results from a Route-Server to Peers\", Work in Progress, draft-ietf-sidrops-route-server-rpki-light-01, January 2017.",
+      "zh": "[SIDR-RPKI] King, T., Kopp, D., Lambrianidis, A., and A. Fenioux, \"Signaling Prefix Origin Validation Results from a Route-Server to Peers\", Work in Progress, draft-ietf-sidrops-route-server-rpki-light-01, January 2017."
+    },
+    {
+      "indent": 0,
+      "text": "Acknowledgements",
+      "zh": "致谢"
+    },
+    {
+      "indent": 3,
+      "text": "The authors would like to acknowledge the valuable review and suggestions from Wesley George, Roque Gagliano, and Bruno Decraene on this document.",
+      "zh": "作者感谢 Wesley George、Roque Gagliano 和 Bruno Decraene 对本文件提出的宝贵意见和建议。"
+    },
+    {
+      "indent": 0,
+      "text": "Authors' Addresses",
+      "zh": "作者地址"
+    },
+    {
+      "indent": 3,
+      "text": "Pradosh Mohapatra Sproute Networks Email: mpradosh@yahoo.com",
+      "zh": "Pradosh Mohapatra Sproute Networks 电子邮件：mpradosh@yahoo.com"
+    },
+    {
+      "indent": 3,
+      "text": "Keyur Patel Arrcus, Inc. Email: keyur@arrcus.com",
+      "zh": "Keyur Patel Arrcus, Inc.电子邮件: keyur@arrcus.com"
+    },
+    {
+      "indent": 3,
+      "text": "John Scudder Juniper Networks 1194 N. Mathilda Ave Sunnyvale, CA 94089 United States of America Email: jgs@juniper.net",
+      "zh": "John Scudder Juniper Networks 1194 N. Mathilda Ave Sunnyvale, CA 94089 United States of America Email: jgs@juniper.net"
+    },
+    {
+      "indent": 3,
+      "text": "Dave Ward Cisco 170 W. Tasman Drive San Jose, CA 95124 United States of America Email: dward@cisco.com",
+      "zh": "Dave Ward Cisco 170 W. Tasman Drive San Jose, CA 95124 United States of America Email: dward@cisco.com"
+    },
+    {
+      "indent": 3,
+      "text": "Randy Bush Internet Initiative Japan, Inc. 5147 Crystal Springs Bainbridge Island, WA 98110 United States of America Email: randy@psg.com",
+      "zh": "Randy Bush Internet Initiative Japan, Inc.5147 Crystal Springs Bainbridge Island, WA 98110 United States of America Email: randy@psg.com"
+    }
+  ]
+}
