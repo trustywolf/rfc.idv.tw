@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>draft-sriram-sidrops-drop-invalid-policy-10 中文翻译</title>
+
+  
+  <link rel="shortcut icon" type="image/x-icon" href="https://rfc.idv.tw/favicon.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" integrity="sha256-+IZRbz1B6ee9mUx/ejmonK+ulIP5A5bLDd6v6NHqXnI=" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="../master.css">
+  <script type="text/javascript" src="../index.js"></script>
+
+</head>
+<body>
+  
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <a class="navbar-brand" href="../index.html">RFC Trans</a>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <div class="navbar-nav mr-auto">
+        <a class="nav-item nav-link" href="index.html">Draft</a>
+        <a class="nav-item nav-link" href="../figs/index.html">Figs</a>
+        <a class="nav-item nav-link" href="../copyright.html">Copyright</a>
+      </div>
+      <div class="navbar-nav ml-auto">
+        <span class="navbar-text"><small>@trustywolf</small></span>
+      </div>
+    </div>
+  </nav>
+
+  <span id="rfc_number" class="hidden">draft-sriram-sidrops-drop-invalid-policy-10</span>
+  <div style="height: 1ex;"></div>
+  <div class="jump-to-original-rfc-container">
+    <a href="https://datatracker.ietf.org/doc/html/draft-sriram-sidrops-drop-invalid-policy-10">
+      <button type="button" class="btn btn-light btn-sm">
+        <span class="jump-to-original-rfc">Orig</span>
+      </button>
+    </a>
+  </div>
+  <div class="container">
+    <div>
+      <div class="alert alert-secondary" role="alert">
+        <h4 class="alert-heading">draft-sriram-sidrops-drop-invalid-policy-10 中文翻译</h4>
+        <span class="URL">原文URL :
+          <a href="https://datatracker.ietf.org/doc/html/draft-sriram-sidrops-drop-invalid-policy-10">
+            https://datatracker.ietf.org/doc/html/draft-sriram-sidrops-drop-invalid-policy-10
+          </a>
+        </span><br>
+        <span class="title_zh">
+          文档标题 : <strong>RFC draft-sriram-sidrops-drop-invalid-policy-10</strong></span><br>
+        <span class="updated_by">翻译方式 : 自动生成</span><span id="rfc_status"></span><span id="rfc_wg"></span><br>
+      </div>
+      <div id="rfc_alert" class="hidden" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_alert_obsoleted_by"></span>
+        </div>
+      </div>
+      <div id="rfc_alert" class="" role="alert">
+        <div class="alert alert-danger">
+          <span id="rfc_draft">当前显示的 RFC 是 Draft 版本。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace">
+SIDROPS Working Group                                          K. Sriram
+Internet-Draft                                               O. Borchert
+Intended status: Best Current Practice                     D. Montgomery
+Expires: 31 May 2023                                            USA NIST
+                                                        27 November 2022
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-2">
+Origin Validation Policy Considerations for Dropping Invalid Routes draft-sriram-sidrops-drop-invalid-policy-10
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-2">
+丢弃无效路由的起源验证策略注意事项 draft-sriram-sidrops-drop-invalid-policy-10
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Abstract
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+摘要
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Deployment of Resource Public Key Infrastructure (RPKI) and Route Origin Authorizations (ROAs) is expected to occur gradually over several or many years. During the incremental deployment period, network operators would wish to have a meaningful policy for dropping Invalid routes. Their goal is to balance (A) dropping Invalid routes so hijacked routes can be eliminated, versus (B) tolerance for missing or erroneously created ROAs for customer prefixes. This document considers a Drop Invalid if Still Routable (DISR) policy that is based on these considerations. The key principle of DISR policy is that an Invalid route can be dropped if a Valid or NotFound route exists for a subsuming less specific prefix.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源公钥基础设施（RPKI）和路由起源授权（ROA）的部署预计将在数年或多年内逐步进行。在增量部署期间，网络运营商希望有一个有效的政策来放弃无效路由。他们的目标是在 (A) 丢弃无效路由以消除劫持路由与 (B) 容忍客户前缀丢失或错误创建 ROA 之间取得平衡。本文基于这些考虑因素，提出了 &#34;仍可路由时放弃无效路由&#34;（DISR）策略。DISR 策略的主要原则是，如果存在用于包含不那么特定前缀的有效路由或未找到路由，则可以放弃无效路由。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Status of This Memo
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+本备忘录的地位
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本互联网草案完全按照 BCP 78 和 BCP 79 的规定提交。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Internet-Drafts are working documents of the Internet Engineering Task Force (IETF). Note that other groups may also distribute working documents as Internet-Drafts. The list of current Internet-Drafts is at https://datatracker.ietf.org/drafts/current/.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+互联网草案是互联网工程任务组（IETF）的工作文件。请注意，其他团体也可能将工作文件作为互联网草案分发。当前互联网草案的列表见 https://datatracker.ietf.org/drafts/current/。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time. It is inappropriate to use Internet-Drafts as reference material or to cite them other than as &#34;work in progress.&#34;
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+互联网草案为草稿文件，有效期最长为六个月，可随时更新、替换或被其他文件取代。除作为 &#34;进行中的工作 &#34;外，不宜将互联网草案用作参考资料或引用。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This Internet-Draft will expire on 31 May 2023.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本互联网草案将于 2023 年 5 月 31 日到期。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Copyright Notice
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+版权声明
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2022 IETF Trust and the persons identified as the document authors. All rights reserved.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Copyright (c) 2022 IETF Trust 和文件作者。保留所有权利。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document is subject to BCP 78 and the IETF Trust&#39;s Legal Provisions Relating to IETF Documents (https://trustee.ietf.org/ license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Revised BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Revised BSD License.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档受 BCP 78 和 IETF Trust 的《与 IETF 文档有关的法律规定》（https://trustee.ietf.org/ license-info）的约束，在本文档发布之日有效。请仔细阅读这些文件，因为它们描述了您对本文档的权利和限制。从本文档中提取的代码组件必须包含信托法律条款第 4.e 节所述的修订版 BSD 许可文本，并且不提供修订版 BSD 许可中所述的担保。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Table of Contents
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+目录
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <pre class="text text-monospace toc">
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Drop Invalid if Still Routable (DISR) Policy  . . . . . . . .   3
+     2.1.  Motivation for the DISR Policy  . . . . . . . . . . . . .   3
+   3.  Algorithm for Implementation of DISR Policy . . . . . . . . .   4
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
+   5.  Normative References  . . . . . . . . . . . . . . . . . . . .   5
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .   6
+   Authors&#39; Addresses  . . . . . . . . . . . . . . . . . . . . . . .   6
+        </pre>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="1--Introduction">
+1. Introduction
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+1. 导言
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Deployment of Resource Public Key Infrastructure (RPKI) [RFC6481] and Route Origin Authorizations (ROAs) [RFC6482] is expected to occur gradually over several or many years. ROA-based BGP Origin Validation (OV) process and the OV states are defined in [RFC6811]. During the incremental deployment period, network operators would wish to have a meaningful policy for dropping Invalid routes. Their goal is to balance (A) dropping Invalid routes so hijacked routes can be eliminated, versus (B) tolerance for missing or erroneously created ROAs for customer prefixes. This document considers a Drop Invalid if Still Routable (DISR) policy that is based on these considerations. The key principle of DISR policy is that an Invalid route can be dropped if a Valid or NotFound route exists for a subsuming less specific prefix.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+资源公钥基础设施 (RPKI) [RFC6481] 和路由起源授权 (ROAs) [RFC6482] 的部署预计将在数年或多年内逐步进行。基于 ROA 的 BGP 起源验证 (OV) 流程和 OV 状态在 [RFC6811] 中进行了定义。在增量部署期间，网络运营商希望有一个有效的政策来放弃无效路由。他们的目标是在 (A) 丢弃无效路由以消除劫持路由与 (B) 容忍客户前缀丢失或错误创建 ROA 之间取得平衡。本文基于这些考虑因素，提出了 &#34;仍可路由时放弃无效路由&#34;（DISR）策略。DISR 策略的主要原则是，如果存在用于包含不那么特定前缀的有效路由或未找到路由，则可以放弃无效路由。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The DISR policy applies in addition to (1) preferring Valid when more than one route exists for the same prefix, and (2) always including NotFound routes in the best path selection process. Note that for a router performing OV, the existence of a NotFound route excludes the possibility of an alternate Valid or Invalid route for the same prefix or a subsuming less specific prefix.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+DISR 策略除了适用于 (1) 在同一前缀存在多条路由时优先选择有效路由，以及 (2) 在最佳路径选择过程中始终包含未找到路由外，还适用于 (1) 在同一前缀存在多条路由时优先选择有效路由，以及 (2) 在最佳路径选择过程中始终包含未找到路由。需要注意的是，对于执行 OV 的路由器来说，NotFound 路由的存在排除了同一前缀的替代 Valid 或 Invalid 路由的可能性，或者排除了包含较少特定前缀的替代 Valid 或 Invalid 路由的可能性。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document also provides an algorithm for best path selection policy that considers Origin Validation (OV) outcome and includes the DISR policy.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文件还提供了一种最佳路径选择策略算法，该算法考虑了起源验证 (OV) 结果，并包括 DISR 策略。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2--Drop-Invalid-if-Still-Routable-DISR-Policy">
+2. Drop Invalid if Still Routable (DISR) Policy
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2. 仍可路由时丢弃无效（DISR）策略
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+When BGP origin validation (OV) [RFC6811] is performed on a BGP route, there are three possible outcomes: (1) Valid, (2) Invalid, or (3) NotFound. During partial/incremental deployment of RPKI and ROAs, it is natural to always include Valid and NotFound routes in the path selection decision process. Note that Valid and NotFound are mutually exclusive, i.e., at a validating router, there cannot be two routes for a prefix where one is Valid and the other is NotFound. Similarly, Invalid and NotFound are also mutually exclusive. If Invalid routes are always dropped from consideration, then there would be no tolerance for missing or erroneously created ROAs for customer prefixes. Then the question arises whether the following policy should be considered: Drop an Invalid route only if another Valid or NotFound route exists for a subsuming less specific prefix? This policy is called Drop Invalid if Still Routable (DISR).
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+对 BGP 路由执行 BGP 起源验证（OV）[RFC6811]时，有三种可能的结果：(1) 有效，(2) 无效，或 (3) 未找到。在 RPKI 和 ROAs 的部分/增量部署过程中，在路径选择决策过程中总是包含有效和未找到路由是很自然的。请注意，Valid 和 NotFound 是互斥的，也就是说，在验证路由器上，一个前缀不可能有两条路由，其中一条是 Valid，另一条是 NotFound。同样，Invalid 和 NotFound 也是互斥的。如果无效路由总是被放弃考虑，那么就不能容忍客户前缀的 ROA 丢失或错误创建。那么问题来了，是否应考虑以下策略：只有当另一条有效路由或 NotFound 路由存在，且该路由所包含的前缀不那么特定时，才丢弃无效路由？这种策略称为 &#34;仍可路由时放弃无效路由&#34;（DISR）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The existence of an AS0 ROA for a prefix means that the prefix or any more specific prefix subsumed in it are forbidden from routing except when there exists a different ROA with a normal ASN for the prefix or the more specific prefix. DISR policy MUST apply the following exception: If a route is Invalid due to an AS0 ROA, then always drop the route.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+如果某个前缀存在 AS0 ROA，则意味着禁止对该前缀或包含在该前缀中的任何更具体的前缀进行路由，除非该前缀或更具体的前缀存在不同的 ROA，且该 ROA 具有正常的 ASN。DISR 策略必须应用以下例外情况：如果路由因 AS0 ROA 而无效，则必须放弃该路由。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Any routes for 0.0.0.0/0 (IPv4) or ::/0 (IPv6) in the routing table must be excluded from consideration in the DISR policy. (Author&#39;s note: Think this through with help from the WG.)
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+路由表中任何指向 0.0.0.0/0 (IPv4) 或 ::/0 (IPv6) 的路由都必须排除在 DISR 策略的考虑范围之外。(作者注：请在工作组的帮助下仔细考虑）。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="2-1--Motivation-for-the-DISR-Policy">
+2.1. Motivation for the DISR Policy
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+2.1. 制定综合安全分遣队政策的动机
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Consider these scenarios:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+考虑一下这些情况：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Scenario 1: A transit ISP A (AS A) created a ROA for a /22 prefix they announce. They also announce a /24 prefix (subsumed in the /22) that is owned by directly-connected customer X (has no AS). But ISP A neglected to create a ROA for X&#39;s /24 prefix. Clearly, the announcement of X&#39;s /24 will be Invalid. ISP A happens to propagate to neighbors the /22 and the /24.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+场景 1：某过境 ISP A（AS A）为其公布的 /22 前缀创建了 ROA。他们还公布了一个 /24 前缀（包含在 /22 中），该前缀归直接连接的客户 X（无 AS）所有。但 ISP A 没有为 X 的 /24 前缀创建 ROA。显然，X 的 /24 公告将无效。ISP A 恰好向邻居传播了 /22 和 /24。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Scenario 2: Customer X (AS X) announces a /22 prefix only to transit ISP A and a /24 prefix (subsumed in the /22) only to transit ISP B. X is attempting to do traffic engineering (TE). X created a ROA for the /22 but neglected to have ROA coverage for the /24. Clearly, X&#39;s announcement of the /24 will be Invalid. ISP B does not participate in OV and propagates the Invalid route to its neighbors.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+场景 2：客户 X（AS X）仅向过境 ISP A 公布了一个 /22 前缀，仅向过境 ISP B 公布了一个 /24 前缀（包含在 /22 中）。X 为 /22 创建了 ROA，但忽略了 /24 的 ROA 覆盖范围。显然，X 宣布的 /24 将是无效的。ISP B 不参与 OV，并将无效路由传播给其邻居。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+In each of the above scenarios, DISR policy (applied at routers elsewhere in the Internet) ensures that traffic for the more specific (/24) still reaches the correct destination, i.e., customer X (albeit possibly via a suboptimal / non-TE path). Any actual hijacks of the /24 prefix would be dropped at all eBGP routers that employ the DISR policy. Please see [sriram-disr] for analysis of several more scenarios.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+在上述每种情况下，DISR 策略（应用于互联网其他地方的路由器）都能确保更具体 (/24) 的流量仍然到达正确的目的地，即客户 X（尽管可能通过次优/非TE 路径）。在所有采用 DISR 策略的 eBGP 路由器上，任何实际劫持 /24 前缀的行为都会被丢弃。请参阅 [sriram-disr] 了解更多情况分析。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Measurements show that if OV were performed, there are 10,417 Invalid routes in the global Internet based on analysis of Routeviews/RPKI/ ROA data from February 2018. Of these, 6846 routes are Invalid due to exceeding the maxlength. 6027 of the 6846 Invalid prefixes are seen to be routable via alternate Valid or NotFound routes for either the same prefix (as in the Invalid route) or a subsuming less specific prefix. Again, 5987 of the 6027 are routes for which the corresponding Valid or NotFound routes (with the same or subsuming less specific prefix) have the exact same origin AS as in the Invalid route in question. These measurements show that Scenarios 1 and 2 described above do occur in significant numbers currently. So, the data lends support to the efficacy of the DISR policy in terms of delivering the data traffic to the right destination though not necessarily via the optimal/TE path. Please see [sriram-disr] for more detailed results from the Routeviews/RPKI/ROA data measurement study.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+测量结果显示，如果执行 OV，根据对 2018 年 2 月 Routeviews/RPKI/ ROA 数据的分析，全球互联网中有 10417 条无效路由。其中，6846 条路由因超过最大长度而无效。在这 6846 个无效前缀中，有 6027 个可以通过备用的有效或未找到路由进行路由，这些路由可以是相同的前缀（如无效路由中的前缀），也可以是包含较少特定前缀的子路由。同样，在 6027 条路由中，有 5987 条路由的相应有效路由或未找到路由（具有相同或包含较少特定前缀）的源 AS 与相关无效路由的源 AS 完全相同。这些测量结果表明，上述第 1 和第 2 种情况目前确实大量存在。因此，这些数据证明了 DISR 策略的有效性，它能将数据流量传送到正确的目的地，尽管不一定是通过最优/TE 路径。有关 Routeviews/RPKI/ROA 数据测量研究的更多详细结果，请参阅 [sriram-disr]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The following is recommended in BCP 185 [RFC7115]: &#34;Before issuing a ROA for a super-block, an operator MUST ensure that all sub-allocations from that block that are announced by other ASes, e.g., customers, have correct ROAs in the RPKI.&#34; However, as seen by the above measurement data, there are lapses in following this recommendation.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+BCP 185 [RFC7115]建议如下：&#34;在发布超级区块的 ROA 之前，运营商必须确保其他 AS（如客户）宣布的该区块的所有子分配在 RPKI 中都有正确的 ROA&#34;。&#34;然而，从上述测量数据可以看出，在遵循这一建议方面存在疏漏。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Network operators who do not wish to drop Invalid routes outright in partial deployment SHOULD consider employing the DISR policy. It helps eliminate actual prefix hijacks, while incentivizing creation of required ROAs and the adherence to the above recommendation from BCP 185. The stick used here is the possibility of data traveling via a suboptimal path, while the more aggressive stick of dropping all Invalid routes is held in abeyance.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+网络运营商如果不希望在部分部署中直接放弃无效路由，则应考虑采用 DISR 策略。这有助于消除实际的前缀劫持，同时鼓励创建所需的 ROA 并遵守 BCP 185 的上述建议。这里使用的大棒是数据通过次优路径传输的可能性，而放弃所有无效路由这一更激进的大棒则被暂时搁置。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="3--Algorithm-for-Implementation-of-DISR-Policy">
+3. Algorithm for Implementation of DISR Policy
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+3. 实施 DISR 政策的算法
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+An algorithm for implementation of the DISR policy is as follows.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+实施 DISR 政策的算法如下。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Perform the following steps when a route is received:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+收到路由时，请执行以下步骤：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. Perform BGP Origin Validation (OV) [RFC6811] on the routes in the Adj-RIB-ins.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+1. 对 Adj-RIB-ins 中的路由执行 BGP 起源验证 (OV) [RFC6811]。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. Apply best path decision process including the results of OV. Include NotFound routes in the decision process. When there is a choice, prefer Valid over Invalid routes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+2. 应用最佳路径决策流程，包括 OV 的结果。将未找到路由纳入决策过程。在有选择的情况下，优先选择有效路由，而不是无效路由。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. Store the selected routes in the Loc-RIB.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+3. 将所选路线存储到 Loc-RIB 中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. Apply the DISR policy. Process routes in the order of least specific to most specific. If a selected route in the Loc-RIB is Valid/NotFound, then add the route to FIB and Adj-RIB-outs; Else, if Invalid, then add the route to FIB and Adj-RIB-outs only if there is no existing Valid/NotFound route in the Loc-RIB for a subsuming Less Specific prefix.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+4. 应用 DISR 策略。按照从最不具体到最具体的顺序处理路由。如果 Loc-RIB 中所选路由是有效/未找到的，则将该路由添加到 FIB 和 Adj-RIB-outs 中；否则，如果是无效的，则只有在 Loc-RIB 中没有包含较少特定前缀的现有有效/未找到路由时，才将该路由添加到 FIB 和 Adj-RIB-outs 中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Additional steps in the algorithm that are performed in reaction to addition/withdrawal of routes that influence DISR policy decisions and due to changes in RPKI:
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+算法中的其他步骤，这些步骤是针对影响 DISR 策略决策的路由的增加/撤销以及 RPKI 的变化而执行的：
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+a. When a Valid/NotFound route is added to Loc-RIB, check if there are any more specific prefixes in the FIB and Adj-RIB-Outs subsumed by the route prefix; If such more specific prefix route is Invalid, then remove it from the FIB and Adj-RIB-Outs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+a. 当一条有效/未找到的路由被添加到 Loc-RIB 时，会检查 FIB 和 Adj-RIB-Outs 中是否有任何更具体的前缀被路由前缀所包含；如果这些更具体的前缀路由无效，则会将其从 FIB 和 Adj-RIB-Outs 中删除。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+b. When a Valid/NotFound route is withdrawn from Loc-RIB, check if there are any more specifics prefixes in the Loc-RIB subsumed by the route prefix; If such more specific prefix route is Invalid, then add the route to FIB and Adj-RIB-outs.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+b. 当从 Loc-RIB 撤回有效/未找到路由时，检查该路由前缀所包含的 Loc-RIB 中是否有更多特定前缀；如果更多特定前缀路由无效，则将该路由添加到 FIB 和 Adj-RIB-outs 中。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+c. When the router is notified of RPKI state change, then list all the prefixes effected by it. Rerun route selection decision and DISR policy for those prefixes.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+c. 路由器收到 RPKI 状态变化通知后，列出受其影响的所有前缀。为这些前缀重新运行路由选择决策和 DISR 策略。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="4--Security-Considerations">
+4. Security Considerations
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+4. 安全考虑因素
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+This document addresses some aspects of best common practices for origin validation and related BGP policy. The security considerations provided in RFC 6811 [RFC6811] and BCP 185 [RFC7115] also apply here.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+本文档涉及起源验证和相关 BGP 策略的最佳通用实践的某些方面。RFC 6811 [RFC6811] 和 BCP 185 [RFC7115] 中提供的安全注意事项也适用于此。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2" id="5--Normative-References">
+5. Normative References
+        </h5>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <h5 class="text mt-2">
+5. 规范性文献
+        </h5>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, DOI 10.17487/RFC4271, January 2006, &lt;https://www.rfc-editor.org/info/rfc4271&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC4271] Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., &#34;A Border Gateway Protocol 4 (BGP-4)&#34;, RFC 4271, DOI 10.17487/RFC4271, January 2006, &lt;https://www.rfc-editor.org/info/rfc4271&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, DOI 10.17487/RFC6481, February 2012, &lt;https://www.rfc-editor.org/info/rfc6481&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6481] Huston, G., Loomans, R., and G. Michaelson, &#34;A Profile for Resource Certificate Repository Structure&#34;, RFC 6481, DOI 10.17487/RFC6481, February 2012, &lt;https://www.rfc-editor.org/info/rfc6481&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6482] Lepinski, M., Kent, S., and D. Kong, &#34;A Profile for Route Origin Authorizations (ROAs)&#34;, RFC 6482, DOI 10.17487/RFC6482, February 2012, &lt;https://www.rfc-editor.org/info/rfc6482&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, &#34;BGP Prefix Origin Validation&#34;, RFC 6811, DOI 10.17487/RFC6811, January 2013, &lt;https://www.rfc-editor.org/info/rfc6811&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC6811] Mohapatra, P., Scudder, J., Ward, D., Bush, R., and R. Austein, &#34;BGP Prefix Origin Validation&#34;, RFC 6811, DOI 10.17487/RFC6811, January 2013, &lt;https://www.rfc-editor.org/info/rfc6811&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7115] Bush, R., &#34;Origin Validation Operation Based on the Resource Public Key Infrastructure (RPKI)&#34;, BCP 185, RFC 7115, DOI 10.17487/RFC7115, January 2014, &lt;https://www.rfc-editor.org/info/rfc7115&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[RFC7115] Bush, R., &#34;Origin Validation Operation Based on Resource Public Key Infrastructure (RPKI)&#34;, BCP 185, RFC 7115, DOI 10.17487/RFC7115, January 2014, &lt;https://www.rfc-editor.org/info/rfc7115&gt;。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[sriram-disr] Sriram et al., K., &#34;Origin Validation Policy Considerations for Dropping Invalid Routes&#34;, Presented at the SIDROPS WG Meeting, IETF-101, London , March 2018, &lt;https://datatracker.ietf.org/meeting/101/materials/ slides-101-sidrops-origin-validation-policy-considerations-for-dropping-invalid-routes-00&gt;.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+[sriram-disr] Sriram et al., K., &#34;Origin Validation Policy Considerations for Dropping Invalid Routes&#34;, Presented at SIDROPS WG Meeting, IETF-101, London , March 2018, &lt;https://datatracker.ietf.org/meeting/101/materials/ slides-101-sidrops-origin-validation-policy-considerations-for-dropping-invalid-routes-00&gt;.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Acknowledgements
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+致谢
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+The authors wish to thank Sebastian Spies, Saku Ytti, Jeffrey Haas, Tim Bruijnzeels, Keyur Patel, Warren Kumari, John Scudder, and Jay Borkenhagen for comments and discussion related to this work. Also, thanks are due to Lilia Hannachi for her insightful analysis of global RPKI and BGP data that has been helpful in this work.
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+作者感谢 Sebastian Spies、Saku Ytti、Jeffrey Haas、Tim Bruijnzeels、Keyur Patel、Warren Kumari、John Scudder 和 Jay Borkenhagen 对本研究的评论和讨论。此外，还要感谢 Lilia Hannachi 对全球 RPKI 和 BGP 数据的深入分析，这对本研究工作很有帮助。
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Authors&#39; Addresses
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+作者地址
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Kotikalapudi Sriram USA National Institute of Standards and Technology Email: ksriram@nist.gov
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Kotikalapudi Sriram 美国国家标准与技术研究院 电子邮件：ksriram@nist.gov
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Oliver Borchert USA National Institute of Standards and Technology Email: oliver.borchert@nist.gov Doug Montgomery USA National Institute of Standards and Technology Email: dougm@nist.gov
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-3">
+Oliver Borchert 美国国家标准与技术研究院 电子邮件：oliver.borchert@nist.gov Doug Montgomery 美国国家标准与技术研究院 电子邮件：dougm@nist.gov
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Sriram, et al. Expires 31 May 2023 [Page 7]
+        </p>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <p class="text indent-0">
+Sriram, et al.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="rfc_footer"></div>
+</body>
+</html>
